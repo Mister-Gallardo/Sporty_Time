@@ -1,0 +1,43 @@
+:root {
+    --ion-background-color: #F2F6F8;
+    --ion-tab-bar-background: #FFF;
+    --ion-toolbar-background: #FFF;
+    --ion-color-primary: #0067AD;
+}
+
+ion-content::part(scroll) {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+ion-content::part(scroll)::-webkit-scrollbar { 
+    display: none;
+}
+
+ion-item {
+    --background: white
+}
+
+ion-modal ion-content {
+    --background: white
+}
+
+html, body {
+    height: 100%;
+}
+
+ion-tab-bar {
+    border: none;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 0 10px #3331;
+}
+
+ion-header {
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
+    box-shadow: 0 0 10px #3331;
+}
+
+ion-toolbar {
+    --border-width: 0 !important
+}
