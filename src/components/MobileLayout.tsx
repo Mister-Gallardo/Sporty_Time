@@ -1,5 +1,6 @@
 import {
   IonApp,
+  IonContent,
   IonIcon,
   IonRouterOutlet,
   IonTabBar,
@@ -7,7 +8,7 @@ import {
   IonTabs,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { albumsOutline, addCircle, personOutline } from 'ionicons/icons';
+import { book, home, person, tennisball } from 'ionicons/icons';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -26,6 +27,7 @@ import '@ionic/react/css/display.css';
 import '../mobile.css';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useRef } from 'react';
+import { Typography } from '@mui/material';
 
 export interface IMobileLayoutProps {
   children: React.ReactNode;
@@ -36,31 +38,39 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
   const defaultRef = useRef<HTMLIonIconElement>(null);
 
   return (
-    <IonApp style={{ height: '100dvh' }}>
+    <IonApp style={{ minHeight: '100vh' }}>
       <IonReactRouter>
         <IonTabs
           onIonTabsWillChange={() =>
             Haptics.impact({ style: ImpactStyle.Light })
           }
         >
-          <IonRouterOutlet>{children}</IonRouterOutlet>
-          <IonTabBar slot="bottom">
-            <IonTabButton
-              ref={() => defaultRef}
-              tab="publications"
-              href="/publications"
-            >
-              <IonIcon size="large" icon={albumsOutline} />
+          <IonRouterOutlet>
+            <IonContent class="scroll-content">{children}</IonContent>
+          </IonRouterOutlet>
+          <IonTabBar
+            slot="bottom"
+            style={{
+              paddingBlock: '.75rem',
+              borderRadius: '0',
+              borderTop: '1px solid #cdcccc',
+            }}
+          >
+            <IonTabButton ref={() => defaultRef} tab="play" href="/">
+              <IonIcon size="medium" icon={tennisball} />
+              <Typography variant="body2">Играть</Typography>
             </IonTabButton>
-            <IonTabButton tab="orders-new" href="/orders/new">
-              <IonIcon
-                style={{ width: 50, minHeight: 50 }}
-                color="primary"
-                icon={addCircle}
-              />
+            <IonTabButton tab="discovery" href="/">
+              <IonIcon size="medium" icon={book} />
+              <Typography variant="body2">Исследовать</Typography>
             </IonTabButton>
-            <IonTabButton tab="profile" href="/profile">
-              <IonIcon size="large" icon={personOutline} />
+            <IonTabButton tab="community" href="/">
+              <IonIcon size="medium" icon={home} />
+              <Typography variant="body2">Сообщество</Typography>
+            </IonTabButton>
+            <IonTabButton tab="profile" href="/">
+              <IonIcon size="medium" icon={person} />
+              <Typography variant="body2">Профиль</Typography>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>

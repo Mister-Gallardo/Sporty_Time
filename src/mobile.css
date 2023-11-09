@@ -1,8 +1,8 @@
 :root {
-    --ion-background-color: #F2F6F8;
+    --ion-background-color: #fff;
     --ion-tab-bar-background: #FFF;
     --ion-toolbar-background: #FFF;
-    --ion-color-primary: #0067AD;
+    --ion-color-primary: grey;
 }
 
 ion-content::part(scroll) {
@@ -33,9 +33,8 @@ ion-tab-bar {
 }
 
 ion-header {
-    border-radius: 0 0 16px 16px;
+    border-top: 1px solid #e5e5e5;
     overflow: hidden;
-    box-shadow: 0 0 10px #3331;
 }
 
 ion-toolbar {

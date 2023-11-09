@@ -1,15 +1,29 @@
 import { Route, Switch } from 'react-router-dom';
 import { isPlatform, setupIonicReact } from '@ionic/react';
 import React from 'react';
+import MobilePlayPage from './pages/play/mobile';
+import { DesktopHomePage } from './pages/play/desktop';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
 
 setupIonicReact();
 
-const desktopRoutes = [] as React.ComponentProps<typeof Route>[];
+const desktopRoutes = [
+  {
+    path: '/',
+    exact: true,
+    component: DesktopHomePage,
+  },
+] as React.ComponentProps<typeof Route>[];
 
-const mobileRoutes = [] as React.ComponentProps<typeof Route>[];
+const mobileRoutes = [
+  {
+    path: '/',
+    exact: true,
+    component: MobilePlayPage,
+  },
+] as React.ComponentProps<typeof Route>[];
 
 const App: React.FC = () => {
   const isMobile = isPlatform('mobile');
