@@ -1,16 +1,21 @@
 import { Box, Typography } from '@mui/material';
 import { Block } from './Block';
+import { useHistory } from 'react-router';
 
 interface IMatchBlockProps {
   img?: string;
   icon: any;
   title: string;
   description?: string;
+  onClick?: () => void;
 }
 
 export const MatchBlock = (props: IMatchBlockProps) => {
+  const history = useHistory(); // as example
+
   return (
     <Block
+      onClick={() => history.push('/book-court')}
       sx={{
         paddingTop: props.img ? '45%' : '10px',
         position: 'relative',
