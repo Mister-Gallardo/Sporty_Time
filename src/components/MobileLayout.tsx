@@ -1,6 +1,5 @@
 import {
   IonApp,
-  IonContent,
   IonIcon,
   IonRouterOutlet,
   IonTabBar,
@@ -45,9 +44,7 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
             Haptics.impact({ style: ImpactStyle.Light })
           }
         >
-          <IonRouterOutlet>
-            <IonContent class="scroll-content">{children}</IonContent>
-          </IonRouterOutlet>
+          <IonRouterOutlet>{children}</IonRouterOutlet>
           <IonTabBar
             slot="bottom"
             style={{

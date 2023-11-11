@@ -1,41 +1,95 @@
 import {
-  ChatBubbleOutline,
-  NotificationsOutlined,
   PersonOutlineOutlined,
   SportsBaseballOutlined,
 } from '@mui/icons-material';
-import { Box, IconButton, Typography } from '@mui/material';
-function DesktopHeader() {
+import {
+  Box,
+  IconButton,
+  MenuItem,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { Button } from './atoms/Button';
+import { useHistory } from 'react-router';
+
+interface IDesktopHeaderProps {}
+
+function DesktopHeader(props: IDesktopHeaderProps) {
+  const history = useHistory();
+
   return (
     <Box
       sx={{
-        color: '#fff',
+        position: 'fixed',
+        top: '0',
+        right: '0',
+        left: '0',
+        zIndex: '9999999',
+
         display: 'flex',
+        background: '#fff',
+        color: '#000',
+        paddingBlock: '1rem',
+        paddingInline: '10px',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        paddingTop: '1.25rem',
+
+        borderBottom: '1px #e5e5e5 solid',
+        boxShadow: '0 0 6px 3px rgba(0, 0, 0, 0.1);',
       }}
     >
       <Box
         sx={{
           display: 'flex',
-          gap: '16px',
+          gap: '2rem',
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <SportsBaseballOutlined sx={{ color: '#fff' }} />
-        <Typography
-          variant="h1"
+        <Box
+          onClick={() => history.push('/')}
           sx={{
-            fontSize: '1rem',
-            textTransform: 'uppercase',
-            letterSpacing: '10px',
-            fontWeight: '500',
+            display: 'flex',
+            gap: '16px',
+            alignItems: 'center',
+            justifyContent: 'center',
+
+            cursor: 'pointer',
           }}
         >
-          playtomic
-        </Typography>
+          <SportsBaseballOutlined sx={{ color: '#000' }} />
+        </Box>
+        <TextField sx={{ width: '175px' }} label="Адрес, название клуба" />
+        <TextField
+          sx={{ width: '100px' }}
+          select
+          label="Игра"
+          defaultValue={'padel'}
+        >
+          <MenuItem value="padel">Padel</MenuItem>
+          <MenuItem value="tennis">Tennis</MenuItem>
+        </TextField>
+        <TextField sx={{ width: '80px' }} select label="Дата" />
+        <TextField
+          sx={{ width: '80px' }}
+          select
+          label="Время матча"
+          defaultValue={'13'}
+        >
+          <MenuItem value={13}>13:00</MenuItem>
+          <MenuItem value={14}>14:00</MenuItem>
+          <MenuItem value={15}>15:00</MenuItem>
+          <MenuItem value={16}>16:00</MenuItem>
+          <MenuItem value={17}>17:00</MenuItem>
+        </TextField>
+        <Button
+          onClick={() => history.push('/book-court')}
+          sx={{ maxWidth: '140px', paddingBlock: '20px', borderRadius: '30px' }}
+        >
+          Найти
+        </Button>
       </Box>
+
       <Box
         sx={{
           display: 'flex',
@@ -44,26 +98,42 @@ function DesktopHeader() {
           alignItems: 'center',
         }}
       >
-        <IconButton sx={{ color: 'hsl(0 0% 20% / 1)' }}>
-          <ChatBubbleOutline sx={{ fontSize: '1.25rem', color: '#fff' }} />
-        </IconButton>
-        <IconButton sx={{ color: 'hsl(0 0% 20% / 1)' }}>
-          <NotificationsOutlined sx={{ fontSize: '1.25rem', color: '#fff' }} />
-        </IconButton>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '48px',
-            height: '48px',
-            background: 'rgba(51,95,255,0.1)',
-            borderRadius: '50%',
-          }}
-        >
-          <IconButton sx={{ width: '100%', height: '100%' }}>
-            <PersonOutlineOutlined sx={{ color: '#fff' }} />
-          </IconButton>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <Box sx={{ display: 'flex', gap: '10px' }}>
+            <Typography
+              sx={{
+                opacity: '0.6',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+              }}
+            >
+              Activities
+            </Typography>
+            <Typography
+              sx={{
+                opacity: '0.6',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+              }}
+            >
+              Ramazan Ramazanov
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '48px',
+              height: '48px',
+              background: 'rgba(51,95,255,0.1)',
+              borderRadius: '50%',
+            }}
+          >
+            <IconButton sx={{ width: '100%', height: '100%' }}>
+              <PersonOutlineOutlined sx={{ color: '#000' }} />
+            </IconButton>
+          </Box>
         </Box>
       </Box>
     </Box>
