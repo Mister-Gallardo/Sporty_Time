@@ -8,6 +8,7 @@ import {
 import { Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import { BookTab } from './BookTab';
+import { BookTabMain } from './BookTabMain';
 
 export function SingleCourtPage() {
   const [tabIndex, setTabIndex] = useState<number>(1);
@@ -120,7 +121,7 @@ export function SingleCourtPage() {
               transition: 'transform 0.35s cubic-bezier(0.15, 0.3, 0.25, 1) 0s',
             }}
           >
-            <h1>Home</h1>
+            <BookTabMain/>
             <BookTab />
             <h1>Activities</h1>
           </SwipeableViews>
