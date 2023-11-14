@@ -22,6 +22,7 @@
     "@ionic/react": "^7.0.0",
     "@ionic/react-router": "^7.0.0",
     "@mui/icons-material": "^5.14.16",
+    "@mui/lab": "5.0.0-alpha.152",
     "@mui/material": "^5.14.17",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
@@ -29,6 +30,7 @@
     "ionicons": "^7.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-query": "^3.39.3",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-swipeable-views": "^0.14.0"

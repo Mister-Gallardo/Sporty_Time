@@ -1,4 +1,4 @@
-import { IonToggle } from '@ionic/react';
+import { IonToggle, isPlatform } from '@ionic/react';
 import {
   KeyboardArrowUp,
   NotificationsOutlined,
@@ -15,7 +15,7 @@ export function BookTab() {
         paddingBlock: '1.25rem',
       }}
     >
-      <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
+      <Box sx={{ maxWidth: '1240px', margin: '0 auto' }}>
         <Box sx={{ display: 'flex', gap: '1.5rem' }}>
           <Box
             sx={{
@@ -158,6 +158,7 @@ export function BookTab() {
         </Box>
         <Box
           sx={{
+            width: !isPlatform('mobile') ? '85%' : '100%',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -342,15 +343,20 @@ export function BookTab() {
         </Box>
         <Box
           sx={{
+            width: !isPlatform('mobile') ? '85%' : '100%',
+
             marginTop: '1.25rem',
-            width: '100%',
             background: '#fff',
             boxShadow:
               'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px',
             borderRadius: '10px',
           }}
         >
-          <Box sx={{ padding: '10px 20px' }}>
+          <Box
+            sx={{
+              padding: '10px 20px',
+            }}
+          >
             <Box
               sx={{
                 display: 'flex',
@@ -402,7 +408,12 @@ export function BookTab() {
             </Typography>
           </Box>
         </Box>
-        <Box sx={{ marginTop: '1rem' }}>
+        <Box
+          sx={{
+            marginTop: '1rem',
+            width: !isPlatform('mobile') ? '85%' : '100%',
+          }}
+        >
           <Typography
             sx={{
               fontSize: '1.15rem',
@@ -417,6 +428,8 @@ export function BookTab() {
         </Box>
         <Box
           sx={{
+            width: !isPlatform('mobile') ? '85%' : '100%',
+
             marginTop: '1rem',
             display: 'flex',
             justifyContent: 'space-between',
@@ -430,6 +443,8 @@ export function BookTab() {
         </Box>
         <Box
           sx={{
+            width: !isPlatform('mobile') ? '85%' : '100%',
+
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',

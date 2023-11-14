@@ -1,4 +1,4 @@
-import { IonBackButton } from '@ionic/react';
+import { IonBackButton, isPlatform } from '@ionic/react';
 import SwipeableViews from 'react-swipeable-views';
 import {
   ArrowBackIosNewOutlined,
@@ -6,12 +6,14 @@ import {
   ShareOutlined,
 } from '@mui/icons-material';
 import { Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
+
 import { useState } from 'react';
 import { BookTab } from './BookTab';
 import { BookTabMain } from './BookTabMain';
 
 export function SingleCourtPage() {
-  const [tabIndex, setTabIndex] = useState<number>(1);
+  const [tabIndex, setTabIndex] = useState<number>(0);
+  const isMobile = isPlatform('mobile');
 
   return (
     <>
@@ -62,9 +64,13 @@ export function SingleCourtPage() {
           </IconButton>
         </Box>
         <Box
-          sx={{ width: '100%', maxHeight: '450px', objectFit: 'cover' }}
+          sx={{
+            width: '100%',
+            maxHeight: isPlatform('mobile') ? '250px' : '450px',
+            objectFit: 'cover',
+          }}
           component="img"
-          src="https://cdn-bojij.nitrocdn.com/JuyakZOsfCOnGAFrFDIuOkUAWlTozjCd/assets/images/optimized/rev-56fcbc3/activeaway.com/wp-content/uploads/elementor/thumbs/Padel-Tennis-Holidays-Lyttos-Beach-pqw3o7dmctox1d2xju5613xttl1wbqsi2ed1vfqcdc.jpg"
+          src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
         />
         <Box
           sx={{
@@ -75,13 +81,13 @@ export function SingleCourtPage() {
             background: '#fff',
             marginTop: '-30px',
             borderRadius: '15px 15px 0 0',
-            padding: '10px 0 10px 0',
+            paddingTop: '10px',
           }}
         >
           <Box
             sx={{
               margin: '0 auto',
-              maxWidth: '800px',
+              marginLeft: '3.5rem',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -105,23 +111,40 @@ export function SingleCourtPage() {
             </IconButton>
           </Box>
           <Tabs
-            sx={{ margin: '0 auto', maxWidth: '800px' }}
+            sx={{ margin: '0 auto' }}
             value={tabIndex}
             onChange={(e, value) => setTabIndex(value)}
           >
-            <Tab label={'Главная'} sx={{ flexGrow: 1 }} />
-            <Tab label={'Бронь'} sx={{ flexGrow: 1 }} />
-            <Tab label={'Действия'} sx={{ flexGrow: 1 }} />
+            <Tab
+              disableRipple={!isMobile}
+              label={'Главная'}
+              sx={{ flexGrow: 1 }}
+            />
+            <Tab
+              disableRipple={!isMobile}
+              label={'Бронь'}
+              sx={{ flexGrow: 1 }}
+            />
+            <Tab
+              disableRipple={!isMobile}
+              label={'Действия'}
+              sx={{ flexGrow: 1 }}
+            />
           </Tabs>
 
           <SwipeableViews
+            animateHeight={true}
+            animateTransitions={isMobile}
+            disabled={true}
             index={tabIndex}
             onChangeIndex={setTabIndex}
             containerStyle={{
-              transition: 'transform 0.35s cubic-bezier(0.15, 0.3, 0.25, 1) 0s',
+              transition: isMobile
+                ? 'transform 0.35s cubic-bezier(0.15, 0.3, 0.25, 1) 0s'
+                : 'none',
             }}
           >
-            <BookTabMain/>
+            <BookTabMain />
             <BookTab />
             <h1>Activities</h1>
           </SwipeableViews>
