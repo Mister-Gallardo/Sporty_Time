@@ -90,7 +90,7 @@ export function CourtCard(props: ICourtCardProps) {
             marginTop: '10px',
             overflowX: 'auto',
             margin: isMobile ? '.25em calc(50% - 50vw)' : '10px 0 0 0',
-            paddingInline: '15px',
+            paddingInline: isMobile ? '15px' : '0',
             paddingBottom: '10px',
           }}
         >

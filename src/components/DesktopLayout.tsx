@@ -27,6 +27,7 @@ export const DesktopLayout: React.FC<IDesktopLayoutProps> = (props) => {
         flexDirection="column"
         minHeight="100vh"
         flexShrink={0}
+        sx={{ paddingTop: '4.75rem' }}
       >
         {children}
       </Box>

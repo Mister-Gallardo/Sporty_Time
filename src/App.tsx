@@ -7,6 +7,9 @@ import { SingleCourtPage } from './pages/book-court/[id]';
 import { MobileBookCourt } from './pages/book-court/index.mobile';
 import { MobileSingleCourtPage } from './pages/book-court/[id]/index.mobile';
 import { DesktopHomePage } from './pages/play/desktop';
+import { AuthPage } from './pages/auth';
+import { MobileAuthPage } from './pages/auth/index.mobile';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
@@ -29,6 +32,11 @@ const desktopRoutes = [
     exact: true,
     component: SingleCourtPage,
   },
+  {
+    path: '/auth',
+    exact: true,
+    component: AuthPage,
+  },
 ] as React.ComponentProps<typeof Route>[];
 
 const mobileRoutes = [
@@ -47,27 +55,35 @@ const mobileRoutes = [
     exact: true,
     component: MobileSingleCourtPage,
   },
+  {
+    path: '/auth',
+    exact: true,
+    component: MobileAuthPage,
+  },
 ] as React.ComponentProps<typeof Route>[];
 
 const App: React.FC = () => {
   const isMobile = isPlatform('mobile');
+  const queryClient = new QueryClient();
   return (
     <>
-      {isMobile ? (
-        <MobileLayout>
-          {mobileRoutes.map((route) => (
-            <Route {...route} />
-          ))}
-        </MobileLayout>
-      ) : (
-        <DesktopLayout>
-          <Switch>
-            {desktopRoutes.map((route) => (
+      <QueryClientProvider client={queryClient}>
+        {isMobile ? (
+          <MobileLayout>
+            {mobileRoutes.map((route) => (
               <Route {...route} />
             ))}
-          </Switch>
-        </DesktopLayout>
-      )}
+          </MobileLayout>
+        ) : (
+          <DesktopLayout>
+            <Switch>
+              {desktopRoutes.map((route) => (
+                <Route {...route} />
+              ))}
+            </Switch>
+          </DesktopLayout>
+        )}
+      </QueryClientProvider>
     </>
   );
 };

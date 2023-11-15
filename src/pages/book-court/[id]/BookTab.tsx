@@ -15,7 +15,7 @@ export function BookTab() {
         paddingBlock: '1.25rem',
       }}
     >
-      <Box sx={{ maxWidth: '1240px', margin: '0 auto' }}>
+      <Box sx={{ maxWidth: '1000px', margin: '0 auto' }}>
         <Box sx={{ display: 'flex', gap: '1.5rem' }}>
           <Box
             sx={{

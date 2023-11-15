@@ -115,7 +115,7 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
       />
       <div id="root">
         <div>
-          <div style={{ paddingTop: '5rem' }} className="cookies">
+          <div className="cookies">
             <div>
               <div className="cookies__text">
                 At Playtomic, we collect the information needed to measure our

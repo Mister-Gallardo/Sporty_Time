@@ -39,7 +39,7 @@ export const MatchBlock = (props: IMatchBlockProps) => {
       <Box
         sx={{
           position: 'relative',
-          zIndex: '99999',
+          zIndex: '999',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

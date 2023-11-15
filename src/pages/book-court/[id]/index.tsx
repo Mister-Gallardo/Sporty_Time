@@ -25,48 +25,50 @@ export function SingleCourtPage() {
           width: '100%',
         }}
       >
-        <Box
-          sx={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            position: 'absolute',
-            zIndex: '999',
-            top: '1.5rem',
-            paddingInline: '20px',
-          }}
-        >
-          <IonBackButton
-            text={''}
-            style={{
-              background: 'hsl(0deg 0% 89.8% / 34%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              color: '#fff',
-            }}
-          >
-            <ArrowBackIosNewOutlined sx={{ color: '#fff' }} />
-          </IonBackButton>
-
-          <IconButton
+        {isMobile && (
+          <Box
             sx={{
-              background: 'hsl(0deg 0% 89.8% / 34%)',
+              width: '100%',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              position: 'absolute',
+              zIndex: '999',
+              top: '1.5rem',
+              paddingInline: '20px',
             }}
           >
-            <ShareOutlined sx={{ color: '#fff' }} />
-          </IconButton>
-        </Box>
+            <IonBackButton
+              text={''}
+              style={{
+                background: 'hsl(0deg 0% 89.8% / 34%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                color: '#fff',
+              }}
+            >
+              <ArrowBackIosNewOutlined sx={{ color: '#fff' }} />
+            </IonBackButton>
+
+            <IconButton
+              sx={{
+                background: 'hsl(0deg 0% 89.8% / 34%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <ShareOutlined sx={{ color: '#fff' }} />
+            </IconButton>
+          </Box>
+        )}
         <Box
           sx={{
             width: '100%',
-            maxHeight: isPlatform('mobile') ? '250px' : '450px',
+            maxHeight: isPlatform('mobile') ? '250px' : '325px',
             objectFit: 'cover',
           }}
           component="img"
@@ -75,7 +77,7 @@ export function SingleCourtPage() {
         <Box
           sx={{
             position: 'relative',
-            zIndex: '9999',
+            zIndex: '998',
             width: '100%',
             height: '100%',
             background: '#fff',
@@ -87,7 +89,7 @@ export function SingleCourtPage() {
           <Box
             sx={{
               margin: '0 auto',
-              marginLeft: '3.5rem',
+              marginLeft: isMobile ? '0' : '3.5rem',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -111,7 +113,7 @@ export function SingleCourtPage() {
             </IconButton>
           </Box>
           <Tabs
-            sx={{ margin: '0 auto' }}
+            sx={{ margin: '0 auto', maxWidth: '1000px' }}
             value={tabIndex}
             onChange={(e, value) => setTabIndex(value)}
           >
@@ -146,7 +148,6 @@ export function SingleCourtPage() {
           >
             <BookTabMain />
             <BookTab />
-            <h1>Activities</h1>
           </SwipeableViews>
         </Box>
       </Box>
