@@ -5,7 +5,6 @@ import MobilePlayPage from './pages/play/mobile';
 import { BookCourt } from './pages/book-court';
 import { SingleCourtPage } from './pages/book-court/[id]';
 import { MobileBookCourt } from './pages/book-court/index.mobile';
-import { MobileSingleCourtPage } from './pages/book-court/[id]/index.mobile';
 import { DesktopHomePage } from './pages/play/desktop';
 import { AuthPage } from './pages/auth';
 import { MobileAuthPage } from './pages/auth/index.mobile';
@@ -53,7 +52,7 @@ const mobileRoutes = [
   {
     path: '/book-court/:courtId',
     exact: true,
-    component: MobileSingleCourtPage,
+    component: SingleCourtPage,
   },
   {
     path: '/auth',

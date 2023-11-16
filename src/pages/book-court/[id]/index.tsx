@@ -1,4 +1,10 @@
-import { IonBackButton, isPlatform } from '@ionic/react';
+import {
+  IonBackButton,
+  IonContent,
+  IonPage,
+  createGesture,
+  isPlatform,
+} from '@ionic/react';
 import SwipeableViews from 'react-swipeable-views';
 import {
   ArrowBackIosNewOutlined,
@@ -7,24 +13,70 @@ import {
 } from '@mui/icons-material';
 import { Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BookTab } from './BookTab';
 import { BookTabMain } from './BookTabMain';
 
 export function SingleCourtPage() {
   const [tabIndex, setTabIndex] = useState<number>(0);
   const isMobile = isPlatform('mobile');
+  const ref = useRef<HTMLElement>(null);
+  const imgRef = useRef<HTMLElement>(null);
 
-  return (
+  useEffect(() => {
+    if (!ref.current || !isMobile) return;
+    const gesture = createGesture({
+      direction: 'y',
+      el: ref.current,
+      threshold: 5,
+      gestureName: 'swipe',
+      onStart: () => {
+        if (!ref.current) return;
+        if (!imgRef.current) return;
+        ref.current.style.transition = 'none';
+        imgRef.current.style.transition = 'none';
+      },
+      onMove: (ev) => {
+        if (!ref.current) return;
+        if (!imgRef.current) return;
+        const delta = Math.max(ev.deltaY, 0);
+        ref.current.style.transform = `translateY(${delta * 0.2}px)`;
+        imgRef.current.style.transform = `scale(${1 + delta * 0.001})`;
+      },
+      onEnd: () => {
+        if (!ref.current) return;
+        if (!imgRef.current) return;
+        ref.current.style.transition =
+          'transform .2s cubic-bezier(0.05, 0.95, 0.96, 0.98)';
+        imgRef.current.style.transition =
+          'transform .2s cubic-bezier(0.05, 0.95, 0.96, 0.98)';
+        ref.current.style.transform = 'none';
+        imgRef.current.style.transform = 'none';
+      },
+    });
+    gesture.enable();
+    return () => gesture.destroy();
+  }, []);
+
+  const renderPage = () => (
     <>
       <Box
         sx={{
-          position: 'relative',
-
           margin: '0 auto',
           width: '100%',
         }}
       >
+        <Box
+          ref={imgRef}
+          sx={{
+            width: '100%',
+            maxHeight: isPlatform('mobile') ? '250px' : '325px',
+            objectFit: 'cover',
+          }}
+          component="img"
+          src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
+        />
+
         {isMobile && (
           <Box
             sx={{
@@ -66,15 +118,7 @@ export function SingleCourtPage() {
           </Box>
         )}
         <Box
-          sx={{
-            width: '100%',
-            maxHeight: isPlatform('mobile') ? '250px' : '325px',
-            objectFit: 'cover',
-          }}
-          component="img"
-          src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
-        />
-        <Box
+          ref={ref}
           sx={{
             position: 'relative',
             zIndex: '998',
@@ -153,4 +197,24 @@ export function SingleCourtPage() {
       </Box>
     </>
   );
+
+  if (isMobile) {
+    return (
+      <IonPage>
+        <IonContent
+          scrollEvents={true}
+          onIonScroll={(e) => {
+            if (!imgRef.current) return;
+            imgRef.current.style.transform = `translateY(${
+              e.detail.scrollTop * 0.3
+            }px)`;
+          }}
+        >
+          {renderPage()}
+        </IonContent>
+      </IonPage>
+    );
+  } else {
+    return renderPage();
+  }
 }
