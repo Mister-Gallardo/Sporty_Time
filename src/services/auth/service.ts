@@ -28,10 +28,21 @@ export async function registerUser(data: IAuthForm) {
 export async function loginUser(data: IAuthForm) {
   const { email, password } = data;
 
-  const res = api.post('/auth/login', {
-    identifier: email,
-    password: password,
-  });
+  const res = api.post('/auth/login', { email, password });
 
   return res;
 }
+
+export const isAuthorized = () => {
+  try {
+    const token = localStorage.getItem('jwtToken');
+    const [, a2] = token?.split('.') || [];
+    const { exp } = JSON.parse(atob(a2));
+    if (exp * 1000 > Date.now()) {
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+};

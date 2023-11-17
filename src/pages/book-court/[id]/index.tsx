@@ -18,7 +18,7 @@ import { BookTab } from './BookTab';
 import { BookTabMain } from './BookTabMain';
 
 export function SingleCourtPage() {
-  const [tabIndex, setTabIndex] = useState<number>(0);
+  const [tabIndex, setTabIndex] = useState<number>(1);
   const isMobile = isPlatform('mobile');
   const ref = useRef<HTMLElement>(null);
   const imgRef = useRef<HTMLElement>(null);
@@ -181,9 +181,6 @@ export function SingleCourtPage() {
           </Tabs>
 
           <SwipeableViews
-            animateHeight={true}
-            animateTransitions={isMobile}
-            disabled={true}
             index={tabIndex}
             onChangeIndex={setTabIndex}
             containerStyle={{

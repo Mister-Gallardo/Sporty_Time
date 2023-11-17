@@ -17,14 +17,9 @@ export default defineConfig({
   assetsInclude: ['**/*.md'],
   server: {
     proxy: {
-      '/uploads': {
-        // target: 'http://localhost:8100',
-        target: 'https://playpadel.lakileki.com',
-        changeOrigin: true,
-      },
       '/api': {
-        // target: 'http://localhost:8100',
-        target: 'https://playpadel.lakileki.com',
+        target: 'http://localhost:10000',
+        // target: 'https://playpadel.lakileki.com',
         changeOrigin: true,
       }
     }

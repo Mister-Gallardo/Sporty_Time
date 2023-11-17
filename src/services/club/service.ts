@@ -1,9 +1,16 @@
-import axios from 'axios';
+import { api } from '../api/service';
 
-export function getClubs() {
-  return axios.get('/clubs');
+export async function getClubs(params: any) {
+  const { data } = await api.get<any[]>('/clubs', { params });
+  return data;
 }
 
-export function getClub(id: number) {
-  return axios.get('/clubs/' + id);
+export async function getClub(id: number, params: any) {
+  const { data } = await api.get('/clubs/' + id, { params });
+  return data;
+}
+
+export async function bookCourt(id: number, params: any) {
+  const { data } = await api.get('/clubs/' + id, { params });
+  return data;
 }

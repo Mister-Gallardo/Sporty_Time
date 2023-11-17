@@ -4,19 +4,27 @@ import { Box, IconButton, Typography } from '@mui/material';
 import { useHistory } from 'react-router';
 
 interface ICourtCardProps {
-  img?: string;
-  title?: string;
-  pricePerHour?: number;
+  club: any;
 }
 
 export function CourtCard(props: ICourtCardProps) {
-  const { img, title, pricePerHour } = props;
+  const { club } = props;
+  const { img, title } = club;
   const history = useHistory();
   const isMobile = isPlatform('mobile');
+  const availableSlotsTimes = Object.keys(club.availableSlots).filter(
+    (time) => club.availableSlots[time].length,
+  );
+  let minPrice = club.courts?.[0]?.price;
+  if (minPrice) {
+    club.courts.forEach((court: any) => {
+      if (court.price < minPrice) minPrice = court.price;
+    });
+  }
 
   return (
     <Box
-      onClick={() => history.push('/book-court/1')}
+      onClick={() => history.push(`/book-court/${club.id}`)}
       sx={{
         width: '100%',
         height: 'max-content',
@@ -68,17 +76,19 @@ export function CourtCard(props: ICourtCardProps) {
           >
             {title}
           </Typography>
-          <Box>
-            <Typography
-              variant="body2"
-              sx={{ color: '#e5e5e5', fontWeight: '500' }}
-            >
-              1 час от
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: '1.15rem' }}>
-              {pricePerHour} AED
-            </Typography>
-          </Box>
+          {minPrice && (
+            <Box>
+              <Typography
+                variant="body2"
+                sx={{ color: '#e5e5e5', fontWeight: '500' }}
+              >
+                1 час от
+              </Typography>
+              <Typography variant="body1" sx={{ fontSize: '1.15rem' }}>
+                {minPrice} RUB
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Box>
       <Box sx={{ padding: '10px 15px' }}>
@@ -94,104 +104,22 @@ export function CourtCard(props: ICourtCardProps) {
             paddingBottom: '10px',
           }}
         >
-          <Box
-            sx={{
-              padding: '7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '60px',
-              height: '35px',
-              border: '1.5px solid #e5e5e5',
-              borderRadius: '5px',
-            }}
-          >
-            10:00
-          </Box>
-          <Box
-            sx={{
-              padding: '7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '60px',
-              height: '35px',
-              border: '1.5px solid #e5e5e5',
-              borderRadius: '5px',
-            }}
-          >
-            12:00
-          </Box>
-          <Box
-            sx={{
-              padding: '7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '60px',
-              height: '35px',
-              border: '1.5px solid #e5e5e5',
-              borderRadius: '5px',
-            }}
-          >
-            14:00
-          </Box>
-          <Box
-            sx={{
-              padding: '7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '60px',
-              height: '35px',
-              border: '1.5px solid #e5e5e5',
-              borderRadius: '5px',
-            }}
-          >
-            16:00
-          </Box>
-          <Box
-            sx={{
-              padding: '7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '60px',
-              height: '35px',
-              border: '1.5px solid #e5e5e5',
-              borderRadius: '5px',
-            }}
-          >
-            17:00
-          </Box>
-          <Box
-            sx={{
-              padding: '7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '60px',
-              height: '35px',
-              border: '1.5px solid #e5e5e5',
-              borderRadius: '5px',
-            }}
-          >
-            18:00
-          </Box>
-          <Box
-            sx={{
-              padding: '7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '60px',
-              height: '35px',
-              border: '1.5px solid #e5e5e5',
-              borderRadius: '5px',
-            }}
-          >
-            20:00
-          </Box>
+          {availableSlotsTimes.map((time) => (
+            <Box
+              sx={{
+                padding: '7px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '60px',
+                height: '35px',
+                border: '1.5px solid #e5e5e5',
+                borderRadius: '5px',
+              }}
+            >
+              {time}
+            </Box>
+          ))}
         </Box>
       </Box>
     </Box>

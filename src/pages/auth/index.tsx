@@ -10,7 +10,7 @@ import { Button } from '../../components/atoms/Button';
 import { useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { IAuthForm } from '../../services/api/interface';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import {
   loginUser,
   registerRequest,
@@ -37,7 +37,8 @@ export function AuthPage(props: IAuthPageProps) {
 
   const history = useHistory();
 
-  const registerRequestMutation = useMutation(registerRequest, {
+  const registerRequestMutation = useMutation({
+    mutationFn: registerRequest,
     onSuccess() {
       setAuthState(LoginStates.REGISTER);
       setError(undefined);
@@ -52,16 +53,15 @@ export function AuthPage(props: IAuthPageProps) {
     },
   });
 
-  const registerUserMutation = useMutation(registerUser, {
+  const registerUserMutation = useMutation({
+    mutationFn: registerUser,
     onSuccess(response) {
       const token = response.data.jwt;
-      const user = response.data.user;
 
-      if (!token || !user) setError('Trouble with finding token or user info');
-
+      if (!token) setError('Trouble with finding token or user info');
       localStorage.setItem('jwtToken', JSON.stringify(token));
-      localStorage.setItem('userInfo', JSON.stringify(user));
-
+      const authEvent = new Event('auth-changed');
+      document.dispatchEvent(authEvent);
       setError(undefined);
       reset({ password: '' });
       setIsOpenToast(true);
@@ -77,17 +77,17 @@ export function AuthPage(props: IAuthPageProps) {
     },
   });
 
-  const loginUserMutation = useMutation(loginUser, {
+  const loginUserMutation = useMutation({
+    mutationFn: loginUser,
     onSuccess(response) {
       const token = response.data.jwt;
-      const user = response.data.user;
 
-      if (!token || !user) setError('Trouble with finding token or user info');
-
+      if (!token) setError('Trouble with finding token or user info');
       localStorage.setItem('jwtToken', JSON.stringify(token));
-      localStorage.setItem('userInfo', JSON.stringify(user));
-
+      const authEvent = new Event('auth-changed');
+      document.dispatchEvent(authEvent);
       setError(undefined);
+      history.push('/');
     },
     onError(e: any) {
       setError(e.response?.data?.error?.message);
@@ -255,9 +255,9 @@ export function AuthPage(props: IAuthPageProps) {
               borderRadius: '35px',
             }}
           >
-            {registerRequestMutation.isLoading ||
-            registerUserMutation.isLoading ||
-            loginUserMutation.isLoading ? (
+            {registerRequestMutation.isPending ||
+            registerUserMutation.isPending ||
+            loginUserMutation.isPending ? (
               <CircularProgress size={25} />
             ) : (
               buttonText

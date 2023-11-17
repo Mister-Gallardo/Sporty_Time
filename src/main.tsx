@@ -4,14 +4,18 @@ import App from './App';
 import './index.css';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from './theme/theme';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
+const queryClient = new QueryClient();
 
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </ThemeProvider>
   </React.StrictMode>,
 );

@@ -1,12 +1,35 @@
-import { IonToggle, isPlatform } from '@ionic/react';
-import {
-  KeyboardArrowUp,
-  NotificationsOutlined,
-  SportsTennis,
-} from '@mui/icons-material';
+import { IonSpinner, IonToggle, isPlatform } from '@ionic/react';
+import { KeyboardArrowUp, SportsTennis } from '@mui/icons-material';
 import { Box, Typography, IconButton } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { getClub } from '../../../services/club/service';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 export function BookTab() {
+  const now = new Date();
+  const dates = Array.from(Array(100)).map(
+    (n, i) =>
+      new Date(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + i),
+      ),
+  );
+  const [selectedDate, setSelectedDate] = useState(dates[0]);
+  const [selectedSlot, setSelectedSlot] = useState('');
+  const selectedDateString = selectedDate.toLocaleDateString('en-ca');
+
+  const { courtId } = useParams<{ courtId: string }>();
+  const { data, isLoading } = useQuery({
+    queryKey: ['club', selectedDate],
+    queryFn: () => getClub(Number(courtId), { gamedate: selectedDateString }),
+  });
+  const selectedSlotCorts = data?.availableSlots?.[selectedSlot] || [];
+
+  useEffect(() => {
+    const [firstSlot] = Object.keys(data?.availableSlots || {});
+    setSelectedSlot(firstSlot);
+  }, [data]);
+
   return (
     <Box
       sx={{
@@ -19,6 +42,7 @@ export function BookTab() {
         <Box sx={{ display: 'flex', gap: '1.5rem' }}>
           <Box
             sx={{
+              flexShrink: 0,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -33,127 +57,15 @@ export function BookTab() {
           >
             <SportsTennis sx={{ fontSize: '1.5rem' }} />
           </Box>
-          <Box sx={{ display: 'flex', gap: '18px' }}>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'column',
-              }}
-            >
-              <Typography>ЧЕТ</Typography>
-              <Box
-                sx={{
-                  background: '#0D2433',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '50%',
-                }}
-              >
-                <Typography sx={{ color: '#fff', padding: '7px 10px' }}>
-                  02
-                </Typography>
+          <Box sx={{ display: 'flex', gap: '18px', overflowX: 'auto' }}>
+            {dates.map((date) => (
+              <Box onClick={() => setSelectedDate(date)}>
+                <CalendarDay
+                  date={date}
+                  selected={selectedDate.toISOString() === date.toISOString()}
+                />
               </Box>
-              <Typography variant="body2">Nov</Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'column',
-              }}
-            >
-              <Typography>ПЯТ</Typography>
-              <Box
-                sx={{
-                  background: '#0D2433',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '50%',
-                }}
-              >
-                <Typography sx={{ color: '#fff', padding: '7px 10px' }}>
-                  03
-                </Typography>
-              </Box>
-              <Typography variant="body2">Nov</Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'column',
-              }}
-            >
-              <Typography>СУБ</Typography>
-              <Box
-                sx={{
-                  background: '#0D2433',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '50%',
-                }}
-              >
-                <Typography sx={{ color: '#fff', padding: '7px 10px' }}>
-                  04
-                </Typography>
-              </Box>
-              <Typography variant="body2">Nov</Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'column',
-              }}
-            >
-              <Typography>ВОС</Typography>
-              <Box
-                sx={{
-                  background: '#0D2433',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '50%',
-                }}
-              >
-                <Typography sx={{ color: '#fff', padding: '7px 10px' }}>
-                  05
-                </Typography>
-              </Box>
-              <Typography variant="body2">Nov</Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'column',
-              }}
-            >
-              <Typography>ПОН</Typography>
-              <Box
-                sx={{
-                  background: '#0D2433',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '50%',
-                }}
-              >
-                <Typography sx={{ color: '#fff', padding: '7px 10px' }}>
-                  06
-                </Typography>
-              </Box>
-              <Typography variant="body2">Nov</Typography>
-            </Box>
+            ))}
           </Box>
         </Box>
         <Box
@@ -185,228 +97,30 @@ export function BookTab() {
             flexWrap: 'wrap',
           }}
         >
-          <Box
-            sx={{
-              background: '#0D2433',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid #0D2433',
-              borderRadius: '5px',
-              color: '#fff',
-            }}
-          >
-            10:00
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid grey',
-              borderRadius: '5px',
-            }}
-          >
-            10:30
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid grey',
-              borderRadius: '5px',
-            }}
-          >
-            11:00
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid grey',
-              borderRadius: '5px',
-            }}
-          >
-            11:30
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid grey',
-              borderRadius: '5px',
-            }}
-          >
-            12:00
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid grey',
-              borderRadius: '5px',
-            }}
-          >
-            12:30
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid grey',
-              borderRadius: '5px',
-            }}
-          >
-            13:00
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid grey',
-              borderRadius: '5px',
-            }}
-          >
-            13:30
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid grey',
-              borderRadius: '5px',
-            }}
-          >
-            14:00
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid grey',
-              borderRadius: '5px',
-            }}
-          >
-            14:30
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              padding: '12px 7px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '55px',
-              border: '1px solid grey',
-              borderRadius: '5px',
-            }}
-          >
-            15:00
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            width: !isPlatform('mobile') ? '85%' : '100%',
-
-            marginTop: '1.25rem',
-            background: '#fff',
-            boxShadow:
-              'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px',
-            borderRadius: '10px',
-          }}
-        >
-          <Box
-            sx={{
-              padding: '10px 20px',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '12px',
-                alignItems: 'center',
-                paddingBottom: '.75rem',
-              }}
-            >
+          {isLoading ? (
+            <Box sx={{ mx: 'auto' }}>
+              <IonSpinner />
+            </Box>
+          ) : (
+            Object.keys(data?.availableSlots).map((slot) => (
               <Box
+                onClick={() => setSelectedSlot(slot)}
                 sx={{
+                  background: selectedSlot === slot ? '#0D2433' : '',
+                  padding: '12px 7px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  opacity: '.8',
-                  width: '35px',
-                  height: '35px',
-                  background: '#F1F4F6',
-                  borderRadius: '50%',
+                  width: '55px',
+                  border: '1px solid #0D2433',
+                  borderRadius: '5px',
+                  color: slot === selectedSlot ? 'white' : 'black',
                 }}
               >
-                <NotificationsOutlined />
+                {slot}
               </Box>
-              <Typography sx={{ fontSize: '.9rem', fontWeight: '600' }}>
-                Приоритетные оповещения
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Typography sx={{ maxWidth: '70%' }}>
-                Configure your alert in one click with your predefined filters
-              </Typography>
-              <IonToggle enableOnOffLabels />
-            </Box>
-            <Typography
-              sx={{
-                fontSize: '.9rem',
-                fontWeight: '700',
-                color: '#3765ea',
-                paddingTop: '.5rem',
-              }}
-            >
-              Настройка оповещений
-            </Typography>
-          </Box>
+            ))
+          )}
         </Box>
         <Box
           sx={{
@@ -465,49 +179,87 @@ export function BookTab() {
             <KeyboardArrowUp sx={{ fontSize: '2rem' }} />
           </IconButton>
         </Box>
-        <Box sx={{ marginTop: '1rem', display: 'flex', gap: '1.25rem' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
+        <Box display="flex" gap={2}>
+          {selectedSlotCorts.map((cort: any) => (
+            <Box sx={{ marginTop: '1rem', display: 'flex', gap: '1.25rem' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'column',
 
-              width: '100%',
-              maxWidth: '125px',
-              padding: '10px 7px',
-              background: '#6E8FFD',
-              borderRadius: '8px',
-              color: '#fff',
-            }}
-          >
-            <Typography sx={{ fontSize: '1.5rem', fontWeight: '600' }}>
-              240 AED
-            </Typography>
-            <Typography>90 мин</Typography>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
-
-              width: '100%',
-              maxWidth: '125px',
-              padding: '10px 7px',
-              background: '#6E8FFD',
-              borderRadius: '8px',
-              color: '#fff',
-            }}
-          >
-            <Typography sx={{ fontSize: '1.5rem', fontWeight: '600' }}>
-              400 AED
-            </Typography>
-            <Typography>120 мин</Typography>
-          </Box>
+                  width: '100%',
+                  maxWidth: '125px',
+                  padding: '10px 7px',
+                  background: '#6E8FFD',
+                  borderRadius: '8px',
+                  color: '#fff',
+                }}
+              >
+                <Typography sx={{ fontSize: '1.5rem', fontWeight: '600' }}>
+                  {cort.price} RUB
+                </Typography>
+                <Typography>90 мин</Typography>
+              </Box>
+            </Box>
+          ))}
         </Box>
       </Box>
     </Box>
   );
 }
+
+export const WEEK_DAYS = ['ВС', 'ПОН', 'ВТ', 'СРД', 'ЧЕТ', 'ПТ', 'СУБ'];
+export const MONTHS = [
+  'Янв',
+  'Фев',
+  'Март',
+  'Апр',
+  'Май',
+  'Июнь',
+  'Июль',
+  'Авг',
+  'Сен',
+  'Окт',
+  'Ноябрь',
+  'Дек',
+];
+
+export interface ICalendarDayProps {
+  date: Date;
+  selected?: boolean;
+}
+export const CalendarDay: React.FC<ICalendarDayProps> = (props) => {
+  const { date, selected } = props;
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+      }}
+    >
+      <Typography>{WEEK_DAYS[date.getUTCDay()]}</Typography>
+      <Box
+        sx={{
+          background: selected ? '#0D2433' : '',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '50%',
+        }}
+      >
+        <Typography
+          fontSize={18}
+          sx={{ color: selected ? 'white' : 'black', padding: '7px 10px' }}
+        >
+          {date.getUTCDate()}
+        </Typography>
+      </Box>
+      <Typography variant="body2">{MONTHS[date.getUTCMonth()]}</Typography>
+    </Box>
+  );
+};
