@@ -40,3 +40,7 @@ ion-header {
 ion-toolbar {
     --border-width: 0 !important
 }
+
+ion-content::part(scroll) {
+    overscroll-behavior-y: none;
+}

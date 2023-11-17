@@ -22,6 +22,7 @@ export function SingleCourtPage() {
   const isMobile = isPlatform('mobile');
   const ref = useRef<HTMLElement>(null);
   const imgRef = useRef<HTMLElement>(null);
+  const canScale = useRef<boolean>(true);
 
   useEffect(() => {
     if (!ref.current || !isMobile) return;
@@ -39,19 +40,21 @@ export function SingleCourtPage() {
       onMove: (ev) => {
         if (!ref.current) return;
         if (!imgRef.current) return;
-        const delta = Math.max(ev.deltaY, 0);
-        ref.current.style.transform = `translateY(${delta * 0.2}px)`;
-        imgRef.current.style.transform = `scale(${1 + delta * 0.001})`;
+        if (!canScale.current) return;
+
+        const delta = Math.log(Math.max(ev.deltaY, 0)) * 50;
+        ref.current.style.transform = `translateY(${delta * 0.5}px)`;
+        imgRef.current.style.scale = String(1 + delta * 0.002);
       },
       onEnd: () => {
         if (!ref.current) return;
         if (!imgRef.current) return;
         ref.current.style.transition =
-          'transform .2s cubic-bezier(0.05, 0.95, 0.96, 0.98)';
+          'transform .2s cubic-bezier(0.2, 0.95, 0.96, 0.98)';
         imgRef.current.style.transition =
-          'transform .2s cubic-bezier(0.05, 0.95, 0.96, 0.98)';
-        ref.current.style.transform = 'none';
-        imgRef.current.style.transform = 'none';
+          'scale .2s cubic-bezier(0.2, 0.95, 0.96, 0.98)';
+        ref.current.style.transform = 'translateY(0)';
+        imgRef.current.style.scale = '1';
       },
     });
     gesture.enable();
@@ -69,14 +72,13 @@ export function SingleCourtPage() {
         <Box
           ref={imgRef}
           sx={{
+            position: 'fixed',
             width: '100%',
-            maxHeight: isPlatform('mobile') ? '250px' : '325px',
-            objectFit: 'cover',
           }}
           component="img"
           src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
         />
-
+        <Box height={300} />
         {isMobile && (
           <Box
             sx={{
@@ -202,11 +204,13 @@ export function SingleCourtPage() {
     return (
       <IonPage>
         <IonContent
+          forceOverscroll={true}
           scrollEvents={true}
           onIonScroll={(e) => {
             if (!imgRef.current) return;
+            canScale.current = e.detail.scrollTop < 10;
             imgRef.current.style.transform = `translateY(${
-              e.detail.scrollTop * 0.3
+              -e.detail.scrollTop * 0.5
             }px)`;
           }}
         >
