@@ -35,7 +35,8 @@
     "react-hook-form": "^7.48.2",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
-    "react-swipeable-views": "^0.14.0"
+    "react-swipeable-views": "^0.14.0",
+    "react-swipeable-views-utils": "^0.14.0"
   },
   "devDependencies": {
     "@capacitor/cli": "5.5.1",
@@ -45,6 +46,7 @@
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/react-swipeable-views": "^0.13.5",
+    "@types/react-swipeable-views-utils": "^0.13.7",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "@vitejs/plugin-legacy": "^4.0.2",

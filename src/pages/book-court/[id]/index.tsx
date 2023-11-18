@@ -11,8 +11,15 @@ import {
   FavoriteBorderOutlined,
   ShareOutlined,
 } from '@mui/icons-material';
-import { Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
-
+import {
+  Box,
+  IconButton,
+  Tab,
+  Tabs,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { autoPlay } from 'react-swipeable-views-utils';
 import { useEffect, useRef, useState } from 'react';
 import { BookTab } from './BookTab';
 import { BookTabMain } from './BookTabMain';
@@ -61,6 +68,15 @@ export function SingleCourtPage() {
     return () => gesture.destroy();
   }, []);
 
+  const theme = useTheme();
+  const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
+
+  const [activeStep, setActiveStep] = useState(0);
+
+  const handleStepChange = (step: number) => {
+    setActiveStep(step);
+  };
+
   const renderPage = () => (
     <>
       <Box
@@ -78,6 +94,31 @@ export function SingleCourtPage() {
           component="img"
           src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
         />
+        {/* <AutoPlaySwipeableViews
+          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+          index={activeStep}
+          onChangeIndex={handleStepChange}
+          enableMouseEvents
+        >
+          <Box
+            ref={imgRef}
+            sx={{
+              position: 'fixed',
+              width: '100%',
+            }}
+            component="img"
+            src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
+          />
+          <Box
+            ref={imgRef}
+            sx={{
+              position: 'fixed',
+              width: '100%',
+            }}
+            component="img"
+            src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
+          />
+        </AutoPlaySwipeableViews> */}
         <Box height={300} />
         {isMobile && (
           <Box
@@ -181,6 +222,10 @@ export function SingleCourtPage() {
           </Tabs>
 
           <SwipeableViews
+            animateHeight
+            action={(actions) => {
+              actions.updateHeight();
+            }} // Должен обновлять высоту
             index={tabIndex}
             onChangeIndex={setTabIndex}
             containerStyle={{

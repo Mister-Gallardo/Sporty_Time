@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { isPlatform, setupIonicReact } from '@ionic/react';
 import React from 'react';
 import MobilePlayPage from './pages/play/mobile';
@@ -6,9 +6,9 @@ import { BookCourt } from './pages/book-court';
 import { SingleCourtPage } from './pages/book-court/[id]';
 import { MobileBookCourt } from './pages/book-court/index.mobile';
 import { DesktopHomePage } from './pages/play/desktop';
-import { AuthPage } from './pages/auth';
 import { MobileAuthPage } from './pages/auth/index.mobile';
 import { useIsAuthorized } from './services/api/hooks';
+import { AuthPage } from './pages/auth';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
@@ -30,11 +30,6 @@ const desktopRoutes = [
     path: '/book-court/:courtId',
     exact: true,
     component: SingleCourtPage,
-  },
-  {
-    path: '/auth',
-    exact: true,
-    component: AuthPage,
   },
 ] as React.ComponentProps<typeof Route>[];
 
@@ -72,19 +67,25 @@ const App: React.FC = () => {
   return (
     <>
       {isMobile ? (
-        <MobileLayout>
-          {mobileRoutes.map((route) => (
-            <Route {...route} />
-          ))}
-        </MobileLayout>
-      ) : (
-        <DesktopLayout>
-          <Switch>
-            {desktopRoutes.map((route) => (
+        <BrowserRouter>
+          <Route path="/auth" component={MobileAuthPage} exact />
+          <MobileLayout>
+            {mobileRoutes.map((route) => (
               <Route {...route} />
             ))}
-          </Switch>
-        </DesktopLayout>
+          </MobileLayout>
+        </BrowserRouter>
+      ) : (
+        <BrowserRouter>
+          <Route component={AuthPage} path="/auth" exact />
+          <DesktopLayout>
+            <Switch>
+              {desktopRoutes.map((route) => (
+                <Route {...route} />
+              ))}
+            </Switch>
+          </DesktopLayout>
+        </BrowserRouter>
       )}
     </>
   );

@@ -6,7 +6,8 @@ import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import { MatchBlock } from '../../../../components/molecules/MatchBlock';
 import { IonNavLink } from '@ionic/react';
 import { BookCourt } from '../../../book-court';
-
+import booking from '../../../../images/home/booking-bg.png';
+import matchbg from '../../../../images/home/match-bg.png';
 function PerfectMatch() {
   return (
     <Box>
@@ -16,7 +17,7 @@ function PerfectMatch() {
       >
         <IonNavLink routerDirection="forward" component={() => <BookCourt />}>
           <MatchBlock
-            img="https://i.ibb.co/s36CQNQ/booking-bg.png"
+            img={booking}
             title="Забронируйте корт"
             description="Если вы уже знаете, с кем играете"
             icon={
@@ -26,7 +27,7 @@ function PerfectMatch() {
         </IonNavLink>
 
         <MatchBlock
-          img="https://i.ibb.co/GshvV8h/match-bg.png"
+          img={matchbg}
           title="Сыграйте матч"
           description="Если вы ищете игроков своего уровня"
           icon={

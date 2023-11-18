@@ -1,10 +1,10 @@
-import axios from 'axios';
 import { Match } from './interface';
+import { api } from '../api/service';
 
 export function getMyMatches() {
-  return axios.get<Match>('/matches/my');
+  return api.get<Match>('/matches/my');
 }
 
 export function createMatche(data: any) {
-  return axios.post('/matches', data);
+  return api.post('/matches', data);
 }

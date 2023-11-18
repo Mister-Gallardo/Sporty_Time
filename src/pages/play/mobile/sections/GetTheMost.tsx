@@ -1,5 +1,12 @@
 import { Box, IconButton, Typography } from '@mui/material';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import createMatch from '../../../../images/home/img-en-play-createamatcheasytutorial.png';
+import addPartner from '../../../../images/home/img-en-play-addmypartner.png';
+import joinMatch from '../../../../images/home/img-en-play-joinamatchwithothers.png';
+import makeReservation from '../../../../images/home/img-en-play-makeacourtreservation.png';
+import premium from '../../../../images/home/img-en-play-premiumexperiences.png';
+import splitPayment from '../../../../images/home/img-en-play-splitpayment.png';
+import upload from '../../../../images/home/img-en-play-uploadresults.png';
 
 function GetTheMost() {
   return (
@@ -22,7 +29,6 @@ function GetTheMost() {
             overflowX: 'auto',
             display: '-webkit-box',
             paddingBottom: '1rem',
-            gap: '10px',
             scrollSnapType: 'x mandatory',
           }}
         >
@@ -49,7 +55,7 @@ function GetTheMost() {
                 borderRadius: '10px',
               }}
               component="img"
-              src="https://i.ibb.co/G5FbB6B/img-en-play-createamatcheasytutorial.png"
+              src={createMatch}
             />
             <Typography
               sx={{
@@ -80,6 +86,7 @@ function GetTheMost() {
               display: 'flex',
               flexDirection: 'column',
               gap: '10px',
+              marginInline: '10px',
               width: '100%',
               maxWidth: '120px',
               borderRadius: '10px',
@@ -106,7 +113,7 @@ function GetTheMost() {
                   borderRadius: '10px',
                 }}
                 component="img"
-                src="https://i.ibb.co/L1FMNhK/img-en-play-joinamatchwithothers.png"
+                src={joinMatch}
               />
               <Typography
                 sx={{
@@ -155,7 +162,7 @@ function GetTheMost() {
                   borderRadius: '10px',
                 }}
                 component="img"
-                src="https://i.ibb.co/xzdY5WQ/img-en-play-addmypartner.png"
+                src={addPartner}
               />
               <Typography
                 sx={{
@@ -207,7 +214,7 @@ function GetTheMost() {
                 borderRadius: '10px',
               }}
               component="img"
-              src="https://i.ibb.co/Y3GMdkZ/img-en-play-makeacourtreservation.png"
+              src={makeReservation}
             />
             <Typography
               sx={{
@@ -238,6 +245,7 @@ function GetTheMost() {
               display: 'flex',
               flexDirection: 'column',
               gap: '10px',
+              marginInline: '10px',
               width: '100%',
               maxWidth: '120px',
               borderRadius: '10px',
@@ -264,7 +272,7 @@ function GetTheMost() {
                   borderRadius: '10px',
                 }}
                 component="img"
-                src="https://i.ibb.co/p47Mnm7/img-en-play-splitpayment.png"
+                src={splitPayment}
               />
               <Typography
                 sx={{
@@ -313,7 +321,7 @@ function GetTheMost() {
                   borderRadius: '10px',
                 }}
                 component="img"
-                src="https://i.ibb.co/ftpSCj6/img-en-play-premiumexperiences.png"
+                src={premium}
               />
               <Typography
                 sx={{
@@ -365,7 +373,7 @@ function GetTheMost() {
                 borderRadius: '10px',
               }}
               component="img"
-              src="https://i.ibb.co/nmck09T/img-en-play-uploadresults.png"
+              src={upload}
             />
             <Typography
               sx={{
