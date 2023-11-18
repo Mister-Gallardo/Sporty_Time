@@ -222,10 +222,9 @@ export function SingleCourtPage() {
           </Tabs>
 
           <SwipeableViews
-            animateHeight
             action={(actions) => {
               actions.updateHeight();
-            }} // Должен обновлять высоту
+            }}
             index={tabIndex}
             onChangeIndex={setTabIndex}
             containerStyle={{
