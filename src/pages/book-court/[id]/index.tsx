@@ -24,6 +24,8 @@ import { useEffect, useRef, useState } from 'react';
 import { BookTab } from './BookTab';
 import { BookTabMain } from './BookTabMain';
 
+const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
+
 export function SingleCourtPage() {
   const [tabIndex, setTabIndex] = useState<number>(1);
   const isMobile = isPlatform('mobile');
@@ -47,11 +49,16 @@ export function SingleCourtPage() {
       onMove: (ev) => {
         if (!ref.current) return;
         if (!imgRef.current) return;
-        if (!canScale.current) return;
+        if (!canScale.current) {
+          imgRef.current.style.scale = String(1);
+          return;
+        }
 
-        const delta = Math.log(Math.max(ev.deltaY, 0)) * 50;
+        const delta = Math.log(Math.max(ev.deltaY, 0)) * 10;
         ref.current.style.transform = `translateY(${delta * 0.5}px)`;
-        imgRef.current.style.scale = String(1 + delta * 0.002);
+        imgRef.current.style.scale = String(
+          Math.max(+imgRef.current.style.scale + ev.velocityY * 0.01, 1),
+        );
       },
       onEnd: () => {
         if (!ref.current) return;
@@ -69,7 +76,6 @@ export function SingleCourtPage() {
   }, []);
 
   const theme = useTheme();
-  const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -85,41 +91,29 @@ export function SingleCourtPage() {
           width: '100%',
         }}
       >
-        <Box
-          ref={imgRef}
-          sx={{
-            position: 'fixed',
-            width: '100%',
-          }}
-          component="img"
-          src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
-        />
-        {/* <AutoPlaySwipeableViews
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={activeStep}
-          onChangeIndex={handleStepChange}
-          enableMouseEvents
-        >
-          <Box
-            ref={imgRef}
-            sx={{
-              position: 'fixed',
-              width: '100%',
-            }}
-            component="img"
-            src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
-          />
-          <Box
-            ref={imgRef}
-            sx={{
-              position: 'fixed',
-              width: '100%',
-            }}
-            component="img"
-            src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
-          />
-        </AutoPlaySwipeableViews> */}
-        <Box height={300} />
+        <Box height={300} ref={imgRef} maxWidth="100%">
+          <AutoPlaySwipeableViews
+            index={activeStep}
+            onChangeIndex={handleStepChange}
+            axis="x"
+            enableMouseEvents
+          >
+            <Box
+              sx={{ objectFit: 'cover' }}
+              height={300}
+              width="100%"
+              component="img"
+              src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
+            />
+            <Box
+              sx={{ objectFit: 'cover' }}
+              height={300}
+              width="100%"
+              component="img"
+              src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
+            />
+          </AutoPlaySwipeableViews>
+        </Box>
         {isMobile && (
           <Box
             sx={{
@@ -221,21 +215,29 @@ export function SingleCourtPage() {
             />
           </Tabs>
 
-          <SwipeableViews
-            action={(actions) => {
-              actions.updateHeight();
-            }}
-            index={tabIndex}
-            onChangeIndex={setTabIndex}
-            containerStyle={{
-              transition: isMobile
-                ? 'transform 0.35s cubic-bezier(0.15, 0.3, 0.25, 1) 0s'
-                : 'none',
+          <Box
+            sx={{
+              '.react-swipeable-view-container > div[aria-hidden="true"]': {
+                height: '68vh',
+              },
             }}
           >
-            <BookTabMain />
-            <BookTab />
-          </SwipeableViews>
+            <SwipeableViews
+              action={(actions) => {
+                actions.updateHeight();
+              }}
+              index={tabIndex}
+              onChangeIndex={setTabIndex}
+              containerStyle={{
+                transition: isMobile
+                  ? 'transform 0.35s cubic-bezier(0.15, 0.3, 0.25, 1) 0s'
+                  : 'none',
+              }}
+            >
+              <BookTabMain />
+              <BookTab />
+            </SwipeableViews>
+          </Box>
         </Box>
       </Box>
     </>
@@ -251,7 +253,7 @@ export function SingleCourtPage() {
             if (!imgRef.current) return;
             canScale.current = e.detail.scrollTop < 10;
             imgRef.current.style.transform = `translateY(${
-              -e.detail.scrollTop * 0.5
+              e.detail.scrollTop * 0.5
             }px)`;
           }}
         >

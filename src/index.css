@@ -27,11 +27,3 @@ h6 {
   padding: 0;
   margin: 0;
 }
-
-.react-swipeable-view-container > div[aria-hidden="false"] {
-  height: 100%;
-}
-
-.react-swipeable-view-container > div[aria-hidden="true"] {
-  height: 0;
-}

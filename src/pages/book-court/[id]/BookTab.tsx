@@ -60,6 +60,7 @@ export function BookTab() {
         padding: '10px 17px',
         background: '#f4f4f4',
         paddingBlock: '1.25rem',
+        minHeight: isPlatform('desktop') ? '100vh' : '',
       }}
     >
       <Box sx={{ maxWidth: '1000px', margin: '0 auto' }}>
@@ -94,9 +95,10 @@ export function BookTab() {
         </Box>
         <Box
           sx={{
-            width: !isPlatform('mobile') ? '85%' : '100%',
+            width: '100%',
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: isPlatform('mobile') ? 'space-between' : '',
+            gap: 2,
             alignItems: 'center',
             paddingBlock: '.5rem',
           }}
@@ -156,7 +158,7 @@ export function BookTab() {
             <Box
               sx={{
                 marginTop: '1rem',
-                width: !isPlatform('mobile') ? '85%' : '100%',
+                width: '100%',
               }}
             >
               <Typography
@@ -173,11 +175,11 @@ export function BookTab() {
             </Box>
             <Box
               sx={{
-                width: !isPlatform('mobile') ? '85%' : '100%',
-
+                width: '100%',
                 marginTop: '1rem',
                 display: 'flex',
-                justifyContent: 'space-between',
+                justifyContent: isPlatform('mobile') ? 'space-between' : '',
+                gap: 2,
                 alignItems: 'center',
               }}
             >
@@ -205,7 +207,7 @@ export function BookTab() {
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
                       sx={{
-                        width: !isPlatform('mobile') ? '85%' : '100%',
+                        width: '100%',
 
                         display: 'flex',
                         alignItems: 'center',
