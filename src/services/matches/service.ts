@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { Match } from './interface';
 
 export function getMyMatches() {
-  return axios.get('/matches/my');
+  return axios.get<Match>('/matches/my');
 }
 
 export function createMatche(data: any) {

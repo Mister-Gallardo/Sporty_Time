@@ -2,25 +2,17 @@ import { isPlatform } from '@ionic/react';
 import { FavoriteBorderOutlined } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
 import { useHistory } from 'react-router';
+import { Club } from '../../services/club/interface';
 
-interface ICourtCardProps {
-  club: any;
+interface IClubCardProps {
+  club: Club;
 }
 
-export function CourtCard(props: ICourtCardProps) {
+export function ClubCard(props: IClubCardProps) {
   const { club } = props;
   const { img, title } = club;
   const history = useHistory();
   const isMobile = isPlatform('mobile');
-  const availableSlotsTimes = Object.keys(club.availableSlots).filter(
-    (time) => club.availableSlots[time].length,
-  );
-  let minPrice = club.courts?.[0]?.price;
-  if (minPrice) {
-    club.courts.forEach((court: any) => {
-      if (court.price < minPrice) minPrice = court.price;
-    });
-  }
 
   return (
     <Box
@@ -76,7 +68,7 @@ export function CourtCard(props: ICourtCardProps) {
           >
             {title}
           </Typography>
-          {minPrice && (
+          {club.minPrice && (
             <Box>
               <Typography
                 variant="body2"
@@ -85,7 +77,7 @@ export function CourtCard(props: ICourtCardProps) {
                 1 час от
               </Typography>
               <Typography variant="body1" sx={{ fontSize: '1.15rem' }}>
-                {minPrice} RUB
+                {club.minPrice} RUB
               </Typography>
             </Box>
           )}
@@ -104,7 +96,7 @@ export function CourtCard(props: ICourtCardProps) {
             paddingBottom: '10px',
           }}
         >
-          {availableSlotsTimes.map((time) => (
+          {club.availableTimes?.map((time) => (
             <Box
               sx={{
                 padding: '7px',

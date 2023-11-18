@@ -1,5 +1,6 @@
 import axios from 'axios';
+import { User } from './interface';
 
 export function getMe() {
-  return axios.get('/users/me');
+  return axios.get<User>('/users/me');
 }

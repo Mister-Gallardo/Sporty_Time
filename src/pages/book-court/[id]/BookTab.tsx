@@ -1,12 +1,21 @@
 import { IonSpinner, IonToggle, isPlatform } from '@ionic/react';
-import { KeyboardArrowUp, SportsTennis } from '@mui/icons-material';
-import { Box, Typography, IconButton } from '@mui/material';
+import { SportsTennis } from '@mui/icons-material';
+import {
+  Box,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getClub } from '../../../services/club/service';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { CalendarDay } from '../../../components/molecules/CalendarDay';
 
 export function BookTab() {
+  const { courtId } = useParams<{ courtId: string }>();
   const now = new Date();
   const dates = Array.from(Array(100)).map(
     (n, i) =>
@@ -16,14 +25,18 @@ export function BookTab() {
   );
   const [selectedDate, setSelectedDate] = useState(dates[0]);
   const [selectedSlot, setSelectedSlot] = useState('');
+  const [onlyAvailable, setOnlyAvailable] = useState(true);
   const selectedDateString = selectedDate.toLocaleDateString('en-ca');
 
-  const { courtId } = useParams<{ courtId: string }>();
   const { data, isLoading } = useQuery({
     queryKey: ['club', selectedDate],
     queryFn: () => getClub(Number(courtId), { gamedate: selectedDateString }),
   });
-  const selectedSlotCorts = data?.availableSlots?.[selectedSlot] || [];
+  const selectedSlotCourts = data?.availableSlots?.[selectedSlot];
+  const times = data?.availableSlots && Object.keys(data.availableSlots);
+  const filteredTimes = onlyAvailable
+    ? times?.filter((time) => !!data?.availableSlots?.[time]?.available?.length)
+    : times;
 
   useEffect(() => {
     const [firstSlot] = Object.keys(data?.availableSlots || {});
@@ -102,10 +115,13 @@ export function BookTab() {
               <IonSpinner />
             </Box>
           ) : (
-            Object.keys(data?.availableSlots).map((slot) => (
+            filteredTimes?.map((slot) => (
               <Box
                 onClick={() => setSelectedSlot(slot)}
                 sx={{
+                  opacity: data?.availableSlots?.[slot]?.available?.length
+                    ? 1
+                    : 0.5,
                   background: selectedSlot === slot ? '#0D2433' : '',
                   padding: '12px 7px',
                   display: 'flex',
@@ -153,113 +169,67 @@ export function BookTab() {
           <Typography variant="body1">
             Показывать только доступные корты
           </Typography>
-          <IonToggle enableOnOffLabels />
+          <IonToggle
+            enableOnOffLabels
+            defaultChecked
+            onChange={(e) => setOnlyAvailable(e.currentTarget.checked)}
+          />
         </Box>
-        <Box
-          sx={{
-            width: !isPlatform('mobile') ? '85%' : '100%',
-
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <Box>
-            <Typography
-              variant="body1"
-              sx={{ fontSize: '.95rem', fontWeight: '600' }}
-            >
-              Padel 1
-            </Typography>
-            <Typography variant="body2" sx={{ opacity: '.7' }}>
-              Outdoor | Crystal | Double
-            </Typography>
-          </Box>
-          <IconButton sx={{ marginTop: '.5rem' }}>
-            <KeyboardArrowUp sx={{ fontSize: '2rem' }} />
-          </IconButton>
-        </Box>
-        <Box display="flex" gap={2}>
-          {selectedSlotCorts.map((cort: any) => (
-            <Box sx={{ marginTop: '1rem', display: 'flex', gap: '1.25rem' }}>
-              <Box
+        <Box mt={2}>
+          {selectedSlotCourts?.available?.map((cort) => (
+            <Accordion elevation={0} sx={{ background: 'none' }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
                 sx={{
+                  width: !isPlatform('mobile') ? '85%' : '100%',
+
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-
-                  width: '100%',
-                  maxWidth: '125px',
-                  padding: '10px 7px',
-                  background: '#6E8FFD',
-                  borderRadius: '8px',
-                  color: '#fff',
+                  justifyContent: 'space-between',
                 }}
               >
-                <Typography sx={{ fontSize: '1.5rem', fontWeight: '600' }}>
-                  {cort.price} RUB
-                </Typography>
-                <Typography>90 мин</Typography>
-              </Box>
-            </Box>
+                <Box>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontSize: '.95rem', fontWeight: '600' }}
+                  >
+                    {cort.sport}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: '.7' }}>
+                    {cort.tags.map((tag) => tag.title).join(' ')}
+                  </Typography>
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box
+                  sx={{ display: 'flex', marginTop: '1rem', gap: '1.25rem' }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+
+                      width: '100%',
+                      maxWidth: '125px',
+                      padding: '10px 7px',
+                      background: '#6E8FFD',
+                      borderRadius: '8px',
+                      color: '#fff',
+                    }}
+                  >
+                    <Typography sx={{ fontSize: '1.5rem', fontWeight: '600' }}>
+                      {cort.price} RUB
+                    </Typography>
+                    <Typography>90 мин</Typography>
+                  </Box>
+                </Box>
+              </AccordionDetails>
+            </Accordion>
           ))}
         </Box>
       </Box>
     </Box>
   );
 }
-
-export const WEEK_DAYS = ['ВС', 'ПОН', 'ВТ', 'СРД', 'ЧЕТ', 'ПТ', 'СУБ'];
-export const MONTHS = [
-  'Янв',
-  'Фев',
-  'Март',
-  'Апр',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Авг',
-  'Сен',
-  'Окт',
-  'Ноябрь',
-  'Дек',
-];
-
-export interface ICalendarDayProps {
-  date: Date;
-  selected?: boolean;
-}
-export const CalendarDay: React.FC<ICalendarDayProps> = (props) => {
-  const { date, selected } = props;
-
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-      }}
-    >
-      <Typography>{WEEK_DAYS[date.getUTCDay()]}</Typography>
-      <Box
-        sx={{
-          background: selected ? '#0D2433' : '',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: '50%',
-        }}
-      >
-        <Typography
-          fontSize={18}
-          sx={{ color: selected ? 'white' : 'black', padding: '7px 10px' }}
-        >
-          {date.getUTCDate()}
-        </Typography>
-      </Box>
-      <Typography variant="body2">{MONTHS[date.getUTCMonth()]}</Typography>
-    </Box>
-  );
-};

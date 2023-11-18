@@ -1,6 +1,6 @@
 import { isPlatform } from '@ionic/react';
 import { Box } from '@mui/material';
-import { CourtCard } from '../../components/molecules/CourtCard';
+import { ClubCard } from '../../components/molecules/CourtCard';
 import { getClubs } from '../../services/club/service';
 import { useQuery } from '@tanstack/react-query';
 
@@ -22,7 +22,7 @@ export function BookCourt() {
         }}
       >
         {data?.map((club) => (
-          <CourtCard club={club} />
+          <ClubCard club={club} />
         ))}
       </Box>
     </>

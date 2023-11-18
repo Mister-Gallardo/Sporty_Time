@@ -1,16 +1,17 @@
 import { api } from '../api/service';
+import { Club } from './interface';
 
 export async function getClubs(params: any) {
-  const { data } = await api.get<any[]>('/clubs', { params });
+  const { data } = await api.get<Club[]>('/clubs', { params });
   return data;
 }
 
 export async function getClub(id: number, params: any) {
-  const { data } = await api.get('/clubs/' + id, { params });
+  const { data } = await api.get<Club>('/clubs/' + id, { params });
   return data;
 }
 
 export async function bookCourt(id: number, params: any) {
-  const { data } = await api.get('/clubs/' + id, { params });
+  const { data } = await api.post('/clubs/' + id, { params });
   return data;
 }
