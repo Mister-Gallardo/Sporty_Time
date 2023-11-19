@@ -11,14 +11,7 @@ import {
   FavoriteBorderOutlined,
   ShareOutlined,
 } from '@mui/icons-material';
-import {
-  Box,
-  IconButton,
-  Tab,
-  Tabs,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
 import { autoPlay } from 'react-swipeable-views-utils';
 import { useEffect, useRef, useState } from 'react';
 import { BookTab } from './BookTab';
@@ -26,13 +19,14 @@ import { BookTabMain } from './BookTabMain';
 import React from 'react';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
-
 export function SingleCourtPage() {
   const [tabIndex, setTabIndex] = useState<number>(1);
   const isMobile = isPlatform('mobile');
   const ref = useRef<HTMLElement>(null);
   const imgRef = useRef<HTMLElement>(null);
   const canScale = useRef<boolean>(true);
+  const translateDelta = useRef(0);
+  const scaleDelta = useRef(0);
 
   useEffect(() => {
     if (!ref.current || !isMobile) return;
@@ -46,6 +40,8 @@ export function SingleCourtPage() {
         if (!imgRef.current) return;
         ref.current.style.transition = 'none';
         imgRef.current.style.transition = 'none';
+        translateDelta.current = 0;
+        scaleDelta.current = 0;
       },
       onMove: (ev) => {
         if (!ref.current) return;
@@ -55,11 +51,17 @@ export function SingleCourtPage() {
           return;
         }
 
-        const delta = Math.log(Math.max(ev.deltaY, 0)) * 10;
-        ref.current.style.transform = `translateY(${delta * 0.5}px)`;
-        imgRef.current.style.scale = String(
-          Math.max(+imgRef.current.style.scale + ev.velocityY * 0.01, 1),
+        translateDelta.current = Math.min(
+          translateDelta.current + ev.velocityY * 10,
+          90,
         );
+        scaleDelta.current = Math.max(
+          scaleDelta.current + ev.velocityY * 0.01,
+          1,
+        );
+
+        ref.current.style.transform = `translateY(${translateDelta.current}px)`;
+        imgRef.current.style.scale = String(scaleDelta.current);
       },
       onEnd: () => {
         if (!ref.current) return;
@@ -76,10 +78,7 @@ export function SingleCourtPage() {
     return () => gesture.destroy();
   }, []);
 
-  const theme = useTheme();
-
   const [activeStep, setActiveStep] = useState(0);
-
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
@@ -92,7 +91,7 @@ export function SingleCourtPage() {
           width: '100%',
         }}
       >
-        <Box height={300} ref={imgRef} maxWidth="100%">
+        <Box height={250} ref={imgRef} maxWidth="100%">
           <AutoPlaySwipeableViews
             index={activeStep}
             onChangeIndex={handleStepChange}
@@ -235,12 +234,8 @@ export function SingleCourtPage() {
                   : 'none',
               }}
             >
-              <MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain>
-                <BookTabMain />
-              </MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain>
-              <MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain>
-                <BookTab />
-              </MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain>
+              <BookTabMain />
+              <BookTab />
               <Box></Box>
             </SwipeableViews>
           </Box>
@@ -272,7 +267,7 @@ export function SingleCourtPage() {
   }
 }
 
-class MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain extends React.Component {
+export class MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain extends React.Component {
   container = React.createRef<HTMLDivElement>();
 
   componentDidMount() {
@@ -317,6 +312,10 @@ class MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain extends 
 
   render() {
     const { children } = this.props as any;
-    return <div ref={this.container}>{children}</div>;
+    return (
+      <div ref={this.container} style={{ overflow: 'hidden' }}>
+        {children}
+      </div>
+    );
   }
 }

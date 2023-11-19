@@ -18,6 +18,7 @@ import { useParams } from 'react-router-dom';
 import { CalendarDay } from '../../../components/molecules/CalendarDay';
 import { createMatch } from '../../../services/matches/service';
 import { CourtAccordion } from '../../../components/molecules/CourtAccordion';
+import { MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain } from '.';
 
 export function BookTab() {
   const { courtId } = useParams<{ courtId: string }>();
@@ -102,16 +103,18 @@ export function BookTab() {
           >
             <SportsTennis sx={{ fontSize: '1.5rem' }} />
           </Box>
-          <Box sx={{ display: 'flex', gap: '18px', overflowX: 'scroll' }}>
-            {dates.map((date) => (
-              <Box onClick={() => setSelectedDate(date)}>
-                <CalendarDay
-                  date={date}
-                  selected={selectedDate.toISOString() === date.toISOString()}
-                />
-              </Box>
-            ))}
-          </Box>
+          <MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain>
+            <Box sx={{ display: 'flex', gap: '18px', overflowX: 'scroll' }}>
+              {dates.map((date) => (
+                <Box onClick={() => setSelectedDate(date)}>
+                  <CalendarDay
+                    date={date}
+                    selected={selectedDate.toISOString() === date.toISOString()}
+                  />
+                </Box>
+              ))}
+            </Box>
+          </MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain>
         </Box>
         <Box
           sx={{

@@ -28,7 +28,7 @@ api.interceptors.response.use(
         localStorage.removeItem('jwtToken');
       }
       if (!isAuthorized()) {
-        // window.open('/auth', '_self');
+        window.open('/auth', '_self');
       }
     } else if (errorMessage) {
       console.log(errorMessage, {
