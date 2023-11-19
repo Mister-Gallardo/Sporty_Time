@@ -7,7 +7,6 @@ import { SingleCourtPage } from './pages/book-court/[id]';
 import { MobileBookCourt } from './pages/book-court/index.mobile';
 import { DesktopHomePage } from './pages/play/desktop';
 import { MobileAuthPage } from './pages/auth/index.mobile';
-import { useIsAuthorized } from './services/api/hooks';
 import { AuthPage } from './pages/auth';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
@@ -58,11 +57,6 @@ const mobileRoutes = [
 
 const App: React.FC = () => {
   const isMobile = isPlatform('mobile');
-
-  const isAuthorized = useIsAuthorized();
-  if (!isAuthorized && location.pathname !== '/auth') {
-    window.open('/auth', '_self');
-  }
 
   return (
     <>

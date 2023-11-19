@@ -1,6 +1,6 @@
 import { IonSpinner, isPlatform } from '@ionic/react';
 import { Box, Stack } from '@mui/material';
-import { ClubCard } from '../../components/molecules/CourtCard';
+import { ClubCard } from '../../components/molecules/ClubCard';
 import { getClubs } from '../../services/club/service';
 import { useQuery } from '@tanstack/react-query';
 
@@ -29,6 +29,8 @@ export function BookCourt() {
           gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))',
           marginTop: '.5rem',
           gap: '1rem',
+          maxWidth: 1240,
+          mx: 'auto',
         }}
       >
         {data?.map((club) => (

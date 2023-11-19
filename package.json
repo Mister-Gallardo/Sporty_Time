@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
-    "lint": "eslint"
+    "lint": "eslint",
+    "docker:build": "npm run build && docker build -t registry.gitlab.com/lakileki/playtomic/frontend --platform linux/amd64 .",
+    "docker:push": "docker push registry.gitlab.com/lakileki/playtomic/frontend"
   },
   "dependencies": {
     "@capacitor/app": "5.0.6",

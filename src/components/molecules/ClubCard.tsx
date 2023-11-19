@@ -19,10 +19,11 @@ export function ClubCard(props: IClubCardProps) {
       onClick={() => history.push(`/book-court/${club.id}`)}
       sx={{
         width: '100%',
-        height: 'max-content',
         background: '#fff',
         boxShadow:
           'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px',
+        minHeight: 300,
+        paddingBottom: 3,
       }}
     >
       <Box
