@@ -43,6 +43,8 @@ export interface Court {
 
   slots: Slot[];
 
+  slotId: number;
+
   tags: Tag[];
 
   createdAt: Date;

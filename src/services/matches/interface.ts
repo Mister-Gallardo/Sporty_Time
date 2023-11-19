@@ -26,3 +26,8 @@ export interface MatchBooking {
 
   updatedAt: Date;
 }
+
+export interface CreateMatchDTO {
+  slotId: number;
+  selectedDate: Date;
+}

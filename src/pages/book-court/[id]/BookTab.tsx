@@ -1,20 +1,22 @@
-import { IonSpinner, IonToggle, isPlatform } from '@ionic/react';
+import { IonSpinner, IonToast, IonToggle, isPlatform } from '@ionic/react';
 import { SportsTennis } from '@mui/icons-material';
 import {
   Box,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Divider,
   Stack,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Button,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getClub } from '../../../services/club/service';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { CalendarDay } from '../../../components/molecules/CalendarDay';
+import { createMatch } from '../../../services/matches/service';
+import { CourtAccordion } from '../../../components/molecules/CourtAccordion';
 
 export function BookTab() {
   const { courtId } = useParams<{ courtId: string }>();
@@ -29,20 +31,37 @@ export function BookTab() {
   const [selectedSlot, setSelectedSlot] = useState('');
   const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(true);
   const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(true);
+  const [slotId, setSlotId] = useState<number>(0);
+
+  const [openSuccessBookToast, setOpenSuccessBookToast] =
+    useState<boolean>(false);
+
   const selectedDateString = selectedDate.toLocaleDateString('en-ca');
 
-  const { data, isLoading } = useQuery({
+  const {
+    data,
+    isLoading,
+    refetch: refetchClubs,
+  } = useQuery({
     queryKey: ['club', selectedDate],
     queryFn: () => getClub(Number(courtId), { gamedate: selectedDateString }),
   });
-  console.log(onlyAvailableCourts);
+
+  const createMatchMutation = useMutation({
+    mutationFn: createMatch,
+    onSuccess() {
+      refetchClubs();
+      setOpenSuccessBookToast(true);
+    },
+    onError(e: any) {
+      console.log(e, 'ERROR');
+    },
+  });
+
   const selectedSlotAvailableCourts =
     data?.availableSlots?.[selectedSlot]?.available || [];
   const selectedSlotBookedCourts =
     data?.availableSlots?.[selectedSlot]?.booked || [];
-  const selectedSlotCourts = onlyAvailableCourts
-    ? selectedSlotAvailableCourts
-    : [...selectedSlotAvailableCourts, ...selectedSlotBookedCourts];
 
   const times = data?.availableSlots && Object.keys(data.availableSlots);
   const filteredTimes = onlyAvailableSlots
@@ -193,79 +212,64 @@ export function BookTab() {
               />
             </Box>
             <Box mt={2}>
-              {selectedSlotCourts?.map((cort, i) => (
+              {selectedSlotAvailableCourts?.map((court, i) => (
                 <>
-                  <Accordion
-                    elevation={0}
-                    sx={{
-                      background: 'none',
-                      '&:before': {
-                        display: 'none',
-                      },
-                    }}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      sx={{
-                        width: '100%',
-
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          variant="body1"
-                          sx={{ fontSize: '.95rem', fontWeight: '600' }}
-                        >
-                          {cort.sport}
-                        </Typography>
-                        <Typography variant="body2" sx={{ opacity: '.7' }}>
-                          {cort.tags.map((tag) => tag.title).join(' ')}
-                        </Typography>
-                      </Box>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          marginTop: '1rem',
-                          gap: '1.25rem',
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'column',
-
-                            width: '100%',
-                            maxWidth: '125px',
-                            padding: '10px 7px',
-                            background: '#6E8FFD',
-                            borderRadius: '8px',
-                            color: '#fff',
-                          }}
-                        >
-                          <Typography
-                            sx={{ fontSize: '1.5rem', fontWeight: '600' }}
-                          >
-                            {cort.price} RUB
-                          </Typography>
-                          <Typography>90 мин</Typography>
-                        </Box>
-                      </Box>
-                    </AccordionDetails>
-                  </Accordion>
-                  {selectedSlotCourts?.length !== i + 1 && <Divider />}
+                  <CourtAccordion
+                    court={court}
+                    onClick={() => setSlotId(court.slotId)}
+                  />
+                  {selectedSlotAvailableCourts?.length !== i + 1 && <Divider />}
                 </>
               ))}
+              {!onlyAvailableCourts &&
+                selectedSlotBookedCourts?.map((court, i) => (
+                  <>
+                    <CourtAccordion
+                      court={court}
+                      onClick={() => setSlotId(court.slotId)}
+                      disabled
+                    />
+                    {selectedSlotBookedCourts?.length !== i + 1 && <Divider />}
+                  </>
+                ))}
             </Box>
           </>
         )}
       </Box>
+      <Dialog open={!!slotId} onClose={() => setSlotId(0)}>
+        <DialogContent sx={{ padding: '40px 20px' }}>
+          <Typography>
+            Вы точно хотите забронировать корт на{' '}
+            {selectedDate.toISOString()?.split('T')[0]} в {selectedSlot}?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setSlotId(0)}
+            sx={{ height: '30px', fontWeight: '700', fontSize: '.75rem' }}
+          >
+            Нет
+          </Button>
+          <Button
+            onClick={() => {
+              createMatchMutation.mutate({
+                slotId,
+                selectedDate,
+              });
+              setSlotId(0);
+            }}
+            sx={{ height: '30px', fontWeight: '700', fontSize: '.75rem' }}
+          >
+            ДА
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <IonToast
+        isOpen={openSuccessBookToast}
+        message="Корт был успешно забронирован!"
+        onDidDismiss={() => setOpenSuccessBookToast(false)}
+        duration={2000}
+      ></IonToast>
     </Box>
   );
 }
