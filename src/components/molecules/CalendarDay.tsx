@@ -26,6 +26,7 @@ export const CalendarDay: React.FC<ICalendarDayProps> = (props) => {
   return (
     <Box
       sx={{
+        cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

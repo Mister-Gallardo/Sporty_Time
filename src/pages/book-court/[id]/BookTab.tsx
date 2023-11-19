@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  CircularProgress,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getClub } from '../../../services/club/service';
@@ -156,6 +157,7 @@ export function BookTab() {
                 <Box
                   onClick={() => setSelectedSlot(slot)}
                   sx={{
+                    cursor: 'pointer',
                     opacity: data?.availableSlots?.[slot]?.available?.length
                       ? 1
                       : 0.5,
@@ -237,32 +239,38 @@ export function BookTab() {
         )}
       </Box>
       <Dialog open={!!slotId} onClose={() => setSlotId(0)}>
-        <DialogContent sx={{ padding: '40px 20px' }}>
-          <Typography>
-            Вы точно хотите забронировать корт на{' '}
-            {selectedDate.toISOString()?.split('T')[0]} в {selectedSlot}?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setSlotId(0)}
-            sx={{ height: '30px', fontWeight: '700', fontSize: '.75rem' }}
-          >
-            Нет
-          </Button>
-          <Button
-            onClick={() => {
-              createMatchMutation.mutate({
-                slotId,
-                selectedDate,
-              });
-              setSlotId(0);
-            }}
-            sx={{ height: '30px', fontWeight: '700', fontSize: '.75rem' }}
-          >
-            ДА
-          </Button>
-        </DialogActions>
+        {createMatchMutation.isPending ? (
+          <CircularProgress size={60} sx={{ margin: '20px' }} />
+        ) : (
+          <>
+            <DialogContent sx={{ padding: '40px 20px' }}>
+              <Typography>
+                Вы точно хотите забронировать корт на{' '}
+                {selectedDate.toISOString()?.split('T')[0]} в {selectedSlot}?
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => setSlotId(0)}
+                sx={{ height: '30px', fontWeight: '700', fontSize: '.75rem' }}
+              >
+                Нет
+              </Button>
+              <Button
+                onClick={() => {
+                  createMatchMutation.mutate({
+                    slotId,
+                    selectedDate,
+                  });
+                  setSlotId(0);
+                }}
+                sx={{ height: '30px', fontWeight: '700', fontSize: '.75rem' }}
+              >
+                ДА
+              </Button>
+            </DialogActions>
+          </>
+        )}
       </Dialog>
       <IonToast
         isOpen={openSuccessBookToast}
