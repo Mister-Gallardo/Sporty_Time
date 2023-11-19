@@ -80,7 +80,7 @@ export function BookTab() {
         padding: '10px 17px',
         background: '#f4f4f4',
         paddingBlock: '1.25rem',
-        minHeight: isPlatform('desktop') ? '100vh' : '',
+        minHeight: '100vh',
       }}
     >
       <Box sx={{ maxWidth: '1000px', margin: '0 auto' }}>
@@ -102,7 +102,7 @@ export function BookTab() {
           >
             <SportsTennis sx={{ fontSize: '1.5rem' }} />
           </Box>
-          <Box sx={{ display: 'flex', gap: '18px', overflowX: 'auto' }}>
+          <Box sx={{ display: 'flex', gap: '18px', overflowX: 'scroll' }}>
             {dates.map((date) => (
               <Box onClick={() => setSelectedDate(date)}>
                 <CalendarDay

@@ -23,6 +23,7 @@ import { autoPlay } from 'react-swipeable-views-utils';
 import { useEffect, useRef, useState } from 'react';
 import { BookTab } from './BookTab';
 import { BookTabMain } from './BookTabMain';
+import React from 'react';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -234,8 +235,13 @@ export function SingleCourtPage() {
                   : 'none',
               }}
             >
-              <BookTabMain />
-              <BookTab />
+              <MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain>
+                <BookTabMain />
+              </MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain>
+              <MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain>
+                <BookTab />
+              </MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain>
+              <Box></Box>
             </SwipeableViews>
           </Box>
         </Box>
@@ -263,5 +269,54 @@ export function SingleCourtPage() {
     );
   } else {
     return renderPage();
+  }
+}
+
+class MyComponentWhichMustBlockTouchEventsSoItsContentIsScrollableAgain extends React.Component {
+  container = React.createRef<HTMLDivElement>();
+
+  componentDidMount() {
+    const containerNode = this.container.current;
+
+    if (!containerNode) {
+      return;
+    }
+
+    containerNode.addEventListener('touchstart', this.isolateTouch, {
+      passive: true,
+    });
+    containerNode.addEventListener('touchmove', this.isolateTouch, {
+      passive: true,
+    });
+    containerNode.addEventListener('touchend', this.isolateTouch, {
+      passive: true,
+    });
+  }
+
+  componentWillUnmount() {
+    const containerNode = this.container.current;
+
+    if (!containerNode) {
+      return;
+    }
+
+    containerNode.removeEventListener('touchstart', this.isolateTouch, {
+      passive: true,
+    } as any);
+    containerNode.removeEventListener('touchmove', this.isolateTouch, {
+      passive: true,
+    } as any);
+    containerNode.removeEventListener('touchend', this.isolateTouch, {
+      passive: true,
+    } as any);
+  }
+
+  isolateTouch(e: any) {
+    e.stopPropagation();
+  }
+
+  render() {
+    const { children } = this.props as any;
+    return <div ref={this.container}>{children}</div>;
   }
 }
