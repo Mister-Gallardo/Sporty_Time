@@ -19,6 +19,7 @@ export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
   const { court, onClick, disabled } = props;
   return (
     <Accordion
+      defaultExpanded
       disabled={disabled}
       elevation={0}
       sx={{

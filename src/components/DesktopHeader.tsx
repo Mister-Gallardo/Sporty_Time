@@ -121,7 +121,7 @@ function DesktopHeader(props: IDesktopHeaderProps) {
                   cursor: 'pointer',
                 }}
               >
-                Ramazan Ramazanov
+                Имя Фамилия
               </Typography>
             </Box>
             <Box
@@ -135,10 +135,7 @@ function DesktopHeader(props: IDesktopHeaderProps) {
                 borderRadius: '50%',
               }}
             >
-              <IconButton
-                onClick={() => history.push('/auth')}
-                sx={{ width: '100%', height: '100%' }}
-              >
+              <IconButton sx={{ width: '100%', height: '100%' }}>
                 <PersonOutlineOutlined sx={{ color: '#000' }} />
               </IconButton>
             </Box>

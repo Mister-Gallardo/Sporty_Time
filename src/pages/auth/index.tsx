@@ -47,6 +47,9 @@ export function AuthPage(props: IAuthPageProps) {
       if (!e.response?.data?.message) return;
       if (e.response?.data?.message === 'Email already taken') {
         setAuthState(LoginStates.LOGIN);
+      } else if (e.response?.data?.message.startsWith('Wait for')) {
+        setAuthState(LoginStates.REGISTER);
+        setError(undefined);
       } else {
         setError(e.response?.data?.message);
       }
