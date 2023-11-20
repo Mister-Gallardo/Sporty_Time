@@ -1,21 +1,27 @@
-import {
-  PersonOutlineOutlined,
-  SportsBaseballOutlined,
-} from '@mui/icons-material';
-import {
-  Box,
-  IconButton,
-  MenuItem,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { SportsBaseballOutlined } from '@mui/icons-material';
+import { Box, MenuItem, TextField, Typography } from '@mui/material';
 import { Button } from './atoms/Button';
 import { useHistory } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getUserInfo } from '../services/user/service';
+import { useIsAuthorized } from '../services/api/hooks';
 
 interface IDesktopHeaderProps {}
 
 function DesktopHeader(props: IDesktopHeaderProps) {
   const history = useHistory();
+
+  const isAuthorized = useIsAuthorized();
+
+  const { data } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUserInfo,
+    retry: false,
+    enabled: isAuthorized,
+  });
+
+  const firstName = data?.data.firstname;
+  const lastName = data?.data.lastname;
 
   return (
     <>
@@ -31,7 +37,7 @@ function DesktopHeader(props: IDesktopHeaderProps) {
           background: '#fff',
           color: '#000',
           paddingBlock: '1rem',
-          paddingInline: '10px',
+          paddingInline: '2.5rem',
           alignItems: 'center',
           justifyContent: 'space-between',
 
@@ -105,26 +111,45 @@ function DesktopHeader(props: IDesktopHeaderProps) {
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <Box sx={{ display: 'flex', gap: '10px' }}>
-              <Typography
-                sx={{
-                  opacity: '0.6',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                }}
-              >
-                Activities
-              </Typography>
-              <Typography
-                sx={{
-                  opacity: '0.6',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                }}
-              >
-                Имя Фамилия
-              </Typography>
+              {isAuthorized && (
+                <Typography
+                  onClick={() => {
+                    history.go(0);
+                    localStorage.removeItem('jwtToken');
+                  }}
+                  sx={{
+                    opacity: '0.6',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Выход
+                </Typography>
+              )}
+              {isAuthorized ? (
+                <Typography
+                  sx={{
+                    opacity: '0.6',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {firstName} {lastName}
+                </Typography>
+              ) : (
+                <Typography
+                  onClick={() => history.push('/auth')}
+                  sx={{
+                    opacity: '0.6',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Войти
+                </Typography>
+              )}
             </Box>
-            <Box
+            {/* <Box
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -138,7 +163,7 @@ function DesktopHeader(props: IDesktopHeaderProps) {
               <IconButton sx={{ width: '100%', height: '100%' }}>
                 <PersonOutlineOutlined sx={{ color: '#000' }} />
               </IconButton>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       </Box>

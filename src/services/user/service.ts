@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { User } from './interface';
+import { api } from '../api/service';
 
-export function getMe() {
-  return axios.get<User>('/users/me');
+export function getUserInfo() {
+  return api.get<User>('/users/me');
 }
