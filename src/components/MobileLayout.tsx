@@ -27,7 +27,6 @@ import '../mobile.css';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useRef } from 'react';
 import { Typography } from '@mui/material';
-import { useHistory } from 'react-router';
 
 export interface IMobileLayoutProps {
   children: React.ReactNode;
@@ -36,7 +35,6 @@ export interface IMobileLayoutProps {
 export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
   const { children } = props;
   const defaultRef = useRef<HTMLIonIconElement>(null);
-  const history = useHistory();
 
   return (
     <IonApp style={{ minHeight: '100vh' }}>
