@@ -9,9 +9,9 @@ export const Button: React.FC<IButtonProps> = (props) => {
       sx={{
         width: '100%',
         height: '23px',
-        color: '#fff',
+        color: props.disabled ? 'rgba(0, 0, 0, 0.4)' : '#fff',
         fontSize: '12px',
-        backgroundColor: '#2561F8',
+        backgroundColor: props.disabled ? '#e5e5e5' : '#2561F8',
         borderRadius: '15px',
         textTransform: 'initial',
         '&:hover': {

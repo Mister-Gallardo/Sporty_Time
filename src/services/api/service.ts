@@ -27,7 +27,7 @@ api.interceptors.response.use(
       if (error?.response?.status === 401) {
         localStorage.removeItem('jwtToken');
       }
-      if (!isAuthorized()) {
+      if (!isAuthorized() && !window.location.href.includes('/auth')) {
         window.open('/auth', '_self');
       }
     } else if (errorMessage) {

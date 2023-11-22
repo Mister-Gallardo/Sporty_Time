@@ -93,7 +93,7 @@ export function AuthPage(props: IAuthPageProps) {
       history.push('/');
     },
     onError(e: any) {
-      setError(e.response?.data?.error?.message);
+      setError(e.response?.data?.message);
     },
   });
 
@@ -231,7 +231,9 @@ export function AuthPage(props: IAuthPageProps) {
             <Grow in timeout={800}>
               <TextField
                 error={error ? true : false}
-                helperText={error}
+                helperText={
+                  error === 'Invalid credentials' && 'Неверный логин или пароль'
+                }
                 {...register('password', { required: true })}
                 label="Пароль"
                 type="password"

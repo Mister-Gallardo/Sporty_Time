@@ -8,14 +8,15 @@ interface IMatchBlockProps {
   title: string;
   description?: string;
   onClick?: () => void;
+  href?: string;
 }
 
 export const MatchBlock = (props: IMatchBlockProps) => {
-  const history = useHistory(); // as example
+  const history = useHistory();
 
   return (
     <Block
-      onClick={() => history.push('/book-court')}
+      onClick={() => history.push(props.href || '/')}
       sx={{
         paddingTop: props.img ? '45%' : '10px',
         position: 'relative',
