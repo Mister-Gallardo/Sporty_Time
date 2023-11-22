@@ -7,9 +7,9 @@ import {
   IonTabs,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { book, home, person, tennisball } from 'ionicons/icons';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
+import { book, home, person, tennisball } from 'ionicons/icons';
 
 /* Basic CSS for apps built with Ionic */
 import '@ionic/react/css/normalize.css';
@@ -48,6 +48,7 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
           <IonTabBar
             slot="bottom"
             style={{
+              display: 'none',
               paddingBlock: '.75rem',
               borderRadius: '0',
               borderTop: '1px solid #cdcccc',
