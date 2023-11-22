@@ -1,138 +1,106 @@
-import {
-  IonContent,
-  IonPage,
-  ScrollDetail,
-  createGesture,
-  isPlatform,
-} from '@ionic/react';
+import { ScrollDetail, isPlatform } from '@ionic/react';
 
 import { Box } from '@mui/material';
 import React, { ReactNode, useEffect, useRef } from 'react';
+import { useSpring, animated } from '@react-spring/web';
+import { clamp } from 'lodash-es';
 
 export interface ISwipeablePageProps {
   imageSlot?: ReactNode;
-  contentSlot?: ReactNode;
-  fixedSlot?: ReactNode;
+  topSlot?: ReactNode;
+  children?: ReactNode;
 }
 
 export const SwipeablePage: React.FC<ISwipeablePageProps> = (props) => {
-  const { imageSlot, contentSlot, fixedSlot } = props;
+  const { imageSlot, topSlot, children } = props;
 
   const isMobile = isPlatform('mobile');
-  const ref = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLElement>(null);
   const imgRef = useRef<HTMLElement>(null);
-  const canScale = useRef<boolean>(true);
-  const translateDelta = useRef(0);
-  const scaleDelta = useRef(0);
+  const headerRef = useRef<HTMLElement>(null);
 
-  const parallax = (e: CustomEvent<ScrollDetail>) => {
-    if (!imgRef.current) return;
-    canScale.current = e.detail.scrollTop < 10;
-    imgRef.current.style.transform = `translateY(${
-      -e.detail.scrollTop * 0.5
-    }px)`;
-  };
+  const [springs, api] = useSpring(() => ({
+    from: { height: 250 },
+    config: {
+      duration: 50,
+    },
+  }));
 
   useEffect(() => {
-    if (!ref.current || !isMobile) return;
-    const gesture = createGesture({
-      direction: 'y',
-      el: ref.current,
-      threshold: 5,
-      gestureName: 'swipe',
-      onStart: () => {
-        if (!contentRef.current) return;
-        if (!imgRef.current) return;
-        translateDelta.current = 0;
-        scaleDelta.current = 0;
-      },
-      onMove: (ev) => {
-        if (!contentRef.current) return;
-        if (!imgRef.current) return;
-        if (!canScale.current) {
-          imgRef.current.style.scale = String(1);
-          contentRef.current.style.transform = 'translateY(0)';
-          return;
-        }
+    if (!isMobile) return;
+    const animateImg = (e: CustomEvent<ScrollDetail>) => {
+      if (!imgRef.current) return;
+      const newHeight = 250 - e.detail.scrollTop;
+      api.start({
+        from: {
+          height: imgRef.current.clientHeight,
+        },
+        to: {
+          height: newHeight,
+        },
+      });
+    };
 
-        translateDelta.current = Math.max(
-          Math.min(translateDelta.current + ev.velocityY * 10, 90),
-          0,
-        );
-        scaleDelta.current = Math.max(
-          scaleDelta.current + ev.velocityY * 0.01,
-          1,
-        );
+    const animateHeader = (e: CustomEvent<ScrollDetail>) => {
+      if (!headerRef.current) return;
+      const topPadding = Number(
+        getComputedStyle(document.body)
+          .getPropertyValue('--ion-safe-area-top')
+          .slice(0, -2),
+      );
+      const FROM = 240 - topPadding;
+      const TO = 260 - topPadding;
 
-        contentRef.current.style.transform = `translateY(${translateDelta.current}px)`;
-        imgRef.current.style.scale = String(scaleDelta.current);
-      },
-      onEnd: () => {
-        if (!contentRef.current) return;
-        if (!imgRef.current) return;
-        contentRef.current.style.transform = 'translateY(0)';
-        imgRef.current.style.scale = '1';
-      },
-    });
-    gesture.enable();
-    document.addEventListener('ionScroll', parallax as any);
+      const x = 1 - clamp(0, (TO - e.detail.scrollTop) / (TO - FROM), 1);
+      const op = x.toFixed(2);
+      headerRef.current.style.opacity = op;
+    };
+
+    const animate = (e: any) => {
+      animateImg(e);
+      animateHeader(e);
+    };
+
+    document.addEventListener('ionScroll', animate);
     return () => {
-      gesture.destroy();
-      document.removeEventListener('ionScroll', parallax as any);
+      document.removeEventListener('ionScroll', animate);
     };
   }, []);
 
-  const renderPage = () => (
+  return (
     <>
-      <Box ref={ref} sx={{}}>
+      {topSlot && (
         <Box
-          height={250}
-          ref={imgRef}
-          maxWidth="100%"
+          ref={headerRef}
           position="fixed"
+          top={0}
+          zIndex={999}
+          pt="var(--ion-safe-area-top)"
+          height="calc(30px + var(--ion-safe-area-top))"
+          width="100%"
           sx={{
-            willChange: 'transform, scale',
-            transition: 'all .1s cubic-bezier(0.3, 0.95, 0.96, 0.98)',
+            background: 'white',
+            opacity: 0,
+            transition: 'all .1s',
           }}
         >
-          {imageSlot}
+          {topSlot}
         </Box>
-        <Box height={250}></Box>
-        <Box
-          ref={contentRef}
-          sx={{
-            position: 'relative',
-            zIndex: '998',
-            width: '100%',
-            height: '100%',
-            marginTop: '-30px',
-            borderRadius: '15px 15px 0 0',
-            transition: 'all .2s cubic-bezier(0.3, 0.95, 0.96, 0.98)',
-          }}
-        >
-          {contentSlot}
-        </Box>
+      )}
+      <Box
+        component={animated.div}
+        style={springs}
+        ref={imgRef}
+        position="fixed"
+        height={250}
+        width="100%"
+        sx={{ willChange: 'height' }}
+      >
+        {imageSlot}
       </Box>
-      {fixedSlot}
+      <Box height={250} />
+      <Box marginTop={-2} position="relative">
+        {children}
+      </Box>
     </>
   );
-
-  if (isMobile) {
-    return (
-      <IonPage>
-        <IonContent
-          scrollEvents={true}
-          onIonScroll={(e) => {
-            const event = new CustomEvent(e.type, e);
-            document.dispatchEvent(event);
-          }}
-        >
-          {renderPage()}
-        </IonContent>
-      </IonPage>
-    );
-  } else {
-    return renderPage();
-  }
 };

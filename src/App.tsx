@@ -8,6 +8,7 @@ import { MobileBookCourt } from './pages/book-court/index.mobile';
 import { DesktopHomePage } from './pages/play/desktop';
 import { MobileAuthPage } from './pages/auth/index.mobile';
 import { AuthPage } from './pages/auth';
+import { MobileSingleCourtPage } from './pages/book-court/[id]/index.mobile';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
@@ -46,7 +47,7 @@ const mobileRoutes = [
   {
     path: '/book-court/:courtId',
     exact: true,
-    component: SingleCourtPage,
+    component: MobileSingleCourtPage,
   },
   {
     path: '/auth',
