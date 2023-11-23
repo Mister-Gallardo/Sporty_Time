@@ -13,6 +13,8 @@ import { MobileQuestionFormPage } from './pages/question-form/index.mobile';
 import { QuestionFormPage } from './pages/question-form';
 import { MobileMatchesPage } from './pages/matches/index.mobile';
 import { MatchesPage } from './pages/matches';
+import { SingleMatchPage } from './pages/matches/[id]';
+import { MobileSingleMatchPage } from './pages/matches/[id]/index.mobile';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
@@ -44,6 +46,11 @@ const desktopRoutes = [
     path: '/matches',
     exact: true,
     component: MatchesPage,
+  },
+  {
+    path: '/matches/:matchId',
+    exact: true,
+    component: SingleMatchPage,
   },
 ] as React.ComponentProps<typeof Route>[];
 
@@ -77,6 +84,11 @@ const mobileRoutes = [
     path: '/matches',
     exact: true,
     component: MobileMatchesPage,
+  },
+  {
+    path: '/matches/:matchId',
+    exact: true,
+    component: MobileSingleMatchPage,
   },
 ] as React.ComponentProps<typeof Route>[];
 

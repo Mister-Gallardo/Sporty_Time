@@ -5,6 +5,7 @@ import SwipeableViews from 'react-swipeable-views';
 import { AvailableMatchesTab } from './AvailableMatchesTab';
 import { Button } from '../../components/atoms/Button';
 import { Add } from '@mui/icons-material';
+import { MyMatchesTab } from './MyMatchesTab';
 
 interface IMatchesPageProps {}
 
@@ -45,6 +46,7 @@ export function MatchesPage(props: IMatchesPageProps) {
           }}
         >
           <AvailableMatchesTab />
+          <MyMatchesTab />
         </SwipeableViews>
       </Box>
       <Box
@@ -69,7 +71,8 @@ export function MatchesPage(props: IMatchesPageProps) {
           }}
         >
           <Add />
-          Начать матч
+          {tabIndex === 0 && 'Начать матч'}
+          {tabIndex === 1 && 'Загрузить результат'}
         </Button>
       </Box>
     </>

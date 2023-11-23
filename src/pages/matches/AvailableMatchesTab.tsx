@@ -15,8 +15,9 @@ export function AvailableMatchesTab(props: IAvailableMatchesTabProps) {
   return (
     <Box
       sx={{
+        position: 'relative',
         paddingInline: isPlatform('mobile') ? '10px' : '2rem',
-        background: '#f4f4f4',
+        background: '#fff',
         paddingBlock: '1.25rem',
         minHeight: '100vh',
       }}
@@ -71,7 +72,9 @@ export function AvailableMatchesTab(props: IAvailableMatchesTabProps) {
           id="panel1a-header"
         >
           <Box>
-            <Typography sx={{ fontWeight: '700' }}>Запросите место</Typography>
+            <Typography sx={{ fontWeight: '700', fontSize: '1.1rem' }}>
+              Запросите место
+            </Typography>
             <Typography sx={{ fontSize: '.8rem' }}>
               Эти матчи не соответствуют вашему уровню. Чтобы присоединиться к
               ним, вам необходимо запросить место.

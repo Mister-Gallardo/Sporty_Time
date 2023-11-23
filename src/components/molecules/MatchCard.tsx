@@ -1,10 +1,14 @@
 import { Avatar, Box, Typography } from '@mui/material';
+import { useHistory } from 'react-router';
 
 interface IMatchCardProps {}
 
 export function MatchCard(props: IMatchCardProps) {
+  const history = useHistory();
+
   return (
     <Box
+      onClick={() => history.push('/matches/1')}
       sx={{
         marginInline: '.75rem',
         marginTop: '.75rem',
@@ -13,6 +17,8 @@ export function MatchCard(props: IMatchCardProps) {
         background: '#fff',
         border: '2px solid #EED790',
         borderRadius: '10px',
+
+        boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;',
       }}
     >
       <Box
