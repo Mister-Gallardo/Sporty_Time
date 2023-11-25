@@ -2,7 +2,7 @@ import axios from 'axios';
 import { isAuthorized } from '../auth/service';
 
 export const api = axios.create({
-  baseURL: 'https://playpadel.lakileki.com/api',
+  baseURL: 'https://playpadel.lakileki.ru/api',
   // baseURL: '/api',
 });
 
