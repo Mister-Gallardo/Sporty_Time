@@ -24,5 +24,14 @@ export const theme = createTheme({
         variant: 'standard',
       },
     },
+    MuiModal: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+      },
+    },
   },
 });

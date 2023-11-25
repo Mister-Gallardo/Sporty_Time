@@ -25,9 +25,10 @@ export function MyMatchesTab(props: IMyMatchesTabProps) {
           gap: '1rem',
         }}
       >
-        {Array.from('1234567890').map(() => (
-          <MyMatchCard />
+        {Array.from('123').map(() => (
+          <MyMatchCard noResult={false} />
         ))}
+        <MyMatchCard noResult />
       </Box>
     </Box>
   );

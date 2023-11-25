@@ -5,6 +5,11 @@
     --ion-color-primary: grey;
 }
 
+::placeholder {
+    color: #000;
+    opacity: 1;
+}
+
 ion-content::part(scroll) {
     -ms-overflow-style: none;
     scrollbar-width: none;

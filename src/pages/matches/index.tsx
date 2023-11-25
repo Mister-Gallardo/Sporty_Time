@@ -1,53 +1,50 @@
 import { isPlatform } from '@ionic/react';
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, Tab } from '@mui/material';
 import { useState } from 'react';
-import SwipeableViews from 'react-swipeable-views';
 import { AvailableMatchesTab } from './AvailableMatchesTab';
 import { Button } from '../../components/atoms/Button';
 import { Add } from '@mui/icons-material';
 import { MyMatchesTab } from './MyMatchesTab';
+import { UploadResultModal } from '../../components/modals/UploadResultModal';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 interface IMatchesPageProps {}
 
-export function MatchesPage(props: IMatchesPageProps) {
-  const [tabIndex, setTabIndex] = useState<number>(0);
+export function MatchesPage({}: IMatchesPageProps) {
+  const [tabIndex, setTabIndex] = useState<string>('1');
+  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const isMobile = isPlatform('mobile');
 
+  function handLeOpenUploadModal() {
+    setOpenUploadModal((prev) => !prev);
+  }
+
   return (
-    <>
+    <TabContext value={tabIndex}>
       <Box sx={{ marginTop: isMobile ? '0' : '1rem' }}>
-        <Tabs
-          sx={{ margin: '0 auto' }}
-          value={tabIndex}
+        <TabList
+          sx={{ margin: '0 auto', maxWidth: '1000px' }}
           onChange={(e, value) => setTabIndex(value)}
         >
           <Tab
+            value="1"
             disableRipple={!isMobile}
             label={'Доступные'}
             sx={{ flexGrow: 1 }}
           />
           <Tab
+            value="2"
             disableRipple={!isMobile}
             label={'Ваши матчи'}
             sx={{ flexGrow: 1 }}
           />
-        </Tabs>
-
-        <SwipeableViews
-          action={(actions) => {
-            actions.updateHeight();
-          }}
-          index={tabIndex}
-          onChangeIndex={setTabIndex}
-          containerStyle={{
-            transition: isMobile
-              ? 'transform 0.35s cubic-bezier(0.15, 0.3, 0.25, 1) 0s'
-              : 'none',
-          }}
-        >
+        </TabList>
+        <TabPanel value="1" sx={{ p: 0 }}>
           <AvailableMatchesTab />
+        </TabPanel>
+        <TabPanel value="2" sx={{ p: 0 }}>
           <MyMatchesTab />
-        </SwipeableViews>
+        </TabPanel>
       </Box>
       <Box
         sx={{
@@ -60,6 +57,13 @@ export function MatchesPage(props: IMatchesPageProps) {
         }}
       >
         <Button
+          onClick={() => {
+            if (tabIndex === '2') {
+              handLeOpenUploadModal();
+            } else {
+              console.log('');
+            }
+          }}
           sx={{
             fontSize: '1.1rem',
             fontWeight: '500',
@@ -71,10 +75,14 @@ export function MatchesPage(props: IMatchesPageProps) {
           }}
         >
           <Add />
-          {tabIndex === 0 && 'Начать матч'}
-          {tabIndex === 1 && 'Загрузить результат'}
+          {tabIndex === '1' && 'Начать матч'}
+          {tabIndex === '2' && 'Загрузить результат'}
         </Button>
       </Box>
-    </>
+      <UploadResultModal
+        openState={openUploadModal}
+        handleModal={handLeOpenUploadModal}
+      />
+    </TabContext>
   );
 }
