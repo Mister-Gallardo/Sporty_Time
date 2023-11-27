@@ -16,10 +16,10 @@ export function AvailableMatchesTab(props: IAvailableMatchesTabProps) {
     <Box
       sx={{
         position: 'relative',
+        marginBottom: isPlatform('mobile') ? '2.5rem' : 'unset',
         paddingInline: isPlatform('mobile') ? '10px' : '2rem',
         background: '#fff',
         paddingBlock: '1.25rem',
-        minHeight: '100vh',
       }}
     >
       <Box

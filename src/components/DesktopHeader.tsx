@@ -2,9 +2,8 @@ import { SportsBaseballOutlined } from '@mui/icons-material';
 import { Box, MenuItem, TextField, Typography } from '@mui/material';
 import { Button } from './atoms/Button';
 import { useHistory } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
-import { getUserInfo } from '../services/user/service';
-import { useIsAuthorized } from '../services/api/hooks';
+
+import { useIsAuthorized, useUserInfo } from '../services/api/hooks';
 
 interface IDesktopHeaderProps {}
 
@@ -13,15 +12,10 @@ function DesktopHeader(props: IDesktopHeaderProps) {
 
   const isAuthorized = useIsAuthorized();
 
-  const { data } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUserInfo,
-    retry: false,
-    enabled: isAuthorized,
-  });
+  const user = useUserInfo();
 
-  const firstName = data?.data.firstname;
-  const lastName = data?.data.lastname;
+  const firstName = user?.firstName;
+  const lastName = user?.lastName;
 
   return (
     <>

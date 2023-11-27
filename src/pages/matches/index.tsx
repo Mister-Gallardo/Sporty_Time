@@ -56,28 +56,22 @@ export function MatchesPage({}: IMatchesPageProps) {
           justifyContent: 'center',
         }}
       >
-        <Button
-          onClick={() => {
-            if (tabIndex === '2') {
-              handLeOpenUploadModal();
-            } else {
-              console.log('');
-            }
-          }}
-          sx={{
-            fontSize: '1.1rem',
-            fontWeight: '500',
-            maxWidth: '225px',
-            borderRadius: '28px',
-            height: '45px',
-            boxShadow:
-              'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-          }}
-        >
-          <Add />
-          {tabIndex === '1' && 'Начать матч'}
-          {tabIndex === '2' && 'Загрузить результат'}
-        </Button>
+        {tabIndex === '1' && (
+          <Button
+            sx={{
+              fontSize: '1.1rem',
+              fontWeight: '500',
+              maxWidth: '225px',
+              borderRadius: '28px',
+              height: '45px',
+              boxShadow:
+                'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+            }}
+          >
+            <Add />
+            Начать матч
+          </Button>
+        )}
       </Box>
       <UploadResultModal
         openState={openUploadModal}

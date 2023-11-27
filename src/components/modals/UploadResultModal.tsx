@@ -5,7 +5,7 @@ import { Button } from '../atoms/Button';
 
 interface IUploadResultModalProps {
   openState: boolean;
-  handleModal: () => void;
+  handleModal: any;
 }
 
 let currentMyTeamScore = 0;
@@ -30,7 +30,17 @@ export function UploadResultModal({
     if (!value) {
       setActiveMyTeamIndex(currentMyTeamScore - 1);
     } else {
-      setActiveMyTeamIndex(currentMyTeamScore + 1);
+      if (activeMyTeamIndex === 3) {
+        setActiveMyTeamIndex(1);
+      } else if (activeMyTeamIndex === 0) {
+        setActiveMyTeamIndex(3);
+      } else if (activeMyTeamIndex === 1) {
+        setActiveMyTeamIndex(4);
+      } else if (activeMyTeamIndex === 4) {
+        setActiveMyTeamIndex(2);
+      } else if (activeMyTeamIndex === 2) {
+        setActiveMyTeamIndex(5);
+      }
     }
 
     const newMatchResult: string[] = [...matchResult];
@@ -43,6 +53,9 @@ export function UploadResultModal({
     index: number,
   ) => {
     currentMyTeamScore = index;
+    if (activeMyTeamIndex < 0) {
+      setActiveMyTeamIndex(0);
+    }
     if (key === 'Backspace') setActiveMyTeamIndex(index - 1);
   };
 
@@ -55,8 +68,6 @@ export function UploadResultModal({
     set2: { myTeam: matchResult[1], anotherTeam: matchResult[4] },
     set3: { myTeam: matchResult[2], anotherTeam: matchResult[5] },
   };
-
-  console.log(results, 'RESULTS');
 
   const renderContnet = () => {
     return (
@@ -121,7 +132,7 @@ export function UploadResultModal({
                 key={index}
                 value={matchResult[index]}
                 ref={index === activeMyTeamIndex ? inputRef : null}
-                type="number"
+                type="tel"
                 onKeyDown={(e) => handleOnKeyDown(e, index)}
                 onChange={handleOnChange}
               />
@@ -147,7 +158,7 @@ export function UploadResultModal({
                   key={index}
                   value={matchResult[newIndex]}
                   ref={newIndex === activeMyTeamIndex ? inputRef : null}
-                  type="number"
+                  type="tel"
                   onKeyDown={(e) => handleOnKeyDown(e, newIndex)}
                   onChange={handleOnChange}
                 />
@@ -155,22 +166,30 @@ export function UploadResultModal({
             })}
           </Box>
         </Box>
-        <Button
+        <Box
           sx={{
-            marginTop: '3rem',
-            height: '45px',
-            background: '#0D2432',
-            borderRadius: '25px',
-            color: '#fff',
-            fontSize: '1.1rem',
-            fontWeight: '500',
-            maxWidth: '350px',
-            boxShadow:
-              'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
           }}
         >
-          Отправить
-        </Button>
+          <Button
+            sx={{
+              marginTop: '3rem',
+              height: '45px',
+              background: '#0D2432',
+              borderRadius: '25px',
+              color: '#fff',
+              fontSize: '1.1rem',
+              fontWeight: '500',
+              maxWidth: '350px',
+              boxShadow:
+                'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+            }}
+          >
+            Отправить
+          </Button>
+        </Box>
       </Box>
     );
   };
@@ -181,8 +200,8 @@ export function UploadResultModal({
         isOpen={openState}
         onWillDismiss={handleModal}
         mode="ios"
-        initialBreakpoint={0.6}
-        breakpoints={[0, 0.8]}
+        initialBreakpoint={0.52}
+        breakpoints={[0, 0.52]}
       >
         <IonContent>{renderContnet()}</IonContent>
       </IonModal>

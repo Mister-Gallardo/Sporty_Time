@@ -3,9 +3,7 @@ import { StartQuestioningStep } from './steps/StartQuestioning';
 import { Box, Fade } from '@mui/material';
 import { QuestioningStep } from './steps/Questioning';
 import { ResultsStep } from './steps/Results';
-import { getUserInfo } from '../../services/user/service';
-import { useQuery } from '@tanstack/react-query';
-import { useIsAuthorized } from '../../services/api/hooks';
+import { useUserInfo } from '../../services/api/hooks';
 
 export function QuestionFormPage() {
   const [activeStep, setActiveStep] = useState<number>(1);
@@ -18,17 +16,10 @@ export function QuestionFormPage() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   }
 
-  const isAuthorized = useIsAuthorized();
+  const user = useUserInfo();
 
-  const { data } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUserInfo,
-    retry: false,
-    enabled: isAuthorized,
-  });
-
-  const firstName = data?.data.firstname || '';
-  const lastName = data?.data.lastname || '';
+  const firstName = user?.firstName || '';
+  const lastName = user?.lastName || '';
 
   return (
     <>

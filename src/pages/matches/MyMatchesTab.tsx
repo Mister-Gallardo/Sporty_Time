@@ -8,11 +8,9 @@ export function MyMatchesTab(props: IMyMatchesTabProps) {
   return (
     <Box
       sx={{
-        marginBottom: isPlatform('mobile') ? '4rem' : '0',
         paddingInline: isPlatform('mobile') ? '10px' : '2rem',
         background: '#fff',
         paddingBlock: '1.25rem',
-        minHeight: '100vh',
       }}
     >
       <Box
@@ -25,7 +23,7 @@ export function MyMatchesTab(props: IMyMatchesTabProps) {
           gap: '1rem',
         }}
       >
-        {Array.from('123').map(() => (
+        {Array.from('12').map(() => (
           <MyMatchCard noResult={false} />
         ))}
         <MyMatchCard noResult />

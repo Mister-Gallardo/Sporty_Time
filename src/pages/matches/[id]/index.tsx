@@ -12,6 +12,15 @@ import { SwipeablePage } from '../../../components/SwipeablePage';
 import matches_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import { Button } from '../../../components/atoms/Button';
 import { IonBackButton, isPlatform } from '@ionic/react';
+import { useState } from 'react';
+import { useUserInfo } from '../../../services/api/hooks';
+
+interface TeamPlayer {
+  name: string;
+  level: string;
+  avatar?: string;
+}
+
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
 
@@ -48,6 +57,38 @@ export function SingleMatchPage() {
       </Typography>
     </Box>
   );
+
+  const [team1, setTeam1] = useState<TeamPlayer[] | []>([
+    {
+      name: 'Ramazan',
+      level: '1.4',
+      avatar: 'https://mui.com/static/images/avatar/1.jpg',
+    },
+    {
+      name: '',
+      level: '',
+      avatar: '',
+    },
+  ]);
+
+  const [team2, setTeam2] = useState<TeamPlayer[]>([
+    {
+      name: 'Amir',
+      level: '1.75',
+      avatar: 'https://mui.com/static/images/avatar/2.jpg',
+    },
+    { name: '', level: '' },
+  ]);
+
+  const user = useUserInfo();
+
+  const playerData: TeamPlayer = {
+    // name: user.firstName || '',
+    name: 'Ramazan',
+    level: '2.25',
+    avatar:
+      'https://upload.wikimedia.org/wikipedia/ru/9/94/%D0%93%D0%B8%D0%B3%D0%B0%D1%87%D0%B0%D0%B4.jpg',
+  };
 
   return (
     <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
@@ -317,80 +358,187 @@ export function SingleMatchPage() {
               <Box
                 sx={{ display: 'flex', gap: '14px', justifyContent: 'center' }}
               >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Avatar
-                    sx={{
-                      width: '60px',
-                      height: '60px',
-                      border: '2px solid #EED790',
-                    }}
-                  />
-                  <Typography>Амир</Typography>
-                  <Typography>1.1</Typography>
-                </Box>
+                {team1.map((player: TeamPlayer) => {
+                  return (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
 
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Avatar
-                    sx={{
-                      width: '60px',
-                      height: '60px',
-                      border: '2px solid #EED790',
-                    }}
-                  />
-                  <Typography>Ramazan</Typography>
-                  <Typography>1.1</Typography>
-                </Box>
+                          width: '63px',
+                          height: '63px',
+                          borderRadius: '50%',
+                          border: '2px solid #EED790',
+                        }}
+                      >
+                        <Avatar
+                          src={player?.avatar}
+                          onClick={() => {
+                            const playerAlreadyInTeam = team1.find(
+                              (player) =>
+                                player.name === playerData.name &&
+                                player.level === playerData.level,
+                            );
+
+                            if (
+                              (!player.name || !player.level) &&
+                              !playerAlreadyInTeam
+                            ) {
+                              const index = team2.findIndex(
+                                (player) =>
+                                  player.name === playerData.name &&
+                                  player.level === playerData.level,
+                              );
+
+                              const newTeam2 = team2.map(
+                                (player: TeamPlayer) => {
+                                  if (player === team2[index]) {
+                                    return [
+                                      ...team2,
+                                      (player.name = ''),
+                                      (player.level = ''),
+                                    ];
+                                  } else return { ...player };
+                                },
+                              );
+
+                              setTeam2(newTeam2 as TeamPlayer[]);
+
+                              const newTeam1 = team1.map(
+                                (player: TeamPlayer) => {
+                                  if (!player.name && !player.level) {
+                                    return {
+                                      ...player,
+                                      name: playerData.name,
+                                      level: playerData.level,
+                                      avatar: playerData.avatar,
+                                    };
+                                  } else {
+                                    const newTeam1 = { ...player };
+                                    return newTeam1;
+                                  }
+                                },
+                              );
+                              setTeam1(newTeam1 as TeamPlayer[]);
+                            } else return;
+                          }}
+                          sx={{
+                            width: '60px',
+                            height: '60px',
+                            opacity:
+                              player.name === playerData.name &&
+                              player.level === playerData.level
+                                ? '.7'
+                                : 'unset',
+                          }}
+                        />
+                      </Box>
+                      <Typography>{player?.name || 'Доступно'}</Typography>
+                      <Typography>{player?.level || ''}</Typography>
+                    </Box>
+                  );
+                })}
               </Box>
               <Box
                 sx={{ width: '2px', height: '100px', background: '#e5e5e5' }}
               />
               <Box sx={{ display: 'flex', gap: '14px' }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Avatar
-                    sx={{
-                      width: '60px',
-                      height: '60px',
-                      border: '2px solid #EED790',
-                    }}
-                  />
-                  <Typography>Владимир</Typography>
-                  <Typography>1.1</Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Avatar
-                    sx={{
-                      width: '60px',
-                      height: '60px',
-                      border: '2px solid #EED790',
-                    }}
-                  />
-                  <Typography>Доступно</Typography>
-                  <Typography></Typography>
-                </Box>
+                {team2.map((player: TeamPlayer) => {
+                  return (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+
+                          width: '63px',
+                          height: '63px',
+                          borderRadius: '50%',
+                          border: '2px solid #EED790',
+                        }}
+                      >
+                        <Avatar
+                          src={player.avatar}
+                          onClick={() => {
+                            const playerAlreadyInTeam = team2.find(
+                              (player) =>
+                                player.name === playerData.name &&
+                                player.level === playerData.level,
+                            );
+
+                            if (
+                              (!player.name || !player.level) &&
+                              !playerAlreadyInTeam
+                            ) {
+                              const index = team1.findIndex(
+                                (player) =>
+                                  player.name === playerData.name &&
+                                  player.level === playerData.level,
+                              );
+
+                              const newTeam1 = team1.map(
+                                (player: TeamPlayer) => {
+                                  if (player === team1[index]) {
+                                    return [
+                                      ...team1,
+                                      (player.name = ''),
+                                      (player.level = ''),
+                                    ];
+                                  } else return { ...player };
+                                },
+                              );
+
+                              setTeam1(newTeam1 as TeamPlayer[]);
+
+                              const newTeam2 = team2.map(
+                                (player: TeamPlayer) => {
+                                  if (!player.name && !player.level) {
+                                    return {
+                                      ...player,
+                                      name: playerData.name,
+                                      level: playerData.level,
+                                      avatar: playerData.avatar,
+                                    };
+                                  } else {
+                                    const newTeam2 = { ...player };
+                                    return newTeam2;
+                                  }
+                                },
+                              );
+                              setTeam2(newTeam2 as TeamPlayer[]);
+                            } else return;
+                          }}
+                          sx={{
+                            width: '60px',
+                            height: '60px',
+                            opacity:
+                              player.name === playerData.name &&
+                              player.level === playerData.level
+                                ? '.7'
+                                : 'unset',
+                          }}
+                        />
+                      </Box>
+                      <Typography>{player?.name || 'Доступно'}</Typography>
+                      <Typography>{player?.level || ''}</Typography>
+                    </Box>
+                  );
+                })}
               </Box>
             </Box>
           </Box>
