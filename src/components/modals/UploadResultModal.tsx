@@ -18,6 +18,12 @@ export function UploadResultModal({
     new Array(6).fill(''),
   );
 
+  const [results] = [
+    [{ a: matchResult[0], b: matchResult[3] }],
+    [{ a: matchResult[1], b: matchResult[4] }],
+    [{ a: matchResult[2], b: matchResult[5] }],
+  ];
+
   const [activeMyTeamIndex, setActiveMyTeamIndex] = useState<number>(0);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -62,12 +68,6 @@ export function UploadResultModal({
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeMyTeamIndex]);
-
-  const results = {
-    set1: { myTeam: matchResult[0], anotherTeam: matchResult[3] },
-    set2: { myTeam: matchResult[1], anotherTeam: matchResult[4] },
-    set3: { myTeam: matchResult[2], anotherTeam: matchResult[5] },
-  };
 
   const renderContnet = () => {
     return (
