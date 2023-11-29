@@ -19,7 +19,7 @@ export function MobileSingleMatchPage() {
             justifyContent: 'space-between',
             position: 'fixed',
             zIndex: 1,
-            top: '1.5rem',
+            top: '2.5rem',
             px: 2,
           }}
         >
