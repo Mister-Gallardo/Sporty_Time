@@ -14,6 +14,12 @@ import { Button } from '../../../components/atoms/Button';
 import { IonBackButton, isPlatform } from '@ionic/react';
 import { useState } from 'react';
 import { useUserInfo } from '../../../services/api/hooks';
+import { useParams } from 'react-router';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  getOneAvailableMatche,
+  joinMatch,
+} from '../../../services/matches/service';
 
 interface TeamPlayer {
   name: string;
@@ -23,6 +29,22 @@ interface TeamPlayer {
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
+  const { matchId }: { matchId: string | undefined } = useParams();
+
+  const {
+    data,
+    isLoading,
+    refetch: refetchClubs,
+  } = useQuery({
+    queryKey: ['available-club'],
+    queryFn: () => getOneAvailableMatche(Number(matchId)),
+  });
+
+  const joinMatchMutation = useMutation({
+    mutationFn: joinMatch,
+    onSuccess(data) {},
+    onError() {},
+  });
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
@@ -84,7 +106,7 @@ export function SingleMatchPage() {
 
   const playerData: TeamPlayer = {
     // name: user.firstName || '',
-    name: 'Ramazan',
+    name: user?.firstname || '',
     level: '2.25',
     avatar:
       'https://upload.wikimedia.org/wikipedia/ru/9/94/%D0%93%D0%B8%D0%B3%D0%B0%D1%87%D0%B0%D0%B4.jpg',

@@ -27,7 +27,29 @@ export interface MatchBooking {
   updatedAt: Date;
 }
 
+export interface AvailableMatch {
+  id: number;
+
+  title: string;
+
+  courtaddress: string;
+
+  courtprice: number;
+
+  img: string;
+
+  sport: string;
+
+  time: string;
+}
+
 export interface CreateMatchDTO {
   slotId: number;
   selectedDate: Date;
+}
+
+export interface JoinMatchDTO {
+  matchId: number;
+  sport: string;
+  team: string;
 }

@@ -12,9 +12,9 @@ import mobile_bg from '../../../images/question-form/bg_events_tennis_mobile.png
 import desktop_bg from '../../../images/question-form/bg_events_tennis_desktop.png';
 
 enum Sports {
-  PADEL = 'Padel',
-  TENNIS = 'Tennis',
-  PICKEBALL = 'Pickeball',
+  PADEL = 0,
+  TENNIS = 1,
+  PICKEBALL = 2,
 }
 
 interface StartQuestioningStepProps {
@@ -25,8 +25,8 @@ interface StartQuestioningStepProps {
 export function StartQuestioningStep(props: StartQuestioningStepProps) {
   const { handleNextStep, firstName } = props;
 
-  const [selectedSport, setSelectedSport] = useState(Sports.PADEL);
-  localStorage.setItem('sport', selectedSport);
+  const [selectedSport, setSelectedSport] = useState<number>(Sports.PADEL);
+  localStorage.setItem('sport', selectedSport.toString());
 
   return (
     <>

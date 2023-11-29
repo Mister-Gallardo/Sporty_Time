@@ -14,8 +14,8 @@ function DesktopHeader(props: IDesktopHeaderProps) {
 
   const user = useUserInfo();
 
-  const firstName = user?.firstName;
-  const lastName = user?.lastName;
+  const firstName = user?.firstname;
+  const lastName = user?.lastname;
 
   return (
     <>

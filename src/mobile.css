@@ -38,7 +38,7 @@ ion-tab-bar {
 }
 
 ion-header {
-    border-top: 1px solid #e5e5e5;
+    border-top: none;
     overflow: hidden;
 }
 

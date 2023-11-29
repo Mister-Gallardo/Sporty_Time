@@ -1,14 +1,14 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import { useHistory } from 'react-router';
+import { AvailableMatch } from '../../services/matches/interface';
 
-interface IMatchCardProps {}
-
-export function MatchCard(props: IMatchCardProps) {
+export function MatchCard(props: AvailableMatch) {
+  const matchData = props;
   const history = useHistory();
 
   return (
     <Box
-      onClick={() => history.push('/matches/1')}
+      onClick={() => history.push(`/matches/${matchData.id}`)}
       sx={{
         marginInline: '.75rem',
         marginTop: '.75rem',
@@ -35,7 +35,7 @@ export function MatchCard(props: IMatchCardProps) {
           }}
         >
           <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-            Завтра | 10:00
+            30 нояб | {matchData.time.slice(0, -3)}
           </Typography>
           <Box
             sx={{
@@ -52,7 +52,9 @@ export function MatchCard(props: IMatchCardProps) {
         </Box>
 
         <Box>
-          <Typography sx={{ paddingBlock: '.25rem' }}>11km · PadelX</Typography>
+          <Typography sx={{ paddingBlock: '.25rem' }}>
+            11km · {matchData.courtaddress}
+          </Typography>
         </Box>
 
         <Box
@@ -171,7 +173,7 @@ export function MatchCard(props: IMatchCardProps) {
             }}
           >
             <Typography sx={{ fontSize: '1.25rem', fontWeight: '700' }}>
-              105 AED
+              ₽ {matchData.courtprice}
             </Typography>
             <Typography>90 мин</Typography>
           </Box>

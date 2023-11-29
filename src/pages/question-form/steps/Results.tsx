@@ -15,6 +15,8 @@ interface ResultsStepProps {
 export function ResultsStep(props: ResultsStepProps) {
   const { firstName, lastName } = props;
 
+  const userRating = JSON.parse(localStorage.getItem('userRating') || '[]')
+    ?.data[0];
   const history = useHistory();
 
   const userInitials =
@@ -87,7 +89,7 @@ export function ResultsStep(props: ResultsStepProps) {
               color: '#fff',
             }}
           >
-            {userInitials}
+            {userInitials || ''}
           </Avatar>
           <Typography
             sx={{
@@ -127,11 +129,15 @@ export function ResultsStep(props: ResultsStepProps) {
           >
             <SportsTennisOutlined sx={{ opacity: '.75' }} />
             <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>
-              {selectedSport}
+              {selectedSport === '0'
+                ? 'Padel'
+                : selectedSport === '1'
+                ? 'Tennis'
+                : 'Pickeball'}
             </Typography>
           </Box>
           <Box>
-            <Typography>Level 1</Typography>
+            <Typography>Level {userRating}</Typography>
           </Box>
         </Box>
         <Box

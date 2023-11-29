@@ -3,31 +3,60 @@ import { Button } from '../../../components/atoms/Button';
 import { ArrowBackIosNewOutlined, InfoRounded } from '@mui/icons-material';
 import { Box, Fade, Radio, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { createSportRating } from '../../../services/rating';
+import { useEffect, useState } from 'react';
 
 interface QuestioningStepProps {
   handleBackStep: () => void;
   handleNextStep: () => void;
 }
 
-export function QuestioningStep(props: QuestioningStepProps) {
+export function QuestioningStep({
+  handleBackStep,
+  handleNextStep,
+}: QuestioningStepProps) {
+  const [createRatingData, setCreateRatingData] = useState<any>();
+
   const form = useForm({
     defaultValues: {
-      levelQuestion: '',
-      genderQuestion: '',
-      ageQuestion: '',
-      otherSportsQuestion: '',
-      amountOfMatchesQestion: '',
-      sportLessonsQuestion: '',
-      fitnessLevelQuestion: '',
+      level: '',
+      gender: '',
+      age: '',
+      experience: '',
+      countMatches: '',
+      lessons: '',
+      fitness: '',
     },
   });
 
   const { register, watch } = form;
-  setTimeout(() => {
-    console.log(form.getValues());
-  }, 2000);
 
-  const { handleBackStep, handleNextStep } = props;
+  const questioningData = form.getValues();
+
+  useEffect(() => {
+    setCreateRatingData({
+      level: Number(questioningData.level),
+      gender: Number(questioningData.gender),
+      age: Number(questioningData.age),
+      experience: Number(questioningData.experience),
+      countMatches: Number(questioningData.countMatches),
+      lessons: Number(questioningData.lessons),
+      fitness: Number(questioningData.fitness),
+      sport: Number(localStorage.getItem('sport')),
+    });
+  }, [watch('fitness')]);
+
+  const createRatingMutation = useMutation({
+    mutationFn: createSportRating,
+    onSuccess(data) {
+      localStorage.setItem('userRating', JSON.stringify(data));
+      handleNextStep();
+    },
+    onError(e) {
+      console.log(e);
+    },
+  });
 
   return (
     <>
@@ -95,10 +124,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
               }}
             >
               <Radio
-                checked={watch('levelQuestion') === 'beginner'}
-                {...register('levelQuestion')}
-                value="beginner"
-                id="beginner"
+                checked={watch('level') === '0'}
+                {...register('level')}
+                value="0"
               />
               <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                 Beginner
@@ -112,9 +140,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
               }}
             >
               <Radio
-                checked={watch('levelQuestion') === 'intermediate'}
-                {...register('levelQuestion')}
-                value="intermediate"
+                checked={watch('level') === '1'}
+                {...register('level')}
+                value="1"
               />
               <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                 Intermediate
@@ -128,9 +156,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
               }}
             >
               <Radio
-                checked={watch('levelQuestion') === 'intermediate-high'}
-                {...register('levelQuestion')}
-                value="intermediate-high"
+                checked={watch('level') === '2'}
+                {...register('level')}
+                value="2"
               />
               <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                 Intermediate high
@@ -144,9 +172,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
               }}
             >
               <Radio
-                checked={watch('levelQuestion') === 'advanced'}
-                {...register('levelQuestion')}
-                value="advanced"
+                checked={watch('level') === '3'}
+                {...register('level')}
+                value="3"
               />
               <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                 Advanced
@@ -160,16 +188,16 @@ export function QuestioningStep(props: QuestioningStepProps) {
               }}
             >
               <Radio
-                checked={watch('levelQuestion') === 'competition'}
-                {...register('levelQuestion')}
-                value="competition"
+                checked={watch('level') === '4'}
+                {...register('level')}
+                value="4"
               />
               <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                 Competition
               </Typography>
             </Box>
           </Box>
-          {watch('levelQuestion') !== '' && watch('levelQuestion') && (
+          {watch('level') !== '' && watch('level') && (
             <Fade in>
               <Box
                 sx={{
@@ -189,9 +217,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
                   }}
                 >
                   <Radio
-                    checked={watch('genderQuestion') === 'male'}
-                    {...register('genderQuestion')}
-                    value="male"
+                    checked={watch('gender') === '0'}
+                    {...register('gender')}
+                    value="0"
                   />
                   <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                     Мужчина
@@ -205,9 +233,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
                   }}
                 >
                   <Radio
-                    checked={watch('genderQuestion') === 'female'}
-                    {...register('genderQuestion')}
-                    value="female"
+                    checked={watch('gender') === '1'}
+                    {...register('gender')}
+                    value="1"
                   />
                   <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                     Женщина
@@ -217,7 +245,7 @@ export function QuestioningStep(props: QuestioningStepProps) {
             </Fade>
           )}
 
-          {watch('genderQuestion') !== '' && watch('genderQuestion') && (
+          {watch('gender') !== '' && watch('gender') && (
             <Fade in>
               <Box
                 sx={{
@@ -237,9 +265,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
                   }}
                 >
                   <Radio
-                    checked={watch('ageQuestion') === '18-30'}
-                    {...register('ageQuestion')}
-                    value="18-30"
+                    checked={watch('age') === '0'}
+                    {...register('age')}
+                    value="0"
                   />
                   <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                     18-30
@@ -253,9 +281,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
                   }}
                 >
                   <Radio
-                    checked={watch('ageQuestion') === '30-40'}
-                    {...register('ageQuestion')}
-                    value="30-40"
+                    checked={watch('age') === '1'}
+                    {...register('age')}
+                    value="1"
                   />
                   <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                     30-40
@@ -269,9 +297,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
                   }}
                 >
                   <Radio
-                    checked={watch('ageQuestion') === '40-50'}
-                    {...register('ageQuestion')}
-                    value="40-50"
+                    checked={watch('age') === '2'}
+                    {...register('age')}
+                    value="2"
                   />
                   <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                     40-50
@@ -285,9 +313,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
                   }}
                 >
                   <Radio
-                    checked={watch('ageQuestion') === 'over-50'}
-                    {...register('ageQuestion')}
-                    value="over-50"
+                    checked={watch('age') === '3'}
+                    {...register('age')}
+                    value="3"
                   />
                   <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                     Больше 50
@@ -297,7 +325,7 @@ export function QuestioningStep(props: QuestioningStepProps) {
             </Fade>
           )}
 
-          {watch('ageQuestion') !== '' && watch('ageQuestion') && (
+          {watch('age') !== '' && watch('age') && (
             <Fade in>
               <Box
                 sx={{
@@ -317,9 +345,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
                   }}
                 >
                   <Radio
-                    checked={watch('otherSportsQuestion') === 'never'}
-                    {...register('otherSportsQuestion')}
-                    value="never"
+                    checked={watch('experience') === '0'}
+                    {...register('experience')}
+                    value="0"
                   />
                   <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                     Нет, никогда
@@ -333,11 +361,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
                   }}
                 >
                   <Radio
-                    checked={
-                      watch('otherSportsQuestion') === 'less-than-two-years'
-                    }
-                    {...register('otherSportsQuestion')}
-                    value="less-than-two-years"
+                    checked={watch('experience') === '1'}
+                    {...register('experience')}
+                    value="1"
                   />
                   <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                     Да, меньше двух лет
@@ -351,11 +377,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
                   }}
                 >
                   <Radio
-                    checked={
-                      watch('otherSportsQuestion') === 'more-than-two-years'
-                    }
-                    {...register('otherSportsQuestion')}
-                    value="more-than-two-years"
+                    checked={watch('experience') === '2'}
+                    {...register('experience')}
+                    value="2"
                   />
                   <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                     Да, больше двух лет
@@ -369,11 +393,9 @@ export function QuestioningStep(props: QuestioningStepProps) {
                   }}
                 >
                   <Radio
-                    checked={
-                      watch('otherSportsQuestion') === 'more-than-five-years'
-                    }
-                    {...register('otherSportsQuestion')}
-                    value="more-than-five-years"
+                    checked={watch('experience') === '3'}
+                    {...register('experience')}
+                    value="3"
                   />
                   <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
                     Да, больше пяти лет
@@ -383,245 +405,239 @@ export function QuestioningStep(props: QuestioningStepProps) {
             </Fade>
           )}
 
-          {watch('otherSportsQuestion') !== '' &&
-            watch('otherSportsQuestion') && (
-              <Fade in>
+          {watch('experience') !== '' && watch('experience') && (
+            <Fade in>
+              <Box
+                sx={{
+                  paddingTop: '1rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
+                  Сколько матчей по паделю вы проводили в среднем в неделю за
+                  последние 6 месяцев?
+                </Typography>
                 <Box
                   sx={{
-                    paddingTop: '1rem',
                     display: 'flex',
-                    flexDirection: 'column',
+                    gap: '.5rem',
+                    alignItems: 'center',
                   }}
                 >
-                  <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-                    Сколько матчей по паделю вы проводили в среднем в неделю за
-                    последние 6 месяцев?
+                  <Radio
+                    checked={watch('countMatches') === '0'}
+                    {...register('countMatches')}
+                    value="0"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    0
                   </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={watch('amountOfMatchesQestion') === '0'}
-                      {...register('amountOfMatchesQestion')}
-                      value="0"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      0
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={watch('amountOfMatchesQestion') === '1'}
-                      {...register('amountOfMatchesQestion')}
-                      value="1"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      1
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={watch('amountOfMatchesQestion') === '2'}
-                      {...register('amountOfMatchesQestion')}
-                      value="2"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      2
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={watch('amountOfMatchesQestion') === '3-or-more'}
-                      {...register('amountOfMatchesQestion')}
-                      value="3-or-more"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      3 или больше
-                    </Typography>
-                  </Box>
                 </Box>
-              </Fade>
-            )}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '.5rem',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Radio
+                    checked={watch('countMatches') === '1'}
+                    {...register('countMatches')}
+                    value="1"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    1
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '.5rem',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Radio
+                    checked={watch('countMatches') === '2'}
+                    {...register('countMatches')}
+                    value="2"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    2
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '.5rem',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Radio
+                    checked={watch('countMatches') === '3-or-more'}
+                    {...register('countMatches')}
+                    value="3"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    3 или больше
+                  </Typography>
+                </Box>
+              </Box>
+            </Fade>
+          )}
 
-          {watch('amountOfMatchesQestion') !== '' &&
-            watch('amountOfMatchesQestion') && (
-              <Fade in>
+          {watch('countMatches') !== '' && watch('countMatches') && (
+            <Fade in>
+              <Box
+                sx={{
+                  paddingTop: '1rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
+                  Получали ли вы уроки игры в падель за последний год? Сколько
+                  уроков в неделю?
+                </Typography>
                 <Box
                   sx={{
-                    paddingTop: '1rem',
                     display: 'flex',
-                    flexDirection: 'column',
+                    gap: '.5rem',
+                    alignItems: 'center',
                   }}
                 >
-                  <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-                    Получали ли вы уроки игры в падель за последний год? Сколько
-                    уроков в неделю?
+                  <Radio
+                    checked={watch('lessons') === '0'}
+                    {...register('lessons')}
+                    value="0"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    Нет, никогда
                   </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={watch('sportLessonsQuestion') === 'never'}
-                      {...register('sportLessonsQuestion')}
-                      value="never"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      Нет, никогда
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={watch('sportLessonsQuestion') === 'one-lesson'}
-                      {...register('sportLessonsQuestion')}
-                      value="one-lesson"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      Да, один урок в неделю
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={
-                        watch('sportLessonsQuestion') === 'two-or-three-lessons'
-                      }
-                      {...register('sportLessonsQuestion')}
-                      value="two-or-three-lessons"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      Да, два или три урока в неделю
-                    </Typography>
-                  </Box>
                 </Box>
-              </Fade>
-            )}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '.5rem',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Radio
+                    checked={watch('lessons') === '1'}
+                    {...register('lessons')}
+                    value="1"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    Да, один урок в неделю
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '.5rem',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Radio
+                    checked={watch('lessons') === '2'}
+                    {...register('lessons')}
+                    value="2"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    Да, два или три урока в неделю
+                  </Typography>
+                </Box>
+              </Box>
+            </Fade>
+          )}
 
-          {watch('sportLessonsQuestion') !== '' &&
-            watch('sportLessonsQuestion') && (
-              <Fade in>
+          {watch('lessons') !== '' && watch('lessons') && (
+            <Fade in>
+              <Box
+                sx={{
+                  paddingTop: '1rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
+                  Какой у вас уровень фитнесса?
+                </Typography>
                 <Box
                   sx={{
-                    paddingTop: '1rem',
                     display: 'flex',
-                    flexDirection: 'column',
+                    gap: '.5rem',
+                    alignItems: 'center',
                   }}
                 >
-                  <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-                    Какой у вас уровень фитнесса?
+                  <Radio
+                    checked={watch('fitness') === '0'}
+                    {...register('fitness')}
+                    value="0"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    Отличный
                   </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={watch('fitnessLevelQuestion') === 'excellent'}
-                      {...register('fitnessLevelQuestion')}
-                      value="excellent"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      Отличный
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={watch('fitnessLevelQuestion') === 'good'}
-                      {...register('fitnessLevelQuestion')}
-                      value="good"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      Хороший
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={watch('fitnessLevelQuestion') === 'normal'}
-                      {...register('fitnessLevelQuestion')}
-                      value="normal"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      Средний
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Radio
-                      checked={watch('fitnessLevelQuestion') === 'low'}
-                      {...register('fitnessLevelQuestion')}
-                      value="low"
-                    />
-                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                      Очень низкий
-                    </Typography>
-                  </Box>
                 </Box>
-              </Fade>
-            )}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '.5rem',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Radio
+                    checked={watch('fitness') === '1'}
+                    {...register('fitness')}
+                    value="1"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    Хороший
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '.5rem',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Radio
+                    checked={watch('fitness') === '2'}
+                    {...register('fitness')}
+                    value="2"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    Средний
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '.5rem',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Radio
+                    checked={watch('fitness') === '3'}
+                    {...register('fitness')}
+                    value="3"
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    Очень низкий
+                  </Typography>
+                </Box>
+              </Box>
+            </Fade>
+          )}
 
           <Button
             disabled={
-              watch('fitnessLevelQuestion') !== '' &&
-              watch('fitnessLevelQuestion')
-                ? false
-                : true
+              watch('fitness') !== '' && watch('fitness') ? false : true
             }
-            onClick={() => handleNextStep()}
+            onClick={() => {
+              createRatingMutation.mutate(createRatingData);
+            }}
             sx={{
               fontSize: '1.1rem',
               fontWeight: '600',

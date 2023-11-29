@@ -22,12 +22,5 @@ export const useUserInfo = () => {
     enabled: isAuthorized,
   });
 
-  const user = {
-    id: data?.data.id,
-    firstName: data?.data.firstname,
-    lastName: data?.data.lastname,
-    email: data?.data.email,
-  };
-
-  return user;
+  return data?.data;
 };

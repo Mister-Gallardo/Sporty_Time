@@ -12,11 +12,17 @@ export enum Role {
 export interface Player {
   id: number;
 
-  user: User;
+  ratingPadel: number;
 
-  courts: Court[];
+  ratingPickleball: Court[];
 
-  matchBookings: MatchBooking[];
+  ratingTennis: MatchBooking[];
+
+  scoresPadel: number;
+
+  scoresPickleball: number;
+
+  scoresTennis: number;
 
   createdAt: Date;
 

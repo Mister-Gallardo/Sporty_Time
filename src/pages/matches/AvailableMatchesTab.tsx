@@ -6,12 +6,25 @@ import {
   Typography,
 } from '@mui/material';
 import { MatchCard } from '../../components/molecules/MatchCard';
-import { isPlatform } from '@ionic/react';
+import { IonLoading, isPlatform } from '@ionic/react';
 import { ExpandMore } from '@mui/icons-material';
+import { useQuery } from '@tanstack/react-query';
+import { getAvailableMatches } from '../../services/matches/service';
 
 interface IAvailableMatchesTabProps {}
 
-export function AvailableMatchesTab(props: IAvailableMatchesTabProps) {
+export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
+  const { data, isLoading } = useQuery({
+    queryKey: ['available-matches'],
+    queryFn: getAvailableMatches,
+  });
+
+  const availableMatchesArray = data?.data;
+
+  if (isLoading) {
+    return <IonLoading trigger="open-loading" />;
+  }
+
   return (
     <Box
       sx={{
@@ -45,12 +58,9 @@ export function AvailableMatchesTab(props: IAvailableMatchesTabProps) {
           scrollBehavior: 'smooth',
         }}
       >
-        <MatchCard />
-        <MatchCard />
-        <MatchCard />
-        <MatchCard />
-        <MatchCard />
-        <MatchCard />
+        {availableMatchesArray?.map((card, index) => {
+          return <MatchCard key={index} {...card} />;
+        })}
       </Box>
 
       <Accordion
@@ -94,12 +104,9 @@ export function AvailableMatchesTab(props: IAvailableMatchesTabProps) {
               scrollBehavior: 'smooth',
             }}
           >
-            <MatchCard />
-            <MatchCard />
-            <MatchCard />
-            <MatchCard />
-            <MatchCard />
-            <MatchCard />
+            {availableMatchesArray?.map((card, index) => {
+              return <MatchCard key={index} {...card} />;
+            })}
           </Box>
         </AccordionDetails>
       </Accordion>
