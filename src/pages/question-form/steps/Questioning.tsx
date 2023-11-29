@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { createSportRating } from '../../../services/rating';
 import { useEffect, useState } from 'react';
+import { questionsArray } from './questions';
 
 interface QuestioningStepProps {
   handleBackStep: () => void;
@@ -89,114 +90,57 @@ export function QuestioningStep({
             paddingInline: '20px',
           }}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-              На каком уровне по-вашему вы находитесь?
-            </Typography>
+          <Fade in>
             <Box
               sx={{
                 display: 'flex',
-                gap: '15px',
-                background: '#EEF0FF',
-                border: '1px solid #E7EEFA',
-                borderRadius: '12px',
-                padding: '15px',
-                marginBlock: '1rem',
+                flexDirection: 'column',
               }}
             >
-              <InfoRounded sx={{ color: '#7190FF' }} />
-              <Typography>
-                Не переоценивайте себя! Для того чтобы повысить точность
-                выравнивания и найти свою идеальную пару, вы должны отвечать
-                правдиво.
+              <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
+                {questionsArray[0].question}
               </Typography>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '15px',
+                  background: '#EEF0FF',
+                  border: '1px solid #E7EEFA',
+                  borderRadius: '12px',
+                  padding: '15px',
+                  marginBlock: '1rem',
+                }}
+              >
+                <InfoRounded sx={{ color: '#7190FF' }} />
+                <Typography>
+                  Не переоценивайте себя! Для того чтобы повысить точность
+                  выравнивания и найти свою идеальную пару, вы должны отвечать
+                  правдиво.
+                </Typography>
+              </Box>
+
+              {questionsArray[0].answers.map((answer, index) => (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '.5rem',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Radio
+                    checked={watch('level') === String(index)}
+                    {...register('level')}
+                    value={String(index)}
+                  />
+                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                    {answer}
+                  </Typography>
+                </Box>
+              ))}
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '.5rem',
-                alignItems: 'center',
-              }}
-            >
-              <Radio
-                checked={watch('level') === '0'}
-                {...register('level')}
-                value="0"
-              />
-              <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                Beginner
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '.5rem',
-                alignItems: 'center',
-              }}
-            >
-              <Radio
-                checked={watch('level') === '1'}
-                {...register('level')}
-                value="1"
-              />
-              <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                Intermediate
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '.5rem',
-                alignItems: 'center',
-              }}
-            >
-              <Radio
-                checked={watch('level') === '2'}
-                {...register('level')}
-                value="2"
-              />
-              <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                Intermediate high
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '.5rem',
-                alignItems: 'center',
-              }}
-            >
-              <Radio
-                checked={watch('level') === '3'}
-                {...register('level')}
-                value="3"
-              />
-              <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                Advanced
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '.5rem',
-                alignItems: 'center',
-              }}
-            >
-              <Radio
-                checked={watch('level') === '4'}
-                {...register('level')}
-                value="4"
-              />
-              <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                Competition
-              </Typography>
-            </Box>
-          </Box>
+          </Fade>
+
           {watch('level') !== '' && watch('level') && (
             <Fade in>
               <Box
@@ -207,40 +151,26 @@ export function QuestioningStep({
                 }}
               >
                 <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-                  Вы женщина или мужчина?
+                  {questionsArray[1].question}
                 </Typography>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('gender') === '0'}
-                    {...register('gender')}
-                    value="0"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Мужчина
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('gender') === '1'}
-                    {...register('gender')}
-                    value="1"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Женщина
-                  </Typography>
-                </Box>
+                {questionsArray[1].answers.map((answer, index) => (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '.5rem',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Radio
+                      checked={watch('gender') === String(index)}
+                      {...register('gender')}
+                      value={String(index)}
+                    />
+                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                      {answer}
+                    </Typography>
+                  </Box>
+                ))}
               </Box>
             </Fade>
           )}
@@ -255,72 +185,26 @@ export function QuestioningStep({
                 }}
               >
                 <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-                  Сколько вам лет?
+                  {questionsArray[2].question}
                 </Typography>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('age') === '0'}
-                    {...register('age')}
-                    value="0"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    18-30
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('age') === '1'}
-                    {...register('age')}
-                    value="1"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    30-40
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('age') === '2'}
-                    {...register('age')}
-                    value="2"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    40-50
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('age') === '3'}
-                    {...register('age')}
-                    value="3"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Больше 50
-                  </Typography>
-                </Box>
+                {questionsArray[2].answers.map((answer, index) => (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '.5rem',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Radio
+                      checked={watch('age') === String(index)}
+                      {...register('age')}
+                      value={String(index)}
+                    />
+                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                      {answer}
+                    </Typography>
+                  </Box>
+                ))}
               </Box>
             </Fade>
           )}
@@ -335,72 +219,26 @@ export function QuestioningStep({
                 }}
               >
                 <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-                  Занимались ли вы в прошлом другими видами ракетного спорта?
+                  {questionsArray[3].question}
                 </Typography>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('experience') === '0'}
-                    {...register('experience')}
-                    value="0"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Нет, никогда
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('experience') === '1'}
-                    {...register('experience')}
-                    value="1"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Да, меньше двух лет
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('experience') === '2'}
-                    {...register('experience')}
-                    value="2"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Да, больше двух лет
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('experience') === '3'}
-                    {...register('experience')}
-                    value="3"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Да, больше пяти лет
-                  </Typography>
-                </Box>
+                {questionsArray[3].answers.map((answer, index) => (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '.5rem',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Radio
+                      checked={watch('experience') === String(index)}
+                      {...register('experience')}
+                      value={String(index)}
+                    />
+                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                      {answer}
+                    </Typography>
+                  </Box>
+                ))}
               </Box>
             </Fade>
           )}
@@ -415,73 +253,26 @@ export function QuestioningStep({
                 }}
               >
                 <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-                  Сколько матчей по паделю вы проводили в среднем в неделю за
-                  последние 6 месяцев?
+                  {questionsArray[4].question}
                 </Typography>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('countMatches') === '0'}
-                    {...register('countMatches')}
-                    value="0"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    0
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('countMatches') === '1'}
-                    {...register('countMatches')}
-                    value="1"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    1
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('countMatches') === '2'}
-                    {...register('countMatches')}
-                    value="2"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    2
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('countMatches') === '3-or-more'}
-                    {...register('countMatches')}
-                    value="3"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    3 или больше
-                  </Typography>
-                </Box>
+                {questionsArray[4].answers.map((answer, index) => (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '.5rem',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Radio
+                      checked={watch('countMatches') === String(index)}
+                      {...register('countMatches')}
+                      value={String(index)}
+                    />
+                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                      {answer}
+                    </Typography>
+                  </Box>
+                ))}
               </Box>
             </Fade>
           )}
@@ -496,57 +287,26 @@ export function QuestioningStep({
                 }}
               >
                 <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-                  Получали ли вы уроки игры в падель за последний год? Сколько
-                  уроков в неделю?
+                  {questionsArray[5].question}
                 </Typography>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('lessons') === '0'}
-                    {...register('lessons')}
-                    value="0"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Нет, никогда
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('lessons') === '1'}
-                    {...register('lessons')}
-                    value="1"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Да, один урок в неделю
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('lessons') === '2'}
-                    {...register('lessons')}
-                    value="2"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Да, два или три урока в неделю
-                  </Typography>
-                </Box>
+                {questionsArray[5].answers.map((answer, index) => (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '.5rem',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Radio
+                      checked={watch('lessons') === String(index)}
+                      {...register('lessons')}
+                      value={String(index)}
+                    />
+                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                      {answer}
+                    </Typography>
+                  </Box>
+                ))}
               </Box>
             </Fade>
           )}
@@ -561,72 +321,26 @@ export function QuestioningStep({
                 }}
               >
                 <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-                  Какой у вас уровень фитнесса?
+                  {questionsArray[6].question}
                 </Typography>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('fitness') === '0'}
-                    {...register('fitness')}
-                    value="0"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Отличный
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('fitness') === '1'}
-                    {...register('fitness')}
-                    value="1"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Хороший
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('fitness') === '2'}
-                    {...register('fitness')}
-                    value="2"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Средний
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '.5rem',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Radio
-                    checked={watch('fitness') === '3'}
-                    {...register('fitness')}
-                    value="3"
-                  />
-                  <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
-                    Очень низкий
-                  </Typography>
-                </Box>
+                {questionsArray[6].answers.map((answer, index) => (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '.5rem',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Radio
+                      checked={watch('fitness') === String(index)}
+                      {...register('fitness')}
+                      value={String(index)}
+                    />
+                    <Typography sx={{ fontSize: '1.1rem', opacity: '.7' }}>
+                      {answer}
+                    </Typography>
+                  </Box>
+                ))}
               </Box>
             </Fade>
           )}
