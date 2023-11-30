@@ -1,4 +1,4 @@
-import { IonBackButton, IonContent, IonHeader, IonPage } from '@ionic/react';
+import { IonBackButton, IonContent, IonPage } from '@ionic/react';
 import { SingleMatchPage } from '.';
 import {
   ArrowBackIosNewOutlined,
@@ -10,7 +10,6 @@ import { Box, IconButton } from '@mui/material';
 export function MobileSingleMatchPage() {
   return (
     <IonPage>
-      <IonHeader style={{ border: 'none' }}></IonHeader>
       <IonContent scrollEvents={true}>
         <Box
           sx={{
