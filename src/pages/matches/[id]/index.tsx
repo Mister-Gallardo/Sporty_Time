@@ -7,19 +7,27 @@ import {
   SportsBaseball,
   SportsTennis,
 } from '@mui/icons-material';
-import { Avatar, Box, IconButton, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import { SwipeablePage } from '../../../components/SwipeablePage';
 import { Button } from '../../../components/atoms/Button';
-import { IonBackButton, isPlatform } from '@ionic/react';
+import {
+  IonBackButton,
+  IonLoading,
+  isPlatform,
+  useIonToast,
+} from '@ionic/react';
 import { useState } from 'react';
-import { useUserInfo } from '../../../services/api/hooks';
 import { useParams } from 'react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { autoPlay } from 'react-swipeable-views-utils';
-import SwipeableViews from 'react-swipeable-views';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
-  getOneAvailableMatche,
+  getOneAvailableMatch,
   joinMatch,
 } from '../../../services/matches/service';
 
@@ -29,10 +37,10 @@ interface TeamPlayer {
   avatar?: string;
 }
 
-const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
-
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
+  const [showToast] = useIonToast();
+
   const { matchId }: { matchId: string | undefined } = useParams();
 
   const {
@@ -41,14 +49,60 @@ export function SingleMatchPage() {
     refetch: refetchClubs,
   } = useQuery({
     queryKey: ['available-club'],
-    queryFn: () => getOneAvailableMatche(Number(matchId)),
+    queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
+
+  const singleMatchData = data?.data;
+  const [playerInTeam, setPlayerInTeam] = useState<string>();
 
   const joinMatchMutation = useMutation({
     mutationFn: joinMatch,
-    onSuccess(data) {},
-    onError() {},
+    onSuccess(data) {
+      showToast({
+        header: 'Поздравляем!',
+        message: 'Вы присоединились к матчу',
+        duration: 2000,
+        position: 'top',
+        color: 'success',
+      });
+    },
+    onError(e) {
+      console.log(e);
+    },
   });
+
+  const [teamA, setTeamA] = useState<TeamPlayer[] | []>([
+    {
+      name: 'Ramazan',
+      level: '1.4',
+      avatar: 'https://mui.com/static/images/avatar/1.jpg',
+    },
+    {
+      name: '',
+      level: '',
+      avatar: '',
+    },
+  ]);
+
+  const [teamB, setTeamB] = useState<TeamPlayer[]>([
+    {
+      name: 'Amir',
+      level: '1.75',
+      avatar: 'https://mui.com/static/images/avatar/2.jpg',
+    },
+    { name: '', level: '' },
+  ]);
+
+  const playerData: TeamPlayer = {
+    name: 'Ramazan',
+    level: '2.25',
+    avatar:
+      'https://upload.wikimedia.org/wikipedia/ru/9/94/%D0%93%D0%B8%D0%B3%D0%B0%D1%87%D0%B0%D0%B4.jpg',
+  };
+
+  if (isLoading) {
+    return <IonLoading />;
+  }
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
@@ -79,46 +133,22 @@ export function SingleMatchPage() {
           fontWeight: '700',
         }}
       >
-        MatchTitle
+        Матч {matchId}
       </Typography>
     </Box>
   );
 
-  const [team1, setTeam1] = useState<TeamPlayer[] | []>([
-    {
-      name: 'Ramazan',
-      level: '1.4',
-      avatar: 'https://mui.com/static/images/avatar/1.jpg',
-    },
-    {
-      name: '',
-      level: '',
-      avatar: '',
-    },
-  ]);
-
-  const [team2, setTeam2] = useState<TeamPlayer[]>([
-    {
-      name: 'Amir',
-      level: '1.75',
-      avatar: 'https://mui.com/static/images/avatar/2.jpg',
-    },
-    { name: '', level: '' },
-  ]);
-
-  const user = useUserInfo();
-
-  const playerData: TeamPlayer = {
-    // name: user.firstName || '',
-    name: user?.firstname || '',
-    level: '2.25',
-    avatar:
-      'https://upload.wikimedia.org/wikipedia/ru/9/94/%D0%93%D0%B8%D0%B3%D0%B0%D1%87%D0%B0%D0%B4.jpg',
-  };
-
   return (
     <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
-      <Box>
+      <Box
+        sx={{
+          paddingTop: '1rem',
+          paddingBottom: '7rem',
+          background: '#fff',
+          position: 'relative',
+          zIndex: '99',
+        }}
+      >
         <Box
           sx={{
             paddingTop: isMobile ? 'unset' : '1.5rem',
@@ -169,9 +199,11 @@ export function SingleMatchPage() {
                         fontSize: '.9rem',
                       }}
                     >
-                      PADEL
+                      {singleMatchData?.sport}
                     </Typography>
-                    <Typography>Среда 22 ноября 20:00 - 21:30</Typography>
+                    <Typography>
+                      {singleMatchData?.gameDate} {singleMatchData?.slot?.time}
+                    </Typography>
                   </Box>
                 </Box>
                 <Box
@@ -248,7 +280,7 @@ export function SingleMatchPage() {
                     Уровень
                   </Typography>
                   <Typography sx={{ fontWeight: '700', fontSize: '1rem' }}>
-                    3.8 - 4.8
+                    {singleMatchData?.ratingFrom} - {singleMatchData?.ratingTo}
                   </Typography>
                 </Box>
                 <Box
@@ -294,8 +326,12 @@ export function SingleMatchPage() {
               </Box>
 
               <Box sx={{ display: 'flex', gap: '.5rem' }}>
-                <Typography>✅</Typography>
-                <Typography>Корт забронирован</Typography>
+                <Typography>{singleMatchData?.slot ? '✅' : '🔴'}</Typography>
+                <Typography>
+                  {singleMatchData?.slot
+                    ? 'Корт забронирован'
+                    : 'Корт не забронирован'}
+                </Typography>
               </Box>
             </Box>
 
@@ -409,7 +445,7 @@ export function SingleMatchPage() {
                     justifyContent: 'center',
                   }}
                 >
-                  {team1.map((player: TeamPlayer) => {
+                  {teamA.map((player: TeamPlayer) => {
                     return (
                       <Box
                         sx={{
@@ -433,7 +469,7 @@ export function SingleMatchPage() {
                           <Avatar
                             src={player?.avatar}
                             onClick={() => {
-                              const playerAlreadyInTeam = team1.find(
+                              const playerAlreadyInTeam = teamA.find(
                                 (player) =>
                                   player.name === playerData.name &&
                                   player.level === playerData.level,
@@ -443,17 +479,18 @@ export function SingleMatchPage() {
                                 (!player.name || !player.level) &&
                                 !playerAlreadyInTeam
                               ) {
-                                const index = team2.findIndex(
+                                setPlayerInTeam('A');
+                                const index = teamB.findIndex(
                                   (player) =>
                                     player.name === playerData.name &&
                                     player.level === playerData.level,
                                 );
 
-                                const newTeam2 = team2.map(
+                                const newTeamB = teamB.map(
                                   (player: TeamPlayer) => {
-                                    if (player === team2[index]) {
+                                    if (player === teamB[index]) {
                                       return [
-                                        ...team2,
+                                        ...teamB,
                                         (player.name = ''),
                                         (player.level = ''),
                                       ];
@@ -461,9 +498,9 @@ export function SingleMatchPage() {
                                   },
                                 );
 
-                                setTeam2(newTeam2 as TeamPlayer[]);
+                                setTeamB(newTeamB as TeamPlayer[]);
 
-                                const newTeam1 = team1.map(
+                                const newTeamA = teamA.map(
                                   (player: TeamPlayer) => {
                                     if (!player.name && !player.level) {
                                       return {
@@ -478,7 +515,7 @@ export function SingleMatchPage() {
                                     }
                                   },
                                 );
-                                setTeam1(newTeam1 as TeamPlayer[]);
+                                setTeamA(newTeamA as TeamPlayer[]);
                               } else return;
                             }}
                             sx={{
@@ -502,7 +539,7 @@ export function SingleMatchPage() {
                   sx={{ width: '2px', height: '100px', background: '#e5e5e5' }}
                 />
                 <Box sx={{ display: 'flex', gap: '14px' }}>
-                  {team2.map((player: TeamPlayer) => {
+                  {teamB.map((player: TeamPlayer) => {
                     return (
                       <Box
                         sx={{
@@ -526,7 +563,7 @@ export function SingleMatchPage() {
                           <Avatar
                             src={player.avatar}
                             onClick={() => {
-                              const playerAlreadyInTeam = team2.find(
+                              const playerAlreadyInTeam = teamB.find(
                                 (player) =>
                                   player.name === playerData.name &&
                                   player.level === playerData.level,
@@ -536,17 +573,18 @@ export function SingleMatchPage() {
                                 (!player.name || !player.level) &&
                                 !playerAlreadyInTeam
                               ) {
-                                const index = team1.findIndex(
+                                setPlayerInTeam('B');
+                                const index = teamA.findIndex(
                                   (player) =>
                                     player.name === playerData.name &&
                                     player.level === playerData.level,
                                 );
 
-                                const newTeam1 = team1.map(
+                                const newTeam1 = teamA.map(
                                   (player: TeamPlayer) => {
-                                    if (player === team1[index]) {
+                                    if (player === teamA[index]) {
                                       return [
-                                        ...team1,
+                                        ...teamA,
                                         (player.name = ''),
                                         (player.level = ''),
                                       ];
@@ -554,9 +592,9 @@ export function SingleMatchPage() {
                                   },
                                 );
 
-                                setTeam1(newTeam1 as TeamPlayer[]);
+                                setTeamA(newTeam1 as TeamPlayer[]);
 
-                                const newTeam2 = team2.map(
+                                const newTeam2 = teamB.map(
                                   (player: TeamPlayer) => {
                                     if (!player.name && !player.level) {
                                       return {
@@ -571,7 +609,7 @@ export function SingleMatchPage() {
                                     }
                                   },
                                 );
-                                setTeam2(newTeam2 as TeamPlayer[]);
+                                setTeamB(newTeam2 as TeamPlayer[]);
                               } else return;
                             }}
                             sx={{
@@ -617,6 +655,20 @@ export function SingleMatchPage() {
             }}
           >
             <Button
+              onClick={() => {
+                if (matchId && playerInTeam) {
+                  joinMatchMutation.mutate({
+                    matchId: Number(matchId),
+                    team: playerInTeam,
+                  });
+                } else {
+                  showToast({
+                    message: 'Выберите команду!',
+                    duration: 1000,
+                    color: 'danger',
+                  });
+                }
+              }}
               sx={{
                 height: '45px',
                 background: '#0D2432',
@@ -629,7 +681,11 @@ export function SingleMatchPage() {
                   'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
               }}
             >
-              Забронировать место - ₽ 3000
+              {joinMatchMutation.isPending ? (
+                <CircularProgress />
+              ) : (
+                'Забронировать место - ₽ 3000'
+              )}
             </Button>
           </Box>
         </Box>

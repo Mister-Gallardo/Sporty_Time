@@ -1,10 +1,23 @@
-import { isPlatform } from '@ionic/react';
+import { IonLoading, isPlatform } from '@ionic/react';
 import { Box } from '@mui/material';
 import { MyMatchCard } from '../../components/molecules/MyMatchCard';
+import { getMyMatches } from '../../services/matches/service';
+import { useQuery } from '@tanstack/react-query';
 
 interface IMyMatchesTabProps {}
 
-export function MyMatchesTab(props: IMyMatchesTabProps) {
+export function MyMatchesTab({}: IMyMatchesTabProps) {
+  const { data, isLoading } = useQuery({
+    queryKey: ['my-matches'],
+    queryFn: getMyMatches,
+  });
+
+  const myMatchesData = data?.data;
+
+  if (isLoading) {
+    return <IonLoading trigger="open-loading" />;
+  }
+
   return (
     <Box
       sx={{
@@ -23,10 +36,9 @@ export function MyMatchesTab(props: IMyMatchesTabProps) {
           gap: '1rem',
         }}
       >
-        {Array.from('12').map(() => (
-          <MyMatchCard noResult={false} />
+        {myMatchesData?.map((card) => (
+          <MyMatchCard noResult={card.matchResults} {...card} />
         ))}
-        <MyMatchCard noResult />
       </Box>
     </Box>
   );

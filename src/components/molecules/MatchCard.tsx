@@ -35,7 +35,7 @@ export function MatchCard(props: AvailableMatch) {
           }}
         >
           <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-            30 нояб | {matchData.time.slice(0, -3)}
+            {matchData.gameDate} | {matchData?.slot?.time.slice(0, -3)}
           </Typography>
           <Box
             sx={{
@@ -45,16 +45,14 @@ export function MatchCard(props: AvailableMatch) {
             }}
           >
             <Typography sx={{ fontSize: '.9rem', fontWeight: '500' }}>
-              Корт забронирован
+              {matchData.slot ? 'Корт забронирован' : 'Корт не забронирован'}
             </Typography>
-            <Typography>✅</Typography>
+            <Typography>{matchData.slot ? '✅' : '🔴'}</Typography>
           </Box>
         </Box>
 
         <Box>
-          <Typography sx={{ paddingBlock: '.25rem' }}>
-            11km · {matchData.courtaddress}
-          </Typography>
+          <Typography sx={{ paddingBlock: '.25rem' }}>11km · Dubai</Typography>
         </Box>
 
         <Box
@@ -156,7 +154,9 @@ export function MatchCard(props: AvailableMatch) {
           >
             <Typography sx={{ fontWeight: '600', paddingBottom: '.25rem' }}>
               Competetive ·{' '}
-              <span style={{ fontWeight: '400' }}>Level 3.8 - 4.8</span>
+              <span style={{ fontWeight: '400' }}>
+                Level {matchData.ratingFrom} - {matchData.ratingTo}
+              </span>
             </Typography>
             <Typography sx={{ fontWeight: '600' }}>Mixed</Typography>
           </Box>
@@ -173,7 +173,7 @@ export function MatchCard(props: AvailableMatch) {
             }}
           >
             <Typography sx={{ fontSize: '1.25rem', fontWeight: '700' }}>
-              ₽ {matchData.courtprice}
+              ₽ 1200
             </Typography>
             <Typography>90 мин</Typography>
           </Box>
