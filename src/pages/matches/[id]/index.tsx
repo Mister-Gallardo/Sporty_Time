@@ -1,7 +1,6 @@
 import {
   ArrowBackIosNewOutlined,
   ChatBubbleOutlineRounded,
-  ErrorOutlined,
   LockOpenOutlined,
   NavigateNext,
   SportsBaseball,
@@ -40,8 +39,7 @@ interface TeamPlayer {
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
   const [showToast] = useIonToast();
-
-  const { matchId }: { matchId: string | undefined } = useParams();
+  const { matchId } = useParams<{ matchId: string }>();
 
   const {
     data,
@@ -62,12 +60,18 @@ export function SingleMatchPage() {
         header: 'Поздравляем!',
         message: 'Вы присоединились к матчу',
         duration: 2000,
-        position: 'top',
+        position: 'bottom',
         color: 'success',
       });
     },
-    onError(e) {
-      console.log(e);
+    onError(e: any) {
+      showToast({
+        header: 'Ошибка',
+        message: e.response.data.message,
+        duration: 2000,
+        position: 'bottom',
+        color: 'danger',
+      });
     },
   });
 
@@ -202,7 +206,9 @@ export function SingleMatchPage() {
                       {singleMatchData?.sport}
                     </Typography>
                     <Typography>
-                      {singleMatchData?.gameDate} {singleMatchData?.slot?.time}
+                      {singleMatchData?.gameDate}
+                      {', '}
+                      {singleMatchData?.slot?.time.slice(0, -3)}
                     </Typography>
                   </Box>
                 </Box>
@@ -301,7 +307,7 @@ export function SingleMatchPage() {
                     Цена
                   </Typography>
                   <Typography sx={{ fontWeight: '700', fontSize: '1rem' }}>
-                    ₽ 3000
+                    ₽ {singleMatchData?.price}
                   </Typography>
                 </Box>
               </Box>
@@ -420,7 +426,7 @@ export function SingleMatchPage() {
                 <Typography sx={{ fontSize: '1.1rem', fontWeight: '600' }}>
                   Игроки
                 </Typography>
-                <Box
+                {/* <Box
                   sx={{
                     display: 'inherit',
                     alignItems: 'inherit',
@@ -429,10 +435,12 @@ export function SingleMatchPage() {
                 >
                   <ErrorOutlined sx={{ opacity: '.6', color: '#000' }} />
                   <Typography>Out of range</Typography>
-                </Box>
+                </Box> */}
               </Box>
               <Box
                 sx={{
+                  maxWidth: '550px',
+                  margin: '0 auto',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
@@ -684,7 +692,7 @@ export function SingleMatchPage() {
               {joinMatchMutation.isPending ? (
                 <CircularProgress />
               ) : (
-                'Забронировать место - ₽ 3000'
+                `Забронировать место - ₽ ${singleMatchData?.price}`
               )}
             </Button>
           </Box>
@@ -692,4 +700,7 @@ export function SingleMatchPage() {
       </Box>
     </SwipeablePage>
   );
+}
+function enqueueSnackbar(arg0: string) {
+  throw new Error('Function not implemented.');
 }

@@ -59,27 +59,31 @@ export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
             gap: '1.25rem',
           }}
         >
-          <Box
-            onClick={onClick}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
+          {court?.options.map((option) => {
+            return (
+              <Box
+                onClick={onClick}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'column',
 
-              width: '100%',
-              maxWidth: '125px',
-              padding: '10px 7px',
-              background: '#6E8FFD',
-              borderRadius: '8px',
-              color: '#fff',
-            }}
-          >
-            <Typography sx={{ fontSize: '1.5rem', fontWeight: '600' }}>
-              {court.price} RUB
-            </Typography>
-            <Typography>90 мин</Typography>
-          </Box>
+                  width: '100%',
+                  maxWidth: '125px',
+                  padding: '10px 7px',
+                  background: '#6E8FFD',
+                  borderRadius: '8px',
+                  color: '#fff',
+                }}
+              >
+                <Typography sx={{ fontSize: '1.5rem', fontWeight: '600' }}>
+                  {court.price} RUB
+                </Typography>
+                <Typography>{option.minutes} мин</Typography>
+              </Box>
+            );
+          })}
         </Box>
       </AccordionDetails>
     </Accordion>

@@ -32,8 +32,8 @@ export function BookTab() {
   const [selectedSlot, setSelectedSlot] = useState('');
   const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(true);
   const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(true);
-  const [slotId, setSlotId] = useState<number>(0);
-
+  const [slots, setSlots] = useState<number[]>([]);
+  const [openDialog, setOpenDialog] = useState(false);
   const [openSuccessBookToast, setOpenSuccessBookToast] =
     useState<boolean>(false);
 
@@ -59,8 +59,11 @@ export function BookTab() {
     },
   });
 
+  console.log(data, 'CLUBS');
+
   const selectedSlotAvailableCourts =
     data?.availableSlots?.[selectedSlot]?.available || [];
+
   const selectedSlotBookedCourts =
     data?.availableSlots?.[selectedSlot]?.booked || [];
 
@@ -78,7 +81,7 @@ export function BookTab() {
     <Box
       sx={{
         padding: '10px 17px',
-        background: '#f8f8f8',
+        background: '#fbfbfb',
         paddingBlock: '1.25rem',
         minHeight: '100vh',
       }}
@@ -214,21 +217,28 @@ export function BookTab() {
               />
             </Box>
             <Box mt={2}>
-              {selectedSlotAvailableCourts?.map((court, i) => (
-                <>
-                  <CourtAccordion
-                    court={court}
-                    onClick={() => setSlotId(court.slotId)}
-                  />
-                  {selectedSlotAvailableCourts?.length !== i + 1 && <Divider />}
-                </>
-              ))}
+              {selectedSlotAvailableCourts?.map((court, i) => {
+                return (
+                  <>
+                    <CourtAccordion
+                      court={court}
+                      onClick={() => {
+                        setOpenDialog(true);
+                        setSlots(court.options[i].slots);
+                      }}
+                    />
+                    {selectedSlotAvailableCourts?.length !== i + 1 && (
+                      <Divider />
+                    )}
+                  </>
+                );
+              })}
               {!onlyAvailableCourts &&
                 selectedSlotBookedCourts?.map((court, i) => (
                   <>
                     <CourtAccordion
                       court={court}
-                      onClick={() => setSlotId(court.slotId)}
+                      onClick={() => setSlots([])}
                       disabled
                     />
                     {selectedSlotBookedCourts?.length !== i + 1 && <Divider />}
@@ -238,7 +248,7 @@ export function BookTab() {
           </>
         )}
       </Box>
-      <Dialog open={!!slotId} onClose={() => setSlotId(0)}>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         {createMatchMutation.isPending ? (
           <CircularProgress size={60} sx={{ margin: '20px' }} />
         ) : (
@@ -251,7 +261,7 @@ export function BookTab() {
             </DialogContent>
             <DialogActions>
               <Button
-                onClick={() => setSlotId(0)}
+                onClick={() => setOpenDialog(false)}
                 sx={{ height: '30px', fontWeight: '700', fontSize: '.75rem' }}
               >
                 Нет
@@ -259,10 +269,12 @@ export function BookTab() {
               <Button
                 onClick={() => {
                   createMatchMutation.mutate({
-                    slotId,
+                    slots,
                     selectedDate,
+                    ratingFrom: 1,
+                    reatingTo: 2,
                   });
-                  setSlotId(0);
+                  setOpenDialog(false);
                 }}
                 sx={{ height: '30px', fontWeight: '700', fontSize: '.75rem' }}
               >

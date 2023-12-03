@@ -30,7 +30,7 @@ export function BookTabMain() {
     <Box
       sx={{
         padding: '10px 17px',
-        background: '#f8f8f8',
+        background: '#fbfbfb',
         paddingBlock: '1.25rem',
       }}
     >

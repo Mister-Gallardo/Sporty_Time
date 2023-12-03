@@ -1,4 +1,9 @@
-import { AvailableMatch, CreateMatchDTO, JoinMatchDTO } from './interface';
+import {
+  AvailableMatch,
+  CreateMatchDTO,
+  JoinMatchDTO,
+  UploadResultsDTO,
+} from './interface';
 import { api } from '../api/service';
 
 export function getMyMatches() {
@@ -7,7 +12,7 @@ export function getMyMatches() {
 }
 
 export function getAvailableMatches() {
-  const res = api.get<AvailableMatch[]>('/matches');
+  const res = api.get<AvailableMatch[]>('/matches/available');
   return res;
 }
 
@@ -18,8 +23,10 @@ export function getOneAvailableMatch(id: number) {
 
 export function createMatch(data: CreateMatchDTO) {
   const res = api.post('/matches', {
-    slotId: data.slotId,
+    slots: data.slots,
     gameDate: data.selectedDate,
+    ratingFrom: data.ratingFrom,
+    ratingTo: data.reatingTo,
   });
   return res;
 }
@@ -29,6 +36,16 @@ export function joinMatch(data: JoinMatchDTO) {
   const res = api.post('/matches/join', {
     matchId: matchId,
     team: team,
+  });
+
+  return res;
+}
+
+export function uploadResults(data: UploadResultsDTO) {
+  const { matchId, matchResults } = data;
+  const res = api.post('/matches/upload-results', {
+    matchId: matchId,
+    matchResults: matchResults,
   });
 
   return res;

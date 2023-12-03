@@ -25,6 +25,10 @@ export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
     return <IonLoading trigger="open-loading" />;
   }
 
+  if (data?.data.length === 0) {
+    return <Box sx={{ textAlign: 'center' }}>No available matches</Box>;
+  }
+
   return (
     <Box
       sx={{

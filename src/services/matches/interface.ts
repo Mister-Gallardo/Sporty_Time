@@ -36,6 +36,10 @@ export interface AvailableMatch {
 
   gameDate: string;
 
+  price: number;
+
+  minutes: number;
+
   matchBookings: {
     id: number;
     confirmMatchResults: boolean;
@@ -80,11 +84,18 @@ export interface AvailableMatch {
 [];
 
 export interface CreateMatchDTO {
-  slotId: number;
   selectedDate: Date;
+  slots: number[];
+  ratingFrom: number;
+  reatingTo: number;
 }
 
 export interface JoinMatchDTO {
   matchId: number;
   team: string;
+}
+
+export interface UploadResultsDTO {
+  matchId: number;
+  matchResults: number[][];
 }

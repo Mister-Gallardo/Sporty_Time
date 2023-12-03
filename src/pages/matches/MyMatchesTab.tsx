@@ -37,7 +37,10 @@ export function MyMatchesTab({}: IMyMatchesTabProps) {
         }}
       >
         {myMatchesData?.map((card) => (
-          <MyMatchCard noResult={card.matchResults} {...card} />
+          <MyMatchCard
+            noResult={!card.matchResults || card.confirmMatchResults}
+            {...card}
+          />
         ))}
       </Box>
     </Box>

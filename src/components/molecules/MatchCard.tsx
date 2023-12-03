@@ -173,9 +173,9 @@ export function MatchCard(props: AvailableMatch) {
             }}
           >
             <Typography sx={{ fontSize: '1.25rem', fontWeight: '700' }}>
-              ₽ 1200
+              ₽ {matchData.price}
             </Typography>
-            <Typography>90 мин</Typography>
+            <Typography>{matchData.minutes} мин</Typography>
           </Box>
         </Box>
       </Box>

@@ -3,13 +3,16 @@ import { Avatar, Box, ButtonBase, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useHistory } from 'react-router';
 import { UploadResultModal } from '../modals/UploadResultModal';
+import { AvailableMatch } from '../../services/matches/interface';
 
 interface IMyMatchCardProps {
   noResult: boolean;
 }
 
-export function MyMatchCard(props: IMyMatchCardProps) {
-  const { noResult } = props;
+type ICardProps = IMyMatchCardProps & AvailableMatch;
+
+export function MyMatchCard(props: ICardProps) {
+  const { noResult, id } = props;
   const history = useHistory();
 
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -23,7 +26,7 @@ export function MyMatchCard(props: IMyMatchCardProps) {
       <Box
         onClick={() => {
           if (noResult) return;
-          history.push('/matches/2');
+          history.push('/matches/');
         }}
         sx={{
           position: 'relative',
@@ -137,7 +140,7 @@ export function MyMatchCard(props: IMyMatchCardProps) {
                   width: '100%',
                 }}
               >
-                Nov 29 | 12:00 - 13:00
+                {props.gameDate} | {props.slot.time.slice(0, -3)}
               </Typography>
               <Box
                 sx={{
@@ -198,13 +201,13 @@ export function MyMatchCard(props: IMyMatchCardProps) {
             >
               <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
                 <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                  3
+                  {props.matchResults[0][0]}
                 </Typography>
                 <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                  3
+                  {props.matchResults[1][0]}
                 </Typography>
                 <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                  3
+                  {props.matchResults[2][0]}
                 </Typography>
               </Box>
 
@@ -212,22 +215,26 @@ export function MyMatchCard(props: IMyMatchCardProps) {
                 sx={{ width: '150%', height: '1px', background: '#e5e5e5' }}
               />
 
-              <Box sx={{ display: 'flex', gap: '1.75rem' }}>
+              <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
                 <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                  3
-                </Typography>{' '}
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                  3
+                  {props.matchResults[0][1]}
                 </Typography>
                 <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                  3
+                  {props.matchResults[1][1]}
+                </Typography>
+                <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                  {props.matchResults[2][1]}
                 </Typography>
               </Box>
             </Box>
           )}
         </Box>
       </Box>
-      <UploadResultModal openState={openModal} handleModal={handleOpenModal} />
+      <UploadResultModal
+        matchId={id}
+        openState={openModal}
+        handleModal={handleOpenModal}
+      />
     </>
   );
 }

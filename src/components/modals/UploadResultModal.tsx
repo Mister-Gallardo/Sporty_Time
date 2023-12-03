@@ -1,9 +1,12 @@
-import { IonContent, IonModal, isPlatform } from '@ionic/react';
-import { Box, Modal, Typography } from '@mui/material';
+import { IonContent, IonModal, isPlatform, useIonToast } from '@ionic/react';
+import { Box, CircularProgress, Modal, Typography } from '@mui/material';
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { Button } from '../atoms/Button';
+import { useMutation } from '@tanstack/react-query';
+import { uploadResults } from '../../services/matches/service';
 
 interface IUploadResultModalProps {
+  matchId?: number;
   openState: boolean;
   handleModal: any;
 }
@@ -13,15 +16,17 @@ let currentMyTeamScore = 0;
 export function UploadResultModal({
   openState,
   handleModal,
+  matchId,
 }: IUploadResultModalProps) {
-  const [matchResult, setMatchResult] = useState<string[]>(
+  const [error, setError] = useState(undefined);
+  const [matchResultFields, setMatchResultFields] = useState<string[]>(
     new Array(6).fill(''),
   );
 
-  const [results] = [
-    [{ a: matchResult[0], b: matchResult[3] }],
-    [{ a: matchResult[1], b: matchResult[4] }],
-    [{ a: matchResult[2], b: matchResult[5] }],
+  const matchResults = [
+    [Number(matchResultFields[0]), Number(matchResultFields[3])],
+    [Number(matchResultFields[1]), Number(matchResultFields[4])],
+    [Number(matchResultFields[2]), Number(matchResultFields[5])],
   ];
 
   const [activeMyTeamIndex, setActiveMyTeamIndex] = useState<number>(0);
@@ -49,9 +54,9 @@ export function UploadResultModal({
       }
     }
 
-    const newMatchResult: string[] = [...matchResult];
+    const newMatchResult: string[] = [...matchResultFields];
     newMatchResult[currentMyTeamScore] = value.substring(value.length - 1);
-    setMatchResult(newMatchResult);
+    setMatchResultFields(newMatchResult);
   };
 
   const handleOnKeyDown = (
@@ -64,6 +69,25 @@ export function UploadResultModal({
     }
     if (key === 'Backspace') setActiveMyTeamIndex(index - 1);
   };
+
+  const [showToast] = useIonToast();
+
+  const uploadMatchReslultsMutation = useMutation({
+    mutationFn: uploadResults,
+    onMutate(data) {
+      if (error === 'Wait for match start') {
+        showToast({
+          message: 'Пока матч не начался, загрузка результатов отключена',
+          mode: 'ios',
+          position: 'top',
+          duration: 2000,
+        });
+      }
+    },
+    onError(e: any) {
+      setError(e.response.data.message);
+    },
+  });
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -116,7 +140,7 @@ export function UploadResultModal({
             <Typography>Set-3</Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: '10px' }}>
-            {matchResult.slice(1, 4).map((_, index) => (
+            {matchResultFields.slice(1, 4).map((_, index) => (
               <input
                 style={{
                   textAlign: 'center',
@@ -130,7 +154,7 @@ export function UploadResultModal({
                 }}
                 placeholder="-"
                 key={index}
-                value={matchResult[index]}
+                value={matchResultFields[index]}
                 ref={index === activeMyTeamIndex ? inputRef : null}
                 type="tel"
                 onKeyDown={(e) => handleOnKeyDown(e, index)}
@@ -140,7 +164,7 @@ export function UploadResultModal({
           </Box>
 
           <Box sx={{ display: 'flex', gap: '10px' }}>
-            {matchResult.slice(3).map((_, index) => {
+            {matchResultFields.slice(3).map((_, index) => {
               const newIndex = index + 3;
               return (
                 <input
@@ -156,7 +180,7 @@ export function UploadResultModal({
                   }}
                   placeholder="-"
                   key={index}
-                  value={matchResult[newIndex]}
+                  value={matchResultFields[newIndex]}
                   ref={newIndex === activeMyTeamIndex ? inputRef : null}
                   type="tel"
                   onKeyDown={(e) => handleOnKeyDown(e, newIndex)}
@@ -174,6 +198,13 @@ export function UploadResultModal({
           }}
         >
           <Button
+            onClick={() => {
+              if (!matchId) return;
+              uploadMatchReslultsMutation.mutate({
+                matchId: Number(matchId),
+                matchResults,
+              });
+            }}
             sx={{
               marginTop: '3rem',
               height: '45px',
@@ -187,7 +218,11 @@ export function UploadResultModal({
                 'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
             }}
           >
-            Отправить
+            {uploadMatchReslultsMutation.isPending ? (
+              <CircularProgress />
+            ) : (
+              'Отправить'
+            )}
           </Button>
         </Box>
       </Box>
