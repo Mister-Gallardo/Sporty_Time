@@ -221,7 +221,7 @@ export function BookTab() {
             </Box>
             <Box mt={2}>
               {selectedSlotAvailableCourts?.map((court, i) => {
-                function getCertainMinutes(optionIndex: number) {
+                function getOptionTime(optionIndex: number) {
                   setSelectedMinutes(court.options[optionIndex].playtime);
                 }
 
@@ -229,10 +229,10 @@ export function BookTab() {
                   <>
                     <CourtAccordion
                       court={court}
-                      getOptionTime={getCertainMinutes}
+                      getOptionTime={getOptionTime}
                       onClick={() => {
                         setOpenDialog(true);
-                        setSlotId(court.id);
+                        setSlotId(court.slotId);
                       }}
                     />
                     {selectedSlotAvailableCourts?.length !== i + 1 && (

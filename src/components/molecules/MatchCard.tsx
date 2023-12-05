@@ -1,10 +1,46 @@
-import { Avatar, Box, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useHistory } from 'react-router';
 import { AvailableMatch } from '../../services/matches/interface';
+import { useUserProfile } from '../../services/api/hooks';
+import { useEffect, useState } from 'react';
+import { Player } from '../../services/user/interface';
+import { PlayerSlot } from './PlayerSlot';
 
 export function MatchCard(props: AvailableMatch) {
   const matchData = props;
   const history = useHistory();
+  const myPlayer = useUserProfile();
+
+  const [players, setPlayers] = useState<Player[]>([]);
+
+  const playerAlreadyInSomeTeam = !!matchData?.matchBookings.find(
+    (booking) => booking.player?.id === myPlayer?.id,
+  );
+
+  const [playerInTeam, setPlayerInTeam] = useState<string>(
+    playerAlreadyInSomeTeam ? ' ' : 'B',
+  );
+
+  useEffect(() => {
+    const teamAPlayers =
+      matchData?.matchBookings
+        ?.filter((booking) => booking.team === 'A')
+        ?.map((booking) => booking.player) || [];
+
+    const teamBPlayers =
+      matchData?.matchBookings
+        ?.filter((booking) => booking.team === 'B')
+        ?.map((booking) => booking.player) || [];
+
+    if (playerInTeam === 'A' && myPlayer)
+      teamAPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
+    if (playerInTeam === 'B' && myPlayer)
+      teamBPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
+    teamAPlayers.length = 2;
+    teamBPlayers.length = 2;
+
+    setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
+  }, [matchData, playerInTeam, myPlayer]);
 
   return (
     <Box
@@ -66,75 +102,38 @@ export function MatchCard(props: AvailableMatch) {
           }}
         >
           <Box sx={{ display: 'flex', gap: '14px' }}>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
+            <PlayerSlot
+              player={players[0]}
+              onClick={() => {
+                if (playerAlreadyInSomeTeam) return;
+                setPlayerInTeam('A');
               }}
-            >
-              <Avatar
-                sx={{
-                  width: '60px',
-                  height: '60px',
-                  border: '2px solid #EED790',
-                }}
-              />
-              <Typography>Амир</Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
+            />
+            <PlayerSlot
+              player={players[0]}
+              onClick={() => {
+                if (playerAlreadyInSomeTeam) return;
+                setPlayerInTeam('A');
               }}
-            >
-              <Avatar
-                sx={{
-                  width: '60px',
-                  height: '60px',
-                  border: '2px solid #EED790',
-                }}
-              />
-              <Typography>Ramazan</Typography>
-            </Box>
+            />
           </Box>
           <Box sx={{ width: '2px', height: '50px', background: '#e5e5e5' }} />
           <Box sx={{ display: 'flex', gap: '14px' }}>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
+            <PlayerSlot
+              player={players[0]}
+              onClick={() => {
+                if (playerAlreadyInSomeTeam) return;
+                setPlayerInTeam('A');
               }}
-            >
-              <Avatar
-                sx={{
-                  width: '60px',
-                  height: '60px',
-                  border: '2px solid #EED790',
-                }}
-              />
-              <Typography>Доступно</Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              <Avatar
-                sx={{
-                  width: '60px',
-                  height: '60px',
-                  border: '2px solid #EED790',
-                }}
-              />
-              <Typography>Доступно</Typography>
-            </Box>
+            />
           </Box>
+          <PlayerSlot
+            player={players[0]}
+            onClick={() => {
+              if (playerAlreadyInSomeTeam) return;
+              setPlayerInTeam('A');
+            }}
+          />
         </Box>
       </Box>
 
