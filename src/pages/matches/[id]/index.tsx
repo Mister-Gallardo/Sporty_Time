@@ -73,12 +73,14 @@ export function SingleMatchPage() {
 
   const [players, setPlayers] = useState<Player[]>([]);
 
-  const playerAlreadyInTeam = players.find(
-    (player) => player?.id === myPlayer?.id,
+  const playerAlreadyInSomeTeam = !!singleMatchData?.matchBookings.find(
+    (booking) => booking.player?.id === myPlayer?.id,
   );
 
+  console.log(playerAlreadyInSomeTeam);
+
   const [playerInTeam, setPlayerInTeam] = useState<string>(
-    playerAlreadyInTeam ? ' ' : 'B',
+    playerAlreadyInSomeTeam ? ' ' : 'B',
   );
 
   useEffect(() => {
@@ -93,9 +95,9 @@ export function SingleMatchPage() {
         ?.map((booking) => booking.player) || [];
 
     if (playerInTeam === 'A' && myPlayer)
-      teamAPlayers.push({ ...myPlayer, mark: true });
+      teamAPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
     if (playerInTeam === 'B' && myPlayer)
-      teamBPlayers.push({ ...myPlayer, mark: true });
+      teamBPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
     teamAPlayers.length = 2;
     teamBPlayers.length = 2;
 
@@ -446,14 +448,14 @@ export function SingleMatchPage() {
                 <PlayerSlot
                   player={players[0]}
                   onClick={() => {
-                    if (playerAlreadyInTeam) return;
+                    if (playerAlreadyInSomeTeam) return;
                     setPlayerInTeam('A');
                   }}
                 />
                 <PlayerSlot
                   player={players[1]}
                   onClick={() => {
-                    if (playerAlreadyInTeam) return;
+                    if (playerAlreadyInSomeTeam) return;
                     setPlayerInTeam('A');
                   }}
                 />
@@ -467,15 +469,14 @@ export function SingleMatchPage() {
                 <PlayerSlot
                   player={players[2]}
                   onClick={() => {
-                    if (playerAlreadyInTeam) return;
+                    if (playerAlreadyInSomeTeam) return;
                     setPlayerInTeam('B');
                   }}
                 />
                 <PlayerSlot
                   player={players[3]}
                   onClick={() => {
-                    if (playerAlreadyInTeam) return;
-
+                    if (playerAlreadyInSomeTeam) return;
                     setPlayerInTeam('B');
                   }}
                 />
@@ -492,7 +493,7 @@ export function SingleMatchPage() {
             </Box>
           </Box>
 
-          {!playerAlreadyInTeam && (
+          {!playerAlreadyInSomeTeam && (
             <Box
               sx={{
                 position: 'fixed',
