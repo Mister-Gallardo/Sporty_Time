@@ -236,8 +236,8 @@ export function UploadResultModal({
         isOpen={openState}
         onWillDismiss={handleModal}
         mode="ios"
-        initialBreakpoint={0.52}
-        breakpoints={[0, 0.52]}
+        initialBreakpoint={0.82}
+        breakpoints={[0, 0.82]}
       >
         <IonContent>{renderContnet()}</IonContent>
       </IonModal>

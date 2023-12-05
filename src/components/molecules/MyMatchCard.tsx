@@ -1,4 +1,3 @@
-import { Add, Error } from '@mui/icons-material';
 import { Box, ButtonBase, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useHistory } from 'react-router';
@@ -6,8 +5,9 @@ import { UploadResultModal } from '../modals/UploadResultModal';
 import { AvailableMatch } from '../../services/matches/interface';
 import { PlayerSlot } from './PlayerSlot';
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
+import { Add, Error } from '@mui/icons-material';
 interface IMyMatchCardProps {
-  noResult: boolean;
+  confirmedByAllResult: boolean;
 }
 
 type ICardProps = IMyMatchCardProps & AvailableMatch;
@@ -16,7 +16,7 @@ export function MyMatchCard(props: ICardProps) {
   const currentDate = new Date();
   const timeExpires = new Date(props.timeExpires);
 
-  const { noResult, id } = props;
+  const { confirmedByAllResult, id } = props;
   const history = useHistory();
   const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -53,7 +53,7 @@ export function MyMatchCard(props: ICardProps) {
           boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;',
         }}
       >
-        {noResult && (
+        {!confirmedByAllResult && (
           <Box
             sx={{
               position: 'absolute',
@@ -78,14 +78,14 @@ export function MyMatchCard(props: ICardProps) {
             display: 'flex',
             alignItems: 'center',
             textAlign: 'center',
-            justifyContent: !noResult ? 'space-between' : 'unset',
+            justifyContent: confirmedByAllResult ? 'space-between' : 'unset',
           }}
         >
           <Box
             sx={{
               marginBlock: '.5rem',
-              borderRight: noResult ? '1px solid grey' : 'unset',
-              paddingRight: noResult ? '.75rem' : 'unset',
+              borderRight: !confirmedByAllResult ? '1px solid grey' : 'unset',
+              paddingRight: !confirmedByAllResult ? '.75rem' : 'unset',
               display: 'flex',
               flexDirection: 'column',
               maxWidth: 'fit-content',
@@ -109,22 +109,7 @@ export function MyMatchCard(props: ICardProps) {
             </Box>
           </Box>
 
-          {!noResult && (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '10px',
-                right: '15px',
-                opacity: '.5',
-              }}
-            >
-              <Typography sx={{ fontSize: '.75rem' }}>
-                Nov 20 | 11:30 - 13:00
-              </Typography>
-            </Box>
-          )}
-
-          {noResult && currentDate < timeExpires && (
+          {!confirmedByAllResult && currentDate < timeExpires && (
             <ButtonBase
               onClick={() => handleOpenModal()}
               sx={{
@@ -146,7 +131,7 @@ export function MyMatchCard(props: ICardProps) {
             </ButtonBase>
           )}
 
-          {noResult && (
+          {!confirmedByAllResult && !props.confirmMatchResults && (
             <>
               <Box
                 sx={{
@@ -176,8 +161,7 @@ export function MyMatchCard(props: ICardProps) {
                     margin: '.5rem 0 1.25rem 15px',
                     flexGrow: '1',
                     paddingBlock: '7px',
-                    background:
-                      currentDate > timeExpires ? '#1976d238' : '#FEF4F5',
+                    background: '#FEF4F5',
                   }}
                 >
                   <Box
@@ -188,12 +172,7 @@ export function MyMatchCard(props: ICardProps) {
                       justifyContent: 'center',
                     }}
                   >
-                    <Error
-                      sx={{
-                        color:
-                          currentDate > timeExpires ? '#1976d2' : '#FF3356',
-                      }}
-                    />
+                    <Error sx={{ color: '#FF3356' }} />
                     <Typography
                       sx={{
                         fontWeight: '700',
@@ -210,7 +189,97 @@ export function MyMatchCard(props: ICardProps) {
             </>
           )}
 
-          {!noResult && (
+          {!confirmedByAllResult &&
+            !confirmedByAllResult &&
+            currentDate > timeExpires && (
+              <Box
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
+                  gap: '.75rem',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '1.75rem',
+                    position: 'relative',
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: '2.5rem',
+                      fontWeight: '700',
+                      opacity: '.5',
+                    }}
+                  >
+                    {0}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: '2.5rem',
+                      fontWeight: '700',
+                      opacity: '.5',
+                    }}
+                  >
+                    {0}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: '2.5rem',
+                      fontWeight: '700',
+                      opacity: '.5',
+                    }}
+                  >
+                    {0}
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    width: 'calc(100% + 15px)',
+                    paddingBlock: '7px',
+                    margin: '0 auto',
+                    background: '#1976d238',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '.5rem',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontWeight: '700',
+                        fontSize: '.75rem',
+                        color: '#1976d2',
+                      }}
+                    >
+                      Без результата
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {0}
+                  </Typography>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {0}
+                  </Typography>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {0}
+                  </Typography>
+                </Box>
+              </Box>
+            )}
+
+          {confirmedByAllResult && (
             <Box
               sx={{
                 display: 'flex',

@@ -1,5 +1,4 @@
 import {
-  Match,
   CreateMatchDTO,
   JoinMatchDTO,
   UploadResultsDTO,
@@ -8,12 +7,12 @@ import {
 import { api } from '../api/service';
 
 export function getMyMatches() {
-  const res = api.get<Match[]>('/matches/my');
+  const res = api.get<AvailableMatch[]>('/matches/my');
   return res;
 }
 
 export function getAvailableMatches() {
-  const res = api.get<Match[]>('/matches/available');
+  const res = api.get<AvailableMatch[]>('/matches/available');
   return res;
 }
 

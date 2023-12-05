@@ -220,6 +220,7 @@ export function AuthPage(props: IAuthPageProps) {
           {authState === LoginStates.REGISTER && (
             <Grow in timeout={800}>
               <TextField
+                helperText="Код придет на почту."
                 variant="outlined"
                 sx={{ width: '100%' }}
                 {...register('otp', { required: true })}
