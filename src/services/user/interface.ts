@@ -1,5 +1,4 @@
-import { Club, Court } from '../club/interface';
-import { MatchBooking } from '../matches/interface';
+import { Club } from '../club/interface';
 
 export enum Role {
   PLAYER = 'PLAYER',
@@ -14,9 +13,9 @@ export interface Player {
 
   ratingPadel: number;
 
-  ratingPickleball: Court[];
+  ratingPickleball: number;
 
-  ratingTennis: MatchBooking[];
+  ratingTennis: number;
 
   scoresPadel: number;
 

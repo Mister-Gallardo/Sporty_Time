@@ -120,19 +120,31 @@ function DesktopHeader(props: IDesktopHeaderProps) {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <Box sx={{ display: 'flex', gap: '10px' }}>
               {isAuthorized && (
-                <Typography
-                  onClick={() => {
-                    history.go(0);
-                    localStorage.removeItem('jwtToken');
-                  }}
-                  sx={{
-                    opacity: '0.6',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Выход
-                </Typography>
+                <>
+                  <Typography
+                    onClick={() => history.push('/matches')}
+                    sx={{
+                      opacity: '0.6',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Матчи
+                  </Typography>
+                  <Typography
+                    onClick={() => {
+                      history.go(0);
+                      localStorage.removeItem('jwtToken');
+                    }}
+                    sx={{
+                      opacity: '0.6',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Выход
+                  </Typography>
+                </>
               )}
               {isAuthorized ? (
                 <Typography

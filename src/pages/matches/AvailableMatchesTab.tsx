@@ -52,11 +52,8 @@ export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
 
       <Box
         sx={{
-          paddingLeft: isPlatform('mobile') ? 'unset' : '1rem',
-          margin: '0 calc(50% - 50vw)',
           paddingBottom: '.75rem',
-          display: '-webkit-box',
-
+          display: 'flex',
           overflowX: 'auto',
           scrollSnapType: 'x mandatory',
           scrollBehavior: 'smooth',
@@ -71,6 +68,7 @@ export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
         defaultExpanded
         elevation={0}
         sx={{
+          padding: 0,
           background: 'none',
           '&:before': {
             display: 'none',
@@ -78,9 +76,7 @@ export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
         }}
       >
         <AccordionSummary
-          sx={{
-            padding: '0',
-          }}
+          sx={{ padding: 0 }}
           expandIcon={<ExpandMore />}
           aria-controls="panel1a-content"
           id="panel1a-header"
@@ -95,14 +91,11 @@ export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
             </Typography>
           </Box>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails sx={{ padding: 0 }}>
           <Box
             sx={{
-              paddingLeft: isPlatform('mobile') ? 'unset' : '1rem',
-              margin: '0 calc(50% - 50vw)',
               paddingBottom: '.75rem',
-              display: '-webkit-box',
-
+              display: 'flex',
               overflowX: 'auto',
               scrollSnapType: 'x mandatory',
               scrollBehavior: 'smooth',

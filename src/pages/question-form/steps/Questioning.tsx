@@ -50,8 +50,7 @@ export function QuestioningStep({
 
   const createRatingMutation = useMutation({
     mutationFn: createSportRating,
-    onSuccess(data) {
-      localStorage.setItem('userRating', JSON.stringify(data));
+    onSuccess() {
       handleNextStep();
     },
     onError(e) {

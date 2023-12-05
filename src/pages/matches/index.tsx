@@ -20,63 +20,65 @@ export function MatchesPage({}: IMatchesPageProps) {
   }
 
   return (
-    <TabContext value={tabIndex}>
-      <Box sx={{ marginTop: isMobile ? '0' : '1rem' }}>
-        <TabList
-          sx={{ margin: '0 auto', maxWidth: '96%' }}
-          onChange={(e, value) => setTabIndex(value)}
-        >
-          <Tab
-            value="1"
-            disableRipple={!isMobile}
-            label={'Доступные'}
-            sx={{ flexGrow: 1 }}
-          />
-          <Tab
-            value="2"
-            disableRipple={!isMobile}
-            label={'Ваши матчи'}
-            sx={{ flexGrow: 1 }}
-          />
-        </TabList>
-        <TabPanel value="1" sx={{ p: 0 }}>
-          <AvailableMatchesTab />
-        </TabPanel>
-        <TabPanel value="2" sx={{ p: 0 }}>
-          <MyMatchesTab />
-        </TabPanel>
-      </Box>
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: '1.5rem',
-          left: '0',
-          right: '0',
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        {tabIndex === '1' && (
-          <Button
-            sx={{
-              fontSize: '1.1rem',
-              fontWeight: '500',
-              maxWidth: '225px',
-              borderRadius: '28px',
-              height: '45px',
-              boxShadow:
-                'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-            }}
+    <Box maxWidth={1240} mx="auto">
+      <TabContext value={tabIndex}>
+        <Box sx={{ marginTop: isMobile ? '0' : '1rem' }}>
+          <TabList
+            sx={{ margin: '0 auto', maxWidth: '96%' }}
+            onChange={(e, value) => setTabIndex(value)}
           >
-            <Add />
-            Начать матч
-          </Button>
-        )}
-      </Box>
-      <UploadResultModal
-        openState={openUploadModal}
-        handleModal={handLeOpenUploadModal}
-      />
-    </TabContext>
+            <Tab
+              value="1"
+              disableRipple={!isMobile}
+              label={'Доступные'}
+              sx={{ flexGrow: 1 }}
+            />
+            <Tab
+              value="2"
+              disableRipple={!isMobile}
+              label={'Ваши матчи'}
+              sx={{ flexGrow: 1 }}
+            />
+          </TabList>
+          <TabPanel value="1" sx={{ p: 0 }}>
+            <AvailableMatchesTab />
+          </TabPanel>
+          <TabPanel value="2" sx={{ p: 0 }}>
+            <MyMatchesTab />
+          </TabPanel>
+        </Box>
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: '1.5rem',
+            left: '0',
+            right: '0',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          {tabIndex === '1' && (
+            <Button
+              sx={{
+                fontSize: '1.1rem',
+                fontWeight: '500',
+                maxWidth: '225px',
+                borderRadius: '28px',
+                height: '45px',
+                boxShadow:
+                  'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+              }}
+            >
+              <Add />
+              Начать матч
+            </Button>
+          )}
+        </Box>
+        <UploadResultModal
+          openState={openUploadModal}
+          handleModal={handLeOpenUploadModal}
+        />
+      </TabContext>
+    </Box>
   );
 }

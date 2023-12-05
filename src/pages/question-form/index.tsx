@@ -1,18 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StartQuestioningStep } from './steps/StartQuestioning';
 import { Box, Fade } from '@mui/material';
 import { QuestioningStep } from './steps/Questioning';
 import { ResultsStep } from './steps/Results';
 import { useUserInfo, useUserProfile } from '../../services/api/hooks';
-import { useHistory } from 'react-router';
 
 export function QuestionFormPage() {
-  const history = useHistory();
   const [activeStep, setActiveStep] = useState<number>(1);
-
-  function handleNextStep() {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  }
 
   function handleBackStep() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -20,18 +14,6 @@ export function QuestionFormPage() {
 
   const user = useUserInfo();
   const player = useUserProfile();
-
-  useEffect(() => {
-    const playerHasRating =
-      player?.ratingPadel || player?.ratingTennis || player?.ratingPickleball;
-    if (playerHasRating) {
-      history.push('/');
-      history.go(0);
-    } else {
-      return;
-    }
-  }, [user]);
-
   const firstName = user?.firstname || '';
   const lastName = user?.lastname || '';
 
@@ -42,14 +24,21 @@ export function QuestionFormPage() {
           <Box sx={{ height: '100%' }}>
             <StartQuestioningStep
               firstName={firstName}
-              handleNextStep={handleNextStep}
+              handleNextStep={() => {
+                const playerHasRating =
+                  player?.ratingPadel ||
+                  player?.ratingTennis ||
+                  player?.ratingPickleball;
+                if (playerHasRating) setActiveStep(3);
+                else setActiveStep(2);
+              }}
             />
           </Box>
         </Fade>
       ) : activeStep === 2 ? (
         <QuestioningStep
           handleBackStep={handleBackStep}
-          handleNextStep={handleNextStep}
+          handleNextStep={() => setActiveStep(3)}
         />
       ) : (
         <Fade in>

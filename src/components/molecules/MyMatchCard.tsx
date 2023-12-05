@@ -1,11 +1,9 @@
 import { Add, Error } from '@mui/icons-material';
 import { Box, ButtonBase, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router';
 import { UploadResultModal } from '../modals/UploadResultModal';
 import { AvailableMatch } from '../../services/matches/interface';
-import { useUserProfile } from '../../services/api/hooks';
-import { Player } from '../../services/user/interface';
 import { PlayerSlot } from './PlayerSlot';
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 interface IMyMatchCardProps {
@@ -20,34 +18,24 @@ export function MyMatchCard(props: ICardProps) {
 
   const { noResult, id } = props;
   const history = useHistory();
-
   const [openModal, setOpenModal] = useState<boolean>(false);
 
   function handleOpenModal() {
     setOpenModal((prev) => !prev);
   }
 
-  const myPlayer = useUserProfile();
+  const teamAPlayers =
+    props?.matchBookings
+      ?.filter((booking) => booking.team === 'A')
+      ?.map((booking) => booking.player) || [];
 
-  const [players, setPlayers] = useState<Player[]>([]);
-
-  const playerAlreadyInSomeTeam = !!props?.matchBookings.find(
-    (booking) => booking.player?.id === myPlayer?.id,
-  );
-
-  useEffect(() => {
-    const teamAPlayers =
-      props?.matchBookings
-        ?.filter((booking) => booking.team === 'A')
-        ?.map((booking) => booking.player) || [];
-
-    const teamBPlayers =
-      props?.matchBookings
-        ?.filter((booking) => booking.team === 'B')
-        ?.map((booking) => booking.player) || [];
-
-    setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
-  }, [props, myPlayer]);
+  const teamBPlayers =
+    props?.matchBookings
+      ?.filter((booking) => booking.team === 'B')
+      ?.map((booking) => booking.player) || [];
+  teamAPlayers.length = 2;
+  teamBPlayers.length = 2;
+  const players = [...Array.from(teamAPlayers), ...Array.from(teamBPlayers)];
 
   return (
     <>
@@ -104,18 +92,8 @@ export function MyMatchCard(props: ICardProps) {
             }}
           >
             <Box sx={{ display: 'flex', gap: '.75rem' }}>
-              <PlayerSlot
-                onClick={() => {
-                  if (playerAlreadyInSomeTeam) return;
-                }}
-                player={players[0]}
-              />
-              <PlayerSlot
-                onClick={() => {
-                  if (playerAlreadyInSomeTeam) return;
-                }}
-                player={players[1]}
-              />
+              <PlayerSlot player={players[0]} />
+              <PlayerSlot player={players[1]} />
             </Box>
             <Box
               sx={{
@@ -126,18 +104,8 @@ export function MyMatchCard(props: ICardProps) {
               }}
             />
             <Box sx={{ display: 'flex', gap: '.75rem' }}>
-              <PlayerSlot
-                onClick={() => {
-                  if (playerAlreadyInSomeTeam) return;
-                }}
-                player={players[2]}
-              />
-              <PlayerSlot
-                onClick={() => {
-                  if (playerAlreadyInSomeTeam) return;
-                }}
-                player={players[3]}
-              />
+              <PlayerSlot player={players[2]} />
+              <PlayerSlot player={players[3]} />
             </Box>
           </Box>
 

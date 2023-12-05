@@ -1,4 +1,4 @@
-import { IonLoading, isPlatform } from '@ionic/react';
+import { IonLoading } from '@ionic/react';
 import { Box } from '@mui/material';
 import { MyMatchCard } from '../../components/molecules/MyMatchCard';
 import { getMyMatches } from '../../services/matches/service';
@@ -21,18 +21,18 @@ export function MyMatchesTab({}: IMyMatchesTabProps) {
   return (
     <Box
       sx={{
-        paddingInline: isPlatform('mobile') ? '10px' : '2rem',
+        width: '100%',
         background: '#fff',
         paddingBlock: '1.25rem',
       }}
     >
       <Box
         sx={{
-          maxWidth: '99%',
-          margin: '0 auto',
+          width: '100%',
           placeItems: 'center',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
           gap: '1rem',
         }}
       >

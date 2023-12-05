@@ -6,6 +6,7 @@ import { isPlatform } from '@ionic/react';
 
 import mobile_bg from '../../../images/question-form/bg_events_tennis_mobile.png';
 import desktop_bg from '../../../images/question-form/bg_events_tennis_desktop.png';
+import { useUserProfile } from '../../../services/api/hooks';
 
 interface ResultsStepProps {
   firstName: string;
@@ -14,10 +15,9 @@ interface ResultsStepProps {
 
 export function ResultsStep(props: ResultsStepProps) {
   const { firstName, lastName } = props;
-
-  const userRating = JSON.parse(localStorage.getItem('userRating') || '[]')
-    ?.data.sportRating;
-
+  const profile = useUserProfile();
+  const userRating =
+    profile?.ratingPadel || profile?.ratingPickleball || profile?.ratingTennis;
   const history = useHistory();
 
   const userInitials =
