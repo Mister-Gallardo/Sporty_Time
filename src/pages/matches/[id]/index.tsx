@@ -37,7 +37,7 @@ export function SingleMatchPage() {
     isLoading,
     refetch: refetchClubs,
   } = useQuery({
-    queryKey: ['available-club'],
+    queryKey: [`available-club${matchId}`],
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
 
@@ -73,9 +73,11 @@ export function SingleMatchPage() {
 
   console.log(playerAlreadyInSomeTeam);
 
-  const [playerInTeam, setPlayerInTeam] = useState<string>(
-    playerAlreadyInSomeTeam ? ' ' : 'B',
-  );
+  const [playerInTeam, setPlayerInTeam] = useState<string>('');
+
+  useEffect(() => {
+    setPlayerInTeam(playerAlreadyInSomeTeam ? '' : 'B');
+  }, [playerAlreadyInSomeTeam]);
 
   useEffect(() => {
     const teamAPlayers =

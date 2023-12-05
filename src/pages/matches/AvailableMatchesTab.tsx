@@ -15,7 +15,7 @@ interface IAvailableMatchesTabProps {}
 
 export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
   const { data, isLoading } = useQuery({
-    queryKey: ['available-matches'],
+    queryKey: [`available-matches`],
     queryFn: getAvailableMatches,
   });
 

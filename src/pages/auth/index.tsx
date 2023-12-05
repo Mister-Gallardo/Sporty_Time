@@ -68,6 +68,7 @@ export function AuthPage(props: IAuthPageProps) {
       setError(undefined);
       reset({ password: '' });
       setIsOpenToast(true);
+
       history.push('/question-form');
     },
     onError(e: any) {

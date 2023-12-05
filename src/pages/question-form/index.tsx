@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StartQuestioningStep } from './steps/StartQuestioning';
 import { Box, Fade } from '@mui/material';
 import { QuestioningStep } from './steps/Questioning';
 import { ResultsStep } from './steps/Results';
-import { useUserInfo } from '../../services/api/hooks';
+import { useUserInfo, useUserProfile } from '../../services/api/hooks';
+import { useHistory } from 'react-router';
 
 export function QuestionFormPage() {
+  const history = useHistory();
   const [activeStep, setActiveStep] = useState<number>(1);
 
   function handleNextStep() {
@@ -17,6 +19,18 @@ export function QuestionFormPage() {
   }
 
   const user = useUserInfo();
+  const player = useUserProfile();
+
+  useEffect(() => {
+    const playerHasRating =
+      player?.ratingPadel || player?.ratingTennis || player?.ratingPickleball;
+    if (playerHasRating) {
+      history.push('/');
+      history.go(0);
+    } else {
+      return;
+    }
+  }, [user]);
 
   const firstName = user?.firstname || '';
   const lastName = user?.lastname || '';
