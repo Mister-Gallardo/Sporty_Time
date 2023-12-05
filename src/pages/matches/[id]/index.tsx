@@ -2,11 +2,10 @@ import {
   ArrowBackIosNewOutlined,
   ChatBubbleOutlineRounded,
   LockOpenOutlined,
-  NavigateNext,
   SportsBaseball,
   SportsTennis,
 } from '@mui/icons-material';
-import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { SwipeablePage } from '../../../components/SwipeablePage';
 import { Button } from '../../../components/atoms/Button';
 import {
@@ -142,7 +141,7 @@ export function SingleMatchPage() {
       <Box
         sx={{
           paddingTop: '1rem',
-          paddingBottom: '7rem',
+          paddingBottom: '4rem',
           background: '#fff',
           position: 'relative',
           zIndex: '99',
@@ -155,7 +154,6 @@ export function SingleMatchPage() {
             background: isMobile ? 'unset' : '#fff',
             width: '100%',
             paddingInline: '15px',
-            // margin: '-5rem auto 5.75rem auto',
           }}
         >
           <Box
@@ -348,7 +346,7 @@ export function SingleMatchPage() {
               }}
             >
               <Typography sx={{ fontWeight: '600', fontSize: '1rem' }}>
-                Competetive
+                {singleMatchData?.type}
               </Typography>
               <Typography
                 sx={{ fontSize: '.85rem', fontWeight: '600', opacity: '.5' }}
@@ -357,7 +355,7 @@ export function SingleMatchPage() {
               </Typography>
             </Box>
 
-            <Box
+            {/* <Box
               sx={{
                 padding: '1rem .75rem',
                 marginBlock: '1.25rem',
@@ -398,7 +396,7 @@ export function SingleMatchPage() {
                   <NavigateNext />
                 </IconButton>
               </Box>
-            </Box>
+            </Box> */}
 
             <Box
               sx={{
@@ -477,6 +475,54 @@ export function SingleMatchPage() {
                 />
               </Box>
             </Box>
+
+            {singleMatchData?.matchResults && (
+              <Box
+                sx={{
+                  border: '1px solid #e5e5e5',
+
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '.75rem',
+                  marginBottom: '1.5rem',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '1.75rem',
+                    opacity: '.5',
+                  }}
+                >
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {singleMatchData?.matchResults[0][0]}
+                  </Typography>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {singleMatchData?.matchResults[1][0]}
+                  </Typography>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {singleMatchData?.matchResults[2][0]}
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{ width: '100%', height: '1px', background: '#e5e5e5' }}
+                />
+
+                <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {singleMatchData?.matchResults[0][1]}
+                  </Typography>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {singleMatchData?.matchResults[1][1]}
+                  </Typography>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {singleMatchData?.matchResults[2][1]}
+                  </Typography>
+                </Box>
+              </Box>
+            )}
 
             <Box sx={{ maxWidth: '125px', margin: '0 auto' }}>
               <Button sx={{ height: '40px' }}>

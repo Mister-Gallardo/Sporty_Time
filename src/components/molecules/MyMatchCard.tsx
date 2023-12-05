@@ -15,6 +15,9 @@ interface IMyMatchCardProps {
 type ICardProps = IMyMatchCardProps & AvailableMatch;
 
 export function MyMatchCard(props: ICardProps) {
+  const currentDate = new Date();
+  const timeExpires = new Date(props.timeExpires);
+
   const { noResult, id } = props;
   const history = useHistory();
 
@@ -81,7 +84,7 @@ export function MyMatchCard(props: ICardProps) {
               right: '-4px',
               width: '16px',
               height: '16px',
-              background: '#FF4976',
+              background: currentDate < timeExpires ? '#FF4976' : '#1976d2',
               borderRadius: '50%',
             }}
           />
@@ -168,27 +171,30 @@ export function MyMatchCard(props: ICardProps) {
             </Box>
           )}
 
+          {noResult && currentDate < timeExpires && (
+            <ButtonBase
+              onClick={() => handleOpenModal()}
+              sx={{
+                position: 'absolute',
+                zIndex: '9999999',
+                bottom: '1rem',
+                left: '65%',
+
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '50px',
+                height: '50px',
+                background: '#000',
+                borderRadius: '50%',
+              }}
+            >
+              <Add sx={{ color: '#fff' }} />
+            </ButtonBase>
+          )}
+
           {noResult && (
             <>
-              <ButtonBase
-                onClick={() => handleOpenModal()}
-                sx={{
-                  position: 'absolute',
-                  zIndex: '9999999',
-                  bottom: '1rem',
-                  left: '65%',
-
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '50px',
-                  height: '50px',
-                  background: '#000',
-                  borderRadius: '50%',
-                }}
-              >
-                <Add sx={{ color: '#fff' }} />
-              </ButtonBase>
               <Box
                 sx={{
                   width: '100%',
@@ -217,7 +223,8 @@ export function MyMatchCard(props: ICardProps) {
                     margin: '.5rem 0 1.25rem 15px',
                     flexGrow: '1',
                     paddingBlock: '7px',
-                    background: '#FEF4F5',
+                    background:
+                      currentDate > timeExpires ? '#1976d238' : '#FEF4F5',
                   }}
                 >
                   <Box
@@ -228,12 +235,18 @@ export function MyMatchCard(props: ICardProps) {
                       justifyContent: 'center',
                     }}
                   >
-                    <Error sx={{ color: '#FF3356' }} />
+                    <Error
+                      sx={{
+                        color:
+                          currentDate > timeExpires ? '#1976d2' : '#FF3356',
+                      }}
+                    />
                     <Typography
                       sx={{
                         fontWeight: '700',
                         fontSize: '.75rem',
-                        color: '#FF3356',
+                        color:
+                          currentDate > timeExpires ? '#1976d2' : '#FF3356',
                       }}
                     >
                       Нет результата

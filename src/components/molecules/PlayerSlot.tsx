@@ -25,9 +25,7 @@ export const PlayerSlot = (props: { player: Player; onClick?: any }) => {
         }}
       >
         <Avatar
-          src={
-            player ? 'https://mui.com/static/images/avatar/2.jpg' : undefined
-          }
+          src={player ? player?.user?.avatarUrl : undefined}
           onClick={onClick}
           sx={{
             width: '60px',

@@ -70,6 +70,10 @@ export interface AvailableMatch {
   updatedAt: string;
 
   winningTeam: string;
+
+  type: string;
+
+  timeExpires: string;
 }
 [];
 
