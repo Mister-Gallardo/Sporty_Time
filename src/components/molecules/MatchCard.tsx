@@ -82,9 +82,7 @@ export function MatchCard(props: AvailableMatch) {
           <Box sx={{ display: 'flex', gap: '14px' }}>
             <PlayerSlot player={players[0]} />
             <PlayerSlot player={players[1]} />
-          </Box>
-          <Box sx={{ width: '2px', height: '50px', background: '#e5e5e5' }} />
-          <Box sx={{ display: 'flex', gap: '14px' }}>
+            <Box sx={{ width: '2px', height: '50px', background: '#e5e5e5' }} />
             <PlayerSlot player={players[2]} />
             <PlayerSlot player={players[3]} />
           </Box>
