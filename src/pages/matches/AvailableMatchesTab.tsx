@@ -22,7 +22,7 @@ export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
   const availableMatchesArray = data?.data;
 
   if (isLoading) {
-    return <IonLoading trigger="open-loading" />;
+    return <IonLoading isOpen />;
   }
 
   if (data?.data.length === 0) {

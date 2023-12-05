@@ -31,3 +31,13 @@ h6 {
 .toolbar-container {
   min-height: unset;
 }
+
+ion-loading {
+  --background: transparent !important;
+  --spinner-color: #1c6dff !important;
+  color: #1c6dff;
+}
+
+ion-loading .loading-wrapper {
+  box-shadow: none !important;
+}

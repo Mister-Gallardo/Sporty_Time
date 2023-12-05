@@ -15,7 +15,7 @@ export function MyMatchesTab({}: IMyMatchesTabProps) {
   const myMatchesData = data?.data;
 
   if (isLoading) {
-    return <IonLoading trigger="open-loading" />;
+    return <IonLoading isOpen />;
   }
 
   return (

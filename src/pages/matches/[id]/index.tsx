@@ -102,7 +102,7 @@ export function SingleMatchPage() {
   }, [singleMatchData, playerInTeam, myPlayer]);
 
   if (isLoading) {
-    return <IonLoading />;
+    return <IonLoading isOpen />;
   }
 
   const renderImageSlot = () => (
