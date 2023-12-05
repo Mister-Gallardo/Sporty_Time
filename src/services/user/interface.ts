@@ -24,9 +24,13 @@ export interface Player {
 
   scoresTennis: number;
 
+  user: User;
+
   createdAt: Date;
 
   updatedAt: Date;
+
+  mark?: boolean;
 }
 
 export interface User {

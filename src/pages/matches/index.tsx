@@ -23,7 +23,7 @@ export function MatchesPage({}: IMatchesPageProps) {
     <TabContext value={tabIndex}>
       <Box sx={{ marginTop: isMobile ? '0' : '1rem' }}>
         <TabList
-          sx={{ margin: '0 auto', maxWidth: '1000px' }}
+          sx={{ margin: '0 auto', maxWidth: '96%' }}
           onChange={(e, value) => setTabIndex(value)}
         >
           <Tab

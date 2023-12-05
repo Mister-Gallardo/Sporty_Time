@@ -41,7 +41,7 @@ export interface Court {
 
   club: Club;
 
-  options: { minutes: string; slots: number[] }[];
+  options: { playtime: number; price: number }[];
 
   slotId: number;
 

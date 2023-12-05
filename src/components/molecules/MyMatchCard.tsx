@@ -24,12 +24,9 @@ export function MyMatchCard(props: ICardProps) {
   return (
     <>
       <Box
-        onClick={() => {
-          if (noResult) return;
-          history.push('/matches/');
-        }}
         sx={{
           position: 'relative',
+          zIndex: '99',
           padding: '10px 15px',
           width: '100%',
           maxWidth: '370px',
@@ -55,7 +52,12 @@ export function MyMatchCard(props: ICardProps) {
         )}
 
         <Box
+          onClick={() => {
+            history.push(`/matches/${id}`);
+          }}
           sx={{
+            position: 'relative',
+            zIndex: '9',
             width: '100%',
             display: 'flex',
             alignItems: 'center',
@@ -145,8 +147,7 @@ export function MyMatchCard(props: ICardProps) {
               <Box
                 sx={{
                   width: 'calc(100% + 15px)',
-                  marginLeft: '15px',
-                  marginTop: '.5rem',
+                  margin: '.5rem 0 1.25rem 15px',
                   flexGrow: '1',
                   paddingBlock: '7px',
                   background: '#FEF4F5',
@@ -172,21 +173,6 @@ export function MyMatchCard(props: ICardProps) {
                   </Typography>
                 </Box>
               </Box>
-              <ButtonBase
-                onClick={() => handleOpenModal()}
-                sx={{
-                  marginTop: '1rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '50px',
-                  height: '50px',
-                  background: '#000',
-                  borderRadius: '50%',
-                }}
-              >
-                <Add sx={{ color: '#fff' }} />
-              </ButtonBase>
             </Box>
           )}
 
@@ -229,6 +215,25 @@ export function MyMatchCard(props: ICardProps) {
             </Box>
           )}
         </Box>
+        <ButtonBase
+          onClick={() => handleOpenModal()}
+          sx={{
+            position: 'absolute',
+            zIndex: '9999999',
+            bottom: '1rem',
+            left: '65%',
+
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '50px',
+            height: '50px',
+            background: '#000',
+            borderRadius: '50%',
+          }}
+        >
+          <Add sx={{ color: '#fff' }} />
+        </ButtonBase>
       </Box>
       <UploadResultModal
         matchId={id}

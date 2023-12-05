@@ -74,18 +74,19 @@ export function UploadResultModal({
 
   const uploadMatchReslultsMutation = useMutation({
     mutationFn: uploadResults,
-    onMutate(data) {
-      if (error === 'Wait for match start') {
-        showToast({
-          message: 'Пока матч не начался, загрузка результатов отключена',
-          mode: 'ios',
-          position: 'top',
-          duration: 2000,
-        });
-      }
-    },
+    onMutate() {},
+    onSuccess() {},
     onError(e: any) {
       setError(e.response.data.message);
+      showToast({
+        message:
+          error || 'Пока матч не начался, загрузка результатов отключена',
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
+      setMatchResultFields(new Array(6).fill(''));
+      handleModal();
     },
   });
 
@@ -101,7 +102,7 @@ export function UploadResultModal({
           maxWidth: '400px',
           background: '#fff',
           borderRadius: '15px',
-          padding: '20px 10px',
+          padding: '30px 25px',
         }}
       >
         <Box>

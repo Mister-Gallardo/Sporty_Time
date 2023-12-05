@@ -12,11 +12,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 export interface ICourtAccordionProps {
   court: Omit<Court, 'slots'>;
   disabled?: boolean;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
+  getOptionTime?: (optionIndex: number) => void;
 }
 
 export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
-  const { court, onClick, disabled } = props;
+  const { court, onClick, disabled, getOptionTime } = props;
   return (
     <Accordion
       defaultExpanded
@@ -59,10 +60,14 @@ export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
             gap: '1.25rem',
           }}
         >
-          {court?.options.map((option) => {
+          {court?.options.map((option, i) => {
             return (
               <Box
-                onClick={onClick}
+                onClick={(e) => {
+                  onClick(e);
+                  if (!getOptionTime) return;
+                  getOptionTime(Number(i));
+                }}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -78,9 +83,9 @@ export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
                 }}
               >
                 <Typography sx={{ fontSize: '1.5rem', fontWeight: '600' }}>
-                  {court.price} RUB
+                  {option.price} RUB
                 </Typography>
-                <Typography>{option.minutes} мин</Typography>
+                <Typography>{option.playtime} мин</Typography>
               </Box>
             );
           })}

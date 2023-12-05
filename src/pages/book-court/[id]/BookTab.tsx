@@ -30,9 +30,10 @@ export function BookTab() {
   );
   const [selectedDate, setSelectedDate] = useState(dates[0]);
   const [selectedSlot, setSelectedSlot] = useState('');
+  const [selectedMinutes, setSelectedMinutes] = useState<number>(0);
   const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(true);
   const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(true);
-  const [slots, setSlots] = useState<number[]>([]);
+  const [slotId, setSlotId] = useState<number>(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [openSuccessBookToast, setOpenSuccessBookToast] =
     useState<boolean>(false);
@@ -59,8 +60,6 @@ export function BookTab() {
     },
   });
 
-  console.log(data, 'CLUBS');
-
   const selectedSlotAvailableCourts =
     data?.availableSlots?.[selectedSlot]?.available || [];
 
@@ -76,6 +75,10 @@ export function BookTab() {
     const [firstSlot] = Object.keys(data?.availableSlots || {});
     setSelectedSlot(firstSlot);
   }, [data]);
+
+  useEffect(() => {
+    console.log(selectedMinutes);
+  }, [selectedMinutes]);
 
   return (
     <Box
@@ -218,13 +221,18 @@ export function BookTab() {
             </Box>
             <Box mt={2}>
               {selectedSlotAvailableCourts?.map((court, i) => {
+                function getCertainMinutes(optionIndex: number) {
+                  setSelectedMinutes(court.options[optionIndex].playtime);
+                }
+
                 return (
                   <>
                     <CourtAccordion
                       court={court}
+                      getOptionTime={getCertainMinutes}
                       onClick={() => {
                         setOpenDialog(true);
-                        setSlots(court.options[i].slots);
+                        setSlotId(court.id);
                       }}
                     />
                     {selectedSlotAvailableCourts?.length !== i + 1 && (
@@ -233,12 +241,13 @@ export function BookTab() {
                   </>
                 );
               })}
+
               {!onlyAvailableCourts &&
                 selectedSlotBookedCourts?.map((court, i) => (
                   <>
                     <CourtAccordion
                       court={court}
-                      onClick={() => setSlots([])}
+                      onClick={() => setSlotId(0)}
                       disabled
                     />
                     {selectedSlotBookedCourts?.length !== i + 1 && <Divider />}
@@ -269,10 +278,12 @@ export function BookTab() {
               <Button
                 onClick={() => {
                   createMatchMutation.mutate({
-                    slots,
+                    slotId: slotId,
                     selectedDate,
-                    ratingFrom: 1,
-                    reatingTo: 2,
+                    ratingFrom: 1.1,
+                    reatingTo: 2.2,
+                    playTime: selectedMinutes,
+                    sport: 'TENNIS',
                   });
                   setOpenDialog(false);
                 }}

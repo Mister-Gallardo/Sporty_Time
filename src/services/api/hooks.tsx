@@ -24,3 +24,19 @@ export const useUserInfo = () => {
 
   return data?.data;
 };
+
+export const useUserProfile = () => {
+  const isAuthorized = useIsAuthorized();
+
+  const { data } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUserInfo,
+    retry: false,
+    enabled: isAuthorized,
+  });
+
+  const player = data?.data?.player;
+  if (player) player.user = data.data;
+
+  return player;
+};

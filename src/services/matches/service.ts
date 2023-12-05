@@ -1,18 +1,19 @@
 import {
-  AvailableMatch,
+  Match,
   CreateMatchDTO,
   JoinMatchDTO,
   UploadResultsDTO,
+  AvailableMatch,
 } from './interface';
 import { api } from '../api/service';
 
 export function getMyMatches() {
-  const res = api.get<AvailableMatch[]>('/matches/my');
+  const res = api.get<Match[]>('/matches/my');
   return res;
 }
 
 export function getAvailableMatches() {
-  const res = api.get<AvailableMatch[]>('/matches/available');
+  const res = api.get<Match[]>('/matches/available');
   return res;
 }
 
@@ -23,10 +24,13 @@ export function getOneAvailableMatch(id: number) {
 
 export function createMatch(data: CreateMatchDTO) {
   const res = api.post('/matches', {
-    slots: data.slots,
+    slotId: data.slotId,
     gameDate: data.selectedDate,
     ratingFrom: data.ratingFrom,
     ratingTo: data.reatingTo,
+    playTime: data.playTime,
+    type: 'COMPETITIVE',
+    sport: data.sport,
   });
   return res;
 }

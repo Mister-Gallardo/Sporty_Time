@@ -18,13 +18,17 @@ export interface Match {
 export interface MatchBooking {
   id: number;
 
+  confirmMatchResults: boolean;
+
+  team: string;
+
   player: Player;
 
-  match: Match;
+  updatedAt: string;
 
-  createdAt: Date;
+  createdAt: string;
 
-  updatedAt: Date;
+  status?: string;
 }
 
 export interface AvailableMatch {
@@ -40,21 +44,7 @@ export interface AvailableMatch {
 
   minutes: number;
 
-  matchBookings: {
-    id: number;
-    confirmMatchResults: boolean;
-    team: string;
-    player: {
-      id: number;
-      ratingPadel: number;
-      ratingPickleball: number;
-      ratingTennis: number;
-      updatedAt: string;
-      createdAt: string;
-    };
-    updatedAt: string;
-    createdAt: string;
-  }[];
+  matchBookings: MatchBooking[];
 
   slot: {
     id: number;
@@ -85,9 +75,11 @@ export interface AvailableMatch {
 
 export interface CreateMatchDTO {
   selectedDate: Date;
-  slots: number[];
+  slotId: number;
   ratingFrom: number;
   reatingTo: number;
+  playTime: number;
+  sport: string;
 }
 
 export interface JoinMatchDTO {
