@@ -16,6 +16,7 @@ function DesktopHeader(props: IDesktopHeaderProps) {
 
   const firstName = user?.firstname;
   const lastName = user?.lastname;
+  const path = window.location.pathname;
 
   return (
     <>
@@ -27,7 +28,10 @@ function DesktopHeader(props: IDesktopHeaderProps) {
           left: '0',
           zIndex: '99999',
 
-          display: 'flex',
+          display:
+            path.startsWith('/auth') || path.startsWith('/question-form')
+              ? 'none'
+              : 'flex',
           background: '#fff',
           color: '#000',
           paddingBlock: '1rem',

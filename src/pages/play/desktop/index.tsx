@@ -1,8 +1,15 @@
 import { useHistory } from 'react-router';
+import { useIsAuthorized } from '../../../services/api/hooks';
 
 export function DesktopHomePage() {
   const history = useHistory();
 
+  const isAuthorized = useIsAuthorized();
+
+  if (!isAuthorized) {
+    history.push('auth');
+    history.go(0);
+  }
   return (
     <>
       <meta charSet="utf-8" />

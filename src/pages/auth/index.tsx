@@ -68,7 +68,7 @@ export function AuthPage(props: IAuthPageProps) {
       setError(undefined);
       reset({ password: '' });
       setIsOpenToast(true);
-      history.push('/');
+      history.push('/question-form');
     },
     onError(e: any) {
       if (!e.response?.data?.error?.message) return;
@@ -90,8 +90,7 @@ export function AuthPage(props: IAuthPageProps) {
       const authEvent = new Event('auth-changed');
       document.dispatchEvent(authEvent);
       setError(undefined);
-      history.push('/');
-      history.go(0);
+      history.push('/question-form');
     },
     onError(e: any) {
       setError(e.response?.data?.message);

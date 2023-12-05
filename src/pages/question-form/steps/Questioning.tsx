@@ -86,7 +86,6 @@ export function QuestioningStep({
         <Box
           sx={{
             marginBottom: '5rem',
-            marginTop: isPlatform('mobile') ? '0' : '4rem',
             paddingInline: '20px',
           }}
         >
