@@ -7,7 +7,7 @@ import { AvailableMatch } from '../../services/matches/interface';
 import { useUserProfile } from '../../services/api/hooks';
 import { Player } from '../../services/user/interface';
 import { PlayerSlot } from './PlayerSlot';
-
+import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 interface IMyMatchCardProps {
   noResult: boolean;
 }
@@ -35,10 +35,6 @@ export function MyMatchCard(props: ICardProps) {
     (booking) => booking.player?.id === myPlayer?.id,
   );
 
-  const [playerInTeam, setPlayerInTeam] = useState<string>(
-    playerAlreadyInSomeTeam ? ' ' : 'B',
-  );
-
   useEffect(() => {
     const teamAPlayers =
       props?.matchBookings
@@ -50,15 +46,8 @@ export function MyMatchCard(props: ICardProps) {
         ?.filter((booking) => booking.team === 'B')
         ?.map((booking) => booking.player) || [];
 
-    if (playerInTeam === 'A' && myPlayer)
-      teamAPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
-    if (playerInTeam === 'B' && myPlayer)
-      teamBPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
-    teamAPlayers.length = 2;
-    teamBPlayers.length = 2;
-
     setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
-  }, [props, playerInTeam, myPlayer]);
+  }, [props, myPlayer]);
 
   return (
     <>
@@ -118,14 +107,12 @@ export function MyMatchCard(props: ICardProps) {
               <PlayerSlot
                 onClick={() => {
                   if (playerAlreadyInSomeTeam) return;
-                  setPlayerInTeam('A');
                 }}
                 player={players[0]}
               />
               <PlayerSlot
                 onClick={() => {
                   if (playerAlreadyInSomeTeam) return;
-                  setPlayerInTeam('A');
                 }}
                 player={players[1]}
               />
@@ -142,14 +129,12 @@ export function MyMatchCard(props: ICardProps) {
               <PlayerSlot
                 onClick={() => {
                   if (playerAlreadyInSomeTeam) return;
-                  setPlayerInTeam('B');
                 }}
                 player={players[2]}
               />
               <PlayerSlot
                 onClick={() => {
                   if (playerAlreadyInSomeTeam) return;
-                  setPlayerInTeam('B');
                 }}
                 player={players[3]}
               />
@@ -266,16 +251,45 @@ export function MyMatchCard(props: ICardProps) {
                 gap: '.75rem',
               }}
             >
-              <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '1.75rem',
+                  position: 'relative',
+                }}
+              >
+                <Typography
+                  sx={{ fontSize: '2.5rem', fontWeight: '700', opacity: '.5' }}
+                >
                   {props.matchResults[0][0]}
                 </Typography>
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                <Typography
+                  sx={{ fontSize: '2.5rem', fontWeight: '700', opacity: '.5' }}
+                >
                   {props.matchResults[1][0]}
                 </Typography>
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                <Typography
+                  sx={{ fontSize: '2.5rem', fontWeight: '700', opacity: '.5' }}
+                >
                   {props.matchResults[2][0]}
                 </Typography>
+                {props.winningTeam === 'A' && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      left: '-2.75rem',
+                      top: '.75rem',
+                      border: '2px aquamarine solid',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '2.5px',
+                    }}
+                  >
+                    <EmojiEventsOutlinedIcon />
+                  </Box>
+                )}
               </Box>
 
               <Box
@@ -292,6 +306,24 @@ export function MyMatchCard(props: ICardProps) {
                 <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
                   {props.matchResults[2][1]}
                 </Typography>
+
+                {props.winningTeam === 'B' && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      left: '-2.75rem',
+                      top: '.75rem',
+                      border: '2px aquamarine solid',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '2.5px',
+                    }}
+                  >
+                    <EmojiEventsOutlinedIcon />
+                  </Box>
+                )}
               </Box>
             </Box>
           )}

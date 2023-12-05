@@ -17,10 +17,6 @@ export function MatchCard(props: AvailableMatch) {
     (booking) => booking.player?.id === myPlayer?.id,
   );
 
-  const [playerInTeam, setPlayerInTeam] = useState<string>(
-    playerAlreadyInSomeTeam ? ' ' : 'B',
-  );
-
   useEffect(() => {
     const teamAPlayers =
       matchData?.matchBookings
@@ -32,15 +28,8 @@ export function MatchCard(props: AvailableMatch) {
         ?.filter((booking) => booking.team === 'B')
         ?.map((booking) => booking.player) || [];
 
-    if (playerInTeam === 'A' && myPlayer)
-      teamAPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
-    if (playerInTeam === 'B' && myPlayer)
-      teamBPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
-    teamAPlayers.length = 2;
-    teamBPlayers.length = 2;
-
     setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
-  }, [matchData, playerInTeam, myPlayer]);
+  }, [matchData, myPlayer]);
 
   return (
     <Box
@@ -106,14 +95,12 @@ export function MatchCard(props: AvailableMatch) {
               player={players[0]}
               onClick={() => {
                 if (playerAlreadyInSomeTeam) return;
-                setPlayerInTeam('A');
               }}
             />
             <PlayerSlot
               player={players[1]}
               onClick={() => {
                 if (playerAlreadyInSomeTeam) return;
-                setPlayerInTeam('A');
               }}
             />
           </Box>
@@ -123,7 +110,6 @@ export function MatchCard(props: AvailableMatch) {
               player={players[2]}
               onClick={() => {
                 if (playerAlreadyInSomeTeam) return;
-                setPlayerInTeam('A');
               }}
             />
           </Box>
@@ -131,7 +117,6 @@ export function MatchCard(props: AvailableMatch) {
             player={players[3]}
             onClick={() => {
               if (playerAlreadyInSomeTeam) return;
-              setPlayerInTeam('A');
             }}
           />
         </Box>
