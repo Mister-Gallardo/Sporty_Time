@@ -110,7 +110,7 @@ export function MatchCard(props: AvailableMatch) {
               }}
             />
             <PlayerSlot
-              player={players[0]}
+              player={players[1]}
               onClick={() => {
                 if (playerAlreadyInSomeTeam) return;
                 setPlayerInTeam('A');
@@ -120,7 +120,7 @@ export function MatchCard(props: AvailableMatch) {
           <Box sx={{ width: '2px', height: '50px', background: '#e5e5e5' }} />
           <Box sx={{ display: 'flex', gap: '14px' }}>
             <PlayerSlot
-              player={players[0]}
+              player={players[2]}
               onClick={() => {
                 if (playerAlreadyInSomeTeam) return;
                 setPlayerInTeam('A');
@@ -128,7 +128,7 @@ export function MatchCard(props: AvailableMatch) {
             />
           </Box>
           <PlayerSlot
-            player={players[0]}
+            player={players[3]}
             onClick={() => {
               if (playerAlreadyInSomeTeam) return;
               setPlayerInTeam('A');

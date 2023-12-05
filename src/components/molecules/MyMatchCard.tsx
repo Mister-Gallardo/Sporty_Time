@@ -1,11 +1,12 @@
 import { Add, Error } from '@mui/icons-material';
-import { Avatar, Box, ButtonBase, Typography } from '@mui/material';
+import { Box, ButtonBase, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { UploadResultModal } from '../modals/UploadResultModal';
 import { AvailableMatch } from '../../services/matches/interface';
 import { useUserProfile } from '../../services/api/hooks';
 import { Player } from '../../services/user/interface';
+import { PlayerSlot } from './PlayerSlot';
 
 interface IMyMatchCardProps {
   noResult: boolean;
@@ -111,15 +112,20 @@ export function MyMatchCard(props: ICardProps) {
             }}
           >
             <Box sx={{ display: 'flex', gap: '.75rem' }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Avatar sx={{ width: '55px', height: '55px' }} />
-                <Typography sx={{ opacity: '.5' }}>1.4</Typography>
-              </Box>
-
-              <Box sx={{ textAlign: 'center' }}>
-                <Avatar sx={{ width: '55px', height: '55px' }} />
-                <Typography sx={{ opacity: '.5' }}>1.4</Typography>
-              </Box>
+              <PlayerSlot
+                onClick={() => {
+                  if (playerAlreadyInSomeTeam) return;
+                  setPlayerInTeam('A');
+                }}
+                player={players[0]}
+              />
+              <PlayerSlot
+                onClick={() => {
+                  if (playerAlreadyInSomeTeam) return;
+                  setPlayerInTeam('A');
+                }}
+                player={players[1]}
+              />
             </Box>
             <Box
               sx={{
@@ -130,14 +136,20 @@ export function MyMatchCard(props: ICardProps) {
               }}
             />
             <Box sx={{ display: 'flex', gap: '.75rem' }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Avatar sx={{ width: '55px', height: '55px' }} />
-                <Typography sx={{ opacity: '.5' }}>1.4</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center' }}>
-                <Avatar sx={{ width: '55px', height: '55px' }} />
-                <Typography sx={{ opacity: '.5' }}>1.4</Typography>
-              </Box>
+              <PlayerSlot
+                onClick={() => {
+                  if (playerAlreadyInSomeTeam) return;
+                  setPlayerInTeam('B');
+                }}
+                player={players[2]}
+              />
+              <PlayerSlot
+                onClick={() => {
+                  if (playerAlreadyInSomeTeam) return;
+                  setPlayerInTeam('B');
+                }}
+                player={players[3]}
+              />
             </Box>
           </Box>
 
