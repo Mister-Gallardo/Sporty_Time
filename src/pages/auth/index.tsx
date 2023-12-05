@@ -91,6 +91,7 @@ export function AuthPage(props: IAuthPageProps) {
       document.dispatchEvent(authEvent);
       setError(undefined);
       history.push('/');
+      history.go(0);
     },
     onError(e: any) {
       setError(e.response?.data?.message);

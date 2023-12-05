@@ -152,7 +152,10 @@ export function ResultsStep(props: ResultsStepProps) {
           }}
         >
           <Button
-            onClick={() => history.push('/')}
+            onClick={() => {
+              history.push('/');
+              history.go(0);
+            }}
             sx={{
               maxWidth: isPlatform('mobile') ? '90%' : '400px',
               height: '40px',
