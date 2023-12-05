@@ -45,7 +45,7 @@ export function SingleMatchPage() {
 
   const joinMatchMutation = useMutation({
     mutationFn: joinMatch,
-    onSuccess(data) {
+    onSuccess() {
       showToast({
         header: 'Поздравляем!',
         message: 'Вы присоединились к матчу',
@@ -53,6 +53,7 @@ export function SingleMatchPage() {
         position: 'bottom',
         color: 'success',
       });
+      refetchClubs();
     },
     onError(e: any) {
       showToast({

@@ -1,35 +1,24 @@
 import { Box, Typography } from '@mui/material';
 import { useHistory } from 'react-router';
 import { AvailableMatch } from '../../services/matches/interface';
-import { useUserProfile } from '../../services/api/hooks';
-import { useEffect, useState } from 'react';
-import { Player } from '../../services/user/interface';
 import { PlayerSlot } from './PlayerSlot';
 
 export function MatchCard(props: AvailableMatch) {
   const matchData = props;
   const history = useHistory();
-  const myPlayer = useUserProfile();
 
-  const [players, setPlayers] = useState<Player[]>([]);
+  const teamAPlayers =
+    matchData?.matchBookings
+      ?.filter((booking) => booking.team === 'A')
+      ?.map((booking) => booking.player) || [];
 
-  const playerAlreadyInSomeTeam = !!matchData?.matchBookings.find(
-    (booking) => booking.player?.id === myPlayer?.id,
-  );
-
-  useEffect(() => {
-    const teamAPlayers =
-      matchData?.matchBookings
-        ?.filter((booking) => booking.team === 'A')
-        ?.map((booking) => booking.player) || [];
-
-    const teamBPlayers =
-      matchData?.matchBookings
-        ?.filter((booking) => booking.team === 'B')
-        ?.map((booking) => booking.player) || [];
-
-    setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
-  }, [matchData, myPlayer]);
+  const teamBPlayers =
+    matchData?.matchBookings
+      ?.filter((booking) => booking.team === 'B')
+      ?.map((booking) => booking.player) || [];
+  teamAPlayers.length = 2;
+  teamBPlayers.length = 2;
+  const players = [...Array.from(teamAPlayers), ...Array.from(teamBPlayers)];
 
   return (
     <Box
@@ -91,34 +80,14 @@ export function MatchCard(props: AvailableMatch) {
           }}
         >
           <Box sx={{ display: 'flex', gap: '14px' }}>
-            <PlayerSlot
-              player={players[0]}
-              onClick={() => {
-                if (playerAlreadyInSomeTeam) return;
-              }}
-            />
-            <PlayerSlot
-              player={players[1]}
-              onClick={() => {
-                if (playerAlreadyInSomeTeam) return;
-              }}
-            />
+            <PlayerSlot player={players[0]} />
+            <PlayerSlot player={players[1]} />
           </Box>
           <Box sx={{ width: '2px', height: '50px', background: '#e5e5e5' }} />
           <Box sx={{ display: 'flex', gap: '14px' }}>
-            <PlayerSlot
-              player={players[2]}
-              onClick={() => {
-                if (playerAlreadyInSomeTeam) return;
-              }}
-            />
+            <PlayerSlot player={players[2]} />
+            <PlayerSlot player={players[3]} />
           </Box>
-          <PlayerSlot
-            player={players[3]}
-            onClick={() => {
-              if (playerAlreadyInSomeTeam) return;
-            }}
-          />
         </Box>
       </Box>
 
