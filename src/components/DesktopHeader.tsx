@@ -25,7 +25,7 @@ function DesktopHeader(props: IDesktopHeaderProps) {
           top: '0',
           right: '0',
           left: '0',
-          zIndex: '999',
+          zIndex: '99999',
 
           display: 'flex',
           background: '#fff',

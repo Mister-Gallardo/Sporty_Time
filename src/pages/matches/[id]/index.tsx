@@ -48,7 +48,6 @@ export function SingleMatchPage() {
   });
 
   const singleMatchData = data?.data;
-  const [playerInTeam, setPlayerInTeam] = useState<string>('B');
 
   const joinMatchMutation = useMutation({
     mutationFn: joinMatch,
@@ -65,7 +64,7 @@ export function SingleMatchPage() {
       showToast({
         header: 'Ошибка',
         message: e.response.data.message,
-        duration: 2000,
+        duration: 20000,
         position: 'bottom',
         color: 'danger',
       });
@@ -73,6 +72,14 @@ export function SingleMatchPage() {
   });
 
   const [players, setPlayers] = useState<Player[]>([]);
+
+  const playerAlreadyInTeam = players.find(
+    (player) => player?.id === myPlayer?.id,
+  );
+
+  const [playerInTeam, setPlayerInTeam] = useState<string>(
+    playerAlreadyInTeam ? ' ' : 'B',
+  );
 
   useEffect(() => {
     const teamAPlayers =
@@ -438,11 +445,17 @@ export function SingleMatchPage() {
               >
                 <PlayerSlot
                   player={players[0]}
-                  onClick={() => setPlayerInTeam('A')}
+                  onClick={() => {
+                    if (playerAlreadyInTeam) return;
+                    setPlayerInTeam('A');
+                  }}
                 />
                 <PlayerSlot
                   player={players[1]}
-                  onClick={() => setPlayerInTeam('A')}
+                  onClick={() => {
+                    if (playerAlreadyInTeam) return;
+                    setPlayerInTeam('A');
+                  }}
                 />
                 <Box
                   sx={{
@@ -453,11 +466,18 @@ export function SingleMatchPage() {
                 />
                 <PlayerSlot
                   player={players[2]}
-                  onClick={() => setPlayerInTeam('B')}
+                  onClick={() => {
+                    if (playerAlreadyInTeam) return;
+                    setPlayerInTeam('B');
+                  }}
                 />
                 <PlayerSlot
                   player={players[3]}
-                  onClick={() => setPlayerInTeam('B')}
+                  onClick={() => {
+                    if (playerAlreadyInTeam) return;
+
+                    setPlayerInTeam('B');
+                  }}
                 />
               </Box>
             </Box>
@@ -472,52 +492,54 @@ export function SingleMatchPage() {
             </Box>
           </Box>
 
-          <Box
-            sx={{
-              position: 'fixed',
-              left: '0',
-              right: '0',
-              bottom: '1.5rem',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Button
-              onClick={() => {
-                if (matchId && playerInTeam) {
-                  joinMatchMutation.mutate({
-                    matchId: Number(matchId),
-                    team: playerInTeam,
-                  });
-                } else {
-                  showToast({
-                    message: 'Выберите команду!',
-                    duration: 1000,
-                    color: 'danger',
-                  });
-                }
-              }}
+          {!playerAlreadyInTeam && (
+            <Box
               sx={{
-                height: '45px',
-                background: '#0D2432',
-                borderRadius: '25px',
-                color: '#fff',
-                fontSize: '1.1rem',
-                fontWeight: '500',
-                maxWidth: '350px',
-                boxShadow:
-                  'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                position: 'fixed',
+                left: '0',
+                right: '0',
+                bottom: '1.5rem',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              {joinMatchMutation.isPending ? (
-                <CircularProgress />
-              ) : (
-                `Забронировать место - ₽ ${singleMatchData?.price}`
-              )}
-            </Button>
-          </Box>
+              <Button
+                onClick={() => {
+                  if (matchId && playerInTeam) {
+                    joinMatchMutation.mutate({
+                      matchId: Number(matchId),
+                      team: playerInTeam,
+                    });
+                  } else {
+                    showToast({
+                      message: 'Выберите команду!',
+                      duration: 1000,
+                      color: 'danger',
+                    });
+                  }
+                }}
+                sx={{
+                  height: '45px',
+                  background: '#0D2432',
+                  borderRadius: '25px',
+                  color: '#fff',
+                  fontSize: '1.1rem',
+                  fontWeight: '500',
+                  maxWidth: '350px',
+                  boxShadow:
+                    'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                }}
+              >
+                {joinMatchMutation.isPending ? (
+                  <CircularProgress />
+                ) : (
+                  `Забронировать место - ₽ ${singleMatchData?.price}`
+                )}
+              </Button>
+            </Box>
+          )}
         </Box>
       </Box>
     </SwipeablePage>
@@ -526,6 +548,7 @@ export function SingleMatchPage() {
 
 export const PlayerSlot = (props: { player: Player; onClick?: any }) => {
   const { player, onClick } = props;
+
   return (
     <Box
       sx={{

@@ -16,7 +16,8 @@ export function ResultsStep(props: ResultsStepProps) {
   const { firstName, lastName } = props;
 
   const userRating = JSON.parse(localStorage.getItem('userRating') || '[]')
-    ?.data[0];
+    ?.data.sportRating;
+
   const history = useHistory();
 
   const userInitials =
