@@ -37,7 +37,7 @@ export function SingleMatchPage() {
     isLoading,
     refetch: refetchClubs,
   } = useQuery({
-    queryKey: [`available-club${matchId}`],
+    queryKey: [`available-club`, matchId],
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
 
