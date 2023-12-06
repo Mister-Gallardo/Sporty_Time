@@ -7,8 +7,8 @@ import {
 import { Box, IconButton, Tab, Typography } from '@mui/material';
 import { autoPlay } from 'react-swipeable-views-utils';
 import { useState } from 'react';
-import { BookTab } from './BookTab';
-import { BookTabMain } from './BookTabMain';
+import { BookTab } from './tabs/BookTab';
+import { BookTabMain } from './tabs/BookTabMain';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { SwipeablePage } from '../../../components/SwipeablePage';
 

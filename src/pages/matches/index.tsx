@@ -1,10 +1,10 @@
 import { isPlatform } from '@ionic/react';
 import { Box, Tab } from '@mui/material';
 import { useState } from 'react';
-import { AvailableMatchesTab } from './AvailableMatchesTab';
+import { AvailableMatchesTab } from './tabs/AvailableMatchesTab';
 import { Button } from '../../components/atoms/Button';
 import { Add } from '@mui/icons-material';
-import { MyMatchesTab } from './MyMatchesTab';
+import { MyMatchesTab } from './tabs/MyMatchesTab';
 import { UploadResultModal } from '../../components/modals/UploadResultModal';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 

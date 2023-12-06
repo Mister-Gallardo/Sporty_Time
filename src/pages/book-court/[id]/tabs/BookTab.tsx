@@ -12,12 +12,12 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getClub } from '../../../services/club/service';
+import { getClub } from '../../../../services/club/service';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { CalendarDay } from '../../../components/molecules/CalendarDay';
-import { createMatch } from '../../../services/matches/service';
-import { CourtAccordion } from '../../../components/molecules/CourtAccordion';
+import { CalendarDay } from '../../../../components/molecules/CalendarDay';
+import { createMatch } from '../../../../services/matches/service';
+import { CourtAccordion } from '../../../../components/molecules/CourtAccordion';
 
 export function BookTab() {
   const { courtId } = useParams<{ courtId: string }>();
@@ -45,7 +45,7 @@ export function BookTab() {
     isLoading,
     refetch: refetchClubs,
   } = useQuery({
-    queryKey: ['club', selectedDate],
+    queryKey: ['club', courtId],
     queryFn: () => getClub(Number(courtId), { gamedate: selectedDateString }),
   });
 

@@ -1,7 +1,7 @@
 import { IonLoading } from '@ionic/react';
-import { Box } from '@mui/material';
-import { MyMatchCard } from '../../components/molecules/MyMatchCard';
-import { getMyMatches } from '../../services/matches/service';
+import { Box, Typography } from '@mui/material';
+import { MyMatchCard } from '../../../components/molecules/MyMatchCard';
+import { getMyMatches } from '../../../services/matches/service';
 import { useQuery } from '@tanstack/react-query';
 
 interface IMyMatchesTabProps {}
@@ -36,6 +36,19 @@ export function MyMatchesTab({}: IMyMatchesTabProps) {
           gap: '1rem',
         }}
       >
+        {(data?.data.length === 0 || !data) && (
+          <Typography
+            sx={{
+              fontSize: '1.1rem',
+              paddingTop: '1.5rem',
+              margin: '0 auto',
+              fontWeight: '600',
+            }}
+          >
+            Начните или присоединитесь к матчу.
+          </Typography>
+        )}
+
         {myMatchesData?.map((card) => (
           <MyMatchCard confirmedByAllResult={!!card.matchResults} {...card} />
         ))}

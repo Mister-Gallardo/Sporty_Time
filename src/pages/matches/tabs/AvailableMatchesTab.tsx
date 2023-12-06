@@ -5,11 +5,11 @@ import {
   Box,
   Typography,
 } from '@mui/material';
-import { MatchCard } from '../../components/molecules/MatchCard';
+import { MatchCard } from '../../../components/molecules/MatchCard';
 import { IonLoading, isPlatform } from '@ionic/react';
 import { ExpandMore } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
-import { getAvailableMatches } from '../../services/matches/service';
+import { getAvailableMatches } from '../../../services/matches/service';
 
 interface IAvailableMatchesTabProps {}
 
@@ -23,10 +23,6 @@ export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
 
   if (isLoading) {
     return <IonLoading isOpen />;
-  }
-
-  if (data?.data.length === 0) {
-    return <Box sx={{ textAlign: 'center' }}>No available matches</Box>;
   }
 
   return (
@@ -59,6 +55,18 @@ export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
           scrollBehavior: 'smooth',
         }}
       >
+        {(data?.data.length === 0 || !data) && (
+          <Typography
+            sx={{
+              fontSize: '1.1rem',
+              paddingTop: '1.5rem',
+              margin: '0 auto',
+              fontWeight: '600',
+            }}
+          >
+            Доступных матчей пока нет
+          </Typography>
+        )}
         {availableMatchesArray?.map((card, index) => {
           return <MatchCard key={index} {...card} />;
         })}
@@ -101,6 +109,18 @@ export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
               scrollBehavior: 'smooth',
             }}
           >
+            {(data?.data.length === 0 || !data) && (
+              <Typography
+                sx={{
+                  fontSize: '1.1rem',
+                  paddingTop: '1.5rem',
+                  margin: '0 auto',
+                  fontWeight: '600',
+                }}
+              >
+                Доступных матчей пока нет
+              </Typography>
+            )}
             {availableMatchesArray?.map((card, index) => {
               return <MatchCard key={index} {...card} />;
             })}

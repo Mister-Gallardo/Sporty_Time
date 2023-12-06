@@ -22,8 +22,8 @@ import {
   ListItemText,
   Stack,
 } from '@mui/material';
-import { Avatar } from '../../../components/molecules/Avatar';
-import { ResultCard } from '../../../components/molecules/ResultCard';
+import { Avatar } from '../../../../components/molecules/Avatar';
+import { ResultCard } from '../../../../components/molecules/ResultCard';
 
 export function BookTabMain() {
   return (

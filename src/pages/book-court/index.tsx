@@ -26,7 +26,7 @@ export function BookCourt() {
           paddingInline: isMobile ? '0' : '10px',
           display: 'grid',
           alignContent: 'center',
-          gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))',
+          gridTemplateColumns: 'repeat(auto-fit,minmax(260px,500px))',
           marginTop: '.5rem',
           gap: '1rem',
           maxWidth: 1240,

@@ -97,16 +97,6 @@ function DesktopHeader(props: IDesktopHeaderProps) {
           >
             Найти
           </Button>
-          <Button
-            onClick={() => history.push('/matches')}
-            sx={{
-              maxWidth: '140px',
-              paddingBlock: '20px',
-              borderRadius: '30px',
-            }}
-          >
-            Матчи
-          </Button>
         </Box>
 
         <Box
