@@ -1,4 +1,4 @@
-import { IonBackButton, isPlatform } from '@ionic/react';
+import { IonBackButton, IonLoading, isPlatform } from '@ionic/react';
 import SwipeableViews from 'react-swipeable-views';
 import {
   ArrowBackIosNewOutlined,
@@ -11,9 +11,19 @@ import { BookTab } from './tabs/BookTab';
 import { BookTabMain } from './tabs/BookTabMain';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { SwipeablePage } from '../../../components/SwipeablePage';
+import { useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getClubById } from '../../../services/club/service';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 export function SingleCourtPage() {
+  const { clubId } = useParams<{ clubId: string }>();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['club', clubId],
+    queryFn: () => getClubById(Number(clubId), {}),
+  });
+
   const [tabIndex, setTabIndex] = useState('1');
   const isMobile = isPlatform('mobile');
   const [activeStep, setActiveStep] = useState(0);
@@ -21,6 +31,8 @@ export function SingleCourtPage() {
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
+
+  if (isLoading) return <IonLoading isOpen />;
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
@@ -34,13 +46,13 @@ export function SingleCourtPage() {
           sx={{ objectFit: 'cover' }}
           width="100%"
           component="img"
-          src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
+          src={data?.img}
         />
         <Box
           sx={{ objectFit: 'cover' }}
           width="100%"
           component="img"
-          src="https://i0.wp.com/thepadelpaper.com/wp-content/uploads/2022/12/38c266b9-58a4-4693-a990-c9cd4452dc23.jpeg?fit=2048%2C1366&ssl=1"
+          src={data?.img}
         />
       </AutoPlaySwipeableViews>
     </Box>
@@ -64,7 +76,7 @@ export function SingleCourtPage() {
           fontWeight: '700',
         }}
       >
-        JA Ocean View Hotel Padel Tenn...
+        {data?.title}
       </Typography>
     </Box>
   );
@@ -92,7 +104,7 @@ export function SingleCourtPage() {
                     fontWeight: '700',
                   }}
                 >
-                  JA Ocean View Hotel Padel Tenn...
+                  {data?.title}
                 </Typography>
                 <Typography variant="body2">JBR, Dubai</Typography>
               </Box>

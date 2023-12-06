@@ -20,7 +20,7 @@ import { createMatch } from '../../../../services/matches/service';
 import { CourtAccordion } from '../../../../components/molecules/CourtAccordion';
 
 export function BookTab() {
-  const { courtId } = useParams<{ courtId: string }>();
+  const { clubId } = useParams<{ clubId: string }>();
   const now = new Date();
   const dates = Array.from(Array(100)).map(
     (n, i) =>
@@ -45,8 +45,8 @@ export function BookTab() {
     isLoading,
     refetch: refetchClubs,
   } = useQuery({
-    queryKey: ['club', selectedDate, courtId],
-    queryFn: () => getClub(Number(courtId), { gamedate: selectedDateString }),
+    queryKey: ['club', selectedDate, clubId],
+    queryFn: () => getClub(Number(clubId), { gamedate: selectedDateString }),
   });
 
   const createMatchMutation = useMutation({

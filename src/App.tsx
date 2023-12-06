@@ -33,7 +33,7 @@ const desktopRoutes = [
     component: BookCourt,
   },
   {
-    path: '/book-court/:courtId',
+    path: '/book-court/:clubId',
     exact: true,
     component: SingleCourtPage,
   },
@@ -66,7 +66,7 @@ const mobileRoutes = [
     component: MobileBookCourt,
   },
   {
-    path: '/book-court/:courtId',
+    path: '/book-court/:clubId',
     exact: true,
     component: MobileSingleCourtPage,
   },

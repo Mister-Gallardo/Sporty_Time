@@ -11,6 +11,11 @@ export async function getClub(id: number, params: any) {
   return data;
 }
 
+export async function getClubById(id: number, params: any) {
+  const { data } = await api.get<Club>('/clubs/simple/' + id, { params });
+  return data;
+}
+
 export async function bookCourt(id: number, params: any) {
   const { data } = await api.post('/clubs/' + id, { params });
   return data;

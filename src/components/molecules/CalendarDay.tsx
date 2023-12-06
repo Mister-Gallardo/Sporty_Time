@@ -37,6 +37,7 @@ export const CalendarDay: React.FC<ICalendarDayProps> = (props) => {
       <Box
         sx={{
           background: selected ? '#0D2433' : '',
+          width: '40px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
