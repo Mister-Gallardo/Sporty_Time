@@ -45,7 +45,7 @@ export function BookTab() {
     isLoading,
     refetch: refetchClubs,
   } = useQuery({
-    queryKey: ['club', courtId],
+    queryKey: ['club', selectedDate, courtId],
     queryFn: () => getClub(Number(courtId), { gamedate: selectedDateString }),
   });
 
