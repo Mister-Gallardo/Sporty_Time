@@ -7,12 +7,7 @@ export default function NewMatchCard({ toggleConfigModal }: any) {
 
   return (
     <Card
-      onClick={() =>
-        history.push({
-          pathname: '/book-court/1',
-          state: { tab: '2' },
-        })
-      }
+      onClick={() => history.push('/book-court/1?tab=2')}
       sx={{
         boxShadow: '0px 0px 5px #e3e3e3',
       }}

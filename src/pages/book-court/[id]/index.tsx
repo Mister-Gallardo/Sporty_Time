@@ -11,24 +11,23 @@ import { BookTab } from './tabs/BookTab';
 import { BookTabMain } from './tabs/BookTabMain';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { SwipeablePage } from '../../../components/SwipeablePage';
-import { useLocation, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getClubById } from '../../../services/club/service';
+import useSearchParams from '../../../hooks/useSearchParams';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 export function SingleCourtPage() {
   const { clubId } = useParams<{ clubId: string }>();
+
+  const [passedTabIndex, setTabIndex] = useSearchParams();
+  const tabIndex = passedTabIndex('tab') ? passedTabIndex('tab') : '1';
 
   const { data, isLoading } = useQuery({
     queryKey: ['club', clubId],
     queryFn: () => getClubById(Number(clubId), {}),
   });
 
-  const { state } = useLocation<{ tab: string | undefined }>();
-
-  const [tabIndex, setTabIndex] = useState<string>(
-    state?.tab ? state?.tab : '1',
-  );
   const isMobile = isPlatform('mobile');
   const [activeStep, setActiveStep] = useState(0);
 
@@ -87,7 +86,7 @@ export function SingleCourtPage() {
 
   return (
     <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
-      <TabContext value={tabIndex}>
+      <TabContext value={tabIndex!}>
         <Box
           sx={{
             position: 'sticky',
@@ -120,7 +119,7 @@ export function SingleCourtPage() {
             </Box>
             <TabList
               sx={{ margin: '0 auto', maxWidth: '1000px' }}
-              onChange={(e, value) => setTabIndex(value)}
+              onChange={(e, value) => setTabIndex('tab', value)}
             >
               <Tab
                 value="1"
