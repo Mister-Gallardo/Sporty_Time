@@ -8,7 +8,6 @@ export const Button: React.FC<IButtonProps> = (props) => {
       {...props}
       sx={{
         width: '100%',
-        height: '23px',
         color: props.disabled ? 'rgba(0, 0, 0, 0.4)' : '#fff',
         fontSize: '12px',
         backgroundColor: props.disabled ? '#e5e5e5' : '#2561F8',
