@@ -11,7 +11,7 @@ import { BookTab } from './tabs/BookTab';
 import { BookTabMain } from './tabs/BookTabMain';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { SwipeablePage } from '../../../components/SwipeablePage';
-import { useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getClubById } from '../../../services/club/service';
 
@@ -24,7 +24,11 @@ export function SingleCourtPage() {
     queryFn: () => getClubById(Number(clubId), {}),
   });
 
-  const [tabIndex, setTabIndex] = useState('1');
+  const { state } = useLocation<{ tab: string | undefined }>();
+
+  const [tabIndex, setTabIndex] = useState<string>(
+    state?.tab ? state?.tab : '1',
+  );
   const isMobile = isPlatform('mobile');
   const [activeStep, setActiveStep] = useState(0);
 

@@ -7,17 +7,18 @@ import { Add } from '@mui/icons-material';
 import { MyMatchesTab } from './tabs/MyMatchesTab';
 import { UploadResultModal } from '../../components/modals/UploadResultModal';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
+import useToggle from '../../hooks/useToggle';
+import { ConfigMatchModal } from '../../components/modals/ConfigMatchModal';
 
 interface IMatchesPageProps {}
 
 export function MatchesPage({}: IMatchesPageProps) {
   const [tabIndex, setTabIndex] = useState<string>('1');
-  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
-  const isMobile = isPlatform('mobile');
 
-  function handLeOpenUploadModal() {
-    setOpenUploadModal((prev) => !prev);
-  }
+  const [openUploadModal, setOpenUploadModal] = useToggle();
+  const [openConfigMatchModal, setOpenConfigMatchModal] = useToggle();
+
+  const isMobile = isPlatform('mobile');
 
   return (
     <Box maxWidth={1240} mx="auto">
@@ -48,7 +49,7 @@ export function MatchesPage({}: IMatchesPageProps) {
             />
           </TabList>
           <TabPanel value="1" sx={{ p: 0 }}>
-            <AvailableMatchesTab />
+            <AvailableMatchesTab toggleConfigModal={setOpenConfigMatchModal} />
           </TabPanel>
           <TabPanel value="2" sx={{ p: 0 }}>
             <MyMatchesTab />
@@ -83,7 +84,12 @@ export function MatchesPage({}: IMatchesPageProps) {
         </Box>
         <UploadResultModal
           openState={openUploadModal}
-          handleModal={handLeOpenUploadModal}
+          handleModal={setOpenUploadModal}
+        />
+
+        <ConfigMatchModal
+          openState={openConfigMatchModal}
+          handleModal={setOpenConfigMatchModal}
         />
       </TabContext>
     </Box>
