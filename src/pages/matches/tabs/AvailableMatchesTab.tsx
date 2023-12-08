@@ -10,10 +10,15 @@ import { IonLoading, isPlatform } from '@ionic/react';
 import { ExpandMore } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { getAvailableMatches } from '../../../services/matches/service';
+import NewMatchCard from '../../../components/molecules/NewMatchCard';
 
-interface IAvailableMatchesTabProps {}
+interface IAvailableMatchesTabProps {
+  toggleConfigModal: (val: boolean) => void;
+}
 
-export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
+export function AvailableMatchesTab({
+  toggleConfigModal,
+}: IAvailableMatchesTabProps) {
   const { data, isLoading } = useQuery({
     queryKey: [`available-matches`],
     queryFn: getAvailableMatches,
@@ -123,6 +128,46 @@ export function AvailableMatchesTab({}: IAvailableMatchesTabProps) {
             )}
             {availableMatchesArray?.map((card, index) => {
               return <MatchCard key={index} {...card} />;
+            })}
+          </Box>
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion
+        defaultExpanded
+        elevation={0}
+        sx={{
+          padding: 0,
+          background: 'none',
+          '&:before': {
+            display: 'none',
+          },
+        }}
+      >
+        <AccordionSummary
+          sx={{ padding: 0 }}
+          expandIcon={<ExpandMore />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Box>
+            <Typography sx={{ fontWeight: '700', fontSize: '1.1rem' }}>
+              Стать первым игроком!
+            </Typography>
+            <Typography sx={{ fontSize: '.8rem' }}>
+              Создайте новый матч, выбрав подходящее время
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails sx={{ padding: 0 }}>
+          <Box display="flex" flexDirection="column" gap={2} width="100%">
+            {[1, 2].map((card, index) => {
+              return (
+                <NewMatchCard
+                  key={index}
+                  toggleConfigModal={toggleConfigModal}
+                />
+              );
             })}
           </Box>
         </AccordionDetails>
