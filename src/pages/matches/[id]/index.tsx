@@ -30,6 +30,7 @@ import { MatchLevelBlock } from './sections/MatchLevelBlock';
 import { ClubInfoBlock } from './sections/ClubInfoBlock';
 import { MatchInfoBlock } from './sections/MatchInfoBlock';
 import { UploadResultModal } from '../../../components/modals/UploadResultModal';
+import { gameDateToDate } from '../../../services/helper';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
@@ -46,9 +47,9 @@ export function SingleMatchPage() {
   const {
     data,
     isLoading,
-    refetch: refetchClubs,
+    refetch: refetchMatch,
   } = useQuery({
-    queryKey: [`available-club`, matchId],
+    queryKey: [`match`, matchId],
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
 
@@ -65,7 +66,7 @@ export function SingleMatchPage() {
         position: 'bottom',
         color: 'success',
       });
-      refetchClubs();
+      refetchMatch();
     },
     onError(e: any) {
       showToast({
@@ -83,6 +84,7 @@ export function SingleMatchPage() {
     mutationFn: uploadResults,
     onSuccess() {
       setOpenToast(true);
+      refetchMatch();
     },
     onError(e: any) {
       setError(e.response.data.message);
@@ -91,12 +93,13 @@ export function SingleMatchPage() {
   });
 
   const [players, setPlayers] = useState<Player[]>([]);
-
   const playerAlreadyInSomeTeam = !!singleMatchData?.matchBookings.find(
     (booking) => booking.player?.id === myPlayer?.id,
   );
-
   const [playerInTeam, setPlayerInTeam] = useState<string>('');
+  const myBooking = singleMatchData?.matchBookings.find(
+    (booking) => booking.player?.id === myPlayer?.id,
+  );
 
   useEffect(() => {
     setPlayerInTeam(playerAlreadyInSomeTeam ? '' : 'B');
@@ -126,6 +129,12 @@ export function SingleMatchPage() {
   if (isLoading) {
     return <IonLoading isOpen />;
   }
+  if (!singleMatchData) return null;
+
+  const gameDate = gameDateToDate(
+    singleMatchData.gameDate,
+    singleMatchData?.slot.time,
+  );
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
@@ -309,6 +318,55 @@ export function SingleMatchPage() {
                 </Box>
               )}
 
+              {Date.now() > gameDate && (
+                <Box
+                  sx={{
+                    maxWidth: '400px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    mx: 'auto',
+                    marginBottom: '1rem',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {/* Confirm / Upload Result */}
+                  {singleMatchData.matchResults &&
+                    !singleMatchData.confirmMatchResults && (
+                      <Typography>Ожидание подтверждения...</Typography>
+                    )}
+
+                  {singleMatchData?.matchResults &&
+                    !myBooking?.confirmMatchResults && (
+                      <Button
+                        onClick={() =>
+                          uploadMatchReslultsMutation.mutate({
+                            matchId: Number(matchId),
+                            matchResults: singleMatchData?.matchResults,
+                          })
+                        }
+                        sx={{
+                          backgroundColor: '#28a11e',
+                          fontSize: '.95rem',
+                          fontWeight: '600',
+                        }}
+                      >
+                        Подтвердить
+                      </Button>
+                    )}
+
+                  {!myBooking?.confirmMatchResults && (
+                    <Button
+                      onClick={() => setOpenUploadModal(true)}
+                      sx={{ fontSize: '.95rem', fontWeight: '600' }}
+                    >
+                      Загрузить результат
+                    </Button>
+                  )}
+                </Box>
+              )}
+
               <Box
                 sx={{
                   maxWidth: '125px',
@@ -323,49 +381,6 @@ export function SingleMatchPage() {
                   </Typography>
                 </Button>
               </Box>
-
-              {/* Confirm / Upload Result */}
-              {singleMatchData?.matchResults &&
-                singleMatchData?.matchBookings.find(
-                  (booking) => booking.player?.id === myPlayer?.id,
-                )?.confirmMatchResults === false && (
-                  <Box
-                    sx={{
-                      maxWidth: '400px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '1rem',
-                      marginInline: 'auto',
-                      marginBottom: '1rem',
-                    }}
-                  >
-                    <Button
-                      onClick={() =>
-                        uploadMatchReslultsMutation.mutate({
-                          matchId: Number(matchId),
-                          matchResults: singleMatchData?.matchResults,
-                        })
-                      }
-                      sx={{
-                        backgroundColor: '#28a11e',
-                        fontSize: '.95rem',
-                        fontWeight: '600',
-                      }}
-                    >
-                      Подтвердить
-                    </Button>
-                    <Button
-                      onClick={() => setOpenUploadModal(true)}
-                      sx={{
-                        backgroundColor: '#da4620',
-                        fontSize: '.95rem',
-                        fontWeight: '600',
-                      }}
-                    >
-                      Загрузить
-                    </Button>
-                  </Box>
-                )}
 
               {!playerAlreadyInSomeTeam && (
                 <Box
@@ -426,6 +441,7 @@ export function SingleMatchPage() {
       <UploadResultModal
         openState={openUploadModal}
         handleModal={() => setOpenUploadModal(false)}
+        matchId={Number(matchId)}
       />
 
       <IonToast

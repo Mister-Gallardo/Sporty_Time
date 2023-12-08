@@ -32,7 +32,7 @@ export const MultiThumbSlider = ({
 interface ThumbComponentProps extends React.HTMLAttributes<unknown> {}
 
 function ThumbComponent(props: ThumbComponentProps) {
-  const { children, className, ...other } = props;
+  const { children, className, ...other } = props as any; // FIX
   const thumbIndex = other['data-index'];
 
   const extraClassName =
