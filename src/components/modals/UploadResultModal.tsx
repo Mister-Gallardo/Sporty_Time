@@ -75,8 +75,8 @@ export function UploadResultModal({
 
   const uploadMatchReslultsMutation = useMutation({
     mutationFn: uploadResults,
-    onMutate() {},
     onSuccess() {
+      handleModal();
       qc.resetQueries({ queryKey: ['match', matchId] });
     },
     onError(e: any) {

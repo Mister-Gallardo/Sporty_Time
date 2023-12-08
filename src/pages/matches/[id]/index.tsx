@@ -49,7 +49,7 @@ export function SingleMatchPage() {
     isLoading,
     refetch: refetchMatch,
   } = useQuery({
-    queryKey: [`match`, matchId],
+    queryKey: [`match`, Number(matchId)],
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
 
