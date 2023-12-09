@@ -38,7 +38,7 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
   const path = window.location.pathname;
 
   return (
-    <IonApp style={{ minHeight: '100vh' }}>
+    <IonApp style={{ minHeight: '100dvh' }}>
       <IonReactRouter>
         <IonTabs
           onIonTabsWillChange={() =>
