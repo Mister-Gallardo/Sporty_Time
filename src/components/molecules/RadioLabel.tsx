@@ -1,20 +1,12 @@
-import { SvgIconComponent } from '@mui/icons-material';
 import { Box, FormControlLabel, Radio, Typography } from '@mui/material';
-
-export enum ERadioLabelType {
-  WITH_ICON_AND_DESCRIPTION,
-  TITLE_ONLY,
-  WITH_DESCRIPTION,
-}
+import { ERadioLabelType } from '../../types';
 
 interface IRadioLabelProps {
   value: string;
   labelType: ERadioLabelType;
   title: string;
   description?: string;
-
-  // add correct type!
-  icon?: any | SvgIconComponent;
+  icon?: any;
 }
 
 export const RadioLabel = ({
@@ -26,7 +18,12 @@ export const RadioLabel = ({
 }: IRadioLabelProps) => {
   return (
     <FormControlLabel
-      sx={{ alignItems: 'flex-start', gap: 1, margin: 0 }}
+      sx={{
+        alignItems:
+          labelType === ERadioLabelType.TITLE_ONLY ? 'center' : 'flex-start',
+        gap: 1,
+        margin: 0,
+      }}
       value={value}
       control={<Radio sx={{ padding: 0 }} />}
       label={
