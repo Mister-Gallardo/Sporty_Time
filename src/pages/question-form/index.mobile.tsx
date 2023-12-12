@@ -5,7 +5,14 @@ export function MobileQuestionFormPage() {
   return (
     <IonPage>
       <IonHeader style={{ border: 'none' }}></IonHeader>
-      <IonContent fullscreen>
+      <IonContent
+        fullscreen
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
         <QuestionFormPage />
       </IonContent>
     </IonPage>

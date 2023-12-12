@@ -1,52 +1,91 @@
 import { useState } from 'react';
-import { StartQuestioningStep } from './steps/StartQuestioning';
-import { Box, Fade } from '@mui/material';
-import { QuestioningStep } from './steps/Questioning';
+import { IonHeader, IonTitle, IonToolbar, isPlatform } from '@ionic/react';
+import { ArrowBackIosNewOutlined } from '@mui/icons-material';
+import { QuestionsStepStep } from './steps/QuestionsStep';
+import { ChooseYourSport } from './steps/ChooseYourSport';
+import { useUserInfo } from '../../services/api/hooks';
+import { LevelingStep } from './steps/LevelingStep';
+import { Box, Button, Fade } from '@mui/material';
 import { ResultsStep } from './steps/Results';
-import { useUserInfo, useUserProfile } from '../../services/api/hooks';
 
 export function QuestionFormPage() {
-  const [activeStep, setActiveStep] = useState<number>(1);
+  const isMobile = isPlatform('mobile');
 
-  function handleBackStep() {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  }
+  const [activeStep, setActiveStep] = useState<number>(0);
 
   const user = useUserInfo();
-  const player = useUserProfile();
   const firstName = user?.firstname || '';
   const lastName = user?.lastname || '';
 
+  const handleStep = (step: number) => setActiveStep((prev) => prev + step);
+
+  const handleSkip = () => {
+    console.log('Skip questionnaire and move to home page');
+  };
+
   return (
     <>
-      {activeStep === 1 ? (
+      {activeStep === 0 ? (
         <Fade in>
-          <Box sx={{ height: '100%' }}>
-            <StartQuestioningStep
+          <Box>
+            <ChooseYourSport
               firstName={firstName}
-              handleNextStep={() => {
-                const playerHasRating =
-                  player?.ratingPadel ||
-                  player?.ratingTennis ||
-                  player?.ratingPickleball;
-                if (playerHasRating) setActiveStep(3);
-                else setActiveStep(2);
-              }}
+              handleStep={handleStep}
+              handleSkip={handleSkip}
             />
           </Box>
         </Fade>
-      ) : activeStep === 2 ? (
-        <QuestioningStep
-          handleBackStep={handleBackStep}
-          handleNextStep={() => setActiveStep(3)}
-        />
-      ) : (
+      ) : activeStep === 1 || activeStep === 2 ? (
+        <>
+          {isMobile && (
+            <IonHeader
+              style={{
+                borderBottom: '1px solid #eee',
+                boxShadow: '0px 1px 5px #eee',
+              }}
+            >
+              <IonToolbar>
+                <IonTitle>
+                  {activeStep === 1 ? 'Оценка уровня' : 'Ответьте на вопросы'}
+                </IonTitle>
+                <Button
+                  onClick={() => handleStep(-1)}
+                  style={{
+                    padding: 0,
+                  }}
+                >
+                  <ArrowBackIosNewOutlined color="action" />
+                </Button>
+              </IonToolbar>
+            </IonHeader>
+          )}
+          {
+            <Box display="flex" justifyContent="center" mt={1}>
+              <Box
+                width="100%"
+                maxWidth={isMobile ? 'none' : '700px'}
+                borderRadius={isMobile ? 0 : 5}
+              >
+                <Fade in>
+                  <Box px={2}>
+                    {activeStep === 1 ? (
+                      <LevelingStep handleStep={handleStep} />
+                    ) : (
+                      <QuestionsStepStep handleStep={handleStep} />
+                    )}
+                  </Box>
+                </Fade>
+              </Box>
+            </Box>
+          }
+        </>
+      ) : activeStep === 3 ? (
         <Fade in>
-          <Box sx={{ height: '100%' }}>
+          <Box>
             <ResultsStep firstName={firstName} lastName={lastName} />
           </Box>
         </Fade>
-      )}
+      ) : null}
     </>
   );
 }
