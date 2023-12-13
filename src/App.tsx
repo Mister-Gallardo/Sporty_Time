@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { isPlatform, setupIonicReact } from '@ionic/react';
 import React from 'react';
 import MobilePlayPage from './pages/play/mobile';
@@ -15,6 +15,8 @@ import { MobileMatchesPage } from './pages/matches/index.mobile';
 import { MatchesPage } from './pages/matches';
 import { SingleMatchPage } from './pages/matches/[id]';
 import { MobileSingleMatchPage } from './pages/matches/[id]/index.mobile';
+import { ProfilePage } from './pages/profile';
+import { MobileProfilePage } from './pages/profile/index.mobile';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
@@ -51,6 +53,11 @@ const desktopRoutes = [
     path: '/matches/:matchId',
     exact: true,
     component: SingleMatchPage,
+  },
+  {
+    path: '/profile',
+    exact: true,
+    component: ProfilePage,
   },
 ] as React.ComponentProps<typeof Route>[];
 
@@ -90,6 +97,11 @@ const mobileRoutes = [
     exact: true,
     component: MobileSingleMatchPage,
   },
+  {
+    path: '/profile',
+    exact: true,
+    component: MobileProfilePage,
+  },
 ] as React.ComponentProps<typeof Route>[];
 
 const App: React.FC = () => {
@@ -101,9 +113,10 @@ const App: React.FC = () => {
         <BrowserRouter>
           <Route path="/auth" component={MobileAuthPage} exact />
           <MobileLayout>
-            {mobileRoutes.map((route) => (
-              <Route {...route} />
+            {mobileRoutes.map((route, i) => (
+              <Route key={i} {...route} />
             ))}
+            <Redirect to="/" />
           </MobileLayout>
         </BrowserRouter>
       ) : (
@@ -111,9 +124,10 @@ const App: React.FC = () => {
           <Route component={AuthPage} path="/auth" exact />
           <DesktopLayout>
             <Switch>
-              {desktopRoutes.map((route) => (
-                <Route {...route} />
+              {desktopRoutes.map((route, i) => (
+                <Route key={i} {...route} />
               ))}
+              <Redirect to="/" />
             </Switch>
           </DesktopLayout>
         </BrowserRouter>
