@@ -3,7 +3,7 @@ import { QuestionFormPage } from '.';
 
 export function MobileQuestionFormPage() {
   return (
-    <IonPage>
+    <IonPage className="notabs">
       <IonHeader style={{ border: 'none' }}></IonHeader>
       <IonContent
         fullscreen

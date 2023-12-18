@@ -25,20 +25,22 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 import '../mobile.css';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import { useRef } from 'react';
 import { Typography } from '@mui/material';
+import { isAuthorized } from '../services/auth/service';
 
 export interface IMobileLayoutProps {
   children: React.ReactNode;
 }
 
+if (!isAuthorized()) {
+  history.replaceState(null, '', '/auth');
+}
+
 export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
   const { children } = props;
-  const defaultRef = useRef<HTMLIonIconElement>(null);
-  const path = window.location.pathname;
 
   return (
-    <IonApp style={{ minHeight: '100vh' }}>
+    <IonApp style={{ minHeight: '100dvh' }}>
       <IonReactRouter>
         <IonTabs
           onIonTabsWillChange={() =>
@@ -49,16 +51,13 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
           <IonTabBar
             slot="bottom"
             style={{
-              display:
-                path.startsWith('/auth') || path.startsWith('/question-form')
-                  ? 'none'
-                  : 'flex',
+              display: 'flex',
               paddingBlock: '.75rem',
               borderRadius: '0',
               borderTop: '1px solid #cdcccc',
             }}
           >
-            <IonTabButton ref={() => defaultRef} tab="play" href="/">
+            <IonTabButton tab="play" href="/">
               <IonIcon size="medium" icon={tennisball} />
               <Typography variant="body2">Играть</Typography>
             </IonTabButton>
@@ -70,7 +69,7 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
               <IonIcon size="medium" icon={home} />
               <Typography variant="body2">Сообщество</Typography>
             </IonTabButton>
-            <IonTabButton tab="profile" href="/">
+            <IonTabButton tab="auth" href="/auth">
               <IonIcon size="medium" icon={person} />
               <Typography variant="body2">Профиль</Typography>
             </IonTabButton>

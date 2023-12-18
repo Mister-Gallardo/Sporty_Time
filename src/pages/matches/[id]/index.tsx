@@ -8,6 +8,7 @@ import { SwipeablePage } from '../../../components/SwipeablePage';
 import {
   IonBackButton,
   IonLoading,
+  IonToast,
   isPlatform,
   useIonToast,
 } from '@ionic/react';
@@ -16,6 +17,7 @@ import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
   getOneAvailableMatch,
   joinMatch,
+  uploadResults,
 } from '../../../services/matches/service';
 import { ClubInfoBlock } from './sections/ClubInfoBlock';
 import { MatchInfoBlock } from './sections/MatchInfoBlock';
@@ -36,17 +38,24 @@ export function SingleMatchPage() {
   const [showToast] = useIonToast();
   const { matchId } = useParams<{ matchId: string }>();
 
+  const [error, setError] = useState<string | undefined>();
+
+  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
+  const [openToast, setOpenToast] = useState<boolean>(false);
+
+  // Get Particular Club Request
   const {
     data,
     isLoading,
-    refetch: refetchClubs,
+    refetch: refetchMatch,
   } = useQuery({
-    queryKey: [`available-club`, matchId],
+    queryKey: [`match`, Number(matchId)],
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
 
   const matchData = data?.data;
 
+  // Join Match / Book a Place Request
   const joinMatchMutation = useMutation({
     mutationFn: joinMatch,
     onSuccess() {
@@ -57,7 +66,7 @@ export function SingleMatchPage() {
         position: 'bottom',
         color: 'success',
       });
-      refetchClubs();
+      refetchMatch();
     },
     onError(e: any) {
       showToast({
@@ -73,6 +82,12 @@ export function SingleMatchPage() {
   if (isLoading) {
     return <IonLoading isOpen />;
   }
+  if (!singleMatchData) return null;
+
+  const gameDate = gameDateToDate(
+    singleMatchData.gameDate,
+    singleMatchData?.slot.time,
+  );
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
@@ -196,8 +211,9 @@ export function SingleMatchPage() {
                 <Box
                   sx={{
                     display: 'flex',
-                    gap: '1.75rem',
-                    opacity: '.5',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingBottom: '.5rem',
                   }}
                 >
                   <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
@@ -273,6 +289,21 @@ export function SingleMatchPage() {
                   ) : (
                     `Забронировать место - ₽ ${matchData.price || ''}`
                   )}
+                </Box>
+              )}
+
+              <Box
+                sx={{
+                  maxWidth: '125px',
+                  marginInline: 'auto',
+                  marginBottom: '1rem',
+                }}
+              >
+                <Button sx={{ height: '40px' }}>
+                  <ChatBubbleOutlineRounded sx={{ marginRight: '.75rem' }} />
+                  <Typography sx={{ fontSize: '1.1rem', fontWeight: '600' }}>
+                    Чат
+                  </Typography>
                 </Button>
               </Box>
             )} */}
@@ -280,7 +311,23 @@ export function SingleMatchPage() {
             <MatchInfoBlock data={matchData} />
           </Box>
         </Box>
-      </Box>
-    </SwipeablePage>
+      </SwipeablePage>
+
+      <UploadResultModal
+        openState={openUploadModal}
+        handleModal={() => setOpenUploadModal(false)}
+        matchId={Number(matchId)}
+      />
+
+      <IonToast
+        header="Возникла ошибка"
+        position="top"
+        isOpen={openToast}
+        message={error || 'Вы подтвердили результаты матча'}
+        onDidDismiss={() => setOpenToast(false)}
+        duration={2000}
+        color={error && 'danger'}
+      />
+    </>
   );
 }

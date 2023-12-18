@@ -2,7 +2,7 @@ import { IonContent, IonModal, isPlatform, useIonToast } from '@ionic/react';
 import { Box, CircularProgress, Modal, Typography } from '@mui/material';
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { Button } from '../atoms/Button';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { uploadResults } from '../../services/matches/service';
 
 interface IUploadResultModalProps {
@@ -19,6 +19,7 @@ export function UploadResultModal({
   matchId,
 }: IUploadResultModalProps) {
   const [error, setError] = useState(undefined);
+  const qc = useQueryClient();
   const [matchResultFields, setMatchResultFields] = useState<string[]>(
     new Array(6).fill(''),
   );
@@ -74,8 +75,10 @@ export function UploadResultModal({
 
   const uploadMatchReslultsMutation = useMutation({
     mutationFn: uploadResults,
-    onMutate() {},
-    onSuccess() {},
+    onSuccess() {
+      handleModal();
+      qc.resetQueries({ queryKey: ['match', matchId] });
+    },
     onError(e: any) {
       setError(e.response.data.message);
       showToast({

@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { isPlatform, setupIonicReact } from '@ionic/react';
-import React from 'react';
+import React, { Suspense } from 'react';
 import MobilePlayPage from './pages/play/mobile';
 import { BookCourt } from './pages/book-court';
 import { SingleCourtPage } from './pages/book-court/[id]';
@@ -104,35 +104,38 @@ const mobileRoutes = [
   },
 ] as React.ComponentProps<typeof Route>[];
 
+export const DesktopRouter = () => (
+  <DesktopLayout>
+    <Switch>
+      {desktopRoutes.map((route, i) => (
+        <Route key={i} {...route} />
+      ))}
+      <Redirect to="/" />
+    </Switch>
+  </DesktopLayout>
+);
+
 const App: React.FC = () => {
   const isMobile = isPlatform('mobile');
 
   return (
-    <>
+    <Suspense fallback=" ">
       {isMobile ? (
-        <BrowserRouter>
-          <Route path="/auth" component={MobileAuthPage} exact />
-          <MobileLayout>
-            {mobileRoutes.map((route, i) => (
-              <Route key={i} {...route} />
-            ))}
-            <Redirect to="/" />
-          </MobileLayout>
-        </BrowserRouter>
+        <MobileLayout>
+          {mobileRoutes.map((route, i) => (
+            <Route key={i} {...route} />
+          ))}
+          <Redirect to="/" />
+        </MobileLayout>
       ) : (
         <BrowserRouter>
-          <Route component={AuthPage} path="/auth" exact />
-          <DesktopLayout>
-            <Switch>
-              {desktopRoutes.map((route, i) => (
-                <Route key={i} {...route} />
-              ))}
-              <Redirect to="/" />
-            </Switch>
-          </DesktopLayout>
+          <Switch>
+            <Route path="/auth" component={AuthPage} exact />
+            <Route path="/" component={DesktopRouter} />
+          </Switch>
         </BrowserRouter>
       )}
-    </>
+    </Suspense>
   );
 };
 
