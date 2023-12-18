@@ -1,38 +1,40 @@
+import { useParams } from 'react-router';
 import {
   ArrowBackIosNewOutlined,
   ChatBubbleOutlineRounded,
 } from '@mui/icons-material';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { SwipeablePage } from '../../../components/SwipeablePage';
-import { Button } from '../../../components/atoms/Button';
 import {
   IonBackButton,
   IonLoading,
   isPlatform,
   useIonToast,
 } from '@ionic/react';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
   getOneAvailableMatch,
   joinMatch,
 } from '../../../services/matches/service';
-import { Player } from '../../../services/user/interface';
-import { useUserProfile } from '../../../services/api/hooks';
-import { PlayerSlot } from '../../../components/molecules/PlayerSlot';
-import { MainInfoBlock } from './sections/MainInfoBlock';
-import { MatchStateBlock } from './sections/MatchStateBlock';
-import { MatchLevelBlock } from './sections/MatchLevelBlock';
 import { ClubInfoBlock } from './sections/ClubInfoBlock';
 import { MatchInfoBlock } from './sections/MatchInfoBlock';
+import { MatchDataBlock } from './components/MatchDataBlock';
+import { PrivacyType } from './components/PrivacyType';
+import { MatchType } from './components/MatchType';
+import { Players } from './components/Players';
+import { Prompt } from './components/Prompt';
+
+enum PromptType {
+  PRIMARY,
+  WARNING,
+  DANGER,
+}
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
   const [showToast] = useIonToast();
   const { matchId } = useParams<{ matchId: string }>();
-  const myPlayer = useUserProfile();
 
   const {
     data,
@@ -43,7 +45,7 @@ export function SingleMatchPage() {
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
 
-  const singleMatchData = data?.data;
+  const matchData = data?.data;
 
   const joinMatchMutation = useMutation({
     mutationFn: joinMatch,
@@ -67,41 +69,6 @@ export function SingleMatchPage() {
       });
     },
   });
-
-  const [players, setPlayers] = useState<Player[]>([]);
-
-  const playerAlreadyInSomeTeam = !!singleMatchData?.matchBookings.find(
-    (booking) => booking.player?.id === myPlayer?.id,
-  );
-
-  console.log(playerAlreadyInSomeTeam);
-
-  const [playerInTeam, setPlayerInTeam] = useState<string>('');
-
-  useEffect(() => {
-    setPlayerInTeam(playerAlreadyInSomeTeam ? '' : 'B');
-  }, [playerAlreadyInSomeTeam]);
-
-  useEffect(() => {
-    const teamAPlayers =
-      singleMatchData?.matchBookings
-        ?.filter((booking) => booking.team === 'A')
-        ?.map((booking) => booking.player) || [];
-
-    const teamBPlayers =
-      singleMatchData?.matchBookings
-        ?.filter((booking) => booking.team === 'B')
-        ?.map((booking) => booking.player) || [];
-
-    if (playerInTeam === 'A' && myPlayer)
-      teamAPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
-    if (playerInTeam === 'B' && myPlayer)
-      teamBPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
-    teamAPlayers.length = 2;
-    teamBPlayers.length = 2;
-
-    setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
-  }, [singleMatchData, playerInTeam, myPlayer]);
 
   if (isLoading) {
     return <IonLoading isOpen />;
@@ -141,106 +108,80 @@ export function SingleMatchPage() {
     </Box>
   );
 
+  // leave just for now
+  if (!matchData) {
+    return console.log(
+      "Match with current id doesn't exist (cause it was hardcoded)",
+    );
+  }
+
   return (
     <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
-      <Box
-        sx={{
-          paddingTop: '1rem',
-          paddingBottom: '3.5rem',
-          background: '#fff',
-          position: 'relative',
-          zIndex: '99',
-        }}
-      >
+      <Box mb={14}>
         <Box
-          sx={{
-            paddingTop: isMobile ? 'unset' : '1.5rem',
-            minHeight: isMobile ? 'unset' : '100%',
-            background: isMobile ? 'unset' : '#fff',
-            width: '100%',
-            paddingInline: '15px',
-          }}
+          pt={isMobile ? 'unset' : '1.5rem'}
+          minHeight={isMobile ? 'unset' : '100%'}
+          bgcolor={isMobile ? 'unset' : '#fff'}
+          px={2}
         >
           <Box
-            sx={{
-              maxWidth: isMobile ? 'unset' : '1000px',
-              width: '100%',
-              margin: '0 auto',
-            }}
+            width="100%"
+            maxWidth={isMobile ? 'unset' : '1000px'}
+            margin="0 auto"
+            display="flex"
+            flexDirection="column"
+            gap={2}
           >
-            <MainInfoBlock data={singleMatchData} />
-            <MatchStateBlock data={singleMatchData} />
-            <MatchLevelBlock data={singleMatchData} />
-
+            <Prompt
+              type={PromptType.PRIMARY}
+              description="Some text"
+              title="title"
+            />
             <Box
-              sx={{
-                padding: '1rem .75rem',
-                marginBlock: '1.25rem',
-                width: '100%',
-                background: '#fff',
-                border: '1px #e5e5e5 solid',
-                borderRadius: '10px',
-              }}
+              display={isMobile ? 'block' : 'flex'}
+              justifyContent={isMobile ? 'none' : 'center'}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingBottom: '.5rem',
-                }}
-              >
-                <Typography sx={{ fontSize: '1.1rem', fontWeight: '600' }}>
-                  Игроки
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: isPlatform('mobile') ? '1rem' : '48px',
-                  justifyContent: 'center',
-                }}
-              >
-                <PlayerSlot
-                  player={players[0]}
-                  onClick={() => {
-                    if (playerAlreadyInSomeTeam) return;
-                    setPlayerInTeam('A');
-                  }}
-                />
-                <PlayerSlot
-                  player={players[1]}
-                  onClick={() => {
-                    if (playerAlreadyInSomeTeam) return;
-                    setPlayerInTeam('A');
-                  }}
-                />
-                <Box
-                  sx={{
-                    width: '2px',
-                    height: '100px',
-                    background: '#e5e5e5',
-                  }}
-                />
-                <PlayerSlot
-                  player={players[2]}
-                  onClick={() => {
-                    if (playerAlreadyInSomeTeam) return;
-                    setPlayerInTeam('B');
-                  }}
-                />
-                <PlayerSlot
-                  player={players[3]}
-                  onClick={() => {
-                    if (playerAlreadyInSomeTeam) return;
-                    setPlayerInTeam('B');
-                  }}
-                />
-              </Box>
+              <MatchDataBlock
+                minutes={matchData.minutes}
+                startTime={matchData.slot.time}
+                sport={matchData.sport}
+                ratingFrom={matchData.ratingFrom}
+                ratingTo={matchData.ratingTo}
+                date={matchData.gameDate}
+                price={matchData.price}
+                gender="All"
+              />
             </Box>
 
-            {singleMatchData?.matchResults && (
+            <PrivacyType isPrivate />
+            <MatchType type="COMPETITIVE" />
+
+            <Box
+              display={isMobile ? 'block' : 'flex'}
+              justifyContent={isMobile ? 'none' : 'center'}
+            >
+              <Players players={matchData.matchBookings} />
+            </Box>
+
+            <Box display="flex" justifyContent="center" my={2}>
+              <Button
+                sx={{
+                  borderRadius: 20,
+                  backgroundColor: '#2561F8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  color: '#fff',
+                  paddingX: 2,
+                  paddingY: 1,
+                }}
+              >
+                <ChatBubbleOutlineRounded fontSize="small" />
+                <Typography>Чат</Typography>
+              </Button>
+            </Box>
+
+            {/* {matchData.matchResults && (
               <Box
                 sx={{
                   border: '1px solid #e5e5e5',
@@ -260,13 +201,13 @@ export function SingleMatchPage() {
                   }}
                 >
                   <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {singleMatchData?.matchResults[0][0]}
+                    {matchData.matchResults[0][0]}
                   </Typography>
                   <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {singleMatchData?.matchResults[1][0]}
+                    {matchData.matchResults[1][0]}
                   </Typography>
                   <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {singleMatchData?.matchResults[2][0]}
+                    {matchData.matchResults[2][0]}
                   </Typography>
                 </Box>
 
@@ -276,32 +217,18 @@ export function SingleMatchPage() {
 
                 <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
                   <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {singleMatchData?.matchResults[0][1]}
+                    {matchData.matchResults[0][1]}
                   </Typography>
                   <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {singleMatchData?.matchResults[1][1]}
+                    {matchData.matchResults[1][1]}
                   </Typography>
                   <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {singleMatchData?.matchResults[2][1]}
+                    {matchData.matchResults[2][1]}
                   </Typography>
                 </Box>
               </Box>
             )}
 
-            <Box
-              sx={{
-                maxWidth: '125px',
-                marginInline: 'auto',
-                marginBottom: '1rem',
-              }}
-            >
-              <Button sx={{ height: '40px' }}>
-                <ChatBubbleOutlineRounded sx={{ marginRight: '.75rem' }} />
-                <Typography sx={{ fontSize: '1.1rem', fontWeight: '600' }}>
-                  Чат
-                </Typography>
-              </Button>
-            </Box>
             {!playerAlreadyInSomeTeam && (
               <Box
                 sx={{
@@ -331,28 +258,26 @@ export function SingleMatchPage() {
                     }
                   }}
                   sx={{
-                    height: '45px',
                     background: '#0D2432',
                     borderRadius: '25px',
                     color: '#fff',
                     fontSize: '1.1rem',
                     fontWeight: '500',
-                    maxWidth: '350px',
                     boxShadow:
                       'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                    paddingX: 2,
                   }}
                 >
                   {joinMatchMutation.isPending ? (
                     <CircularProgress />
                   ) : (
-                    `Забронировать место - ₽ ${singleMatchData?.price}`
+                    `Забронировать место - ₽ ${matchData.price || ''}`
                   )}
                 </Button>
               </Box>
-            )}
-
-            <ClubInfoBlock data={singleMatchData} />
-            <MatchInfoBlock data={singleMatchData} />
+            )} */}
+            <ClubInfoBlock data={matchData} />
+            <MatchInfoBlock data={matchData} />
           </Box>
         </Box>
       </Box>

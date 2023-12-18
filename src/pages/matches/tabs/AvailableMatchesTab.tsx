@@ -1,24 +1,24 @@
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Typography,
-} from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { MatchCard } from '../../../components/molecules/MatchCard';
 import { IonLoading, isPlatform } from '@ionic/react';
-import { ExpandMore } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { getAvailableMatches } from '../../../services/matches/service';
-import NewMatchCard from '../../../components/molecules/NewMatchCard';
+import { ClubMultipleDatesCard } from '../../../components/molecules/ClubMultipleDatesCard';
+import { Accordion } from '../../../components/molecules/Accordion';
+import { getClubs } from '../../../services/club/service';
 
-interface IAvailableMatchesTabProps {
-  toggleConfigModal: (val: boolean) => void;
-}
+// static 'gameDates' array for daily requests with actual dates (just for now)
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(today.getDate() + 1);
+const dayAfterTomorrow = new Date(tomorrow);
+dayAfterTomorrow.setDate(tomorrow.getDate() + 1);
 
-export function AvailableMatchesTab({
-  toggleConfigModal,
-}: IAvailableMatchesTabProps) {
+const gameDates = [today, tomorrow, dayAfterTomorrow];
+
+export function AvailableMatchesTab() {
+  const isMobile = isPlatform('mobile');
+
   const { data, isLoading } = useQuery({
     queryKey: [`available-matches`],
     queryFn: getAvailableMatches,
@@ -26,151 +26,100 @@ export function AvailableMatchesTab({
 
   const availableMatchesArray = data?.data;
 
+  const query = useQuery({
+    queryKey: ['clubs', gameDates],
+    queryFn: () => getClubs(gameDates),
+  });
+
   if (isLoading) {
     return <IonLoading isOpen />;
   }
 
   return (
     <Box
-      sx={{
-        position: 'relative',
-        marginBottom: isPlatform('mobile') ? '2.5rem' : 'unset',
-        paddingInline: isPlatform('mobile') ? '10px' : '2rem',
-        background: '#fff',
-        paddingBlock: '1.25rem',
-      }}
+      position="relative"
+      mb={isMobile ? '2.5rem' : 'unset'}
+      paddingInline={isMobile ? '10px' : '2rem'}
+      paddingBlock="1.25rem"
+      bgcolor="white"
     >
-      <Box
-        sx={{ display: 'flex', alignItems: 'start', flexDirection: 'column' }}
-      >
-        <Typography sx={{ fontSize: '1.1rem', fontWeight: '600' }}>
-          Для вашего уровня
-        </Typography>
-        <Typography sx={{ fontSize: '14px', opacity: '.7', fontWeight: '500' }}>
-          Эти соответствия полностью соответствуют вашему поиску и вашему уровню
-        </Typography>
-      </Box>
-
-      <Box
-        sx={{
-          paddingBottom: '.75rem',
-          display: 'flex',
-          overflowX: 'auto',
-          scrollSnapType: 'x mandatory',
-          scrollBehavior: 'smooth',
-        }}
-      >
-        {(data?.data.length === 0 || !data) && (
-          <Typography
-            sx={{
-              fontSize: '1.1rem',
-              paddingTop: '1.5rem',
-              margin: '0 auto',
-              fontWeight: '600',
-            }}
-          >
-            Доступных матчей пока нет
-          </Typography>
-        )}
-        {availableMatchesArray?.map((card, index) => {
-          return <MatchCard key={index} {...card} />;
-        })}
-      </Box>
-
       <Accordion
-        defaultExpanded
-        elevation={0}
-        sx={{
-          padding: 0,
-          background: 'none',
-          '&:before': {
-            display: 'none',
-          },
-        }}
+        title="Для вашего уровня"
+        description="Эти матчи полностью соответствуют вашему запросу и текущему уровню"
       >
-        <AccordionSummary
-          sx={{ padding: 0 }}
-          expandIcon={<ExpandMore />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
+        <Box
+          sx={{
+            paddingBottom: '.75rem',
+            display: 'flex',
+            overflowX: 'auto',
+            scrollSnapType: 'x mandatory',
+            scrollBehavior: 'smooth',
+          }}
         >
-          <Box>
-            <Typography sx={{ fontWeight: '700', fontSize: '1.1rem' }}>
-              Запросите место
+          {(data?.data.length === 0 || !data) && (
+            <Typography
+              sx={{
+                fontSize: '1.1rem',
+                paddingTop: '1.5rem',
+                margin: '0 auto',
+                fontWeight: '600',
+              }}
+            >
+              Доступных матчей пока нет
             </Typography>
-            <Typography sx={{ fontSize: '.8rem' }}>
-              Эти матчи не соответствуют вашему уровню. Чтобы присоединиться к
-              ним, вам необходимо запросить место.
-            </Typography>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails sx={{ padding: 0 }}>
-          <Box
-            sx={{
-              paddingBottom: '.75rem',
-              display: 'flex',
-              overflowX: 'auto',
-              scrollSnapType: 'x mandatory',
-              scrollBehavior: 'smooth',
-            }}
-          >
-            {(data?.data.length === 0 || !data) && (
-              <Typography
-                sx={{
-                  fontSize: '1.1rem',
-                  paddingTop: '1.5rem',
-                  margin: '0 auto',
-                  fontWeight: '600',
-                }}
-              >
-                Доступных матчей пока нет
-              </Typography>
-            )}
-            {availableMatchesArray?.map((card, index) => {
-              return <MatchCard key={index} {...card} />;
-            })}
-          </Box>
-        </AccordionDetails>
+          )}
+          {availableMatchesArray?.map((card, index) => {
+            return <MatchCard key={index} {...card} />;
+          })}
+        </Box>
       </Accordion>
-
       <Accordion
-        defaultExpanded
-        elevation={0}
-        sx={{
-          padding: 0,
-          background: 'none',
-          '&:before': {
-            display: 'none',
-          },
-        }}
+        title="Запросите место"
+        description="Эти матчи не соответствуют вашему уровню. Чтобы присоединиться к
+        ним, вам необходимо запросить место."
       >
-        <AccordionSummary
-          sx={{ padding: 0 }}
-          expandIcon={<ExpandMore />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
+        <Box
+          sx={{
+            paddingBottom: '.75rem',
+            display: 'flex',
+            overflowX: 'auto',
+            scrollSnapType: 'x mandatory',
+            scrollBehavior: 'smooth',
+          }}
         >
-          <Box>
-            <Typography sx={{ fontWeight: '700', fontSize: '1.1rem' }}>
-              Стать первым игроком!
+          {(data?.data.length === 0 || !data) && (
+            <Typography
+              sx={{
+                fontSize: '1.1rem',
+                paddingTop: '1.5rem',
+                margin: '0 auto',
+                fontWeight: '600',
+              }}
+            >
+              Доступных матчей пока нет
             </Typography>
-            <Typography sx={{ fontSize: '.8rem' }}>
-              Создайте новый матч, выбрав подходящее время
-            </Typography>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails sx={{ padding: 0 }}>
-          <Box display="flex" flexDirection="column" gap={2} width="100%">
-            {[1, 2].map((card, index) => {
-              return (
-                <NewMatchCard
-                  key={index}
-                  toggleConfigModal={toggleConfigModal}
-                />
-              );
-            })}
-          </Box>
-        </AccordionDetails>
+          )}
+          {availableMatchesArray?.map((card, index) => {
+            return <MatchCard key={index} {...card} />;
+          })}
+        </Box>
+      </Accordion>
+      <Accordion
+        title="Стать первым игроком!"
+        description="Создайте новый матч, выбрав подходящее время"
+      >
+        <Box
+          display="flex"
+          flexDirection={isMobile ? 'column' : 'row'}
+          gap={2}
+          width="100%"
+        >
+          {query.data &&
+            query.data.length > 0 &&
+            query.data.map((club, index) => (
+              <ClubMultipleDatesCard key={index} {...club} />
+            ))}
+        </Box>
       </Accordion>
     </Box>
   );

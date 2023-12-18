@@ -30,7 +30,7 @@ export const RadioLabel = ({
         <Box>
           {labelType === ERadioLabelType.WITH_ICON_AND_DESCRIPTION ? (
             <>
-              <Box>
+              <Box display="flex" alignItems="center" gap={1}>
                 {icon}
                 <Typography fontSize={14} fontWeight={600}>
                   {title}

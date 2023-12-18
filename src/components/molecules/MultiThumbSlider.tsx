@@ -2,23 +2,83 @@ import { IonAvatar } from '@ionic/react';
 import { Box, Typography } from '@mui/material';
 import Slider, { SliderThumb } from '@mui/material/Slider';
 import { styled } from '@mui/material/styles';
+import React from 'react';
+
+interface ThumbComponentProps extends React.HTMLAttributes<unknown> {}
 
 interface IMultiThumbSlider {
+  playerRating: number;
   curentMinValue: number;
   curentMaxValue: number;
   handleChange: (_: Event, values: number | number[]) => void;
 }
 
-export const MultiThumbSlider = ({
+export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
+  playerRating,
   curentMinValue,
   curentMaxValue,
   handleChange,
-}: IMultiThumbSlider) => {
+}) => {
+  const ThumbComponent = (props: ThumbComponentProps) => {
+    const { children, className, ...other } = props;
+
+    const thumbIndex = other['data-index'];
+
+    const extraClassName =
+      thumbIndex === 0
+        ? 'first-thumb'
+        : thumbIndex === 1
+        ? 'second-thumb'
+        : 'third-thumb';
+
+    const custonthumb = (
+      <Box
+        position="relative"
+        alignItems="center"
+        display="flex"
+        gap={1}
+        px={0.8}
+        py={0.6}
+        borderRadius={0.8}
+        bgcolor="white"
+        boxShadow="1px 1px 12px #dadada"
+        mb={12}
+      >
+        <IonAvatar style={{ width: 30, height: 30 }}>
+          <img
+            alt="Silhouette of a person's head"
+            src="https://ionicframework.com/docs/img/demos/avatar.svg"
+          />
+        </IonAvatar>
+        <Typography color="#000">{playerRating}</Typography>
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: -7,
+            right: '40%',
+            width: 0,
+            height: 0,
+            borderLeft: '8px solid transparent',
+            borderRight: '8px solid transparent',
+            borderTop: '8px solid #fff',
+          }}
+        ></Box>
+      </Box>
+    );
+
+    return (
+      <SliderThumb {...other} className={`${className} ${extraClassName}`}>
+        {children}
+        {thumbIndex && thumbIndex === 1 && custonthumb}
+      </SliderThumb>
+    );
+  };
+
   return (
     <CustomSlider
       getAriaLabel={(index) => (index === 0 ? 'min' : 'max')}
       slots={{ thumb: ThumbComponent }}
-      value={[curentMinValue, 2.5, curentMaxValue]}
+      value={[curentMinValue, playerRating, curentMaxValue]}
       onChange={handleChange}
       min={0}
       max={7}
@@ -29,95 +89,10 @@ export const MultiThumbSlider = ({
   );
 };
 
-interface ThumbComponentProps extends React.HTMLAttributes<unknown> {}
-
-function ThumbComponent(props: ThumbComponentProps) {
-  const { children, className, ...other } = props;
-  const thumbIndex = other['data-index'];
-
-  const extraClassName =
-    thumbIndex === 0
-      ? 'first-thumb'
-      : thumbIndex === 1
-      ? 'second-thumb'
-      : 'third-thumb';
-
-  const custonthumb = (
-    <Box
-      position="relative"
-      alignItems="center"
-      display="flex"
-      gap={1}
-      px={0.8}
-      py={0.6}
-      borderRadius={0.8}
-      boxShadow="1px 1px 12px #dadada"
-      mb={15}
-    >
-      <IonAvatar style={{ width: 30, height: 30 }}>
-        <img
-          alt="Silhouette of a person's head"
-          src="https://ionicframework.com/docs/img/demos/avatar.svg"
-        />
-      </IonAvatar>
-      <Typography color="#000">2.5</Typography>
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: -7,
-          right: '40%',
-          width: 0,
-          height: 0,
-          borderLeft: '8px solid transparent',
-          borderRight: '8px solid transparent',
-          borderTop: '8px solid #fff',
-        }}
-      ></Box>
-    </Box>
-  );
-
-  return (
-    <SliderThumb {...other} className={`${className} ${extraClassName}`}>
-      {children}
-      {thumbIndex && thumbIndex === 1 && custonthumb}
-    </SliderThumb>
-  );
-}
-
-const marks = [
-  {
-    value: 0,
-    label: 0,
-  },
-  {
-    value: 1,
-    label: 1,
-  },
-  {
-    value: 2,
-    label: 2,
-  },
-  {
-    value: 3,
-    label: 3,
-  },
-  {
-    value: 4,
-    label: 4,
-  },
-  {
-    value: 5,
-    label: 5,
-  },
-  {
-    value: 6,
-    label: 6,
-  },
-  {
-    value: 7,
-    label: 7,
-  },
-];
+const marks = Array.from({ length: 8 }, (_, index) => ({
+  value: index,
+  label: index,
+}));
 
 const boxShadow =
   '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)';
@@ -147,6 +122,9 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
   '& .second-thumb': {
     boxShadow: 'none',
     backgroundColor: 'transparent',
+    '&:focus, &:hover, &.Mui-active': {
+      boxShadow: 'none',
+    },
   },
   '& .second-thumb:before': {
     boxShadow: 'none',

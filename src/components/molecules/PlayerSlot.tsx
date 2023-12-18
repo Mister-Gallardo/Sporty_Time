@@ -1,41 +1,74 @@
 import { Avatar, Box, Typography } from '@mui/material';
-import { Player } from '../../services/user/interface';
+import { MatchMember, MatchMemberShort } from '../../services/user/interface';
+import { Add } from '@mui/icons-material';
+import { isPlatform } from '@ionic/react';
 
-export const PlayerSlot = (props: { player: Player; onClick?: any }) => {
-  const { player, onClick } = props;
+interface IPlayerSlot {
+  member: MatchMember | MatchMemberShort;
+  teamSlotIndex: { teamIndex: number; slotIndex: number };
+  onSlotSelect: any;
+}
+export const PlayerSlot: React.FC<IPlayerSlot> = ({
+  member,
+  teamSlotIndex,
+  onSlotSelect,
+}) => {
+  const isMobile = isPlatform('mobile');
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-
-          width: '63px',
-          height: '63px',
-          borderRadius: '50%',
-          border: '2px solid #EED790',
-        }}
-      >
-        <Avatar
-          src={player ? player?.user?.avatarUrl : undefined}
-          onClick={onClick}
-          sx={{
-            width: '60px',
-            height: '60px',
-            opacity: player?.mark ? '.7' : 'unset',
+    <>
+      {member ? (
+        <Box
+          minWidth={60}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+        >
+          <Avatar
+            src={member.player.user.avatarUrl}
+            sx={{ width: 50, height: 50 }}
+          />
+          <Typography
+            fontSize={12}
+            maxWidth={isMobile ? 60 : 'auto'}
+            whiteSpace="nowrap"
+            overflow="hidden"
+            textOverflow="ellipsis"
+          >
+            {member.player.user.firstname}
+          </Typography>
+          <Typography fontSize={12} color="gray">
+            {member.player.ratingTennis}
+          </Typography>
+        </Box>
+      ) : (
+        <Box
+          minWidth={60}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          sx={{ cursor: 'pointer' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSlotSelect(teamSlotIndex);
           }}
-        />
-      </Box>
-      <Typography>{player?.user?.firstname || 'Доступно'}</Typography>
-      <Typography>{'' || ''}</Typography>
-    </Box>
+        >
+          <Box
+            width={50}
+            height={50}
+            borderRadius={50}
+            border="1px solid #c6dcf2"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Add fontSize="small" color="primary" />
+          </Box>
+          <Typography color="gray" fontSize={12}>
+            Add me
+          </Typography>
+        </Box>
+      )}
+    </>
   );
 };

@@ -99,7 +99,9 @@ export const SwipeablePage: React.FC<ISwipeablePageProps> = (props) => {
       </Box>
       <Box height={250} />
       <Box marginTop={-2} position="relative">
-        {children}
+        <Box position="absolute" top={-62} width="100%">
+          {children}
+        </Box>
       </Box>
     </>
   );

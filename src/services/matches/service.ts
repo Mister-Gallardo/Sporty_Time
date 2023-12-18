@@ -22,18 +22,9 @@ export function getOneAvailableMatch(id: number) {
 }
 
 export function createMatch(data: CreateMatchDTO) {
-  const res = api.post('/matches', {
-    slotId: data.slotId,
-    gameDate: data.selectedDate,
-    ratingFrom: data.ratingFrom,
-    ratingTo: data.reatingTo,
-    playTime: data.playTime,
-    type: 'COMPETITIVE',
-    sport: data.sport,
-  });
+  const res = api.post('/matches', data);
   return res;
 }
-
 export function joinMatch(data: JoinMatchDTO) {
   const { matchId, team } = data;
   const res = api.post('/matches/join', {

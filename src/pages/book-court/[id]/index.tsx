@@ -1,22 +1,24 @@
+import { useState } from 'react';
 import { IonBackButton, IonLoading, isPlatform } from '@ionic/react';
 import SwipeableViews from 'react-swipeable-views';
 import {
   ArrowBackIosNewOutlined,
   FavoriteBorderOutlined,
 } from '@mui/icons-material';
-import { Box, IconButton, Tab, Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { autoPlay } from 'react-swipeable-views-utils';
-import { useState } from 'react';
 import { BookTab } from './tabs/BookTab';
 import { BookTabMain } from './tabs/BookTabMain';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { TabContext, TabPanel } from '@mui/lab';
 import { SwipeablePage } from '../../../components/SwipeablePage';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getClubById } from '../../../services/club/service';
 import useSearchParams from '../../../hooks/useSearchParams';
+import { TabList } from '../../../components/molecules/TabList';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
+
 export function SingleCourtPage() {
   const { clubId } = useParams<{ clubId: string }>();
 
@@ -39,7 +41,7 @@ export function SingleCourtPage() {
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
-      <AutoPlaySwipeableViews
+      {/* <AutoPlaySwipeableViews
         index={activeStep}
         onChangeIndex={handleStepChange}
         axis="x"
@@ -57,7 +59,7 @@ export function SingleCourtPage() {
           component="img"
           src={data?.img}
         />
-      </AutoPlaySwipeableViews>
+      </AutoPlaySwipeableViews> */}
     </Box>
   );
 
@@ -94,13 +96,13 @@ export function SingleCourtPage() {
             zIndex: 100,
           }}
         >
-          <Box sx={{ background: 'white', pt: 2 }}>
+          <Box bgcolor="white" pt={2}>
             <Box
               display="flex"
               justifyContent="space-between"
               alignItems="center"
             >
-              <Box sx={{ paddingInline: '10px' }}>
+              <Box px={2}>
                 <Typography
                   sx={{
                     fontSize: '1.15rem',
@@ -117,29 +119,11 @@ export function SingleCourtPage() {
                 />
               </IconButton>
             </Box>
+
             <TabList
-              sx={{ margin: '0 auto', maxWidth: '1000px' }}
-              onChange={(e, value) => setTabIndex('tab', value)}
-            >
-              <Tab
-                value="1"
-                disableRipple={!isMobile}
-                label={'Главная'}
-                sx={{ flexGrow: 1 }}
-              />
-              <Tab
-                value="2"
-                disableRipple={!isMobile}
-                label={'Бронь'}
-                sx={{ flexGrow: 1 }}
-              />
-              <Tab
-                value="3"
-                disableRipple={!isMobile}
-                label={'Действия'}
-                sx={{ flexGrow: 1 }}
-              />
-            </TabList>
+              tabs={['Главная', 'Бронь', 'Действия']}
+              onChange={(_, value) => setTabIndex('tab', value)}
+            />
           </Box>
         </Box>
 

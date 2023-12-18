@@ -1,95 +1,95 @@
-import { Box, Typography } from '@mui/material';
+import React from 'react';
 import { useHistory } from 'react-router';
+import { Box, Divider, Typography } from '@mui/material';
 import { AvailableMatch } from '../../services/matches/interface';
+import { matchDateFormat } from '../../helpers/matchDateFormat';
+import useSortTeamMembers from '../../hooks/useSortTeamMembers';
 import { PlayerSlot } from './PlayerSlot';
+import { ITeamSlot } from '../../types';
 
-export function MatchCard(props: AvailableMatch) {
-  const matchData = props;
+export const MatchCard: React.FC<AvailableMatch> = ({
+  matchBookings,
+  gameDate,
+  slot,
+  id,
+  ratingFrom,
+  ratingTo,
+  price,
+  minutes,
+  type,
+}) => {
   const history = useHistory();
 
-  const teamAPlayers =
-    matchData?.matchBookings
-      ?.filter((booking) => booking.team === 'A')
-      ?.map((booking) => booking.player) || [];
+  const [playersArr] = useSortTeamMembers(matchBookings);
 
-  const teamBPlayers =
-    matchData?.matchBookings
-      ?.filter((booking) => booking.team === 'B')
-      ?.map((booking) => booking.player) || [];
-  teamAPlayers.length = 2;
-  teamBPlayers.length = 2;
-  const players = [...Array.from(teamAPlayers), ...Array.from(teamBPlayers)];
+  const matchDate = matchDateFormat(gameDate, slot?.time);
+
+  const onSlotSelect = (teamSlot: ITeamSlot) => {
+    history.push(
+      `/matches/${id}?team=${teamSlot.teamIndex}&slot=${teamSlot.slotIndex}`,
+    );
+  };
 
   return (
     <Box
-      onClick={() => history.push(`/matches/${matchData.id}`)}
+      onClick={() => history.push(`/matches/${id}`)}
+      border="2px solid #EED790"
+      borderRadius={2}
+      marginX={1}
       sx={{
-        marginInline: '.75rem',
-        marginTop: '.75rem',
-        width: '100%',
-        maxWidth: '370px',
-        background: '#fff',
-        border: '2px solid #EED790',
-        borderRadius: '10px',
-
         boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;',
       }}
     >
-      <Box
-        sx={{
-          paddingInline: '15px',
-        }}
-      >
-        <Box
-          sx={{
-            paddingTop: '.5rem',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
+      <Box px={2}>
+        <Typography
+          mt={1}
+          fontSize={14}
+          fontWeight={600}
+          textTransform="capitalize"
         >
-          <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
-            {matchData.gameDate} | {matchData?.slot?.time.slice(0, -3)}
-          </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-            }}
-          >
-            <Typography sx={{ fontSize: '.9rem', fontWeight: '500' }}>
-              {matchData.slot ? 'Корт забронирован' : 'Корт не забронирован'}
-            </Typography>
-            <Typography>{matchData.slot ? '✅' : '🔴'}</Typography>
-          </Box>
-        </Box>
+          {matchDate}
+        </Typography>
 
-        <Box>
-          <Typography sx={{ paddingBlock: '.25rem' }}>11km · Dubai</Typography>
-        </Box>
+        <Typography color="gray">11km · {slot.court.club.title}</Typography>
 
-        <Box
-          sx={{
-            paddingBlock: '.75rem',
-            display: 'flex',
-            maxWidth: '320px',
-            margin: '0 auto',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Box sx={{ display: 'flex', gap: '14px' }}>
-            <PlayerSlot player={players[0]} />
-            <PlayerSlot player={players[1]} />
-            <Box sx={{ width: '2px', height: '50px', background: '#e5e5e5' }} />
-            <PlayerSlot player={players[2]} />
-            <PlayerSlot player={players[3]} />
-          </Box>
+        <Box py={2} display="flex" alignItems="flex-start" gap={1.5}>
+          {playersArr.map((team, teamIndex) => {
+            return (
+              <React.Fragment key={teamIndex}>
+                <Box
+                  height="100%"
+                  width={125}
+                  display="flex"
+                  alignItems="flex-start"
+                  justifyContent="space-between"
+                >
+                  {team.map((member: any, slotIndex: number) => {
+                    const teamSlotIndex = { teamIndex, slotIndex };
+                    return (
+                      <PlayerSlot
+                        key={slotIndex}
+                        member={member}
+                        teamSlotIndex={teamSlotIndex}
+                        onSlotSelect={onSlotSelect}
+                      />
+                    );
+                  })}
+                </Box>
+                {teamIndex === 0 && (
+                  <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    flexItem
+                    sx={{ my: 1 }}
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
         </Box>
       </Box>
 
-      <Box sx={{ borderTop: '1px grey solid' }}>
+      <Box borderTop="1px #ddd solid">
         <Box
           sx={{
             display: 'flex',
@@ -97,19 +97,21 @@ export function MatchCard(props: AvailableMatch) {
             alignItems: 'center',
           }}
         >
-          <Box
-            sx={{
-              paddingLeft: '14px',
-              paddingTop: '.5rem',
-            }}
-          >
-            <Typography sx={{ fontWeight: '600', paddingBottom: '.25rem' }}>
-              Competetive ·{' '}
-              <span style={{ fontWeight: '400' }}>
-                Level {matchData.ratingFrom} - {matchData.ratingTo}
-              </span>
-            </Typography>
-            <Typography sx={{ fontWeight: '600' }}>Mixed</Typography>
+          <Box pl={2}>
+            <Box display="flex" gap={0.5}>
+              <Typography
+                textTransform="capitalize"
+                fontWeight={600}
+                fontSize={13}
+                whiteSpace="nowrap"
+              >
+                {type.toLocaleLowerCase()} ·{' '}
+              </Typography>
+              <Typography color="gray" fontSize={13}>
+                Level {ratingFrom} - {ratingTo}
+              </Typography>
+            </Box>
+            <Typography color="gray">Mixed</Typography>
           </Box>
           <Box
             sx={{
@@ -124,12 +126,12 @@ export function MatchCard(props: AvailableMatch) {
             }}
           >
             <Typography sx={{ fontSize: '1.25rem', fontWeight: '700' }}>
-              ₽ {matchData.price}
+              ₽ {price}
             </Typography>
-            <Typography>{matchData.minutes} мин</Typography>
+            <Typography>{minutes} мин</Typography>
           </Box>
         </Box>
       </Box>
     </Box>
   );
-}
+};

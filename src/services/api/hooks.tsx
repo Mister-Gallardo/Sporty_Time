@@ -22,21 +22,22 @@ export const useUserInfo = () => {
     enabled: isAuthorized,
   });
 
-  return data?.data;
+  return data?.data?.user;
 };
 
-export const useUserProfile = () => {
-  const isAuthorized = useIsAuthorized();
+// made for what??
+// export const useUserProfile = () => {
+//   const isAuthorized = useIsAuthorized();
 
-  const { data } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUserInfo,
-    retry: false,
-    enabled: isAuthorized,
-  });
+//   const { data } = useQuery({
+//     queryKey: ['user'],
+//     queryFn: getUserInfo,
+//     retry: false,
+//     enabled: isAuthorized,
+//   });
 
-  const player = data?.data?.player;
-  if (player) player.user = data.data;
+//   const player = data?.data?.user.player;
+//   if (player) player.user = data.data;
 
-  return player;
-};
+//   return player;
+// };

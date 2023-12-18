@@ -10,48 +10,45 @@ export enum Role {
 
 export interface Player {
   id: number;
-
   ratingPadel: number;
-
   ratingPickleball: number;
-
   ratingTennis: number;
-
-  scoresPadel: number;
-
-  scoresPickleball: number;
-
-  scoresTennis: number;
-
-  user: User;
-
   createdAt: Date;
-
   updatedAt: Date;
-
-  mark?: boolean;
 }
 
 export interface User {
   id: number;
-
   firstname: string;
-
   lastname: string;
-
   email: string;
-
-  password: string;
-
   roles: Role[];
-
-  player: Player;
-
-  club: Club;
-
-  createdAt: Date;
-
-  updatedAt: Date;
-
   avatarUrl: string;
+  createdAt: Date;
+  updatedAt: Date;
+  player: Player;
+  club: Club;
+}
+
+export interface MatchMember {
+  id: number;
+  confirmMatchResults: boolean;
+  team: string;
+  createdAt: Date;
+  updatedAt: Date;
+  player: Player;
+}
+
+export interface MatchMemberShort {
+  id: number;
+  team: string;
+  player: {
+    ratingTennis: number;
+    user: { avatarUrl: string; firstname: string };
+  };
+}
+
+export interface UserProfile {
+  countMatches: number;
+  user: User;
 }

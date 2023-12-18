@@ -14,16 +14,19 @@ export interface ICourtAccordionProps {
   disabled?: boolean;
   onClick: React.MouseEventHandler<HTMLDivElement>;
   getOptionTime?: (optionIndex: number) => void;
+  handleSelectCourt?: any;
 }
 
 export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
-  const { court, onClick, disabled, getOptionTime } = props;
+  const { court, onClick, disabled, getOptionTime, handleSelectCourt } = props;
+
   return (
     <Accordion
       defaultExpanded
       disabled={disabled}
       elevation={0}
       sx={{
+        paddingX: 0,
         background: 'none',
         '&:before': {
           display: 'none',
@@ -41,48 +44,42 @@ export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
         }}
       >
         <Box>
-          <Typography
-            variant="body1"
-            sx={{ fontSize: '.95rem', fontWeight: '600' }}
-          >
+          <Typography variant="body1" fontSize={16} fontWeight={600}>
             {court.sport}
           </Typography>
           <Typography variant="body2" sx={{ opacity: '.7' }}>
-            {court.tags.map((tag) => tag.title).join(' ')}
+            {court.tags.map((tag) => tag.title).join(' · ')}
           </Typography>
         </Box>
       </AccordionSummary>
-      <AccordionDetails>
-        <Box
-          sx={{
-            display: 'flex',
-            marginTop: '1rem',
-            gap: '1.25rem',
-          }}
-        >
+      <AccordionDetails sx={{ paddingX: 0 }}>
+        <Box display="flex" gap={2} overflow="auto" pb={2}>
           {court?.options.map((option, i) => {
             return (
               <Box
+                key={i}
                 onClick={(e) => {
+                  handleSelectCourt((prev: any) => ({
+                    ...prev,
+                    ...option,
+                    sport: court.sport,
+                    tags: court.tags,
+                    courtName: court.sport + ' ' + i,
+                  }));
+
                   onClick(e);
                   if (!getOptionTime) return;
-                  getOptionTime(Number(i));
+                  getOptionTime(i);
                 }}
+                borderRadius={2}
+                color="white"
+                padding="10px 7px"
+                textAlign="center"
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-
-                  width: '100%',
-                  maxWidth: '125px',
-                  padding: '10px 7px',
                   background: '#6E8FFD',
-                  borderRadius: '8px',
-                  color: '#fff',
                 }}
               >
-                <Typography sx={{ fontSize: '1.5rem', fontWeight: '600' }}>
+                <Typography fontSize={20} fontWeight={700} whiteSpace="nowrap">
                   {option.price} RUB
                 </Typography>
                 <Typography>{option.playtime} мин</Typography>
