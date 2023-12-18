@@ -17,7 +17,6 @@ import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
   getOneAvailableMatch,
   joinMatch,
-  uploadResults,
 } from '../../../services/matches/service';
 import { ClubInfoBlock } from './sections/ClubInfoBlock';
 import { MatchInfoBlock } from './sections/MatchInfoBlock';
@@ -26,6 +25,8 @@ import { PrivacyType } from './components/PrivacyType';
 import { MatchType } from './components/MatchType';
 import { Players } from './components/Players';
 import { Prompt } from './components/Prompt';
+import { useState } from 'react';
+import { UploadResultModal } from '../../../components/modals/UploadResultModal';
 
 enum PromptType {
   PRIMARY,
@@ -37,9 +38,7 @@ export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
   const [showToast] = useIonToast();
   const { matchId } = useParams<{ matchId: string }>();
-
   const [error, setError] = useState<string | undefined>();
-
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [openToast, setOpenToast] = useState<boolean>(false);
 
@@ -82,12 +81,7 @@ export function SingleMatchPage() {
   if (isLoading) {
     return <IonLoading isOpen />;
   }
-  if (!singleMatchData) return null;
-
-  const gameDate = gameDateToDate(
-    singleMatchData.gameDate,
-    singleMatchData?.slot.time,
-  );
+  if (!matchData) return null;
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
@@ -131,12 +125,13 @@ export function SingleMatchPage() {
   }
 
   return (
-    <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
-      <Box mb={14}>
+    <>
+      <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
         <Box
           pt={isMobile ? 'unset' : '1.5rem'}
           minHeight={isMobile ? 'unset' : '100%'}
           bgcolor={isMobile ? 'unset' : '#fff'}
+          mb={14}
           px={2}
         >
           <Box

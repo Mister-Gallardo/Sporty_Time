@@ -25,19 +25,18 @@ export const useUserInfo = () => {
   return data?.data?.user;
 };
 
-// made for what??
-// export const useUserProfile = () => {
-//   const isAuthorized = useIsAuthorized();
+export const usePlayerProfile = () => {
+  const isAuthorized = useIsAuthorized();
 
-//   const { data } = useQuery({
-//     queryKey: ['user'],
-//     queryFn: getUserInfo,
-//     retry: false,
-//     enabled: isAuthorized,
-//   });
+  const { data } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUserInfo,
+    retry: false,
+    enabled: isAuthorized,
+  });
 
-//   const player = data?.data?.user.player;
-//   if (player) player.user = data.data;
+  const player = data?.data?.user.player;
+  if (player) player.user = data.data.user;
 
-//   return player;
-// };
+  return player;
+};

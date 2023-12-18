@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ToggleButton } from '../../../components/atoms/ToggleButton';
-import { useUserProfile } from '../../../services/api/hooks';
+import { usePlayerProfile } from '../../../services/api/hooks';
 import { Box, Button, Typography } from '@mui/material';
 import dummy from '../../../images/home/booking-bg.png';
 import { InfoRounded } from '@mui/icons-material';
@@ -11,7 +11,7 @@ export default function ActivitiesTab() {
 
   const [activeSport, setActiveSport] = useState<string>('Padel');
 
-  const user: any = useUserProfile();
+  const user: any = usePlayerProfile();
   const sportLevel = user && user['rating' + activeSport];
 
   return (

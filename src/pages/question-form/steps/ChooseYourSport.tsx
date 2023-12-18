@@ -5,7 +5,7 @@ import {
   SportsBasketballOutlined,
   SportsTennisOutlined,
 } from '@mui/icons-material';
-import { useUserProfile } from '../../../services/api/hooks';
+import { usePlayerProfile } from '../../../services/api/hooks';
 import { SportTypeRow } from '../components/SportTypeRow';
 import { Button } from '../../../components/atoms/Button';
 import { BgContainer } from '../components/BgContainer';
@@ -22,7 +22,7 @@ export function ChooseYourSport(props: ChooseYourSportProps) {
 
   const [selectedSport, setSelectedSport] = useState<string>(Sports.PADEL);
 
-  const player: any = useUserProfile();
+  const player: any = usePlayerProfile();
 
   const checkRating = (sport: string) => {
     if (!player) return '';
