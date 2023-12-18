@@ -4,11 +4,13 @@ import { ClubCard } from '../../components/molecules/ClubCard';
 import { getClubs } from '../../services/club/service';
 import { useQuery } from '@tanstack/react-query';
 
+const defaultDate = [new Date()];
+
 export function BookCourt() {
   const isMobile = isPlatform('mobile');
   const { data, isLoading } = useQuery({
-    queryKey: ['clubs'],
-    queryFn: getClubs,
+    queryKey: ['clubs', defaultDate],
+    queryFn: () => getClubs(defaultDate),
   });
 
   if (isLoading)
@@ -25,7 +27,7 @@ export function BookCourt() {
           paddingTop: '1.25rem',
           paddingInline: isMobile ? '0' : '10px',
           display: 'grid',
-          alignContent: 'center',
+          justifyContent: 'center',
           gridTemplateColumns: 'repeat(auto-fit,minmax(260px,500px))',
           marginTop: '.5rem',
           gap: '1rem',
@@ -34,7 +36,7 @@ export function BookCourt() {
         }}
       >
         {data?.map((club) => (
-          <ClubCard club={club} />
+          <ClubCard key={club.id} {...club} />
         ))}
       </Box>
     </>

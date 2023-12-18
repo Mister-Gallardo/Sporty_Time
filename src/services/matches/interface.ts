@@ -1,51 +1,23 @@
 import { Court, Slot } from '../club/interface';
-import { Player } from '../user/interface';
+import { MatchMember } from '../user/interface';
 
 export interface Match {
   id: number;
-
   slot: Slot;
-
   gameDate: Date;
-
-  matchBookings: MatchBooking[];
-
+  matchBookings: MatchMember[];
   createdAt: Date;
-
   updatedAt: Date;
-}
-
-export interface MatchBooking {
-  id: number;
-
-  confirmMatchResults: boolean;
-
-  team: string;
-
-  player: Player;
-
-  updatedAt: string;
-
-  createdAt: string;
-
-  status?: string;
 }
 
 export interface AvailableMatch {
   id: number;
-
   title: string;
-
   confirmMatchResults: boolean;
-
   gameDate: string;
-
   price: number;
-
   minutes: number;
-
-  matchBookings: MatchBooking[];
-
+  matchBookings: MatchMember[];
   slot: {
     id: number;
     time: 'string';
@@ -53,38 +25,29 @@ export interface AvailableMatch {
     createdAt: string;
     court: Court;
   };
-
   matchResults: any;
-
   ratingFrom: number;
-
   ratingTo: number;
-
   img: string;
-
   sport: string;
-
   time: string;
-
   createdAt: string;
-
   updatedAt: string;
-
   winningTeam: string;
-
   type: string;
-
   timeExpires: string;
 }
 [];
 
 export interface CreateMatchDTO {
-  selectedDate: Date;
   slotId: number;
-  ratingFrom: number;
-  reatingTo: number;
+  gameDate: Date;
+  type: string;
   playTime: number;
-  sport: string;
+  ratingFrom: number;
+  ratingTo: number;
+  gender: string;
+  isPrivate: boolean;
 }
 
 export interface JoinMatchDTO {

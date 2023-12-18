@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   IonButtons,
   IonButton,
@@ -10,43 +10,45 @@ import {
   IonAvatar,
 } from '@ionic/react';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { Box, RadioGroup, Typography } from '@mui/material';
-
+import { Box, Button, RadioGroup, Switch, Typography } from '@mui/material';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import { RadioLabel } from '../../components/molecules/RadioLabel';
-import { Button } from '../atoms/Button';
 import { MultiThumbSlider } from '../molecules/MultiThumbSlider';
+import {
+  ERadioLabelType,
+  IConfigMatchModalData,
+  PreferedGender,
+} from '../../types';
+import useToggle from '../../hooks/useToggle';
+// import { useUserInfo } from '../../services/api/hooks';
 
-export enum ERadioLabelType {
-  WITH_ICON_AND_DESCRIPTION,
-  TITLE_ONLY,
-  WITH_DESCRIPTION,
-}
-
-// add correct type!
 interface IConfigMatchModal {
   openState: boolean;
-  handleModal: any;
+  handleModal: (val?: boolean) => void;
+  getData: (data: IConfigMatchModalData) => void;
 }
 
-export function ConfigMatchModal({
+export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
   openState,
   handleModal,
-}: IConfigMatchModal) {
+  getData,
+}) => {
+  // const user = useUserInfo();
+
+  // const padelRating = user?.player.ratingPadel;
+  const padelRating = 1.5;
+
+  const ratingFrom = padelRating < 0.25 ? 0 : padelRating - 0.25;
+  const ratingTo = padelRating > 6.25 ? 7 : padelRating + 0.75;
+
+  const [isPrivate, setIsPrivate] = useToggle();
   const [matchType, setMatchType] = useState<string>('competitive');
-  const [gender, setGender] = useState<string>('all');
+  const [gender, setGender] = useState<PreferedGender | string>(
+    PreferedGender.ALL,
+  );
 
-  const handleMatchTypeChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setMatchType((event.target as HTMLInputElement).value);
-  };
-
-  const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setGender((event.target as HTMLInputElement).value);
-  };
-
-  const [rangeMinValue, setRangeMinValue] = useState<number>(1.5);
-  const [rangeMaxValue, setRangeMaxValue] = useState<number>(2.6);
+  const [rangeMinValue, setRangeMinValue] = useState<number>(ratingFrom);
+  const [rangeMaxValue, setRangeMaxValue] = useState<number>(ratingTo);
 
   const handleRangeValueChange = (_: Event, values: number | number[]) => {
     if (Array.isArray(values)) {
@@ -63,18 +65,32 @@ export function ConfigMatchModal({
       breakpoints={[0, 0.25, 0.5, 0.75, 0.95]}
       handleBehavior="cycle"
     >
-      <IonHeader>
+      <IonHeader
+        style={{ borderBottom: '1px solid #eee', boxShadow: '0 1px 4px #eee' }}
+      >
         <IonToolbar>
           <IonTitle>Настройте свой матч</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={handleModal}>
+            <IonButton onClick={() => handleModal()}>
               <CloseRoundedIcon sx={{ color: 'black' }} />
             </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <Box mb={2}>
+        <Box mb={2} display="flex" flexDirection="column" gap={4}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Box display="flex" gap={1} alignItems="center">
+              <CheckCircleOutlinedIcon />
+              <Typography>Создать приватный матч</Typography>
+            </Box>
+            <Switch value={isPrivate} onChange={() => setIsPrivate()} />
+          </Box>
+
           <Box>
             <Typography fontWeight={700} mb={1}>
               Выберите тип матча
@@ -83,7 +99,7 @@ export function ConfigMatchModal({
               name="select match type"
               sx={{ gap: 2 }}
               value={matchType}
-              onChange={handleMatchTypeChange}
+              onChange={(e) => setMatchType(e.target.value)}
             >
               <Box>
                 <RadioLabel
@@ -115,11 +131,13 @@ export function ConfigMatchModal({
                               src="https://ionicframework.com/docs/img/demos/avatar.svg"
                             />
                           </IonAvatar>
-                          <Typography align="center">2.5</Typography>
+                          <Typography align="center">{padelRating}</Typography>
                         </Box>
                         <Box>
                           <Typography>Match Range Level</Typography>
-                          <Typography>2.25 - 3.25</Typography>
+                          <Typography>
+                            {rangeMinValue} - {rangeMaxValue}
+                          </Typography>
                         </Box>
                       </Box>
                       <Typography>
@@ -138,7 +156,7 @@ export function ConfigMatchModal({
                 />
 
                 {matchType === 'friendly' && (
-                  <Box my={2} mx={1}>
+                  <Box marginY={2} mx={1}>
                     <Typography border="1px solid #eee" borderRadius={4} p={2}>
                       Lorem ipsum dolor sit amet consectetur sali adipisicing
                       elit. Commodi eligendi amet veritatis ipsum cupiditate
@@ -162,6 +180,7 @@ export function ConfigMatchModal({
                       </Box>
 
                       <MultiThumbSlider
+                        playerRating={padelRating}
                         curentMinValue={rangeMinValue}
                         curentMaxValue={rangeMaxValue}
                         handleChange={handleRangeValueChange}
@@ -173,7 +192,7 @@ export function ConfigMatchModal({
             </RadioGroup>
           </Box>
 
-          <Box mt={5}>
+          <Box>
             <Typography fontWeight={700} mb={1}>
               Выберите пол, с которым хотите играть.
             </Typography>
@@ -181,22 +200,28 @@ export function ConfigMatchModal({
               name="select gender"
               sx={{ gap: 2 }}
               value={gender}
-              onChange={handleGenderChange}
+              onChange={(e) => setGender(e.target.value)}
             >
               <RadioLabel
-                value="all"
+                value={PreferedGender.ALL}
                 labelType={ERadioLabelType.WITH_DESCRIPTION}
                 title="Любой"
                 description="Присоединиться могут игроки обоих полов"
               />
               <RadioLabel
-                value="woman"
+                value={PreferedGender.WOMEN}
                 labelType={ERadioLabelType.WITH_DESCRIPTION}
                 title="Только женщины"
                 description="Присоединиться могут только женщины"
               />
               <RadioLabel
-                value="mixed"
+                value={PreferedGender.MEN}
+                labelType={ERadioLabelType.WITH_DESCRIPTION}
+                title="Только мужчины"
+                description="Присоединиться могут только мужчины"
+              />
+              <RadioLabel
+                value={PreferedGender.MIXED}
                 labelType={ERadioLabelType.WITH_DESCRIPTION}
                 title="Смешанный"
                 description="Мужчина и женщина в каждой команде"
@@ -206,13 +231,25 @@ export function ConfigMatchModal({
         </Box>
 
         <Button
+          onClick={() =>
+            getData({
+              isPrivate,
+              matchType,
+              ratingFrom: rangeMinValue,
+              ratingTo: rangeMaxValue,
+              gender,
+            })
+          }
+          variant="contained"
+          fullWidth
           sx={{
             backgroundColor: '#333',
-            paddingY: 2.5,
-            borderRadius: 12,
-            fontWeight: 600,
-            fontSize: 16,
+            marginTop: 2,
             marginBottom: 5,
+            borderRadius: 12,
+            fontSize: 18,
+            fontWeight: 600,
+            textTransform: 'initial',
           }}
         >
           Перейти к оплате
@@ -220,4 +257,4 @@ export function ConfigMatchModal({
       </IonContent>
     </IonModal>
   );
-}
+};

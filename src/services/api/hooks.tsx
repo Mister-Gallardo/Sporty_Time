@@ -22,10 +22,10 @@ export const useUserInfo = () => {
     enabled: isAuthorized,
   });
 
-  return data?.data;
+  return data?.data?.user;
 };
 
-export const useUserProfile = () => {
+export const usePlayerProfile = () => {
   const isAuthorized = useIsAuthorized();
 
   const { data } = useQuery({
@@ -35,8 +35,8 @@ export const useUserProfile = () => {
     enabled: isAuthorized,
   });
 
-  const player = data?.data?.player;
-  if (player) player.user = data.data;
+  const player = data?.data?.user.player;
+  if (player) player.user = data.data.user;
 
   return player;
 };

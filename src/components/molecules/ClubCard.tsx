@@ -1,120 +1,95 @@
-import { isPlatform } from '@ionic/react';
+import { useHistory } from 'react-router';
 import { FavoriteBorderOutlined } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
-import { useHistory } from 'react-router';
-import { Club } from '../../services/club/interface';
+import { DateBox } from './DateBox';
 
-interface IClubCardProps {
-  club: Club;
-}
+const dummyData = [
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '12:00',
+  '12:30',
+  '13:00',
+  '13:30',
+  '14:00',
+];
 
-export function ClubCard(props: IClubCardProps) {
-  const { club } = props;
-  const { img, title } = club;
+interface IClubCard {}
+
+export const ClubCard: React.FC<any> = ({
+  id,
+  img,
+  title,
+  minPrice,
+  availableTimes,
+}) => {
   const history = useHistory();
-  const isMobile = isPlatform('mobile');
 
   return (
-    <Box
-      onClick={() => history.push(`/book-court/${club.id}`)}
-      sx={{
-        width: '100%',
-        background: '#fff',
-        boxShadow:
-          'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px',
-        minHeight: 300,
-        paddingBottom: 3,
-      }}
-    >
+    <Box onClick={() => history.push(`/book-court/${id}?tab=2`)}>
       <Box
+        position="relative"
+        height="180px"
+        width="100%"
+        display="flex"
+        alignItems="flex-end"
         sx={{
-          height: '75%',
-          position: 'relative',
+          backgroundImage: `url(${img})`,
+          backgroundSize: 'cover',
         }}
       >
         <IconButton sx={{ position: 'absolute', top: '10px', right: '10px' }}>
           <FavoriteBorderOutlined sx={{ color: '#fff' }} />
         </IconButton>
         <Box
+          position="absolute"
+          bottom={0}
+          height="70px"
+          width="100%"
           sx={{
-            width: '100%',
-            height: '100%',
-            maxHeight: '175px',
-            objectFit: 'cover',
+            background:
+              'linear-gradient(0deg, rgba(6,22,38,0.81) 8%, rgba(6,22,38,0) 100%)',
           }}
-          component="img"
-          src={img}
         />
-        <Box
-          sx={{
-            width: '100%',
-            position: 'absolute',
-            top: '0',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'space-between',
-            padding: '7px 14px',
 
-            color: '#fff',
-          }}
+        <Box
+          zIndex={1}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="flex-end"
+          width="100%"
+          color="white"
+          px={1.5}
+          pb={1}
         >
-          <Typography
-            sx={{
-              color: '#fff',
-              maxWidth: '70%',
-              fontSize: '1.15rem',
-              fontWeight: '700',
-            }}
-          >
+          <Typography fontSize={20} fontWeight={700}>
             {title}
           </Typography>
-          {club.minPrice && (
-            <Box>
-              <Typography
-                variant="body2"
-                sx={{ color: '#e5e5e5', fontWeight: '500' }}
-              >
-                1 час от
-              </Typography>
-              <Typography variant="body1" sx={{ fontSize: '1.15rem' }}>
-                {club.minPrice} RUB
-              </Typography>
-            </Box>
-          )}
+          <Box>
+            <Typography textAlign="center" sx={{ opacity: 0.8 }}>
+              1ч от
+            </Typography>
+            <Typography fontSize={20} fontWeight={700}>
+              {minPrice} p
+            </Typography>
+          </Box>
         </Box>
       </Box>
-      <Box sx={{ padding: '10px 15px' }}>
-        <Typography sx={{ color: '#grey' }}>672m - Дубаи</Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            gap: '1rem',
-            marginTop: '10px',
-            overflowX: 'auto',
-            margin: isMobile ? '.25em calc(50% - 50vw)' : '10px 0 0 0',
-            paddingInline: isMobile ? '15px' : '0',
-            paddingBottom: '10px',
-          }}
-        >
-          {club.availableTimes?.map((time) => (
-            <Box
-              sx={{
-                padding: '7px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '60px',
-                height: '35px',
-                border: '1.5px solid #e5e5e5',
-                borderRadius: '5px',
-              }}
-            >
-              {time}
-            </Box>
+      <Box py={1.5} pl={1.5}>
+        <Typography mb={1} color="gray">
+          6km - L'Hospitalet de Llobregat (Barcelona)
+        </Typography>
+        <Box display="flex" gap={1} pb={2} sx={{ overflowX: 'auto' }}>
+          {dummyData?.map((time) => (
+            <DateBox
+              key={time}
+              startTime={time}
+              onClick={() => console.log(`Make current time - ${time} active`)}
+            />
           ))}
         </Box>
       </Box>
     </Box>
   );
-}
+};

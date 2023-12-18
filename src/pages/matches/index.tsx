@@ -1,60 +1,36 @@
-import { isPlatform } from '@ionic/react';
-import { Box, Tab } from '@mui/material';
 import { useState } from 'react';
+import { isPlatform } from '@ionic/react';
 import { AvailableMatchesTab } from './tabs/AvailableMatchesTab';
+import { TabList } from '../../components/molecules/TabList';
 import { Button } from '../../components/atoms/Button';
-import { Add } from '@mui/icons-material';
 import { MyMatchesTab } from './tabs/MyMatchesTab';
-import { UploadResultModal } from '../../components/modals/UploadResultModal';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
-import useToggle from '../../hooks/useToggle';
-import { ConfigMatchModal } from '../../components/modals/ConfigMatchModal';
+import { TabContext, TabPanel } from '@mui/lab';
+import { Add } from '@mui/icons-material';
+import { useHistory } from 'react-router';
+import { Box } from '@mui/material';
 
 interface IMatchesPageProps {}
 
 export function MatchesPage({}: IMatchesPageProps) {
-  const [tabIndex, setTabIndex] = useState<string>('1');
-
-  const [openUploadModal, setOpenUploadModal] = useToggle();
-  const [openConfigMatchModal, setOpenConfigMatchModal] = useToggle();
-
   const isMobile = isPlatform('mobile');
 
+  const history = useHistory();
+  const [tabIndex, setTabIndex] = useState<string>('1');
+
   return (
-    <Box maxWidth={1240} mx="auto">
+    <Box maxWidth={1240} mx="auto" mt={isMobile ? 0 : 5} mb={10}>
       <TabContext value={tabIndex}>
-        <Box sx={{ marginTop: isMobile ? '0' : '1rem' }}>
-          <TabList
-            sx={{
-              margin: '0 auto',
-              maxWidth: '96%',
-              position: 'sticky',
-              top: 'calc(var(--ion-safe-area-top) - 60px)',
-              background: 'white',
-              zIndex: 100,
-            }}
-            onChange={(e, value) => setTabIndex(value)}
-          >
-            <Tab
-              value="1"
-              disableRipple={!isMobile}
-              label={'Доступные'}
-              sx={{ flexGrow: 1 }}
-            />
-            <Tab
-              value="2"
-              disableRipple={!isMobile}
-              label={'Ваши матчи'}
-              sx={{ flexGrow: 1 }}
-            />
-          </TabList>
-          <TabPanel value="1" sx={{ p: 0 }}>
-            <AvailableMatchesTab toggleConfigModal={setOpenConfigMatchModal} />
-          </TabPanel>
-          <TabPanel value="2" sx={{ p: 0 }}>
-            <MyMatchesTab />
-          </TabPanel>
-        </Box>
+        <TabList
+          tabs={['Доступные', 'Ваши матчи']}
+          onChange={(_, tabIdx) => setTabIndex(tabIdx)}
+        />
+        <TabPanel value="1" sx={{ p: 0 }}>
+          <AvailableMatchesTab />
+        </TabPanel>
+        <TabPanel value="2" sx={{ p: 0 }}>
+          <MyMatchesTab />
+        </TabPanel>
+
         <Box
           sx={{
             position: 'fixed',
@@ -67,12 +43,10 @@ export function MatchesPage({}: IMatchesPageProps) {
         >
           {tabIndex === '1' && (
             <Button
+              onClick={() => history.push('/book-court')}
               sx={{
-                fontSize: '1.1rem',
-                fontWeight: '500',
+                backgroundColor: '#1976d2',
                 maxWidth: '225px',
-                borderRadius: '28px',
-                height: '45px',
                 boxShadow:
                   'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
               }}
@@ -82,15 +56,6 @@ export function MatchesPage({}: IMatchesPageProps) {
             </Button>
           )}
         </Box>
-        <UploadResultModal
-          openState={openUploadModal}
-          handleModal={setOpenUploadModal}
-        />
-
-        <ConfigMatchModal
-          openState={openConfigMatchModal}
-          handleModal={setOpenConfigMatchModal}
-        />
       </TabContext>
     </Box>
   );

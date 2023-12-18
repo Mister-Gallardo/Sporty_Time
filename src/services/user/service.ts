@@ -1,6 +1,6 @@
-import { User } from './interface';
+import { UserProfile } from './interface';
 import { api } from '../api/service';
 
 export function getUserInfo() {
-  return api.get<User>('/users/me');
+  return api.get<UserProfile>('/users/me');
 }

@@ -82,3 +82,9 @@ export interface Slot {
 
   updatedAt: Date;
 }
+
+export interface CourtSlot {
+  playTime: number;
+  slotId: number;
+  time: string;
+}

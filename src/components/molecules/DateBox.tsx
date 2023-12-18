@@ -1,18 +1,19 @@
 import { Button, Typography, ButtonProps } from '@mui/material';
+import React from 'react';
 
-interface IdateBox extends ButtonProps {
+interface IDateBox extends ButtonProps {
   startTime: string;
   gameDuration?: number;
   onClick: any;
   disabled?: boolean;
 }
 
-export const DateBox = ({
+export const DateBox: React.FC<IDateBox> = ({
   startTime,
   gameDuration,
   onClick,
   disabled,
-}: IdateBox) => {
+}) => {
   return (
     <Button
       onClick={onClick}
@@ -23,8 +24,9 @@ export const DateBox = ({
         alignItems: 'center',
         textTransform: 'initial',
         color: '#000',
-        border: '1px solid #eee',
+        border: '1px solid #ddd',
         borderRadius: 1,
+        minHeight: '38px',
         paddingY: 0.5,
         paddingX: 1,
         '&:disabled': {
@@ -32,11 +34,13 @@ export const DateBox = ({
         },
       }}
     >
-      <Typography whiteSpace="nowrap" fontWeight={700}>
+      <Typography whiteSpace="nowrap" fontWeight={600}>
         {startTime}
       </Typography>
       {gameDuration && (
-        <Typography textAlign="center">{gameDuration}min</Typography>
+        <Typography textAlign="center" color="gray" fontSize={12}>
+          {gameDuration}мин
+        </Typography>
       )}
     </Button>
   );

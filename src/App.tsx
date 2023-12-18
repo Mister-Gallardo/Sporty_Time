@@ -21,7 +21,7 @@ import { MobileProfilePage } from './pages/profile/index.mobile';
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
 
-setupIonicReact();
+setupIonicReact({ mode: 'ios' });
 
 const desktopRoutes = [
   {

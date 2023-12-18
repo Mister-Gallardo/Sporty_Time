@@ -1,7 +1,7 @@
 import { useHistory } from 'react-router';
 import { Avatar, Box, Typography } from '@mui/material';
 import { Button } from '../../../components/atoms/Button';
-import { useUserProfile } from '../../../services/api/hooks';
+import { usePlayerProfile } from '../../../services/api/hooks';
 import { SportsBaseballOutlined } from '@mui/icons-material';
 import { BgContainer } from '../components/BgContainer';
 
@@ -13,7 +13,7 @@ interface ResultsStepProps {
 export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
   const history = useHistory();
 
-  const profile: any = useUserProfile();
+  const profile: any = usePlayerProfile();
 
   const sport = localStorage.getItem('sport');
   const rating = profile ? profile[`rating${sport}`] : '';

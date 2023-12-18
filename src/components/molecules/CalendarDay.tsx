@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material';
 
-export const WEEK_DAYS = ['ВС', 'ПОН', 'ВТ', 'СРД', 'ЧЕТ', 'ПТ', 'СУБ'];
+export const WEEK_DAYS = ['ВС', 'ПН', 'ВТ', 'СРД', 'ЧТ', 'ПТ', 'СБ'];
 export const MONTHS = [
   'Янв',
-  'Фев',
+  'Февр',
   'Март',
   'Апр',
   'Май',
@@ -12,7 +12,7 @@ export const MONTHS = [
   'Авг',
   'Сен',
   'Окт',
-  'Ноябрь',
+  'Нояб',
   'Дек',
 ];
 

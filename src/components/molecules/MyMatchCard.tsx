@@ -1,376 +1,419 @@
-import { Box, ButtonBase, Typography } from '@mui/material';
-import { useState } from 'react';
-import { useHistory } from 'react-router';
-import { UploadResultModal } from '../modals/UploadResultModal';
-import { AvailableMatch } from '../../services/matches/interface';
-import { PlayerSlot } from './PlayerSlot';
+import React from 'react';
+import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
-import { Add, Error } from '@mui/icons-material';
+import { countMatchEndTime } from '../../helpers/countMatchEndTime';
+import { Avatar, Box, Divider, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { isToday, isTomorrow } from 'date-fns';
+import { Add } from '@mui/icons-material';
+import { useHistory } from 'react-router';
+import { Status } from '../../types';
+import { sortTeamMembers } from '../../helpers/sortTeamMembers';
+
 interface IMyMatchCardProps {
   confirmedByAllResult: boolean;
 }
 
-type ICardProps = IMyMatchCardProps & AvailableMatch;
+// type ICardProps = IMyMatchCardProps & AvailableMatch;
+type ICardProps = any;
 
-export function MyMatchCard(props: ICardProps) {
-  const currentDate = new Date();
-  const timeExpires = new Date(props.timeExpires);
+const dateOptions: any = { day: 'numeric', month: 'short' };
 
-  const { confirmedByAllResult, id } = props;
-  const history = useHistory();
-  const [openModal, setOpenModal] = useState<boolean>(false);
+const matchDateFormat = (date: string, matchTime: string, playTime: number) => {
+  const passedDate = new Date(date);
+  let day = '';
+  const matchEndTime = countMatchEndTime(matchTime, playTime);
 
-  function handleOpenModal() {
-    setOpenModal((prev) => !prev);
+  if (isToday(passedDate)) {
+    day = 'Today';
+  } else if (isTomorrow(passedDate)) {
+    day = 'Tomorrow';
+  } else {
+    day = passedDate.toLocaleDateString('ru-RU', dateOptions);
   }
 
-  const teamAPlayers =
-    props?.matchBookings
-      ?.filter((booking) => booking.team === 'A')
-      ?.map((booking) => booking.player) || [];
+  return `${day} | ${matchTime.slice(0, -3)} - ${matchEndTime}`;
+};
 
-  const teamBPlayers =
-    props?.matchBookings
-      ?.filter((booking) => booking.team === 'B')
-      ?.map((booking) => booking.player) || [];
-  teamAPlayers.length = 2;
-  teamBPlayers.length = 2;
-  const players = [...Array.from(teamAPlayers), ...Array.from(teamBPlayers)];
+export const MyMatchCard: React.FC<ICardProps> = ({
+  id,
+  status,
+  gameDate,
+  matchBookings,
+  matchResults,
+  winningTeam,
+  uploadResults,
+}) => {
+  const history = useHistory();
 
+  const members = sortTeamMembers(matchBookings);
+
+  const getSetResults = (team: string) => {
+    if (!matchResults && status === Status.WITHOUT_RESULT) return [0, 0, 0];
+    return matchResults?.map((item: any) => {
+      return team === 'A' ? item[0] : item[1];
+    });
+  };
+
+  const teamAResults = getSetResults('A');
+  const teamBResults = getSetResults('B');
+
+  const results = [
+    { team: 'A', results: teamAResults },
+    { team: 'B', results: teamBResults },
+  ];
+
+  // const timeExpires = new Date(props.timeExpires);
+
+  // const { confirmedByAllResult, id } = props;
   return (
-    <>
-      <Box
-        sx={{
-          position: 'relative',
-          zIndex: '99',
-          padding: '10px 15px',
-          width: '100%',
-          maxWidth: '370px',
-          background: '#fff',
-          border: '1px solid #E5E5E5',
-          borderRadius: '10px',
-
-          boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;',
-        }}
+    <Box
+      width="100%"
+      border="1px solid #E5E5E5"
+      borderRadius={2}
+      onClick={() => history.push(`/matches/${id}`)}
+    >
+      <Typography
+        lineHeight={1}
+        textAlign="end"
+        color="gray"
+        textTransform="capitalize"
       >
-        {!confirmedByAllResult && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '-4px',
-              right: '-4px',
-              width: '16px',
-              height: '16px',
-              background: currentDate < timeExpires ? '#FF4976' : '#1976d2',
-              borderRadius: '50%',
-            }}
+        {}
+      </Typography>
+
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box py={1.5} px={1}>
+          {members.map((team, i) => {
+            return (
+              <React.Fragment key={i}>
+                <Box
+                  height="100%"
+                  width={125}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  {team.map((member: any, i: number) => {
+                    return (
+                      <Box
+                        key={i}
+                        height="100%"
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                        width="50%"
+                      >
+                        {member ? (
+                          <Avatar sx={{ width: 40, height: 40 }} />
+                        ) : (
+                          <Box
+                            width={40}
+                            height={40}
+                            borderRadius={40}
+                            border="2px dashed #4162f5"
+                            bgcolor="#f5f6f6"
+                          ></Box>
+                        )}
+                        <Typography
+                          fontSize={12}
+                          fontWeight={600}
+                          maxWidth={60}
+                          overflow="hidden"
+                          whiteSpace="nowrap"
+                          textOverflow="ellipsis"
+                        >
+                          {member ? member.player.user.firstname : 'Свободно'}
+                        </Typography>
+                        <Typography
+                          color="gray"
+                          fontSize={12}
+                          height={10}
+                          lineHeight={1}
+                        >
+                          {member?.player.ratingTennis}
+                        </Typography>
+                      </Box>
+                    );
+                  })}
+                </Box>
+                {i === 0 && <Divider variant="middle" sx={{ my: 1 }} />}
+              </React.Fragment>
+            );
+          })}
+        </Box>
+        {status === Status.CANCELED ||
+        status === Status.UPCOMING ||
+        status === Status.WAITING_FOR_RESULTS ? (
+          <WithoutResults
+            date={matchDateFormat(gameDate, '10:00:20', 90)}
+            clubName="Club name"
+            courtName="Court name"
+            status={status}
+            uploadResults={
+              status === Status.WAITING_FOR_RESULTS
+                ? () => uploadResults(id)
+                : null
+            }
+          />
+        ) : (
+          <Results
+            date={matchDateFormat(gameDate, '10:00:20', 90)}
+            status={status}
+            results={results}
+            winningTeam={winningTeam}
           />
         )}
+      </Box>
+    </Box>
+  );
+};
 
+interface IWithoutResults {
+  date: string;
+  clubName?: string;
+  courtName: string;
+  status: Status;
+  uploadResults: (() => void) | null;
+}
+const WithoutResults: React.FC<IWithoutResults> = ({
+  date,
+  clubName,
+  courtName,
+  status,
+  uploadResults,
+}) => {
+  const withStatus =
+    status === Status.CANCELED || status === Status.WAITING_FOR_RESULTS;
+
+  const statusText =
+    status === Status.CANCELED
+      ? 'Отменён'
+      : status === Status.WAITING_FOR_RESULTS
+      ? 'Ожидание результатов'
+      : '';
+
+  const statusBgColor =
+    status === Status.CANCELED
+      ? '#fff6f5'
+      : status === Status.WAITING_FOR_RESULTS
+      ? '#ffe0ed'
+      : '';
+
+  const statusTextColor =
+    status === Status.CANCELED
+      ? '#d05e73'
+      : status === Status.WAITING_FOR_RESULTS
+      ? '#ff4588'
+      : '';
+
+  const buttonBgColor =
+    status === Status.WAITING_FOR_RESULTS
+      ? '#333'
+      : status === Status.CANCELED
+      ? '#3d5ef5'
+      : status === Status.UPCOMING
+      ? '#3d5ef5'
+      : '';
+
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      flexGrow={1}
+      height="100%"
+    >
+      <Typography fontWeight={600}>{date}</Typography>
+
+      <Typography fontSize={12} color="gray">
+        {clubName}
+      </Typography>
+
+      {withStatus ? (
         <Box
-          onClick={() => {
-            history.push(`/matches/${id}`);
-          }}
-          sx={{
-            position: 'relative',
-            zIndex: '9',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            textAlign: 'center',
-            justifyContent: confirmedByAllResult ? 'space-between' : 'unset',
-          }}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          gap={0.8}
+          py={0.5}
+          width="100%"
+          bgcolor={statusBgColor}
+          color={statusTextColor}
+        >
+          {status === Status.CANCELED && <CloseIcon fontSize="small" />}
+          <Typography fontSize={12} fontWeight={700}>
+            {statusText}
+          </Typography>
+        </Box>
+      ) : (
+        <Typography fontSize={20} fontWeight={700}>
+          {courtName}
+        </Typography>
+      )}
+
+      <Box
+        onClick={(e) => {
+          e.stopPropagation();
+          if (uploadResults) uploadResults();
+        }}
+        mt={1}
+        width={40}
+        height={40}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        borderRadius={40}
+        bgcolor={buttonBgColor}
+        sx={{
+          cursor: 'pointer',
+        }}
+      >
+        {status === Status.WAITING_FOR_RESULTS ? (
+          <Add sx={{ color: '#fff' }} />
+        ) : (
+          <ChatBubbleOutlineOutlinedIcon
+            fontSize="small"
+            sx={{ color: '#fff' }}
+          />
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+interface IResults {
+  date: string;
+  status: Status;
+  results: any;
+  winningTeam: string;
+}
+const Results: React.FC<IResults> = ({
+  date,
+  status,
+  results,
+  winningTeam,
+}) => {
+  const withStatus =
+    status === Status.INCOMPLETE ||
+    status === Status.VALIDATING ||
+    status === Status.WITHOUT_RESULT ||
+    status === Status.WAITING_FOR_RESULTS;
+
+  const statusText =
+    status === Status.INCOMPLETE
+      ? 'Maтч не завершён'
+      : status === Status.VALIDATING
+      ? 'Запись результатов'
+      : status === Status.WITHOUT_RESULT
+      ? 'Результат не загружен'
+      : '';
+
+  return (
+    <Box position="relative" flexGrow={1}>
+      <Typography
+        position="absolute"
+        right={10}
+        top={5}
+        fontSize={12}
+        color="gray"
+      >
+        {date}
+      </Typography>
+      {results?.map((resultsRow: any, i: number) => {
+        return (
+          <React.Fragment key={i}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-evenly"
+            >
+              <Box
+                width={40}
+                height={40}
+                borderRadius={40}
+                border="2px solid #36bfa5"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                visibility={
+                  winningTeam === resultsRow.team ? 'visible' : 'hidden'
+                }
+              >
+                <EmojiEventsOutlinedIcon />
+              </Box>
+
+              <Box height="100%" display="flex" justifyContent="center" gap={3}>
+                {resultsRow?.results?.map((point: number, i: number) => (
+                  <Typography
+                    key={i}
+                    color={point > 5 ? 'black' : 'gray'}
+                    fontSize={35}
+                    fontWeight={700}
+                    fontFamily="monospace"
+                    lineHeight="100px"
+                  >
+                    {status === Status.WITHOUT_RESULT ? 0 : point}
+                  </Typography>
+                ))}
+              </Box>
+            </Box>
+
+            {i === 0 && <Divider variant="middle" />}
+          </React.Fragment>
+        );
+      })}
+
+      {withStatus && (
+        <Box
+          position="absolute"
+          top={0}
+          right={0}
+          bottom={0}
+          left={0}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ backgroundColor: '#eeeeee29', backdropFilter: 'blur(0.5px)' }}
         >
           <Box
+            py={0.5}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap={0.8}
+            width="100%"
             sx={{
-              marginBlock: '.5rem',
-              borderRight: !confirmedByAllResult ? '1px solid grey' : 'unset',
-              paddingRight: !confirmedByAllResult ? '.75rem' : 'unset',
-              display: 'flex',
-              flexDirection: 'column',
-              maxWidth: 'fit-content',
+              backgroundColor:
+                status === Status.VALIDATING
+                  ? '#fdf8eb'
+                  : status === Status.WITHOUT_RESULT
+                  ? '#eeeeff'
+                  : status === Status.INCOMPLETE
+                  ? '#ffefe3'
+                  : '',
             }}
           >
-            <Box sx={{ display: 'flex', gap: '.75rem' }}>
-              <PlayerSlot player={players[0]} />
-              <PlayerSlot player={players[1]} />
-            </Box>
-            <Box
+            <Typography
+              fontSize={12}
               sx={{
-                width: '35px',
-                height: '1px',
-                background: '#e5e5e5',
-                margin: '.75rem auto',
+                color:
+                  status === Status.VALIDATING
+                    ? '#f2bd50'
+                    : status === Status.WITHOUT_RESULT
+                    ? '#8a9dfa'
+                    : status === Status.INCOMPLETE
+                    ? '#ff9848'
+                    : '',
               }}
-            />
-            <Box sx={{ display: 'flex', gap: '.75rem' }}>
-              <PlayerSlot player={players[2]} />
-              <PlayerSlot player={players[3]} />
-            </Box>
+            >
+              {statusText}
+            </Typography>
           </Box>
-
-          {!confirmedByAllResult && currentDate < timeExpires && (
-            <ButtonBase
-              onClick={() => handleOpenModal()}
-              sx={{
-                position: 'absolute',
-                zIndex: '9999999',
-                bottom: '1rem',
-                left: '65%',
-
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '50px',
-                height: '50px',
-                background: '#000',
-                borderRadius: '50%',
-              }}
-            >
-              <Add sx={{ color: '#fff' }} />
-            </ButtonBase>
-          )}
-
-          {!confirmedByAllResult && !props.confirmMatchResults && (
-            <>
-              <Box
-                sx={{
-                  width: '100%',
-                  textAlign: 'center',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Typography
-                  sx={{
-                    paddingLeft: '15px',
-
-                    fontSize: '.9rem',
-                    fontWeight: '700',
-                    flexGrow: '1',
-                    width: '100%',
-                  }}
-                >
-                  {props.gameDate} | {props.slot.time.slice(0, -3)}
-                </Typography>
-                <Box
-                  sx={{
-                    width: 'calc(100% + 15px)',
-                    margin: '.5rem 0 1.25rem 15px',
-                    flexGrow: '1',
-                    paddingBlock: '7px',
-                    background: '#FEF4F5',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Error sx={{ color: '#FF3356' }} />
-                    <Typography
-                      sx={{
-                        fontWeight: '700',
-                        fontSize: '.75rem',
-                        color:
-                          currentDate > timeExpires ? '#1976d2' : '#FF3356',
-                      }}
-                    >
-                      Нет результата
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            </>
-          )}
-
-          {!confirmedByAllResult &&
-            !confirmedByAllResult &&
-            currentDate > timeExpires && (
-              <Box
-                sx={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-end',
-                  gap: '.75rem',
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: '1.75rem',
-                    position: 'relative',
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontSize: '2.5rem',
-                      fontWeight: '700',
-                      opacity: '.5',
-                    }}
-                  >
-                    {0}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '2.5rem',
-                      fontWeight: '700',
-                      opacity: '.5',
-                    }}
-                  >
-                    {0}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '2.5rem',
-                      fontWeight: '700',
-                      opacity: '.5',
-                    }}
-                  >
-                    {0}
-                  </Typography>
-                </Box>
-
-                <Box
-                  sx={{
-                    width: 'calc(100% + 15px)',
-                    paddingBlock: '7px',
-                    margin: '0 auto',
-                    background: '#1976d238',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '.5rem',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontWeight: '700',
-                        fontSize: '.75rem',
-                        color: '#1976d2',
-                      }}
-                    >
-                      Без результата
-                    </Typography>
-                  </Box>
-                </Box>
-
-                <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {0}
-                  </Typography>
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {0}
-                  </Typography>
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {0}
-                  </Typography>
-                </Box>
-              </Box>
-            )}
-
-          {confirmedByAllResult && (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                gap: '.75rem',
-              }}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: '1.75rem',
-                  position: 'relative',
-                }}
-              >
-                <Typography
-                  sx={{ fontSize: '2.5rem', fontWeight: '700', opacity: '.5' }}
-                >
-                  {props.matchResults[0][0]}
-                </Typography>
-                <Typography
-                  sx={{ fontSize: '2.5rem', fontWeight: '700', opacity: '.5' }}
-                >
-                  {props.matchResults[1][0]}
-                </Typography>
-                <Typography
-                  sx={{ fontSize: '2.5rem', fontWeight: '700', opacity: '.5' }}
-                >
-                  {props.matchResults[2][0]}
-                </Typography>
-                {props.winningTeam === 'A' && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      left: '-2.75rem',
-                      top: '.75rem',
-                      border: '2px aquamarine solid',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '2.5px',
-                    }}
-                  >
-                    <EmojiEventsOutlinedIcon />
-                  </Box>
-                )}
-              </Box>
-
-              <Box
-                sx={{ width: '150%', height: '1px', background: '#e5e5e5' }}
-              />
-
-              <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                  {props.matchResults[0][1]}
-                </Typography>
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                  {props.matchResults[1][1]}
-                </Typography>
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                  {props.matchResults[2][1]}
-                </Typography>
-
-                {props.winningTeam === 'B' && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      left: '-2.75rem',
-                      top: '.75rem',
-                      border: '2px aquamarine solid',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '2.5px',
-                    }}
-                  >
-                    <EmojiEventsOutlinedIcon />
-                  </Box>
-                )}
-              </Box>
-            </Box>
-          )}
         </Box>
-      </Box>
-      <UploadResultModal
-        matchId={id}
-        openState={openModal}
-        handleModal={handleOpenModal}
-      />
-    </>
+      )}
+    </Box>
   );
-}
+};

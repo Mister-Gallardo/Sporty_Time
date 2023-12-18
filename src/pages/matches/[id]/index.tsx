@@ -1,10 +1,10 @@
+import { useParams } from 'react-router';
 import {
   ArrowBackIosNewOutlined,
   ChatBubbleOutlineRounded,
 } from '@mui/icons-material';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { SwipeablePage } from '../../../components/SwipeablePage';
-import { Button } from '../../../components/atoms/Button';
 import {
   IonBackButton,
   IonLoading,
@@ -12,34 +12,33 @@ import {
   isPlatform,
   useIonToast,
 } from '@ionic/react';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
   getOneAvailableMatch,
   joinMatch,
-  uploadResults,
 } from '../../../services/matches/service';
-import { Player } from '../../../services/user/interface';
-import { useUserProfile } from '../../../services/api/hooks';
-import { PlayerSlot } from '../../../components/molecules/PlayerSlot';
-import { MainInfoBlock } from './sections/MainInfoBlock';
-import { MatchStateBlock } from './sections/MatchStateBlock';
-import { MatchLevelBlock } from './sections/MatchLevelBlock';
 import { ClubInfoBlock } from './sections/ClubInfoBlock';
 import { MatchInfoBlock } from './sections/MatchInfoBlock';
+import { MatchDataBlock } from './components/MatchDataBlock';
+import { PrivacyType } from './components/PrivacyType';
+import { MatchType } from './components/MatchType';
+import { Players } from './components/Players';
+import { Prompt } from './components/Prompt';
+import { useState } from 'react';
 import { UploadResultModal } from '../../../components/modals/UploadResultModal';
-import { gameDateToDate } from '../../../services/helper';
+
+enum PromptType {
+  PRIMARY,
+  WARNING,
+  DANGER,
+}
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
   const [showToast] = useIonToast();
   const { matchId } = useParams<{ matchId: string }>();
-  const myPlayer = useUserProfile();
-
   const [error, setError] = useState<string | undefined>();
-
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [openToast, setOpenToast] = useState<boolean>(false);
 
@@ -53,7 +52,7 @@ export function SingleMatchPage() {
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
 
-  const singleMatchData = data?.data;
+  const matchData = data?.data;
 
   // Join Match / Book a Place Request
   const joinMatchMutation = useMutation({
@@ -79,62 +78,10 @@ export function SingleMatchPage() {
     },
   });
 
-  // Upload Reslults Request
-  const uploadMatchReslultsMutation = useMutation({
-    mutationFn: uploadResults,
-    onSuccess() {
-      setOpenToast(true);
-      refetchMatch();
-    },
-    onError(e: any) {
-      setError(e.response.data.message);
-      setOpenToast(true);
-    },
-  });
-
-  const [players, setPlayers] = useState<Player[]>([]);
-  const playerAlreadyInSomeTeam = !!singleMatchData?.matchBookings.find(
-    (booking) => booking.player?.id === myPlayer?.id,
-  );
-  const [playerInTeam, setPlayerInTeam] = useState<string>('');
-  const myBooking = singleMatchData?.matchBookings.find(
-    (booking) => booking.player?.id === myPlayer?.id,
-  );
-
-  useEffect(() => {
-    setPlayerInTeam(playerAlreadyInSomeTeam ? '' : 'B');
-  }, [playerAlreadyInSomeTeam]);
-
-  useEffect(() => {
-    const teamAPlayers =
-      singleMatchData?.matchBookings
-        ?.filter((booking) => booking.team === 'A')
-        ?.map((booking) => booking.player) || [];
-
-    const teamBPlayers =
-      singleMatchData?.matchBookings
-        ?.filter((booking) => booking.team === 'B')
-        ?.map((booking) => booking.player) || [];
-
-    if (playerInTeam === 'A' && myPlayer)
-      teamAPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
-    if (playerInTeam === 'B' && myPlayer)
-      teamBPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
-    teamAPlayers.length = 2;
-    teamBPlayers.length = 2;
-
-    setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
-  }, [singleMatchData, playerInTeam, myPlayer]);
-
   if (isLoading) {
     return <IonLoading isOpen />;
   }
-  if (!singleMatchData) return null;
-
-  const gameDate = gameDateToDate(
-    singleMatchData.gameDate,
-    singleMatchData?.slot.time,
-  );
+  if (!matchData) return null;
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
@@ -170,46 +117,90 @@ export function SingleMatchPage() {
     </Box>
   );
 
+  // leave just for now
+  if (!matchData) {
+    return console.log(
+      "Match with current id doesn't exist (cause it was hardcoded)",
+    );
+  }
+
   return (
     <>
       <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
         <Box
-          sx={{
-            paddingTop: '1rem',
-            paddingBottom: '3.5rem',
-            background: '#fff',
-            position: 'relative',
-            zIndex: '99',
-          }}
+          pt={isMobile ? 'unset' : '1.5rem'}
+          minHeight={isMobile ? 'unset' : '100%'}
+          bgcolor={isMobile ? 'unset' : '#fff'}
+          mb={14}
+          px={2}
         >
           <Box
-            sx={{
-              paddingTop: isMobile ? 'unset' : '1.5rem',
-              minHeight: isMobile ? 'unset' : '100%',
-              background: isMobile ? 'unset' : '#fff',
-              width: '100%',
-              paddingInline: '15px',
-            }}
+            width="100%"
+            maxWidth={isMobile ? 'unset' : '1000px'}
+            margin="0 auto"
+            display="flex"
+            flexDirection="column"
+            gap={2}
           >
+            <Prompt
+              type={PromptType.PRIMARY}
+              description="Some text"
+              title="title"
+            />
             <Box
-              sx={{
-                maxWidth: isMobile ? 'unset' : '1000px',
-                width: '100%',
-                margin: '0 auto',
-              }}
+              display={isMobile ? 'block' : 'flex'}
+              justifyContent={isMobile ? 'none' : 'center'}
             >
-              <MainInfoBlock data={singleMatchData} />
-              <MatchStateBlock data={singleMatchData} />
-              <MatchLevelBlock data={singleMatchData} />
+              <MatchDataBlock
+                minutes={matchData.minutes}
+                startTime={matchData.slot.time}
+                sport={matchData.sport}
+                ratingFrom={matchData.ratingFrom}
+                ratingTo={matchData.ratingTo}
+                date={matchData.gameDate}
+                price={matchData.price}
+                gender="All"
+              />
+            </Box>
 
+            <PrivacyType isPrivate />
+            <MatchType type="COMPETITIVE" />
+
+            <Box
+              display={isMobile ? 'block' : 'flex'}
+              justifyContent={isMobile ? 'none' : 'center'}
+            >
+              <Players players={matchData.matchBookings} />
+            </Box>
+
+            <Box display="flex" justifyContent="center" my={2}>
+              <Button
+                sx={{
+                  borderRadius: 20,
+                  backgroundColor: '#2561F8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  color: '#fff',
+                  paddingX: 2,
+                  paddingY: 1,
+                }}
+              >
+                <ChatBubbleOutlineRounded fontSize="small" />
+                <Typography>Чат</Typography>
+              </Button>
+            </Box>
+
+            {/* {matchData.matchResults && (
               <Box
                 sx={{
-                  padding: '1rem .75rem',
-                  marginBlock: '1.25rem',
-                  width: '100%',
-                  background: '#fff',
-                  border: '1px #e5e5e5 solid',
-                  borderRadius: '10px',
+                  border: '1px solid #e5e5e5',
+
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '.75rem',
+                  marginBottom: '1.5rem',
                 }}
               >
                 <Box
@@ -220,149 +211,78 @@ export function SingleMatchPage() {
                     paddingBottom: '.5rem',
                   }}
                 >
-                  <Typography sx={{ fontSize: '1.1rem', fontWeight: '600' }}>
-                    Игроки
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {matchData.matchResults[0][0]}
+                  </Typography>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {matchData.matchResults[1][0]}
+                  </Typography>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {matchData.matchResults[2][0]}
                   </Typography>
                 </Box>
 
                 <Box
-                  sx={{
-                    display: 'flex',
-                    gap: isPlatform('mobile') ? '1rem' : '48px',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <PlayerSlot
-                    player={players[0]}
-                    onClick={() => {
-                      if (playerAlreadyInSomeTeam) return;
-                      setPlayerInTeam('A');
-                    }}
-                  />
-                  <PlayerSlot
-                    player={players[1]}
-                    onClick={() => {
-                      if (playerAlreadyInSomeTeam) return;
-                      setPlayerInTeam('A');
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      width: '2px',
-                      height: '100px',
-                      background: '#e5e5e5',
-                    }}
-                  />
-                  <PlayerSlot
-                    player={players[2]}
-                    onClick={() => {
-                      if (playerAlreadyInSomeTeam) return;
-                      setPlayerInTeam('B');
-                    }}
-                  />
-                  <PlayerSlot
-                    player={players[3]}
-                    onClick={() => {
-                      if (playerAlreadyInSomeTeam) return;
-                      setPlayerInTeam('B');
-                    }}
-                  />
+                  sx={{ width: '100%', height: '1px', background: '#e5e5e5' }}
+                />
+
+                <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {matchData.matchResults[0][1]}
+                  </Typography>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {matchData.matchResults[1][1]}
+                  </Typography>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
+                    {matchData.matchResults[2][1]}
+                  </Typography>
                 </Box>
               </Box>
+            )}
 
-              {singleMatchData?.matchResults && (
-                <Box
+            {!playerAlreadyInSomeTeam && (
+              <Box
+                sx={{
+                  position: 'fixed',
+                  left: '0',
+                  right: '0',
+                  bottom: '1.5rem',
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Button
+                  onClick={() => {
+                    if (matchId && playerInTeam) {
+                      joinMatchMutation.mutate({
+                        matchId: Number(matchId),
+                        team: playerInTeam,
+                      });
+                    } else {
+                      showToast({
+                        message: 'Выберите команду!',
+                        duration: 1000,
+                        color: 'danger',
+                      });
+                    }
+                  }}
                   sx={{
-                    border: '1px solid #e5e5e5',
-
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '.75rem',
-                    marginBottom: '1.5rem',
+                    background: '#0D2432',
+                    borderRadius: '25px',
+                    color: '#fff',
+                    fontSize: '1.1rem',
+                    fontWeight: '500',
+                    boxShadow:
+                      'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                    paddingX: 2,
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '1.75rem',
-                      opacity: '.5',
-                    }}
-                  >
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[0][0]}
-                    </Typography>
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[1][0]}
-                    </Typography>
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[2][0]}
-                    </Typography>
-                  </Box>
-
-                  <Box
-                    sx={{ width: '100%', height: '1px', background: '#e5e5e5' }}
-                  />
-
-                  <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[0][1]}
-                    </Typography>
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[1][1]}
-                    </Typography>
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[2][1]}
-                    </Typography>
-                  </Box>
-                </Box>
-              )}
-
-              {Date.now() > gameDate && (
-                <Box
-                  sx={{
-                    maxWidth: '400px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '1rem',
-                    mx: 'auto',
-                    marginBottom: '1rem',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {/* Confirm / Upload Result */}
-                  {singleMatchData.matchResults &&
-                    !singleMatchData.confirmMatchResults && (
-                      <Typography>Ожидание подтверждения...</Typography>
-                    )}
-
-                  {singleMatchData?.matchResults &&
-                    !myBooking?.confirmMatchResults && (
-                      <Button
-                        onClick={() =>
-                          uploadMatchReslultsMutation.mutate({
-                            matchId: Number(matchId),
-                            matchResults: singleMatchData?.matchResults,
-                          })
-                        }
-                        sx={{
-                          backgroundColor: '#28a11e',
-                          fontSize: '.95rem',
-                          fontWeight: '600',
-                        }}
-                      >
-                        Подтвердить
-                      </Button>
-                    )}
-
-                  {!myBooking?.confirmMatchResults && (
-                    <Button
-                      onClick={() => setOpenUploadModal(true)}
-                      sx={{ fontSize: '.95rem', fontWeight: '600' }}
-                    >
-                      Загрузить результат
-                    </Button>
+                  {joinMatchMutation.isPending ? (
+                    <CircularProgress />
+                  ) : (
+                    `Забронировать место - ₽ ${matchData.price || ''}`
                   )}
                 </Box>
               )}
@@ -381,59 +301,9 @@ export function SingleMatchPage() {
                   </Typography>
                 </Button>
               </Box>
-
-              {!playerAlreadyInSomeTeam && (
-                <Box
-                  sx={{
-                    position: 'fixed',
-                    left: '0',
-                    right: '0',
-                    bottom: '1.5rem',
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Button
-                    onClick={() => {
-                      if (matchId && playerInTeam) {
-                        joinMatchMutation.mutate({
-                          matchId: Number(matchId),
-                          team: playerInTeam,
-                        });
-                      } else {
-                        showToast({
-                          message: 'Выберите команду!',
-                          duration: 1000,
-                          color: 'danger',
-                        });
-                      }
-                    }}
-                    sx={{
-                      height: '45px',
-                      background: '#0D2432',
-                      borderRadius: '25px',
-                      color: '#fff',
-                      fontSize: '1.1rem',
-                      fontWeight: '500',
-                      maxWidth: '350px',
-                      boxShadow:
-                        'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-                    }}
-                  >
-                    {joinMatchMutation.isPending ? (
-                      <CircularProgress />
-                    ) : (
-                      `Забронировать место - ₽ ${singleMatchData?.price}`
-                    )}
-                  </Button>
-                </Box>
-              )}
-
-              <ClubInfoBlock data={singleMatchData} />
-              <MatchInfoBlock data={singleMatchData} />
-            </Box>
+            )} */}
+            <ClubInfoBlock data={matchData} />
+            <MatchInfoBlock data={matchData} />
           </Box>
         </Box>
       </SwipeablePage>
