@@ -1,4 +1,4 @@
 html {
-    color: var(--color);
-    background: var(--ion-background-color, #fff);
+  color: var(--color);
+  background: var(--ion-background-color, #fff);
 }

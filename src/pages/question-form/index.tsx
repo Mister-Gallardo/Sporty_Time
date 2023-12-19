@@ -19,20 +19,12 @@ export function QuestionFormPage() {
 
   const handleStep = (step: number) => setActiveStep((prev) => prev + step);
 
-  const handleSkip = () => {
-    console.log('Skip questionnaire and move to home page');
-  };
-
   return (
     <>
       {activeStep === 0 ? (
         <Fade in>
           <Box>
-            <ChooseYourSport
-              firstName={firstName}
-              handleStep={handleStep}
-              handleSkip={handleSkip}
-            />
+            <ChooseYourSport firstName={firstName} handleStep={handleStep} />
           </Box>
         </Fade>
       ) : activeStep === 1 || activeStep === 2 ? (

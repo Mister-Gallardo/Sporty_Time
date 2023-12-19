@@ -10,6 +10,8 @@ export interface Match {
   updatedAt: Date;
 }
 
+export type matchResults = Array<number[]> | null;
+
 export interface AvailableMatch {
   id: number;
   title: string;
@@ -25,7 +27,7 @@ export interface AvailableMatch {
     createdAt: string;
     court: Court;
   };
-  matchResults: any;
+  matchResults: matchResults;
   ratingFrom: number;
   ratingTo: number;
   img: string;
@@ -36,6 +38,7 @@ export interface AvailableMatch {
   winningTeam: string;
   type: string;
   timeExpires: string;
+  isPrivate: boolean;
 }
 [];
 

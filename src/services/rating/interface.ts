@@ -1,9 +1,14 @@
 interface CreateRatingOTD {
-  sport: number;
-  level: number;
-  age: number;
-  lessons: number;
-  countMatches: number;
-  experience: number;
-  fitness: number;
+  isFederated?: string;
+  federateCategory?: string;
+  licenseNumber?: string;
+  competeLevel?: string;
+  gender?: string;
+  age?: string;
+  otherSportExp?: string;
+  matchesPerWeek?: string;
+  matchesPerMonth?: string;
+  lessons?: string;
+  fitness?: string;
+  howLongPlaying?: string;
 }

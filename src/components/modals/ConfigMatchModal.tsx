@@ -1,15 +1,5 @@
 import { useState } from 'react';
-import {
-  IonButtons,
-  IonButton,
-  IonModal,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonAvatar,
-} from '@ionic/react';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { IonAvatar, isPlatform } from '@ionic/react';
 import { Box, Button, RadioGroup, Switch, Typography } from '@mui/material';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import { RadioLabel } from '../../components/molecules/RadioLabel';
@@ -20,6 +10,7 @@ import {
   PreferedGender,
 } from '../../types';
 import useToggle from '../../hooks/useToggle';
+import { ModalContainer } from './ModalContainer';
 // import { useUserInfo } from '../../services/api/hooks';
 
 interface IConfigMatchModal {
@@ -33,6 +24,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
   handleModal,
   getData,
 }) => {
+  const isMobile = isPlatform('mobile');
   // const user = useUserInfo();
 
   // const padelRating = user?.player.ratingPadel;
@@ -58,176 +50,150 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
   };
 
   return (
-    <IonModal
-      onDidDismiss={() => handleModal(false)}
-      isOpen={openState}
-      initialBreakpoint={0.95}
-      breakpoints={[0, 0.25, 0.5, 0.75, 0.95]}
-      handleBehavior="cycle"
-    >
-      <IonHeader
-        style={{ borderBottom: '1px solid #eee', boxShadow: '0 1px 4px #eee' }}
-      >
-        <IonToolbar>
-          <IonTitle>Настройте свой матч</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={() => handleModal()}>
-              <CloseRoundedIcon sx={{ color: 'black' }} />
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className="ion-padding">
-        <Box mb={2} display="flex" flexDirection="column" gap={4}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
+    <ModalContainer openState={openState} handleModal={handleModal}>
+      <Box mb={2} display="flex" flexDirection="column" gap={4}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box display="flex" gap={1} alignItems="center">
+            <CheckCircleOutlinedIcon />
+            <Typography>Создать приватный матч</Typography>
+          </Box>
+          <Switch value={isPrivate} onChange={() => setIsPrivate()} />
+        </Box>
+
+        <Box>
+          <Typography fontWeight={700} mb={1}>
+            Выберите тип матча
+          </Typography>
+          <RadioGroup
+            name="select match type"
+            sx={{ gap: 2 }}
+            value={matchType}
+            onChange={(e) => setMatchType(e.target.value)}
           >
-            <Box display="flex" gap={1} alignItems="center">
-              <CheckCircleOutlinedIcon />
-              <Typography>Создать приватный матч</Typography>
-            </Box>
-            <Switch value={isPrivate} onChange={() => setIsPrivate()} />
-          </Box>
+            <Box>
+              <RadioLabel
+                value="competitive"
+                labelType={ERadioLabelType.WITH_DESCRIPTION}
+                title="Сопернический Матч"
+                description="Результат повлияет на ваш уровень и рейтинг."
+              />
 
-          <Box>
-            <Typography fontWeight={700} mb={1}>
-              Выберите тип матча
-            </Typography>
-            <RadioGroup
-              name="select match type"
-              sx={{ gap: 2 }}
-              value={matchType}
-              onChange={(e) => setMatchType(e.target.value)}
-            >
-              <Box>
-                <RadioLabel
-                  value="competitive"
-                  labelType={ERadioLabelType.WITH_DESCRIPTION}
-                  title="Сопернический Матч"
-                  description="Результат повлияет на ваш уровень и рейтинг."
-                />
-
-                {matchType === 'competitive' && (
-                  <Box display="flex" justifyContent="center" my={2}>
+              {matchType === 'competitive' && (
+                <Box display="flex" justifyContent="center" my={2}>
+                  <Box
+                    sx={{
+                      border: '1px solid #eee',
+                      borderRadius: 3,
+                      padding: 1.5,
+                    }}
+                  >
                     <Box
-                      sx={{
-                        border: '1px solid #eee',
-                        borderRadius: 3,
-                        padding: 1.5,
-                      }}
+                      display="flex"
+                      mb={1}
+                      pb={1}
+                      borderBottom="1px solid #eee"
                     >
-                      <Box
-                        display="flex"
-                        mb={1}
-                        pb={1}
-                        borderBottom="1px solid #eee"
-                      >
-                        <Box borderRight="1px solid #eee" pr={1.5} mr={1.5}>
-                          <IonAvatar style={{ width: 30, height: 30 }}>
-                            <img
-                              alt="Silhouette of a person's head"
-                              src="https://ionicframework.com/docs/img/demos/avatar.svg"
-                            />
-                          </IonAvatar>
-                          <Typography align="center">{padelRating}</Typography>
-                        </Box>
-                        <Box>
-                          <Typography>Match Range Level</Typography>
-                          <Typography>
-                            {rangeMinValue} - {rangeMaxValue}
-                          </Typography>
-                        </Box>
+                      <Box borderRight="1px solid #eee" pr={1.5} mr={1.5}>
+                        <IonAvatar style={{ width: 30, height: 30 }}>
+                          <img
+                            alt="Silhouette of a person's head"
+                            src="https://ionicframework.com/docs/img/demos/avatar.svg"
+                          />
+                        </IonAvatar>
+                        <Typography align="center">{padelRating}</Typography>
                       </Box>
-                      <Typography>
-                        Игроки с более высоким уровнем могут запросить доступ
-                      </Typography>
+                      <Box>
+                        <Typography>Диапазон уровней</Typography>
+                        <Typography>
+                          {rangeMinValue} - {rangeMaxValue}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                )}
-              </Box>
-              <Box>
-                <RadioLabel
-                  value="friendly"
-                  labelType={ERadioLabelType.WITH_DESCRIPTION}
-                  title="Дружеский матч"
-                  description="Результат не повлияет на ваш уровень или рейтинг."
-                />
-
-                {matchType === 'friendly' && (
-                  <Box marginY={2} mx={1}>
-                    <Typography border="1px solid #eee" borderRadius={4} p={2}>
-                      Lorem ipsum dolor sit amet consectetur sali adipisicing
-                      elit. Commodi eligendi amet veritatis ipsum cupiditate
-                      laboriosam quas optio porro distinctio aspernatur?
+                    <Typography>
+                      Игроки с более высоким уровнем могут запросить доступ
                     </Typography>
-
-                    <Box mt={2}>
-                      <Box display="flex" justifyContent="space-between" mb={3}>
-                        <Box>
-                          <Typography>Min</Typography>
-                          <Typography textAlign="center">
-                            {rangeMinValue}
-                          </Typography>
-                        </Box>
-                        <Box>
-                          <Typography>Max</Typography>
-                          <Typography textAlign="center">
-                            {rangeMaxValue}
-                          </Typography>
-                        </Box>
-                      </Box>
-
-                      <MultiThumbSlider
-                        playerRating={padelRating}
-                        curentMinValue={rangeMinValue}
-                        curentMaxValue={rangeMaxValue}
-                        handleChange={handleRangeValueChange}
-                      />
-                    </Box>
                   </Box>
-                )}
-              </Box>
-            </RadioGroup>
-          </Box>
+                </Box>
+              )}
+            </Box>
+            <Box>
+              <RadioLabel
+                value="friendly"
+                labelType={ERadioLabelType.WITH_DESCRIPTION}
+                title="Дружеский матч"
+                description="Результат не повлияет на ваш уровень или рейтинг."
+              />
 
-          <Box>
-            <Typography fontWeight={700} mb={1}>
-              Выберите пол, с которым хотите играть.
-            </Typography>
-            <RadioGroup
-              name="select gender"
-              sx={{ gap: 2 }}
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
-            >
-              <RadioLabel
-                value={PreferedGender.ALL}
-                labelType={ERadioLabelType.WITH_DESCRIPTION}
-                title="Любой"
-                description="Присоединиться могут игроки обоих полов"
-              />
-              <RadioLabel
-                value={PreferedGender.WOMEN}
-                labelType={ERadioLabelType.WITH_DESCRIPTION}
-                title="Только женщины"
-                description="Присоединиться могут только женщины"
-              />
-              <RadioLabel
-                value={PreferedGender.MEN}
-                labelType={ERadioLabelType.WITH_DESCRIPTION}
-                title="Только мужчины"
-                description="Присоединиться могут только мужчины"
-              />
-              <RadioLabel
-                value={PreferedGender.MIXED}
-                labelType={ERadioLabelType.WITH_DESCRIPTION}
-                title="Смешанный"
-                description="Мужчина и женщина в каждой команде"
-              />
-            </RadioGroup>
-          </Box>
+              {matchType === 'friendly' && (
+                <Box marginY={2} mx={1}>
+                  <Typography border="1px solid #eee" borderRadius={4} p={2}>
+                    Вы выбираете и устанавливаете диапазон уровней. Игроки за
+                    пределами этого диапазона могут запросить доступ.
+                  </Typography>
+
+                  <Box mt={2}>
+                    <Box display="flex" justifyContent="space-between" mb={3}>
+                      <Box>
+                        <Typography>Min</Typography>
+                        <Typography textAlign="center">
+                          {rangeMinValue}
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography>Max</Typography>
+                        <Typography textAlign="center">
+                          {rangeMaxValue}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <MultiThumbSlider
+                      curentMinValue={rangeMinValue}
+                      curentMaxValue={rangeMaxValue}
+                      handleChange={handleRangeValueChange}
+                    />
+                  </Box>
+                </Box>
+              )}
+            </Box>
+          </RadioGroup>
+        </Box>
+
+        <Box>
+          <Typography fontWeight={700} mb={1}>
+            Выберите пол, с которым хотите играть.
+          </Typography>
+          <RadioGroup
+            name="select gender"
+            sx={{ gap: 2 }}
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          >
+            <RadioLabel
+              value={PreferedGender.ALL}
+              labelType={ERadioLabelType.WITH_DESCRIPTION}
+              title="Любой"
+              description="Присоединиться могут игроки обоих полов"
+            />
+            <RadioLabel
+              value={PreferedGender.WOMEN}
+              labelType={ERadioLabelType.WITH_DESCRIPTION}
+              title="Только женщины"
+              description="Присоединиться могут только женщины"
+            />
+            <RadioLabel
+              value={PreferedGender.MEN}
+              labelType={ERadioLabelType.WITH_DESCRIPTION}
+              title="Только мужчины"
+              description="Присоединиться могут только мужчины"
+            />
+            <RadioLabel
+              value={PreferedGender.MIXED}
+              labelType={ERadioLabelType.WITH_DESCRIPTION}
+              title="Смешанный"
+              description="Мужчина и женщина в каждой команде"
+            />
+          </RadioGroup>
         </Box>
 
         <Button
@@ -245,16 +211,15 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
           sx={{
             backgroundColor: '#333',
             marginTop: 2,
-            marginBottom: 5,
             borderRadius: 12,
             fontSize: 18,
             fontWeight: 600,
-            textTransform: 'initial',
+            mb: isMobile ? 5 : 0,
           }}
         >
-          Перейти к оплате
+          Создать матч
         </Button>
-      </IonContent>
-    </IonModal>
+      </Box>
+    </ModalContainer>
   );
 };

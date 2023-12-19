@@ -22,7 +22,7 @@ export const BgContainer = ({ children }: { children: JSX.Element[] }) => {
         position="relative"
         zIndex={1}
         paddingTop={isModile ? 3 : 10}
-        paddingBottom={isModile ? 1 : 10}
+        paddingBottom={isModile ? 4 : 10}
         paddingX={2}
         display="flex"
         justifyContent="center"

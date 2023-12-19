@@ -4,7 +4,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Box, Typography } from '@mui/material';
 
 interface IPrivacyType {
-  isPrivate: boolean;
+  isPrivate?: boolean;
 }
 
 export const PrivacyType: React.FC<IPrivacyType> = ({ isPrivate }) => {

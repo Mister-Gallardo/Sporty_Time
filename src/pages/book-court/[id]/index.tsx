@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IonBackButton, IonLoading, isPlatform } from '@ionic/react';
+import { IonBackButton, IonLoading } from '@ionic/react';
 import SwipeableViews from 'react-swipeable-views';
 import {
   ArrowBackIosNewOutlined,
@@ -30,7 +30,6 @@ export function SingleCourtPage() {
     queryFn: () => getClubById(Number(clubId), {}),
   });
 
-  const isMobile = isPlatform('mobile');
   const [activeStep, setActiveStep] = useState(0);
 
   const handleStepChange = (step: number) => {
@@ -41,7 +40,7 @@ export function SingleCourtPage() {
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
-      {/* <AutoPlaySwipeableViews
+      <AutoPlaySwipeableViews
         index={activeStep}
         onChangeIndex={handleStepChange}
         axis="x"
@@ -59,7 +58,7 @@ export function SingleCourtPage() {
           component="img"
           src={data?.img}
         />
-      </AutoPlaySwipeableViews> */}
+      </AutoPlaySwipeableViews>
     </Box>
   );
 

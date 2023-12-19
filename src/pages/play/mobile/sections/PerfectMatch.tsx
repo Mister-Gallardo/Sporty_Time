@@ -35,12 +35,14 @@ function PerfectMatch() {
           }
         />
         <MatchBlock
+          disabled
           title="Занятия"
           icon={
             <SchoolOutlinedIcon sx={{ fontSize: '1.5rem', color: '#fff' }} />
           }
         />
         <MatchBlock
+          disabled
           title="Соревнования"
           icon={
             <ShieldOutlinedIcon sx={{ fontSize: '1.5rem', color: '#fff' }} />

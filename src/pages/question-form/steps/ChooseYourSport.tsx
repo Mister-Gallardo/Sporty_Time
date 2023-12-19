@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Button, Typography } from '@mui/material';
 import {
   SportsBaseballOutlined,
   SportsBasketballOutlined,
@@ -7,27 +7,29 @@ import {
 } from '@mui/icons-material';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { SportTypeRow } from '../components/SportTypeRow';
-import { Button } from '../../../components/atoms/Button';
 import { BgContainer } from '../components/BgContainer';
 import { Sports } from '../../../types';
+import { useHistory } from 'react-router';
 
 interface ChooseYourSportProps {
   firstName: string;
   handleStep: (step: number) => void;
-  handleSkip: () => void;
 }
 
-export function ChooseYourSport(props: ChooseYourSportProps) {
-  const { handleStep, firstName, handleSkip } = props;
+export function ChooseYourSport({
+  handleStep,
+  firstName,
+}: ChooseYourSportProps) {
+  const history = useHistory();
 
   const [selectedSport, setSelectedSport] = useState<string>(Sports.PADEL);
 
-  const player: any = usePlayerProfile();
+  const player = usePlayerProfile();
 
   const checkRating = (sport: string) => {
     if (!player) return '';
 
-    const currentSportRate = player['rating' + sport];
+    const currentSportRate = (player as any)['rating' + sport];
     return currentSportRate ? currentSportRate : null;
   };
 
@@ -39,7 +41,7 @@ export function ChooseYourSport(props: ChooseYourSportProps) {
         </Typography>
         <Typography textAlign="center">
           Заполните свой профиль, чтобы максимально использовать возможности
-          Playtomic
+          Sportytime
         </Typography>
         <Box display="flex" flexDirection="column" alignItems="center">
           <Avatar
@@ -91,10 +93,9 @@ export function ChooseYourSport(props: ChooseYourSportProps) {
       >
         {checkRating(selectedSport) ? (
           <Button
-            onClick={() =>
-              console.log('Current questionnaire was passed => go on')
-            }
+            onClick={() => history.push('/')}
             variant="contained"
+            sx={{ borderRadius: 20 }}
           >
             Продолжить
           </Button>
@@ -106,10 +107,15 @@ export function ChooseYourSport(props: ChooseYourSportProps) {
                 localStorage.setItem('sport', selectedSport);
               }}
               variant="contained"
+              sx={{ borderRadius: 20 }}
             >
               Начать
             </Button>
-            <Button onClick={() => handleSkip()} variant="text">
+            <Button
+              onClick={() => history.push('/')}
+              variant="text"
+              sx={{ borderRadius: 20 }}
+            >
               Не сейчас
             </Button>
           </>

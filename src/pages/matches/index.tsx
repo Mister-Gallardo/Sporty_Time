@@ -1,25 +1,24 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { isPlatform } from '@ionic/react';
 import { AvailableMatchesTab } from './tabs/AvailableMatchesTab';
-import { TabList } from '../../components/molecules/TabList';
-import { Button } from '../../components/atoms/Button';
-import { MyMatchesTab } from './tabs/MyMatchesTab';
-import { TabContext, TabPanel } from '@mui/lab';
-import { Add } from '@mui/icons-material';
-import { useHistory } from 'react-router';
+// import { TabList } from '../../components/molecules/TabList';
+// import { MyMatchesTab } from './tabs/MyMatchesTab';
+// import { TabContext, TabPanel } from '@mui/lab';
+// import { Add } from '@mui/icons-material';
+// import { useHistory } from 'react-router';
 import { Box } from '@mui/material';
 
-interface IMatchesPageProps {}
-
-export function MatchesPage({}: IMatchesPageProps) {
+export function MatchesPage() {
   const isMobile = isPlatform('mobile');
 
-  const history = useHistory();
-  const [tabIndex, setTabIndex] = useState<string>('1');
+  // const history = useHistory();
+  // const [tabIndex, setTabIndex] = useState<string>('1');
 
   return (
     <Box maxWidth={1240} mx="auto" mt={isMobile ? 0 : 5} mb={10}>
-      <TabContext value={tabIndex}>
+      <AvailableMatchesTab />
+
+      {/* <TabContext value={tabIndex}>
         <TabList
           tabs={['Доступные', 'Ваши матчи']}
           onChange={(_, tabIdx) => setTabIndex(tabIdx)}
@@ -43,20 +42,16 @@ export function MatchesPage({}: IMatchesPageProps) {
         >
           {tabIndex === '1' && (
             <Button
+              variant="contained"
               onClick={() => history.push('/book-court')}
-              sx={{
-                backgroundColor: '#1976d2',
-                maxWidth: '225px',
-                boxShadow:
-                  'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-              }}
+              sx={{ borderRadius: 20 }}
             >
               <Add />
               Начать матч
             </Button>
           )}
         </Box>
-      </TabContext>
+      </TabContext> */}
     </Box>
   );
 }

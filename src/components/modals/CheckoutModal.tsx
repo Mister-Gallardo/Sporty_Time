@@ -157,7 +157,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
               <Box>
                 <Typography fontWeight={700}>Итог</Typography>
                 <Typography color="gray" lineHeight={1.2}>
-                  Плата за услуги Playtomic и налоги включительно
+                  Плата за услуги Sportytime и налоги включительно
                 </Typography>
               </Box>
               <Typography color="blue" whiteSpace="nowrap" fontSize={20}>

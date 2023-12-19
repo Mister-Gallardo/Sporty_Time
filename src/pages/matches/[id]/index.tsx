@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams } from 'react-router';
 import {
   ArrowBackIosNewOutlined,
@@ -18,15 +19,13 @@ import {
   getOneAvailableMatch,
   joinMatch,
 } from '../../../services/matches/service';
-import { ClubInfoBlock } from './sections/ClubInfoBlock';
-import { MatchInfoBlock } from './sections/MatchInfoBlock';
+import { UploadResultModal } from '../../../components/modals/UploadResultModal';
 import { MatchDataBlock } from './components/MatchDataBlock';
+import { MatchInfoBlock } from './sections/MatchInfoBlock';
+import { ClubInfoBlock } from './sections/ClubInfoBlock';
 import { PrivacyType } from './components/PrivacyType';
 import { MatchType } from './components/MatchType';
 import { Players } from './components/Players';
-import { Prompt } from './components/Prompt';
-import { useState } from 'react';
-import { UploadResultModal } from '../../../components/modals/UploadResultModal';
 
 enum PromptType {
   PRIMARY,
@@ -81,7 +80,6 @@ export function SingleMatchPage() {
   if (isLoading) {
     return <IonLoading isOpen />;
   }
-  if (!matchData) return null;
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
@@ -131,7 +129,7 @@ export function SingleMatchPage() {
           pt={isMobile ? 'unset' : '1.5rem'}
           minHeight={isMobile ? 'unset' : '100%'}
           bgcolor={isMobile ? 'unset' : '#fff'}
-          mb={14}
+          mb={4}
           px={2}
         >
           <Box
@@ -142,11 +140,11 @@ export function SingleMatchPage() {
             flexDirection="column"
             gap={2}
           >
-            <Prompt
+            {/* <Prompt
               type={PromptType.PRIMARY}
               description="Some text"
               title="title"
-            />
+            /> */}
             <Box
               display={isMobile ? 'block' : 'flex'}
               justifyContent={isMobile ? 'none' : 'center'}
@@ -163,7 +161,7 @@ export function SingleMatchPage() {
               />
             </Box>
 
-            <PrivacyType isPrivate />
+            <PrivacyType isPrivate={matchData.isPrivate} />
             <MatchType type="COMPETITIVE" />
 
             <Box
@@ -305,6 +303,31 @@ export function SingleMatchPage() {
             <ClubInfoBlock data={matchData} />
             <MatchInfoBlock data={matchData} />
           </Box>
+        </Box>
+        <Box
+          my={isMobile ? 'none' : 10}
+          position={isMobile ? 'sticky' : 'static'}
+          width="100%"
+          bottom={0}
+          py={2}
+          display="flex"
+          justifyContent="center"
+          bgcolor="#fff"
+        >
+          <Button
+            disabled
+            sx={{
+              backgroundColor: '#0d2432',
+              color: '#fff',
+              borderRadius: 20,
+              paddingX: 3,
+              '&:disabled': {
+                backgroundColor: '#eee',
+              },
+            }}
+          >
+            Забронировать место - ₽ {matchData.price || ''}
+          </Button>
         </Box>
       </SwipeablePage>
 

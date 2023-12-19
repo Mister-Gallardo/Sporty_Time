@@ -84,7 +84,8 @@ export const MatchDataBlock: React.FC<IMatchDataBlock> = ({
         <Box textAlign="center">
           <Typography color="gray">Пол</Typography>
           <Typography fontSize={16} fontWeight={600}>
-            {gender}
+            {/* {gender} */}
+            Любой
           </Typography>
         </Box>
         <Box textAlign="center">

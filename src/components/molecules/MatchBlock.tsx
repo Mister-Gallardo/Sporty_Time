@@ -1,8 +1,10 @@
 import { Box, Typography } from '@mui/material';
 import { Block } from './Block';
 import { useHistory } from 'react-router';
+import { DummyCurtain } from '../../pages/play/mobile/sections/DummyCurtain';
 
 interface IMatchBlockProps {
+  disabled?: boolean;
   img?: string;
   icon: any;
   title: string;
@@ -22,6 +24,8 @@ export const MatchBlock = (props: IMatchBlockProps) => {
         position: 'relative',
       }}
     >
+      {props.disabled && <DummyCurtain />}
+
       {props.img && (
         <Box
           component="img"
@@ -40,7 +44,6 @@ export const MatchBlock = (props: IMatchBlockProps) => {
       <Box
         sx={{
           position: 'relative',
-          zIndex: '999',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

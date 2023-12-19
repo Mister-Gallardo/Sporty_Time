@@ -74,37 +74,6 @@ export function AvailableMatchesTab() {
         </Box>
       </Accordion>
       <Accordion
-        title="Запросите место"
-        description="Эти матчи не соответствуют вашему уровню. Чтобы присоединиться к
-        ним, вам необходимо запросить место."
-      >
-        <Box
-          sx={{
-            paddingBottom: '.75rem',
-            display: 'flex',
-            overflowX: 'auto',
-            scrollSnapType: 'x mandatory',
-            scrollBehavior: 'smooth',
-          }}
-        >
-          {(data?.data.length === 0 || !data) && (
-            <Typography
-              sx={{
-                fontSize: '1.1rem',
-                paddingTop: '1.5rem',
-                margin: '0 auto',
-                fontWeight: '600',
-              }}
-            >
-              Доступных матчей пока нет
-            </Typography>
-          )}
-          {availableMatchesArray?.map((card, index) => {
-            return <MatchCard key={index} {...card} />;
-          })}
-        </Box>
-      </Accordion>
-      <Accordion
         title="Стать первым игроком!"
         description="Создайте новый матч, выбрав подходящее время"
       >

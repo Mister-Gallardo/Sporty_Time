@@ -25,22 +25,20 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 import '../mobile.css';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { useRef } from 'react';
 import { Typography } from '@mui/material';
-import { isAuthorized } from '../services/auth/service';
 
 export interface IMobileLayoutProps {
   children: React.ReactNode;
 }
 
-if (!isAuthorized()) {
-  history.replaceState(null, '', '/auth');
-}
-
 export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
   const { children } = props;
+  const defaultRef = useRef<HTMLIonIconElement>(null);
+  const path = window.location.pathname;
 
   return (
-    <IonApp style={{ minHeight: '100dvh' }}>
+    <IonApp style={{ minHeight: '100vh' }}>
       <IonReactRouter>
         <IonTabs
           onIonTabsWillChange={() =>
@@ -51,25 +49,28 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
           <IonTabBar
             slot="bottom"
             style={{
-              display: 'flex',
-              paddingBlock: '.75rem',
+              display:
+                path.startsWith('/auth') || path.startsWith('/question-form')
+                  ? 'none'
+                  : 'flex',
+              paddingBlock: '.50rem',
               borderRadius: '0',
               borderTop: '1px solid #cdcccc',
             }}
           >
-            <IonTabButton tab="play" href="/">
+            <IonTabButton ref={() => defaultRef} tab="play" href="/">
               <IonIcon size="medium" icon={tennisball} />
               <Typography variant="body2">Играть</Typography>
             </IonTabButton>
-            <IonTabButton tab="discovery" href="/">
+            <IonTabButton tab="discovery" href="/" disabled>
               <IonIcon size="medium" icon={book} />
               <Typography variant="body2">Исследовать</Typography>
             </IonTabButton>
-            <IonTabButton tab="community" href="/">
+            <IonTabButton tab="community" href="/" disabled>
               <IonIcon size="medium" icon={home} />
               <Typography variant="body2">Сообщество</Typography>
             </IonTabButton>
-            <IonTabButton tab="auth" href="/auth">
+            <IonTabButton tab="profile" href="/profile">
               <IonIcon size="medium" icon={person} />
               <Typography variant="body2">Профиль</Typography>
             </IonTabButton>

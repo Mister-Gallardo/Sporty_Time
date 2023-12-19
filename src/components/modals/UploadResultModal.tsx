@@ -1,7 +1,12 @@
 import { IonContent, IonModal, isPlatform, useIonToast } from '@ionic/react';
-import { Box, CircularProgress, Modal, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Modal,
+  Typography,
+} from '@mui/material';
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { Button } from '../atoms/Button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { uploadResults } from '../../services/matches/service';
 

@@ -8,12 +8,12 @@ export function DesktopHomePage() {
       <meta charSet="utf-8" />
       <title>
         ▷ Find where and with whom to play Padel &amp; Tennis instantly ❘
-        Playtomic
+        Sportytime
       </title>
       <meta name="apple-itunes-app" content="app-id=1242321076" />
       <meta
         name="description"
-        content="Improve your racket game (Padel & Tennis) even if you have nowhere or with whom to play. Whether you’ve never played before, you are a beginner or an advanced player, Playtomic adapts to what you need and helps you find same level partners for your matches thanks to the player level estimation system.
+        content="Improve your racket game (Padel & Tennis) even if you have nowhere or with whom to play. Whether you’ve never played before, you are a beginner or an advanced player, Sportytime adapts to what you need and helps you find same level partners for your matches thanks to the player level estimation system.
 Don’t know where or with whom to play? Join the largest Padel & Tennis community in the world. Create or join public or private matches, find courts anywhere on the planet and compete in tournaments organised by clubs around the world."
       />
       <meta

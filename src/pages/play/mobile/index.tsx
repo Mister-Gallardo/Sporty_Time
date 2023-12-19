@@ -1,22 +1,20 @@
 import { Box } from '@mui/material';
-
-import RememberSection from './sections/RememberSection';
 import PerfectMatch from './sections/PerfectMatch';
 import YourClubs from './sections/YourClubs';
-import GetTheMost from './sections/GetTheMost';
 import MobileHeader from './sections/MobileHeader';
 import { IonContent, IonHeader, IonPage, IonToolbar } from '@ionic/react';
 
 function MobilePlayPage() {
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader style={{ boxShadow: '0px 1px 4px #0000001a' }}>
         <IonToolbar>
           <MobileHeader />
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <Box
+          pb={10}
           sx={{
             width: '100%',
             maxWidth: '450px',
@@ -25,10 +23,10 @@ function MobilePlayPage() {
           }}
         >
           <Box>
-            <RememberSection />
+            {/* <RememberSection /> */}
             <PerfectMatch />
             <YourClubs />
-            <GetTheMost />
+            {/* <GetTheMost /> */}
           </Box>
         </Box>
       </IonContent>

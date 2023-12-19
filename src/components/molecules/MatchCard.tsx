@@ -50,7 +50,7 @@ export const MatchCard: React.FC<AvailableMatch> = ({
           {matchDate}
         </Typography>
 
-        <Typography color="gray">11km · {slot.court.club.title}</Typography>
+        <Typography color="gray">11км · {slot.court.club.title}</Typography>
 
         <Box py={2} display="flex" alignItems="flex-start" gap={1.5}>
           {playersArr.map((team, teamIndex) => {
@@ -63,7 +63,7 @@ export const MatchCard: React.FC<AvailableMatch> = ({
                   alignItems="flex-start"
                   justifyContent="space-between"
                 >
-                  {team.map((member: any, slotIndex: number) => {
+                  {team.map((member, slotIndex) => {
                     const teamSlotIndex = { teamIndex, slotIndex };
                     return (
                       <PlayerSlot
@@ -98,20 +98,23 @@ export const MatchCard: React.FC<AvailableMatch> = ({
           }}
         >
           <Box pl={2}>
-            <Box display="flex" gap={0.5}>
+            <Box display="flex" flexWrap="wrap">
               <Typography
                 textTransform="capitalize"
                 fontWeight={600}
                 fontSize={13}
                 whiteSpace="nowrap"
+                mr={0.5}
               >
                 {type.toLocaleLowerCase()} ·{' '}
               </Typography>
               <Typography color="gray" fontSize={13}>
-                Level {ratingFrom} - {ratingTo}
+                Уровень {ratingFrom} - {ratingTo}
               </Typography>
             </Box>
-            <Typography color="gray">Mixed</Typography>
+            <Typography color="gray" fontSize={13}>
+              Пол: Любой
+            </Typography>
           </Box>
           <Box
             sx={{

@@ -7,78 +7,21 @@ import React from 'react';
 interface ThumbComponentProps extends React.HTMLAttributes<unknown> {}
 
 interface IMultiThumbSlider {
-  playerRating: number;
   curentMinValue: number;
   curentMaxValue: number;
   handleChange: (_: Event, values: number | number[]) => void;
 }
 
 export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
-  playerRating,
   curentMinValue,
   curentMaxValue,
   handleChange,
 }) => {
-  const ThumbComponent = (props: ThumbComponentProps) => {
-    const { children, className, ...other } = props;
-
-    const thumbIndex = other['data-index'];
-
-    const extraClassName =
-      thumbIndex === 0
-        ? 'first-thumb'
-        : thumbIndex === 1
-        ? 'second-thumb'
-        : 'third-thumb';
-
-    const custonthumb = (
-      <Box
-        position="relative"
-        alignItems="center"
-        display="flex"
-        gap={1}
-        px={0.8}
-        py={0.6}
-        borderRadius={0.8}
-        bgcolor="white"
-        boxShadow="1px 1px 12px #dadada"
-        mb={12}
-      >
-        <IonAvatar style={{ width: 30, height: 30 }}>
-          <img
-            alt="Silhouette of a person's head"
-            src="https://ionicframework.com/docs/img/demos/avatar.svg"
-          />
-        </IonAvatar>
-        <Typography color="#000">{playerRating}</Typography>
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: -7,
-            right: '40%',
-            width: 0,
-            height: 0,
-            borderLeft: '8px solid transparent',
-            borderRight: '8px solid transparent',
-            borderTop: '8px solid #fff',
-          }}
-        ></Box>
-      </Box>
-    );
-
-    return (
-      <SliderThumb {...other} className={`${className} ${extraClassName}`}>
-        {children}
-        {thumbIndex && thumbIndex === 1 && custonthumb}
-      </SliderThumb>
-    );
-  };
-
   return (
     <CustomSlider
       getAriaLabel={(index) => (index === 0 ? 'min' : 'max')}
       slots={{ thumb: ThumbComponent }}
-      value={[curentMinValue, playerRating, curentMaxValue]}
+      value={[curentMinValue, 1.5, curentMaxValue]}
       onChange={handleChange}
       min={0}
       max={7}
@@ -86,6 +29,61 @@ export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
       valueLabelDisplay="on"
       step={0.1}
     />
+  );
+};
+
+const ThumbComponent = (props: ThumbComponentProps) => {
+  const { children, className, ...other } = props;
+
+  const thumbIndex = (other as any)['data-index'];
+
+  const extraClassName =
+    thumbIndex === 0
+      ? 'first-thumb'
+      : thumbIndex === 1
+      ? 'second-thumb'
+      : 'third-thumb';
+
+  const custonthumb = (
+    <Box
+      position="relative"
+      alignItems="center"
+      display="flex"
+      gap={1}
+      px={0.8}
+      py={0.6}
+      borderRadius={0.8}
+      bgcolor="white"
+      boxShadow="1px 1px 12px #dadada"
+      mb={12}
+    >
+      <IonAvatar style={{ width: 30, height: 30 }}>
+        <img
+          alt="Silhouette of a person's head"
+          src="https://ionicframework.com/docs/img/demos/avatar.svg"
+        />
+      </IonAvatar>
+      <Typography color="#000">1.5</Typography>
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: -7,
+          right: '40%',
+          width: 0,
+          height: 0,
+          borderLeft: '8px solid transparent',
+          borderRight: '8px solid transparent',
+          borderTop: '8px solid #fff',
+        }}
+      ></Box>
+    </Box>
+  );
+
+  return (
+    <SliderThumb {...other} className={`${className} ${extraClassName}`}>
+      {children}
+      {thumbIndex && thumbIndex === 1 && custonthumb}
+    </SliderThumb>
   );
 };
 
@@ -116,6 +114,7 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     display: 'none',
   },
   '& .first-thumb': {
+    zIndex: 1,
     height: 15,
     width: 15,
   },
@@ -130,6 +129,7 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     boxShadow: 'none',
   },
   '& .third-thumb': {
+    zIndex: 1,
     height: 20,
     width: 20,
   },

@@ -12,7 +12,7 @@ import { MatchesPage } from '.';
 export function MobileMatchesPage() {
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader style={{ boxShadow: '0px 1px 4px #0000001a' }}>
         <IonToolbar>
           <IonBackButton
             text={''}
