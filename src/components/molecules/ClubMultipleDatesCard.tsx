@@ -4,10 +4,20 @@ import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import { CourtSlot } from '../../services/club/interface';
 import { DateBox } from './DateBox';
 
+interface Slot {
+  time: string;
+  slotId: number;
+  playTime: number;
+}
+
+type AvailableTimes = {
+  [date: string]: Slot[];
+};
+
 interface IClubMultipleDatesCard {
   title: string;
   img: string;
-  availableTimes?: any;
+  availableTimes?: AvailableTimes;
 }
 
 const date = new Date().toLocaleDateString('en-ca');
@@ -17,6 +27,7 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
   img,
   availableTimes,
 }) => {
+  console.log('availableTimes: ', availableTimes);
   const isMobile = isPlatform('mobile');
   const history = useHistory();
 
@@ -51,7 +62,7 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
       />
 
       <CardContent>
-        {availableTimesArray?.map((item: any, i: number) => {
+        {availableTimesArray?.map((item, i) => {
           const rowDate = new Date(item[0]);
 
           return (

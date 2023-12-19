@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { IOption, IQuestion, getQuestionsByLvlAndSport } from '../questions';
-import { Box, Input, RadioGroup, Typography } from '@mui/material';
+import { Box, Button, Input, RadioGroup, Typography } from '@mui/material';
 import { RadioLabel } from '../../../components/molecules/RadioLabel';
+// import { createSportRating } from '../../../services/rating';
 import { QuestionTitle } from '../components/QuestionTitle';
-import { Button } from '../../../components/atoms/Button';
 import { ERadioLabelType } from '../../../types';
+// import { useMutation } from '@tanstack/react-query';
 
 interface QuestionsStepStepProps {
   handleStep: (stap: number) => void;
@@ -65,6 +66,16 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     }
   }, [currentQuestions.length]);
 
+  // const createRatingMutation = useMutation({
+  //   mutationFn: createSportRating,
+  //   onSuccess(data) {
+  //     handleStep(1);
+  //   },
+  //   onError(e) {
+  //     console.log(e);
+  //   },
+  // });
+
   if (!allQuestions) {
     return (
       <Box marginTop={5}>
@@ -85,9 +96,6 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
 
   return (
     <Box mt={1}>
-      <Typography color="GrayText" mb={2}>
-        Эти вопросы помогут определить Ваш уровень Playtomic.
-      </Typography>
       <Box
         display="flex"
         flexDirection="column"
@@ -96,6 +104,9 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
         overflow="scroll"
       >
         <Box>
+          <Typography color="GrayText" mb={2}>
+            Эти вопросы помогут определить Ваш уровень Sportytime.
+          </Typography>
           {currentQuestions.length > 0 &&
             currentQuestions.map((questionBlock) => {
               return (
@@ -153,10 +164,12 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
         paddingY={1.25}
       >
         <Button
+          // onClick={() => createRatingMutation.mutate(getValues())}
           onClick={() => handleStep(1)}
           variant="contained"
           sx={{ fontSize: 18, borderRadius: 20 }}
           disabled={!isLastQuestion}
+          fullWidth
         >
           Подтвердить
         </Button>

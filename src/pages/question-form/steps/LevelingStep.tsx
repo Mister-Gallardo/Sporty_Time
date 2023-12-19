@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { RadioLabel } from '../../../components/molecules/RadioLabel';
-import { Box, RadioGroup, Typography } from '@mui/material';
+import { Box, Button, RadioGroup, Typography } from '@mui/material';
 import { QuestionTitle } from '../components/QuestionTitle';
-import { Button } from '../../../components/atoms/Button';
 import { InfoRounded } from '@mui/icons-material';
 import { ERadioLabelType } from '../../../types';
 import { leveling } from '../questions';

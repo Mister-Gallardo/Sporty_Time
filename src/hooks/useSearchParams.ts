@@ -20,7 +20,7 @@ export default function useSearchParams() {
       searchParams.delete(name);
     }
 
-    history.push({
+    history.replace({
       search: searchParams.toString(),
     });
   };

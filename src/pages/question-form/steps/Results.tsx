@@ -1,6 +1,5 @@
 import { useHistory } from 'react-router';
-import { Avatar, Box, Typography } from '@mui/material';
-import { Button } from '../../../components/atoms/Button';
+import { Avatar, Box, Button, Typography } from '@mui/material';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { SportsBaseballOutlined } from '@mui/icons-material';
 import { BgContainer } from '../components/BgContainer';
@@ -13,10 +12,10 @@ interface ResultsStepProps {
 export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
   const history = useHistory();
 
-  const profile: any = usePlayerProfile();
+  const profile = usePlayerProfile();
 
   const sport = localStorage.getItem('sport');
-  const rating = profile ? profile[`rating${sport}`] : '';
+  const rating = profile ? (profile as any)[`rating${sport}`] : '';
   const initials = (firstName || lastName) && firstName[0] + '' + lastName[0];
 
   return (
@@ -44,10 +43,10 @@ export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
               {initials}
             </Avatar>
             <Typography>{firstName + ' ' + lastName}</Typography>
-            <Box display="flex" gap={1}>
+            {/* <Box display="flex" gap={1}>
               <Typography component="span">🇷🇺</Typography>
               <Typography>Russian Federation</Typography>
-            </Box>
+            </Box> */}
           </Box>
           <Box>
             <Box
@@ -59,7 +58,8 @@ export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
               <SportsBaseballOutlined />
               <Typography>{sport}</Typography>
             </Box>
-            <Typography textAlign="center">Level {rating}</Typography>
+            {/* <Typography textAlign="center">Level {rating}</Typography> */}
+            <Typography textAlign="center">Тест успешно пройден!</Typography>
           </Box>
         </Box>
       </Box>
@@ -70,6 +70,7 @@ export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
           history.push('/');
           history.go(0);
         }}
+        sx={{ borderRadius: 20 }}
       >
         ИГРАТЬ!
       </Button>

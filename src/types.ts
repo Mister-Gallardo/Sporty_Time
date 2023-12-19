@@ -28,6 +28,12 @@ export enum Sports {
   PICKEBALL = 'Pickleball',
 }
 
+// when join to team
+export interface ITeamSlot {
+  teamIndex: number;
+  slotIndex: number;
+}
+
 // possible match statuses (planning)
 export enum Status {
   CANCELED,
@@ -40,10 +46,4 @@ export enum Status {
   INVALID_RESULT, //(?)
   INCOMPLETE, // === tied in playtomic
   WAITING_FOR_RESULTS, // confirmMatchResults: false && matchResults: null
-}
-
-// when join to team
-export interface ITeamSlot {
-  teamIndex: number;
-  slotIndex: number;
 }

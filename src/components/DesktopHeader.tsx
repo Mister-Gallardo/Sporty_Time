@@ -1,13 +1,9 @@
-import { SportsBaseballOutlined } from '@mui/icons-material';
-import { Box, MenuItem, TextField, Typography } from '@mui/material';
-import { Button } from './atoms/Button';
 import { useHistory } from 'react-router';
-
+import { SportsBaseballOutlined } from '@mui/icons-material';
+import { Box, Button, MenuItem, TextField, Typography } from '@mui/material';
 import { useIsAuthorized, useUserInfo } from '../services/api/hooks';
 
-interface IDesktopHeaderProps {}
-
-function DesktopHeader(props: IDesktopHeaderProps) {
+function DesktopHeader() {
   const history = useHistory();
 
   const isAuthorized = useIsAuthorized();
@@ -88,11 +84,10 @@ function DesktopHeader(props: IDesktopHeaderProps) {
             <MenuItem value={17}>17:00</MenuItem>
           </TextField>
           <Button
+            variant="contained"
             onClick={() => history.push('/book-court')}
             sx={{
-              maxWidth: '140px',
-              paddingBlock: '20px',
-              borderRadius: '30px',
+              borderRadius: 20,
             }}
           >
             Найти

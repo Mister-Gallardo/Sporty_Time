@@ -38,6 +38,7 @@ export const theme = createTheme({
         root: {
           textTransform: 'initial',
           boxShadow: 'none',
+          fontSize: 16,
         },
       },
     },

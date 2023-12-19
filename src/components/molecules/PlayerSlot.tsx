@@ -3,10 +3,14 @@ import { MatchMember, MatchMemberShort } from '../../services/user/interface';
 import { Add } from '@mui/icons-material';
 import { isPlatform } from '@ionic/react';
 
+interface ITeamSlotIndex {
+  teamIndex: number;
+  slotIndex: number;
+}
 interface IPlayerSlot {
   member: MatchMember | MatchMemberShort;
-  teamSlotIndex: { teamIndex: number; slotIndex: number };
-  onSlotSelect: any;
+  teamSlotIndex: ITeamSlotIndex;
+  onSlotSelect: (val: ITeamSlotIndex) => void;
 }
 export const PlayerSlot: React.FC<IPlayerSlot> = ({
   member,

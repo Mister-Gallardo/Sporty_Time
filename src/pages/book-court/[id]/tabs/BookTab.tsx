@@ -8,11 +8,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { CalendarDay } from '../../../../components/molecules/CalendarDay';
 import { CourtAccordion } from '../../../../components/molecules/CourtAccordion';
 import { ConfigMatchModal } from '../../../../components/modals/ConfigMatchModal';
-import { CheckoutModal } from '../../../../components/modals/CheckoutModal';
-import { Accordion } from '../../../../components/molecules/Accordion';
 import { createMatch } from '../../../../services/matches/service';
 import useSearchParams from '../../../../hooks/useSearchParams';
-import { BookFirstSpot } from '../../components/BookFirstSpot';
 import { IConfigMatchModalData } from '../../../../types';
 import useToggle from '../../../../hooks/useToggle';
 import { useForm } from 'react-hook-form';
@@ -42,7 +39,7 @@ export function BookTab() {
   const selectedTime = timeSearchParam ? timeSearchParam : '';
 
   const [openConfigMatchModal, setOpenConfigMatchModal] = useToggle();
-  const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
+  // const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   const [openSuccessBookToast, setOpenSuccessBookToast] = useToggle();
 
   const [gameDate, setGameDate] = useState<Date>(selectedDay);
@@ -110,7 +107,7 @@ export function BookTab() {
       ratingFrom: getValues('ratingFrom'),
       ratingTo: getValues('ratingTo'),
     });
-    setOpenCheckoutModal();
+    // setOpenCheckoutModal();
   };
 
   return (
@@ -321,11 +318,11 @@ export function BookTab() {
         getData={(data: IConfigMatchModalData) => {
           reset(data);
           setOpenConfigMatchModal();
-          setOpenCheckoutModal();
+          onCheckout();
         }}
       />
 
-      <CheckoutModal
+      {/* <CheckoutModal
         courtData={{
           ...selectedCourt,
           date: gameDate,
@@ -334,7 +331,7 @@ export function BookTab() {
         openState={openCheckoutModal}
         handleModal={setOpenCheckoutModal}
         handleCheckout={onCheckout}
-      />
+      /> */}
     </>
   );
 }

@@ -1,12 +1,12 @@
 import {
   Box,
+  Button,
   CircularProgress,
   Fade,
   Grow,
   TextField,
   Typography,
 } from '@mui/material';
-import { Button } from '../../components/atoms/Button';
 import { useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { IAuthForm } from '../../services/api/interface';
@@ -19,15 +19,13 @@ import {
 import { useHistory } from 'react-router';
 import { IonToast, isPlatform } from '@ionic/react';
 
-interface IAuthPageProps {}
-
 enum LoginStates {
   UNDEFINED,
   LOGIN,
   REGISTER,
 }
 
-export function AuthPage(props: IAuthPageProps) {
+export function AuthPage() {
   const [authState, setAuthState] = useState(LoginStates.UNDEFINED);
   const [error, setError] = useState<string | undefined>('');
 
@@ -254,13 +252,13 @@ export function AuthPage(props: IAuthPageProps) {
           }}
         >
           <Button
+            variant="contained"
             onClick={handleSubmit(submitOnValid, submitOnInvalid)}
             sx={{
-              fontSize: '1rem',
-              fontWeight: '700',
-              paddingBlock: '1.4rem',
-              borderRadius: '35px',
+              borderRadius: 20,
+              fontWeight: 600,
             }}
+            fullWidth
           >
             {registerRequestMutation.isPending ||
             registerUserMutation.isPending ||
@@ -271,41 +269,18 @@ export function AuthPage(props: IAuthPageProps) {
             )}
           </Button>
           {authState !== LoginStates.REGISTER && (
-            <>
-              <Typography
-                sx={{
-                  paddingBlock: '.9rem',
-                  textTransform: 'uppercase',
-                  fontWeight: '600',
-                  fontSize: '.75rem',
-                  opacity: '.4',
-                }}
-              >
-                или
-              </Typography>
-              <Button
-                sx={{
-                  fontSize: '1rem',
-                  fontWeight: '700',
-                  paddingBlock: '1.4rem',
-                  borderRadius: '35px',
-                }}
-              >
-                Войти через VKонтакте
-              </Button>
-              <Typography
-                sx={{
-                  fontSize: '.75rem',
-                  fontWeight: '500',
-                  opacity: '.5',
-                  textAlign: 'center',
-                  paddingTop: '.75rem',
-                }}
-              >
-                By proceeding you also agree to the Terms of Service and Privacy
-                Policy
-              </Typography>
-            </>
+            <Typography
+              sx={{
+                fontSize: '.75rem',
+                fontWeight: '500',
+                opacity: '.5',
+                textAlign: 'center',
+                paddingTop: '.75rem',
+              }}
+            >
+              Продолжая, вы также соглашаетесь с Условиями обслуживания и
+              Политикой конфиденциальности.
+            </Typography>
           )}
         </Box>
       </Box>

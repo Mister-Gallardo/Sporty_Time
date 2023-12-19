@@ -9,9 +9,9 @@ export const matchDateFormat = (date: string, matchTime: string) => {
   let day = '';
 
   if (isToday(currentDate)) {
-    day = 'Today';
+    day = 'Сегодня';
   } else if (isTomorrow(currentDate)) {
-    day = 'Tomorrow';
+    day = 'Завтра';
   } else {
     day = currentDate.toLocaleDateString('ru-RU', dateOptions);
   }
