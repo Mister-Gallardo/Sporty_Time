@@ -1,6 +1,8 @@
 import { Paper as MuiPaper, PaperProps } from '@mui/material';
 
-interface IBlockProps extends PaperProps {}
+interface IBlockProps extends PaperProps {
+  to: string;
+}
 
 export const Block: React.FC<IBlockProps> = (props) => {
   return (

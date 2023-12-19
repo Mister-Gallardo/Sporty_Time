@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import { IonBackButton, IonLoading } from '@ionic/react';
 import SwipeableViews from 'react-swipeable-views';
-import {
-  ArrowBackIosNewOutlined,
-  FavoriteBorderOutlined,
-} from '@mui/icons-material';
-import { Box, IconButton, Typography } from '@mui/material';
+import { ArrowBackIosNewOutlined } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
 import { autoPlay } from 'react-swipeable-views-utils';
 import { BookTab } from './tabs/BookTab';
 import { BookTabMain } from './tabs/BookTabMain';
@@ -15,7 +12,6 @@ import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getClubById } from '../../../services/club/service';
 import useSearchParams from '../../../hooks/useSearchParams';
-import { TabList } from '../../../components/molecules/TabList';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -23,7 +19,7 @@ export function SingleCourtPage() {
   const { clubId } = useParams<{ clubId: string }>();
 
   const [passedTabIndex, setTabIndex] = useSearchParams();
-  const tabIndex = passedTabIndex('tab') ? passedTabIndex('tab') : '1';
+  const tabIndex = passedTabIndex('tab') ? passedTabIndex('tab') : '2';
 
   const { data, isLoading } = useQuery({
     queryKey: ['club', clubId],
@@ -112,17 +108,17 @@ export function SingleCourtPage() {
                 </Typography>
                 <Typography variant="body2">JBR, Dubai</Typography>
               </Box>
-              <IconButton>
+              {/* <IconButton>
                 <FavoriteBorderOutlined
                   sx={{ color: '#011627', fontSize: '1.75rem' }}
                 />
-              </IconButton>
+              </IconButton> */}
             </Box>
 
-            <TabList
+            {/* <TabList
               tabs={['Главная', 'Бронь', 'Действия']}
               onChange={(_, value) => setTabIndex('tab', value)}
-            />
+            /> */}
           </Box>
         </Box>
 

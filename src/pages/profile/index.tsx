@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { TabContext, TabPanel } from '@mui/lab';
 import { Avatar, Box, Button, Typography } from '@mui/material';
-import { TabList } from '../../components/molecules/TabList';
 import { useUserInfo } from '../../services/api/hooks';
 import ActivitiesTab from './tabs/ActivitiesTab';
 import { isPlatform } from '@ionic/react';
@@ -29,6 +28,7 @@ export function ProfilePage() {
               {fullname}
             </Typography>
             <Button
+              disabled
               variant="text"
               sx={{
                 fontSize: 14,
@@ -83,6 +83,7 @@ export function ProfilePage() {
           marginX="auto"
         >
           <Button
+            disabled
             variant="contained"
             sx={{
               border: '1px solid #333',
@@ -100,6 +101,7 @@ export function ProfilePage() {
             Edit profile
           </Button>
           <Button
+            disabled
             variant="contained"
             sx={{
               backgroundColor: '#0d2432',
@@ -120,10 +122,10 @@ export function ProfilePage() {
 
       <TabContext value={tabIndex}>
         <Box>
-          <TabList
+          {/* <TabList
             tabs={['Activities', 'Posts']}
             onChange={(_, value) => setTabIndex(value)}
-          />
+          /> */}
           <TabPanel value="1" sx={{ p: 0 }}>
             <ActivitiesTab />
           </TabPanel>

@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import {
-  ArrowBackIosNewOutlined,
-  ChatBubbleOutlineRounded,
-} from '@mui/icons-material';
+import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
 import { SwipeablePage } from '../../../components/SwipeablePage';
 import {
@@ -33,7 +30,7 @@ enum PromptType {
   DANGER,
 }
 
-export function SingleMatchPage() {
+export const SingleMatchPage: React.FC = () => {
   const isMobile = isPlatform('mobile');
   const [showToast] = useIonToast();
   const { matchId } = useParams<{ matchId: string }>();
@@ -117,9 +114,8 @@ export function SingleMatchPage() {
 
   // leave just for now
   if (!matchData) {
-    return console.log(
-      "Match with current id doesn't exist (cause it was hardcoded)",
-    );
+    console.log("Match with current id doesn't exist (cause it was hardcoded)");
+    return null;
   }
 
   return (
@@ -171,7 +167,7 @@ export function SingleMatchPage() {
               <Players players={matchData.matchBookings} />
             </Box>
 
-            <Box display="flex" justifyContent="center" my={2}>
+            {/* <Box display="flex" justifyContent="center" my={2}>
               <Button
                 sx={{
                   borderRadius: 20,
@@ -187,7 +183,7 @@ export function SingleMatchPage() {
                 <ChatBubbleOutlineRounded fontSize="small" />
                 <Typography>Чат</Typography>
               </Button>
-            </Box>
+            </Box> */}
 
             {/* {matchData.matchResults && (
               <Box
@@ -348,4 +344,4 @@ export function SingleMatchPage() {
       />
     </>
   );
-}
+};

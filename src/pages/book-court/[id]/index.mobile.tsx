@@ -1,7 +1,7 @@
 import { IonBackButton, IonContent, IonPage } from '@ionic/react';
 import { SingleCourtPage } from '.';
-import { Box, IconButton } from '@mui/material';
-import { ArrowBackIosNewOutlined, ShareOutlined } from '@mui/icons-material';
+import { Box } from '@mui/material';
+import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 
 export function MobileSingleCourtPage() {
   return (
@@ -34,7 +34,7 @@ export function MobileSingleCourtPage() {
             <ArrowBackIosNewOutlined sx={{ color: '#fff' }} />
           </IonBackButton>
 
-          <IconButton
+          {/* <IconButton
             sx={{
               background: 'hsl(0deg 0% 89.8% / 34%)',
               display: 'flex',
@@ -43,7 +43,7 @@ export function MobileSingleCourtPage() {
             }}
           >
             <ShareOutlined sx={{ color: '#fff' }} />
-          </IconButton>
+          </IconButton> */}
         </Box>
         <SingleCourtPage />
       </IonContent>

@@ -2,10 +2,12 @@ import { Box, IconButton, Link, Typography } from '@mui/material';
 import { Block } from '../../../../components/molecules/Block';
 import { IMatchBlockProps } from './interface';
 import { Directions } from '@mui/icons-material';
-
+import { Link as RouterLink } from 'react-router-dom';
 export function ClubInfoBlock({ data }: IMatchBlockProps) {
   return (
     <Block
+      component={RouterLink}
+      to={`/book-court/${data?.slot.court.club.id}`}
       sx={{
         display: 'flex',
         justifyContent: 'space-between',

@@ -1,11 +1,7 @@
 import { IonBackButton, IonContent, IonPage } from '@ionic/react';
 import { SingleMatchPage } from '.';
-import {
-  ArrowBackIosNewOutlined,
-  MoreVert,
-  ShareOutlined,
-} from '@mui/icons-material';
-import { Box, IconButton } from '@mui/material';
+import { ArrowBackIosNewOutlined } from '@mui/icons-material';
+import { Box } from '@mui/material';
 
 export function MobileSingleMatchPage() {
   return (
@@ -37,7 +33,7 @@ export function MobileSingleMatchPage() {
           >
             <ArrowBackIosNewOutlined sx={{ color: '#fff' }} />
           </IonBackButton>
-          <Box sx={{ display: 'flex', gap: '10px' }}>
+          {/* <Box sx={{ display: 'flex', gap: '10px' }}>
             <IconButton
               sx={{
                 background: 'hsl(0deg 0% 89.8% / 34%)',
@@ -58,7 +54,7 @@ export function MobileSingleMatchPage() {
             >
               <MoreVert sx={{ color: '#fff' }} />
             </IconButton>
-          </Box>
+          </Box> */}
         </Box>
         <SingleMatchPage />
       </IonContent>
