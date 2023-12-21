@@ -47,3 +47,11 @@ export enum Status {
   INCOMPLETE, // === tied in playtomic
   WAITING_FOR_RESULTS, // confirmMatchResults: false && matchResults: null
 }
+
+// court tag
+export interface ITag {
+  createdAt: string;
+  id: number;
+  title: string;
+  updatedAt: string;
+}

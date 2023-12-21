@@ -1,13 +1,13 @@
 import React from 'react';
 import { useHistory } from 'react-router';
 import { Box, Divider, Typography } from '@mui/material';
-import { AvailableMatch } from '../../services/matches/interface';
+import { MatchData } from '../../services/matches/interface';
 import { matchDateFormat } from '../../helpers/matchDateFormat';
 import useSortTeamMembers from '../../hooks/useSortTeamMembers';
 import { PlayerSlot } from './PlayerSlot';
 import { ITeamSlot } from '../../types';
 
-export const MatchCard: React.FC<AvailableMatch> = ({
+export const MatchCard: React.FC<MatchData> = ({
   matchBookings,
   gameDate,
   slot,
@@ -103,7 +103,7 @@ export const MatchCard: React.FC<AvailableMatch> = ({
                 textTransform="capitalize"
                 fontWeight={600}
                 fontSize={13}
-                whiteSpace="nowrap"
+                noWrap
                 mr={0.5}
               >
                 {type.toLocaleLowerCase()} ·{' '}

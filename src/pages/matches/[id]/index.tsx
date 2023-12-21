@@ -23,6 +23,9 @@ import { ClubInfoBlock } from './sections/ClubInfoBlock';
 import { PrivacyType } from './components/PrivacyType';
 import { MatchType } from './components/MatchType';
 import { Players } from './components/Players';
+import useSearchParams from '../../../hooks/useSearchParams';
+import { CheckoutModal } from '../../../components/modals/CheckoutModal';
+import useToggle from '../../../hooks/useToggle';
 
 enum PromptType {
   PRIMARY,
@@ -32,11 +35,18 @@ enum PromptType {
 
 export const SingleMatchPage: React.FC = () => {
   const isMobile = isPlatform('mobile');
+
   const [showToast] = useIonToast();
+
   const { matchId } = useParams<{ matchId: string }>();
   const [error, setError] = useState<string | undefined>();
+
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
+  const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   const [openToast, setOpenToast] = useState<boolean>(false);
+
+  const [getParams] = useSearchParams();
+  const isSlotSelected = getParams('team');
 
   // Get Particular Club Request
   const {
@@ -44,11 +54,20 @@ export const SingleMatchPage: React.FC = () => {
     isLoading,
     refetch: refetchMatch,
   } = useQuery({
-    queryKey: [`match`, Number(matchId)],
-    queryFn: () => getOneAvailableMatch(Number(matchId)),
+    queryKey: [`match`, +matchId],
+    queryFn: () => getOneAvailableMatch(+matchId),
   });
 
   const matchData = data?.data;
+
+  const onBookSpot = () => {
+    setOpenCheckoutModal();
+    // const selectedTeam = isSlotSelected === '0' ? 'A' : 'B';
+    // joinMatchMutation.mutate({
+    //   matchId: +matchId,
+    //   team: selectedTeam,
+    // });
+  };
 
   // Join Match / Book a Place Request
   const joinMatchMutation = useMutation({
@@ -117,6 +136,16 @@ export const SingleMatchPage: React.FC = () => {
     console.log("Match with current id doesn't exist (cause it was hardcoded)");
     return null;
   }
+
+  const courtData = {
+    price: matchData.price,
+    tags: [],
+    date: matchData.gameDate,
+    startTime: matchData.slot.time,
+    playtime: matchData.minutes,
+    sport: matchData.sport,
+    courtName: matchData.slot.court.title,
+  };
 
   return (
     <>
@@ -311,7 +340,8 @@ export const SingleMatchPage: React.FC = () => {
           bgcolor="#fff"
         >
           <Button
-            disabled
+            disabled={!isSlotSelected}
+            onClick={() => onBookSpot()}
             sx={{
               backgroundColor: '#0d2432',
               color: '#fff',
@@ -322,10 +352,18 @@ export const SingleMatchPage: React.FC = () => {
               },
             }}
           >
-            Забронировать место - ₽ {matchData.price || ''}
+            Забронировать место - ₽ {matchData.price}
           </Button>
         </Box>
       </SwipeablePage>
+
+      <CheckoutModal
+        isJoin
+        courtData={courtData}
+        openState={openCheckoutModal}
+        handleModal={setOpenCheckoutModal}
+        handleCheckout={() => console.log('pay to join')}
+      />
 
       <UploadResultModal
         openState={openUploadModal}

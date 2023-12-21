@@ -46,3 +46,12 @@ export const isAuthorized = () => {
     return false;
   }
 };
+
+export async function changePasswordRequest(email: string) {
+  const res = api.post('/auth/change-password/request', { email });
+  return res;
+}
+export async function changePassword(data: any) {
+  const res = api.post('/auth/change-password', { ...data });
+  return res;
+}

@@ -56,23 +56,43 @@ export function AvailableMatchesTab() {
             scrollBehavior: 'smooth',
           }}
         >
-          {(data?.data.length === 0 || !data) && (
-            <Typography
-              sx={{
-                fontSize: '1.1rem',
-                paddingTop: '1.5rem',
-                margin: '0 auto',
-                fontWeight: '600',
-              }}
-            >
-              Доступных матчей пока нет
+          {data?.data.length === 0 || !data ? (
+            <Typography textAlign="center" mt={3} color="gray">
+              На данный момент нет доступных матчей для вашего уровня
             </Typography>
+          ) : (
+            availableMatchesArray?.map((card, index) => {
+              return <MatchCard key={index} {...card} />;
+            })
           )}
-          {availableMatchesArray?.map((card, index) => {
-            return <MatchCard key={index} {...card} />;
-          })}
         </Box>
       </Accordion>
+
+      <Accordion
+        title="Запросить место"
+        description="Эти матчи не соответствуют вашему текущему уровню. Вам необходимо сделать запрос на присоединение"
+      >
+        <Box
+          sx={{
+            paddingBottom: '.75rem',
+            display: 'flex',
+            overflowX: 'auto',
+            scrollSnapType: 'x mandatory',
+            scrollBehavior: 'smooth',
+          }}
+        >
+          {data?.data.length === 0 || !data ? (
+            <Typography textAlign="center" mt={3} color="gray">
+              На данный момент нет доступных матчей
+            </Typography>
+          ) : (
+            availableMatchesArray?.map((card, index) => {
+              return <MatchCard key={index} {...card} />;
+            })
+          )}
+        </Box>
+      </Accordion>
+
       <Accordion
         title="Стать первым игроком!"
         description="Создайте новый матч, выбрав подходящее время"
@@ -83,11 +103,15 @@ export function AvailableMatchesTab() {
           gap={2}
           width="100%"
         >
-          {query.data &&
-            query.data.length > 0 &&
-            query.data.map((club, index) => (
+          {data?.data.length === 0 || !data ? (
+            <Typography textAlign="center" mt={3} color="gray">
+              На данный момент нет доступных матчей
+            </Typography>
+          ) : (
+            query.data?.map((club, index) => (
               <ClubMultipleDatesCard key={index} {...club} />
-            ))}
+            ))
+          )}
         </Box>
       </Accordion>
     </Box>

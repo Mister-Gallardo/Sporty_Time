@@ -13,6 +13,7 @@ import useSearchParams from '../../../../hooks/useSearchParams';
 import { IConfigMatchModalData } from '../../../../types';
 import useToggle from '../../../../hooks/useToggle';
 import { useForm } from 'react-hook-form';
+import { CheckoutModal } from '../../../../components/modals/CheckoutModal';
 
 const now = new Date();
 const dates = Array.from(Array(100)).map(
@@ -39,7 +40,7 @@ export function BookTab() {
   const selectedTime = timeSearchParam ? timeSearchParam : '';
 
   const [openConfigMatchModal, setOpenConfigMatchModal] = useToggle();
-  // const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
+  const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   const [openSuccessBookToast, setOpenSuccessBookToast] = useToggle();
 
   const [gameDate, setGameDate] = useState<Date>(selectedDay);
@@ -107,7 +108,7 @@ export function BookTab() {
       ratingFrom: getValues('ratingFrom'),
       ratingTo: getValues('ratingTo'),
     });
-    // setOpenCheckoutModal();
+    setOpenCheckoutModal();
   };
 
   return (
@@ -318,20 +319,22 @@ export function BookTab() {
         getData={(data: IConfigMatchModalData) => {
           reset(data);
           setOpenConfigMatchModal();
-          onCheckout();
+          setOpenCheckoutModal();
         }}
       />
 
-      {/* <CheckoutModal
-        courtData={{
-          ...selectedCourt,
-          date: gameDate,
-          startTime: selectedSlot,
-        }}
-        openState={openCheckoutModal}
-        handleModal={setOpenCheckoutModal}
-        handleCheckout={onCheckout}
-      /> */}
+      {selectedCourt && (
+        <CheckoutModal
+          courtData={{
+            date: gameDate,
+            startTime: selectedSlot,
+            ...selectedCourt,
+          }}
+          openState={openCheckoutModal}
+          handleModal={setOpenCheckoutModal}
+          handleCheckout={onCheckout}
+        />
+      )}
     </>
   );
 }

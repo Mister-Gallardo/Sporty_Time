@@ -15,19 +15,23 @@ import { Box, Modal } from '@mui/material';
 interface IModalContainer extends PropsWithChildren<{}> {
   openState: boolean;
   handleModal: (val?: boolean) => void;
+  headerTitle: string;
+  initialBreakpoint?: number;
 }
 
 export const ModalContainer: React.FC<IModalContainer> = ({
   children,
   openState,
   handleModal,
+  headerTitle,
+  initialBreakpoint = 0.95,
 }) => {
   const isMobile = isPlatform('mobile');
 
   const header = (
     <IonHeader style={{ boxShadow: '0 1px 4px #0000012' }}>
       <IonToolbar>
-        <IonTitle>Настройте свой матч</IonTitle>
+        <IonTitle>{headerTitle}</IonTitle>
         <IonButtons slot="end">
           <IonButton onClick={() => handleModal()}>
             <CloseRoundedIcon sx={{ color: 'black' }} />
@@ -43,7 +47,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
         <IonModal
           onDidDismiss={() => handleModal(false)}
           isOpen={openState}
-          initialBreakpoint={0.95}
+          initialBreakpoint={initialBreakpoint}
           breakpoints={[0, 0.25, 0.5, 0.75, 0.95]}
           handleBehavior="cycle"
         >

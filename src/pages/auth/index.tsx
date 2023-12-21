@@ -4,6 +4,7 @@ import {
   CircularProgress,
   Fade,
   Grow,
+  Link,
   TextField,
   Typography,
 } from '@mui/material';
@@ -18,6 +19,8 @@ import {
 } from '../../services/auth/service';
 import { useHistory } from 'react-router';
 import { IonToast, isPlatform } from '@ionic/react';
+import useToggle from '../../hooks/useToggle';
+import { RestorePasswordModal } from '../../components/modals/RestorePasswordModal';
 
 enum LoginStates {
   UNDEFINED,
@@ -26,6 +29,8 @@ enum LoginStates {
 }
 
 export function AuthPage() {
+  const history = useHistory();
+
   const [authState, setAuthState] = useState(LoginStates.UNDEFINED);
   const [error, setError] = useState<string | undefined>('');
 
@@ -33,7 +38,7 @@ export function AuthPage() {
 
   const { register, handleSubmit, reset } = useForm<IAuthForm>();
 
-  const history = useHistory();
+  const [openRestorePswrdModal, setOpenRestorePswrdModal] = useToggle();
 
   const registerRequestMutation = useMutation({
     mutationFn: registerRequest,
@@ -203,7 +208,6 @@ export function AuthPage() {
               />
             </Grow>
           )}
-
           {authState === LoginStates.REGISTER && (
             <Grow in timeout={600}>
               <TextField
@@ -243,14 +247,19 @@ export function AuthPage() {
             </Grow>
           )}
         </Box>
-        <Box
-          sx={{
-            paddingTop: '4rem',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
+
+        {authState === LoginStates.LOGIN && (
+          <Box display="flex" justifyContent="flex-end" my={1}>
+            <Button
+              onClick={() => setOpenRestorePswrdModal()}
+              sx={{ fontSize: 14, padding: 0 }}
+            >
+              Забыли пароль?
+            </Button>
+          </Box>
+        )}
+
+        <Box mt={7}>
           <Button
             variant="contained"
             onClick={handleSubmit(submitOnValid, submitOnInvalid)}
@@ -269,17 +278,53 @@ export function AuthPage() {
             )}
           </Button>
           {authState !== LoginStates.REGISTER && (
-            <Typography
-              sx={{
-                fontSize: '.75rem',
-                fontWeight: '500',
-                opacity: '.5',
-                textAlign: 'center',
-                paddingTop: '.75rem',
-              }}
-            >
-              Продолжая, вы также соглашаетесь с Условиями обслуживания и
-              Политикой конфиденциальности.
+            <>
+              <Typography
+                textAlign="center"
+                color="GrayText"
+                fontSize={18}
+                my={1}
+              >
+                или
+              </Typography>
+              <Button
+                variant="contained"
+                sx={{
+                  borderRadius: 20,
+                  fontWeight: 600,
+                }}
+                fullWidth
+              >
+                Войти через VKонтакте
+              </Button>
+              <Typography
+                sx={{
+                  fontSize: '.75rem',
+                  fontWeight: '500',
+                  opacity: '.5',
+                  textAlign: 'center',
+                  paddingTop: '.75rem',
+                }}
+              >
+                By proceeding you also agree to the Terms of Service and Privacy
+                Policy
+              </Typography>
+            </>
+          )}
+          {authState === LoginStates.LOGIN && (
+            <Typography mt={4} textAlign="center">
+              Нужен новый аккаунт?{' '}
+              <Link onClick={() => setAuthState(LoginStates.UNDEFINED)}>
+                Зарегистрировать
+              </Link>
+            </Typography>
+          )}
+          {[LoginStates.REGISTER, LoginStates.UNDEFINED].includes(
+            authState,
+          ) && (
+            <Typography mt={4} textAlign="center">
+              Уже есть аккаунт?{' '}
+              <Link onClick={() => setAuthState(LoginStates.LOGIN)}>Войти</Link>
             </Typography>
           )}
         </Box>
@@ -290,6 +335,11 @@ export function AuthPage() {
         onDidDismiss={() => setIsOpenToast(false)}
         duration={2000}
       ></IonToast>
+
+      <RestorePasswordModal
+        openState={openRestorePswrdModal}
+        handleModal={setOpenRestorePswrdModal}
+      />
     </Box>
   );
 }

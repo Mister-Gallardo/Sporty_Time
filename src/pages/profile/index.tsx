@@ -12,7 +12,7 @@ export function ProfilePage() {
   const [tabIndex, setTabIndex] = useState<string>('1');
 
   const user = useUserInfo();
-  const fullname = user && user.firstname + ' ' + user.lastname;
+  const fullname = user ? user.firstname + ' ' + user.lastname : '';
 
   return (
     <>

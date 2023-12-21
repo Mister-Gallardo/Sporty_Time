@@ -2,15 +2,23 @@ import React, { useEffect } from 'react';
 import { PlayerSlot } from '../../../../components/molecules/PlayerSlot';
 import useSortTeamMembers from '../../../../hooks/useSortTeamMembers';
 import { MatchMember } from '../../../../services/user/interface';
-import { Box, Divider, Typography } from '@mui/material';
+import { Box, Button, Divider, Typography } from '@mui/material';
 import useSearchParams from '../../../../hooks/useSearchParams';
 import { ITeamSlot } from '../../../../types';
+import { useUserInfo } from '../../../../services/api/hooks';
+import useToggle from '../../../../hooks/useToggle';
+import { EditMatchPlayersModal } from '../../../../components/modals/EditMatchPlayersModal';
 
 interface IPlayers {
   players: MatchMember[];
 }
 
 export const Players: React.FC<IPlayers> = ({ players }) => {
+  const user = useUserInfo();
+  //static dummy id
+  const creatorId = 59;
+  const isUserCreator = user?.id === creatorId;
+
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedTeam = searchParams('team');
   const selectedSlot = searchParams('slot');
@@ -32,10 +40,20 @@ export const Players: React.FC<IPlayers> = ({ players }) => {
     setNewPlayer(teamSlotIndex);
   };
 
+  const [openEditModal, setOpenEditModal] = useToggle();
+
   return (
     <Box border="1px solid #ddd" borderRadius={2} py={1} px={2} bgcolor="#fff">
-      <Box>
+      <Box display="flex" justifyContent="space-between">
         <Typography fontWeight={700}>Игроки</Typography>
+        {isUserCreator && (
+          <Button
+            sx={{ p: 0, fontSize: 13 }}
+            onClick={() => setOpenEditModal()}
+          >
+            Изменить
+          </Button>
+        )}
         {/* <Box>out of range</Box> */}
       </Box>
       <Box display="flex" justifyContent="space-evenly" my={1.5}>
@@ -71,6 +89,13 @@ export const Players: React.FC<IPlayers> = ({ players }) => {
           B
         </Typography>
       </Box>
+
+      <EditMatchPlayersModal
+        openState={openEditModal}
+        handleModal={setOpenEditModal}
+        players={playersArr}
+        isUserCreator={isUserCreator}
+      />
     </Box>
   );
 };

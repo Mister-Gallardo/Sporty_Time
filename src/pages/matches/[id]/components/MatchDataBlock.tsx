@@ -7,14 +7,14 @@ import { Box, Divider, Typography } from '@mui/material';
 const dateOptions: any = { weekday: 'long', day: 'numeric', month: 'short' };
 
 interface IMatchDataBlock {
-  minutes?: number;
-  startTime?: string;
-  sport?: string;
-  ratingFrom?: number;
-  ratingTo?: number;
-  date?: string;
-  price?: number;
-  gender?: string;
+  minutes: number;
+  startTime: string;
+  sport: string;
+  ratingFrom: number;
+  ratingTo: number;
+  date: string;
+  price: number;
+  gender: string;
 }
 
 export const MatchDataBlock: React.FC<IMatchDataBlock> = ({

@@ -9,6 +9,7 @@ import { Add } from '@mui/icons-material';
 import { useHistory } from 'react-router';
 import { Status } from '../../types';
 import { sortTeamMembers } from '../../helpers/sortTeamMembers';
+import { getMatchStatus } from '../../helpers/getMatchStatus';
 
 interface IMyMatchCardProps {
   confirmedByAllResult: boolean;
@@ -35,18 +36,21 @@ const matchDateFormat = (date: string, matchTime: string, playTime: number) => {
   return `${day} | ${matchTime.slice(0, -3)} - ${matchEndTime}`;
 };
 
-export const MyMatchCard: React.FC<ICardProps> = ({
-  id,
-  status,
-  gameDate,
-  matchBookings,
-  matchResults,
-  winningTeam,
-  uploadResults,
-}) => {
+export const MyMatchCard: React.FC<ICardProps> = (props) => {
+  const {
+    id,
+    gameDate,
+    matchBookings,
+    matchResults,
+    winningTeam,
+    uploadResults,
+    slot,
+  } = props;
   const history = useHistory();
 
   const members = sortTeamMembers(matchBookings);
+
+  const status = getMatchStatus(props);
 
   const getSetResults = (team: string) => {
     if (!matchResults && status === Status.WITHOUT_RESULT) return [0, 0, 0];
@@ -121,7 +125,7 @@ export const MyMatchCard: React.FC<ICardProps> = ({
                           fontWeight={600}
                           maxWidth={60}
                           overflow="hidden"
-                          whiteSpace="nowrap"
+                          noWrap
                           textOverflow="ellipsis"
                         >
                           {member ? member.player.user.firstname : 'Свободно'}
@@ -145,11 +149,12 @@ export const MyMatchCard: React.FC<ICardProps> = ({
         </Box>
         {status === Status.CANCELED ||
         status === Status.UPCOMING ||
-        status === Status.WAITING_FOR_RESULTS ? (
+        status === Status.WAITING_FOR_RESULTS ||
+        status === Status.IN_PROGRESS ? (
           <WithoutResults
-            date={matchDateFormat(gameDate, '10:00:20', 90)}
-            clubName="Club name"
-            courtName="Court name"
+            date={matchDateFormat(gameDate, slot.time, 90)}
+            clubName="Club Title"
+            courtName={slot.court.title}
             status={status}
             uploadResults={
               status === Status.WAITING_FOR_RESULTS
@@ -159,7 +164,7 @@ export const MyMatchCard: React.FC<ICardProps> = ({
           />
         ) : (
           <Results
-            date={matchDateFormat(gameDate, '10:00:20', 90)}
+            date={matchDateFormat(gameDate, slot.time, 90)}
             status={status}
             results={results}
             winningTeam={winningTeam}
@@ -185,13 +190,20 @@ const WithoutResults: React.FC<IWithoutResults> = ({
   uploadResults,
 }) => {
   const withStatus =
-    status === Status.CANCELED || status === Status.WAITING_FOR_RESULTS;
+    status === Status.CANCELED ||
+    status === Status.WAITING_FOR_RESULTS ||
+    status === Status.IN_PROGRESS ||
+    status === Status.VALIDATING;
 
   const statusText =
     status === Status.CANCELED
       ? 'Отменён'
       : status === Status.WAITING_FOR_RESULTS
       ? 'Ожидание результатов'
+      : status === Status.IN_PROGRESS
+      ? 'Матч в процессе'
+      : status === Status.VALIDATING
+      ? 'Подтверждение результатов'
       : '';
 
   const statusBgColor =
@@ -199,6 +211,10 @@ const WithoutResults: React.FC<IWithoutResults> = ({
       ? '#fff6f5'
       : status === Status.WAITING_FOR_RESULTS
       ? '#ffe0ed'
+      : status === Status.IN_PROGRESS
+      ? '#e1fff1'
+      : status === Status.VALIDATING
+      ? 'green'
       : '';
 
   const statusTextColor =
@@ -206,6 +222,10 @@ const WithoutResults: React.FC<IWithoutResults> = ({
       ? '#d05e73'
       : status === Status.WAITING_FOR_RESULTS
       ? '#ff4588'
+      : status === Status.IN_PROGRESS
+      ? '#008f4b'
+      : status === Status.VALIDATING
+      ? 'yellow'
       : '';
 
   const buttonBgColor =
@@ -215,7 +235,7 @@ const WithoutResults: React.FC<IWithoutResults> = ({
       ? '#3d5ef5'
       : status === Status.UPCOMING
       ? '#3d5ef5'
-      : '';
+      : '#3d5ef5';
 
   return (
     <Box

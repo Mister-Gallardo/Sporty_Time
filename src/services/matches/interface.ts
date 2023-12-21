@@ -12,9 +12,10 @@ export interface Match {
 
 export type matchResults = Array<number[]> | null;
 
-export interface AvailableMatch {
+export interface MatchData {
   id: number;
-  title: string;
+  title: string; 
+  isCancelled: boolean;
   confirmMatchResults: boolean;
   gameDate: string;
   price: number;
@@ -22,7 +23,7 @@ export interface AvailableMatch {
   matchBookings: MatchMember[];
   slot: {
     id: number;
-    time: 'string';
+    time: string;
     updatedAt: string;
     createdAt: string;
     court: Court;

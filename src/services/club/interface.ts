@@ -1,4 +1,4 @@
-import { Match } from '../matches/interface';
+import { MatchData } from '../matches/interface';
 import { User } from '../user/interface';
 
 export interface Club {
@@ -74,7 +74,7 @@ export interface Slot {
 
   court: Court;
 
-  matches: Match[];
+  matches: MatchData[];
 
   time: string;
 

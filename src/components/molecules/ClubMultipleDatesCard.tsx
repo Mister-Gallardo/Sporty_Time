@@ -10,14 +10,12 @@ interface Slot {
   playTime: number;
 }
 
-type AvailableTimes = {
-  [date: string]: Slot[];
-};
+type AvailableTimeItem = [string, Slot[]];
 
 interface IClubMultipleDatesCard {
   title: string;
   img: string;
-  availableTimes?: AvailableTimes;
+  availableTimes?: any;
 }
 
 const date = new Date().toLocaleDateString('en-ca');
@@ -27,7 +25,6 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
   img,
   availableTimes,
 }) => {
-  console.log('availableTimes: ', availableTimes);
   const isMobile = isPlatform('mobile');
   const history = useHistory();
 
@@ -62,7 +59,7 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
       />
 
       <CardContent>
-        {availableTimesArray?.map((item, i) => {
+        {availableTimesArray?.map((item: AvailableTimeItem, i: number) => {
           const rowDate = new Date(item[0]);
 
           return (

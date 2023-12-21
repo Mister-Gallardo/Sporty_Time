@@ -50,7 +50,11 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
   };
 
   return (
-    <ModalContainer openState={openState} handleModal={handleModal}>
+    <ModalContainer
+      openState={openState}
+      handleModal={handleModal}
+      headerTitle="Настройте свой матч"
+    >
       <Box mb={2} display="flex" flexDirection="column" gap={4}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" gap={1} alignItems="center">
@@ -217,7 +221,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
             mb: isMobile ? 5 : 0,
           }}
         >
-          Создать матч
+          Перейти к оплате
         </Button>
       </Box>
     </ModalContainer>
