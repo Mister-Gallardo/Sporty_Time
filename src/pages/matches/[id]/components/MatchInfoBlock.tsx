@@ -3,10 +3,14 @@ import {
   DialpadOutlined,
   InfoOutlined,
 } from '@mui/icons-material';
-import { IMatchBlockProps } from './interface';
+import { MatchData } from '../../../../services/matches/interface';
 import { Box, Typography } from '@mui/material';
 
-export function MatchInfoBlock({ data }: IMatchBlockProps) {
+interface IMatchInfoBlock {
+  data: MatchData;
+}
+
+export const MatchInfoBlock: React.FC<IMatchInfoBlock> = ({ data }) => {
   return (
     <Box>
       <Typography
@@ -45,4 +49,4 @@ export function MatchInfoBlock({ data }: IMatchBlockProps) {
       </Box>
     </Box>
   );
-}
+};

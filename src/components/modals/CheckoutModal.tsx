@@ -14,12 +14,10 @@ import {
   RadioGroup,
   Typography,
 } from '@mui/material';
+import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
 import { RadioLabel } from '../molecules/RadioLabel';
 import { ERadioLabelType, ITag } from '../../types';
-import { countMatchEndTime } from '../../helpers/countMatchEndTime';
 import { ModalContainer } from './ModalContainer';
-
-const dateOptions: any = { weekday: 'long', day: 'numeric', month: 'short' };
 
 interface MainCourtInfo {
   price: number;
@@ -32,31 +30,41 @@ interface MainCourtInfo {
 }
 
 interface ICheckoutModal {
+  isPaid?: boolean;
   isJoin?: boolean;
   courtData?: MainCourtInfo;
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  handleCheckout: any;
+  handleCheckout: (payPrice: number) => void;
 }
 
 export const CheckoutModal: React.FC<ICheckoutModal> = ({
+  isPaid,
   isJoin,
   courtData,
   openState,
   handleModal,
   handleCheckout,
 }) => {
-  // console.log(courtData)
   if (!courtData) return;
 
-  const { price, tags, date, startTime, playtime, sport, courtName } =
-    courtData;
+  const { price, tags, date, startTime, playtime, courtName } = courtData;
 
   const [payFor, setPayFor] = useState('0');
 
-  const matchDate = new Date(date);
+  const matchDate = getDayFormat(
+    date,
+    EType.WEEK_DAY_MONTH,
+    startTime,
+    playtime,
+  );
+  const paymentDeadline =
+    getDayFormat(date, EType.MONTH_AND_DAY) +
+    ' ' +
+    addTime(startTime, playtime + 120);
 
-  const total = payFor === '0' || isJoin ? price / 4 : price;
+  const total = isPaid ? 0 : payFor === '0' || isJoin ? price / 4 : price;
+  const priceFor3 = price - price / 4;
   const courtTags = tags.length > 0 ? tags.map((tag: any) => tag.title) : [];
 
   return (
@@ -72,8 +80,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
               <Box display="flex" justifyContent="space-between" py={1}>
                 <Box flexGrow={1} pr={1}>
                   <Typography textTransform="capitalize">
-                    {matchDate.toLocaleDateString('ru-RU', dateOptions)}{' '}
-                    {startTime} - {countMatchEndTime(startTime, playtime)}
+                    {matchDate}
                   </Typography>
                   <Box display="flex" gap={0.5}>
                     <Typography textTransform="lowercase">
@@ -119,9 +126,11 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
                             }
                             icon={<CreditCardOutlinedIcon />}
                             title="Оплатить свою часть"
-                            description="Если другие игроки не заплатят до *дата и время  конца матча + 2 часа* - вы должны будете должны доплатить *сумма за 3их*"
+                            description={`Если другие игроки не заплатят свою часть до ${paymentDeadline} - вы должны будете доплатить ${priceFor3} RUB`}
                           />
-                          <Typography noWrap>{price / 4} RUB</Typography>
+                          <Typography whiteSpace="nowrap">
+                            {price / 4} RUB
+                          </Typography>
                         </Box>
                         <Typography mt={1} ml={4} color="blue">
                           Добавить игроков
@@ -146,14 +155,19 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
               )}
             </Box>
           )}
-          <Box display="flex" alignItems="center" gap={2}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            gap={2}
+          >
             <Box>
               <Typography fontWeight={700}>Итог</Typography>
               <Typography color="gray" lineHeight={1.2}>
                 Плата за услуги Sportytime и налоги включительно
               </Typography>
             </Box>
-            <Typography color="blue" noWrap fontSize={20}>
+            <Typography color="blue" whiteSpace="nowrap" fontSize={20}>
               {total} RUB
             </Typography>
           </Box>
@@ -168,7 +182,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
               </Box>
             </Box>
             <List>
-              {[1, 2, 3, 4].map((item, i) => {
+              {[1, 2, 3, 4].map((item) => {
                 return (
                   <ListItem
                     key={item}
@@ -211,7 +225,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
 
         <Box mb={5} py={1.5} px={2} borderTop="1px solid #ddd">
           <Button
-            onClick={handleCheckout}
+            onClick={() => handleCheckout(total)}
             variant="contained"
             sx={{
               backgroundColor: '#0d2432',

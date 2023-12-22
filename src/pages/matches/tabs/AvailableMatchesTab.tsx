@@ -1,11 +1,15 @@
 import { Box, Typography } from '@mui/material';
 import { MatchCard } from '../../../components/molecules/MatchCard';
-import { IonLoading, isPlatform } from '@ionic/react';
+import { isPlatform } from '@ionic/react';
 import { useQuery } from '@tanstack/react-query';
-import { getAvailableMatches } from '../../../services/matches/service';
+import {
+  getAvailableMatches,
+  getAvailableNoRatingMatches,
+} from '../../../services/matches/service';
 import { ClubMultipleDatesCard } from '../../../components/molecules/ClubMultipleDatesCard';
 import { Accordion } from '../../../components/molecules/Accordion';
 import { getClubs } from '../../../services/club/service';
+import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 
 // static 'gameDates' array for daily requests with actual dates (just for now)
 const today = new Date();
@@ -19,21 +23,24 @@ const gameDates = [today, tomorrow, dayAfterTomorrow];
 export function AvailableMatchesTab() {
   const isMobile = isPlatform('mobile');
 
-  const { data, isLoading } = useQuery({
+  const availableMatches = useQuery({
     queryKey: [`available-matches`],
     queryFn: getAvailableMatches,
   });
+  const availableArray = availableMatches.data?.data;
 
-  const availableMatchesArray = data?.data;
+  const noRatingMatches = useQuery({
+    queryKey: [`available-no-rating`],
+    queryFn: getAvailableNoRatingMatches,
+  });
+  const noRatingArray = noRatingMatches.data?.data;
 
-  const query = useQuery({
+  const clubs = useQuery({
     queryKey: ['clubs', gameDates],
     queryFn: () => getClubs(gameDates),
   });
 
-  if (isLoading) {
-    return <IonLoading isOpen />;
-  }
+  const clubsArray = clubs.data;
 
   return (
     <Box
@@ -56,14 +63,19 @@ export function AvailableMatchesTab() {
             scrollBehavior: 'smooth',
           }}
         >
-          {data?.data.length === 0 || !data ? (
-            <Typography textAlign="center" mt={3} color="gray">
-              На данный момент нет доступных матчей для вашего уровня
-            </Typography>
+          {availableMatches.isLoading ? (
+            <LoadingCircle />
           ) : (
-            availableMatchesArray?.map((card, index) => {
-              return <MatchCard key={index} {...card} />;
-            })
+            !availableArray ||
+            (availableArray.length === 0 ? (
+              <Typography textAlign="center" width="100%" mt={3} color="gray">
+                На данный момент нет доступных матчей для вашего уровня
+              </Typography>
+            ) : (
+              availableArray.map((card, index) => {
+                return <MatchCard key={index} {...card} />;
+              })
+            ))
           )}
         </Box>
       </Accordion>
@@ -81,14 +93,19 @@ export function AvailableMatchesTab() {
             scrollBehavior: 'smooth',
           }}
         >
-          {data?.data.length === 0 || !data ? (
-            <Typography textAlign="center" mt={3} color="gray">
-              На данный момент нет доступных матчей
-            </Typography>
+          {noRatingMatches.isLoading ? (
+            <LoadingCircle />
           ) : (
-            availableMatchesArray?.map((card, index) => {
-              return <MatchCard key={index} {...card} />;
-            })
+            !noRatingArray ||
+            (noRatingArray.length === 0 ? (
+              <Typography textAlign="center" width="100%" mt={3} color="gray">
+                На данный момент нет доступных матчей
+              </Typography>
+            ) : (
+              noRatingArray.map((card, index) => {
+                return <MatchCard key={index} {...card} />;
+              })
+            ))
           )}
         </Box>
       </Accordion>
@@ -103,14 +120,14 @@ export function AvailableMatchesTab() {
           gap={2}
           width="100%"
         >
-          {data?.data.length === 0 || !data ? (
-            <Typography textAlign="center" mt={3} color="gray">
+          {!clubsArray || clubsArray.length === 0 ? (
+            <Typography textAlign="center" width="100%" mt={3} color="gray">
               На данный момент нет доступных матчей
             </Typography>
           ) : (
-            query.data?.map((club, index) => (
-              <ClubMultipleDatesCard key={index} {...club} />
-            ))
+            clubsArray.map((club, index) => {
+              return <ClubMultipleDatesCard key={index} {...club} />;
+            })
           )}
         </Box>
       </Accordion>

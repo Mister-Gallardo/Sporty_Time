@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TabContext, TabPanel } from '@mui/lab';
 import { Avatar, Box, Button, Typography } from '@mui/material';
-import { useUserInfo } from '../../services/api/hooks';
+import { useFullUserData } from '../../services/api/hooks';
 import ActivitiesTab from './tabs/ActivitiesTab';
 import { isPlatform } from '@ionic/react';
 import PostsTab from './tabs/PostsTab';
@@ -11,8 +11,11 @@ export function ProfilePage() {
 
   const [tabIndex, setTabIndex] = useState<string>('1');
 
-  const user = useUserInfo();
-  const fullname = user ? user.firstname + ' ' + user.lastname : '';
+  const profile = useFullUserData();
+
+  const fullname = profile
+    ? profile.user.firstname + ' ' + profile.user.lastname
+    : '';
 
   return (
     <>
@@ -58,7 +61,9 @@ export function ProfilePage() {
                   maxWidth={isMobile ? '100%' : '150px'}
                   color="#333"
                 >
-                  <Typography fontSize={23}>0</Typography>
+                  <Typography fontSize={23}>
+                    {item === 'Matches' ? profile?.countMatches : 0}
+                  </Typography>
                   <Typography>{item}</Typography>
                 </Box>
 

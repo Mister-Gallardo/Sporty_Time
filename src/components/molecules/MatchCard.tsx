@@ -1,9 +1,9 @@
 import React from 'react';
 import { useHistory } from 'react-router';
-import { Box, Divider, Typography } from '@mui/material';
-import { MatchData } from '../../services/matches/interface';
-import { matchDateFormat } from '../../helpers/matchDateFormat';
+import { EType, getDayFormat } from '../../helpers/getTimeDateString';
 import useSortTeamMembers from '../../hooks/useSortTeamMembers';
+import { MatchData } from '../../services/matches/interface';
+import { Box, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from './PlayerSlot';
 import { ITeamSlot } from '../../types';
 
@@ -14,6 +14,7 @@ export const MatchCard: React.FC<MatchData> = ({
   id,
   ratingFrom,
   ratingTo,
+  paid,
   price,
   minutes,
   type,
@@ -22,7 +23,7 @@ export const MatchCard: React.FC<MatchData> = ({
 
   const [playersArr] = useSortTeamMembers(matchBookings);
 
-  const matchDate = matchDateFormat(gameDate, slot?.time);
+  const matchDate = getDayFormat(gameDate, EType.MONTH_AND_DAY, slot.time);
 
   const onSlotSelect = (teamSlot: ITeamSlot) => {
     history.push(
@@ -36,21 +37,25 @@ export const MatchCard: React.FC<MatchData> = ({
       border="2px solid #EED790"
       borderRadius={2}
       marginX={1}
-      sx={{
-        boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;',
-      }}
+      boxShadow="rgba(99, 99, 99, 0.2) 0px 2px 8px 0px"
+      display="flex"
+      flexDirection="column"
     >
-      <Box px={2}>
-        <Typography
-          mt={1}
-          fontSize={14}
-          fontWeight={600}
-          textTransform="capitalize"
-        >
-          {matchDate}
-        </Typography>
+      <Box px={2} flexGrow={1}>
+        <Box mt={1} display="flex" justifyContent="space-between">
+          <Box>
+            <Typography
+              fontSize={14}
+              fontWeight={600}
+              textTransform="capitalize"
+            >
+              {matchDate}
+            </Typography>
+            <Typography color="gray">11км · {slot.court.club.title}</Typography>
+          </Box>
 
-        <Typography color="gray">11км · {slot.court.club.title}</Typography>
+          <Typography color="green">Забронирован</Typography>
+        </Box>
 
         <Box py={2} display="flex" alignItems="flex-start" gap={1.5}>
           {playersArr.map((team, teamIndex) => {
@@ -129,7 +134,7 @@ export const MatchCard: React.FC<MatchData> = ({
             }}
           >
             <Typography sx={{ fontSize: '1.25rem', fontWeight: '700' }}>
-              ₽ {price}
+              ₽ {paid ? 0 : price / 4}
             </Typography>
             <Typography>{minutes} мин</Typography>
           </Box>

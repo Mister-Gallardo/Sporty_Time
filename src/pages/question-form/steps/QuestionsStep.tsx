@@ -6,6 +6,7 @@ import { RadioLabel } from '../../../components/molecules/RadioLabel';
 // import { createSportRating } from '../../../services/rating';
 import { QuestionTitle } from '../components/QuestionTitle';
 import { ERadioLabelType } from '../../../types';
+import { isPlatform } from '@ionic/react';
 // import { useMutation } from '@tanstack/react-query';
 
 interface QuestionsStepStepProps {
@@ -13,6 +14,8 @@ interface QuestionsStepStepProps {
 }
 
 export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
+  const isMobile = isPlatform('mobile');
+
   const allQuestions = useMemo(() => getQuestionsByLvlAndSport(), []);
 
   const [currentQuestions, setCurrentQuestions] = useState<IQuestion[]>([]);
@@ -157,7 +160,9 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
       <Box
         position="fixed"
         bottom={0}
-        width="auto"
+        // width="auto"
+        display="flex"
+        justifyContent="center"
         left={16}
         right={16}
         bgcolor="white"
@@ -167,9 +172,9 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
           // onClick={() => createRatingMutation.mutate(getValues())}
           onClick={() => handleStep(1)}
           variant="contained"
-          sx={{ fontSize: 18, borderRadius: 20 }}
+          sx={{ fontSize: 18, borderRadius: 20, px: isMobile ? 'unset' : 10 }}
           disabled={!isLastQuestion}
-          fullWidth
+          fullWidth={isMobile}
         >
           Подтвердить
         </Button>

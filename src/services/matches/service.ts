@@ -2,7 +2,7 @@ import {
   CreateMatchDTO,
   JoinMatchDTO,
   UploadResultsDTO,
-  AvailableMatch,
+  MatchData,
 } from './interface';
 import { api } from '../api/service';
 
@@ -19,19 +19,26 @@ const queryString = gameDates
   .join(',');
 
 export function getMyMatches() {
-  const res = api.get<AvailableMatch[]>('/matches/my');
+  const res = api.get<MatchData[]>('/matches/my');
   return res;
 }
 
 export function getAvailableMatches() {
-  const res = api.get<AvailableMatch[]>(
+  const res = api.get<MatchData[]>(
     `/matches/available?sport=TENNIS&gamedates=${queryString}`,
   );
   return res;
 }
 
+export function getAvailableNoRatingMatches() {
+  const res = api.get<MatchData[]>(
+    `/matches/available-no-rating?sport=TENNIS&gamedates=${queryString}`,
+  );
+  return res;
+}
+
 export function getOneAvailableMatch(id: number) {
-  const res = api.get<AvailableMatch>(`/matches/${id}`);
+  const res = api.get<MatchData>(`/matches/${id}`);
   return res;
 }
 
@@ -40,21 +47,16 @@ export function createMatch(data: CreateMatchDTO) {
   return res;
 }
 export function joinMatch(data: JoinMatchDTO) {
-  const { matchId, team } = data;
-  const res = api.post('/matches/join', {
-    matchId: matchId,
-    team: team,
-  });
-
+  const res = api.post('/matches/join', data);
   return res;
 }
 
 export function uploadResults(data: UploadResultsDTO) {
-  const { matchId, matchResults } = data;
-  const res = api.post('/matches/upload-results', {
-    matchId: matchId,
-    matchResults: matchResults,
-  });
+  const res = api.post('/matches/upload-results', data);
+  return res;
+}
 
+export function cancelMatch(matchId: number) {
+  const res = api.delete('/matches/cancel', { data: { matchId } });
   return res;
 }

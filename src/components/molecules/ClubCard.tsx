@@ -1,23 +1,12 @@
 import { useHistory } from 'react-router';
+import { Club, IAvailableTime } from '../../services/club/interface';
 import { FavoriteBorderOutlined } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
 import { DateBox } from './DateBox';
 
-const dummyData = [
-  '10:00',
-  '10:30',
-  '11:00',
-  '11:30',
-  '12:00',
-  '12:30',
-  '13:00',
-  '13:30',
-  '14:00',
-];
+interface IClubCard extends Club {}
 
-interface IClubCard {}
-
-export const ClubCard: React.FC<any> = ({
+export const ClubCard: React.FC<IClubCard> = ({
   id,
   img,
   title,
@@ -25,6 +14,8 @@ export const ClubCard: React.FC<any> = ({
   availableTimes,
 }) => {
   const history = useHistory();
+
+  const timeArray: any = availableTimes && Object.values(availableTimes);
 
   return (
     <Box onClick={() => history.push(`/book-court/${id}?tab=2`)}>
@@ -76,16 +67,20 @@ export const ClubCard: React.FC<any> = ({
           </Box>
         </Box>
       </Box>
+
       <Box py={1.5} pl={1.5}>
         <Typography mb={1} color="gray">
           6km - L'Hospitalet de Llobregat (Barcelona)
         </Typography>
         <Box display="flex" gap={1} pb={2} sx={{ overflowX: 'auto' }}>
-          {dummyData?.map((time) => (
+          {timeArray[0]?.map((elem: IAvailableTime, i: number) => (
             <DateBox
-              key={time}
-              startTime={time}
-              onClick={() => console.log(`Make current time - ${time} active`)}
+              key={i}
+              startTime={elem.time}
+              onClick={(e: Event) => {
+                e.stopPropagation();
+                history.push(`/book-court/${id}?tab=2&time=${elem.time}`);
+              }}
             />
           ))}
         </Box>

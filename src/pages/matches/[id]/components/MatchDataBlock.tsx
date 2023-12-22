@@ -1,40 +1,30 @@
 import React from 'react';
 import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOutlined';
-import { countMatchEndTime } from '../../../../helpers/countMatchEndTime';
+import { EType, getDayFormat } from '../../../../helpers/getTimeDateString';
+import { MatchData } from '../../../../services/matches/interface';
 import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import { Box, Divider, Typography } from '@mui/material';
 
-const dateOptions: any = { weekday: 'long', day: 'numeric', month: 'short' };
-
-interface IMatchDataBlock {
-  minutes: number;
-  startTime: string;
-  sport: string;
-  ratingFrom: number;
-  ratingTo: number;
-  date: string;
-  price: number;
-  gender: string;
-}
-
-export const MatchDataBlock: React.FC<IMatchDataBlock> = ({
+export const MatchDataBlock: React.FC<MatchData> = ({
   minutes,
-  startTime,
+  slot,
   sport,
   ratingFrom,
   ratingTo,
-  date,
+  gameDate,
   price,
-  gender,
+  paid,
+  // gender,
 }) => {
   const isPremium = true;
 
-  const matchDate =
-    date && new Date(date).toLocaleDateString('ru-RU', dateOptions);
-  const MatchTimeRange =
-    minutes && startTime
-      ? startTime.slice(0, -3) + ' - ' + countMatchEndTime(startTime, minutes)
-      : '';
+  const matchDate = getDayFormat(
+    gameDate,
+    EType.WEEK_DAY_MONTH,
+    slot.time,
+    minutes,
+  );
+
   return (
     <Box
       p={2}
@@ -57,7 +47,7 @@ export const MatchDataBlock: React.FC<IMatchDataBlock> = ({
               fontWeight={600}
               textTransform="capitalize"
             >
-              {matchDate} {MatchTimeRange}
+              {matchDate}
             </Typography>
           </Box>
         </Box>
@@ -97,7 +87,7 @@ export const MatchDataBlock: React.FC<IMatchDataBlock> = ({
         <Box textAlign="center">
           <Typography color="gray">Цена</Typography>
           <Typography fontSize={16} fontWeight={600}>
-            ₽ {price}
+            ₽ {paid ? 0 : price / 4}
           </Typography>
         </Box>
       </Box>

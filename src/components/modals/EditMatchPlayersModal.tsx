@@ -4,32 +4,31 @@ import React from 'react';
 import { Member } from '../../helpers/sortTeamMembers';
 import { PlayerSlot } from '../molecules/PlayerSlot';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import { usePlayerProfile } from '../../services/api/hooks';
+
 interface IEditMatchPlayersModal {
   openState: boolean;
   handleModal: (val?: boolean) => void;
   players: Array<Member[]>;
-  isUserCreator: boolean;
+  isUserOwner: boolean;
+  onCancel: () => void;
 }
+
 export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
   openState,
   handleModal,
   players,
-  isUserCreator,
+  isUserOwner,
+  onCancel,
 }) => {
-  const onCancelMatch = (memeber: Member) => {
-    console.log(
-      `${isUserCreator ? 'Match creator' : 'Player'} ${
-        memeber.player.user.firstname
-      } want's to cancel the match`,
-    );
-  };
+  const player = usePlayerProfile();
 
   return (
     <ModalContainer
       openState={openState}
       handleModal={handleModal}
       headerTitle="Изменить состав команд"
-      initialBreakpoint={0.25}
+      initialBreakpoint={0.5}
     >
       <Box display="flex" justifyContent="center" gap={1.5}>
         {players.map((team, teamIndex) => {
@@ -38,11 +37,16 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
               <Box display="flex" alignItems="flex-start" gap={2}>
                 {team.map((member: any, slotIndex: number) => {
                   const teamSlotIndex = { teamIndex, slotIndex };
+                  const isUser = player?.id === member?.player?.id;
+
                   return (
                     <Box key={slotIndex} position="relative">
-                      {member && (
+                      {member && (isUserOwner || (!isUserOwner && isUser)) ? (
                         <CancelRoundedIcon
-                          onClick={() => onCancelMatch(member)}
+                          onClick={() => {
+                            handleModal();
+                            onCancel();
+                          }}
                           sx={{
                             cursor: 'pointer',
                             color: '#ff484e',
@@ -52,10 +56,11 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
                             top: -10,
                           }}
                         />
-                      )}
+                      ) : null}
                       <PlayerSlot
                         member={member}
                         teamSlotIndex={teamSlotIndex}
+                        isUserOwner={isUserOwner}
                       />
                     </Box>
                   );

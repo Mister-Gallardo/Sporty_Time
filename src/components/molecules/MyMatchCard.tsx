@@ -1,42 +1,22 @@
 import React from 'react';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
-import { countMatchEndTime } from '../../helpers/countMatchEndTime';
+import { EType, getDayFormat } from '../../helpers/getTimeDateString';
 import { Avatar, Box, Divider, Typography } from '@mui/material';
+import { sortTeamMembers } from '../../helpers/sortTeamMembers';
+import { getMatchStatus } from '../../helpers/getMatchStatus';
+import { MatchData } from '../../services/matches/interface';
 import CloseIcon from '@mui/icons-material/Close';
-import { isToday, isTomorrow } from 'date-fns';
 import { Add } from '@mui/icons-material';
 import { useHistory } from 'react-router';
 import { Status } from '../../types';
-import { sortTeamMembers } from '../../helpers/sortTeamMembers';
-import { getMatchStatus } from '../../helpers/getMatchStatus';
+import { isPlatform } from '@ionic/react';
 
-interface IMyMatchCardProps {
-  confirmedByAllResult: boolean;
+interface IMyMatchCardProps extends MatchData {
+  uploadResults: (id: number) => void;
 }
 
-// type ICardProps = IMyMatchCardProps & AvailableMatch;
-type ICardProps = any;
-
-const dateOptions: any = { day: 'numeric', month: 'short' };
-
-const matchDateFormat = (date: string, matchTime: string, playTime: number) => {
-  const passedDate = new Date(date);
-  let day = '';
-  const matchEndTime = countMatchEndTime(matchTime, playTime);
-
-  if (isToday(passedDate)) {
-    day = 'Today';
-  } else if (isTomorrow(passedDate)) {
-    day = 'Tomorrow';
-  } else {
-    day = passedDate.toLocaleDateString('ru-RU', dateOptions);
-  }
-
-  return `${day} | ${matchTime.slice(0, -3)} - ${matchEndTime}`;
-};
-
-export const MyMatchCard: React.FC<ICardProps> = (props) => {
+export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
   const {
     id,
     gameDate,
@@ -45,7 +25,17 @@ export const MyMatchCard: React.FC<ICardProps> = (props) => {
     winningTeam,
     uploadResults,
     slot,
+    minutes,
   } = props;
+
+  const matchDate = getDayFormat(
+    gameDate,
+    EType.MONTH_AND_DAY,
+    slot.time,
+    minutes,
+  );
+
+  const isMobile = isPlatform('mobile');
   const history = useHistory();
 
   const members = sortTeamMembers(matchBookings);
@@ -67,12 +57,17 @@ export const MyMatchCard: React.FC<ICardProps> = (props) => {
     { team: 'B', results: teamBResults },
   ];
 
-  // const timeExpires = new Date(props.timeExpires);
+  const isWithoutResults =
+    status === Status.CANCELED ||
+    status === Status.UPCOMING ||
+    status === Status.WAITING_FOR_RESULTS ||
+    status === Status.PENDING ||
+    status === Status.IN_PROGRESS;
 
-  // const { confirmedByAllResult, id } = props;
   return (
     <Box
       width="100%"
+      maxWidth={isMobile ? 'unset' : 325}
       border="1px solid #E5E5E5"
       borderRadius={2}
       onClick={() => history.push(`/matches/${id}`)}
@@ -147,13 +142,10 @@ export const MyMatchCard: React.FC<ICardProps> = (props) => {
             );
           })}
         </Box>
-        {status === Status.CANCELED ||
-        status === Status.UPCOMING ||
-        status === Status.WAITING_FOR_RESULTS ||
-        status === Status.IN_PROGRESS ? (
+        {isWithoutResults ? (
           <WithoutResults
-            date={matchDateFormat(gameDate, slot.time, 90)}
-            clubName="Club Title"
+            date={matchDate}
+            clubName={slot.court.club.title}
             courtName={slot.court.title}
             status={status}
             uploadResults={
@@ -164,7 +156,7 @@ export const MyMatchCard: React.FC<ICardProps> = (props) => {
           />
         ) : (
           <Results
-            date={matchDateFormat(gameDate, slot.time, 90)}
+            date={matchDate}
             status={status}
             results={results}
             winningTeam={winningTeam}
@@ -193,6 +185,7 @@ const WithoutResults: React.FC<IWithoutResults> = ({
     status === Status.CANCELED ||
     status === Status.WAITING_FOR_RESULTS ||
     status === Status.IN_PROGRESS ||
+    status === Status.PENDING ||
     status === Status.VALIDATING;
 
   const statusText =
@@ -204,10 +197,12 @@ const WithoutResults: React.FC<IWithoutResults> = ({
       ? 'Матч в процессе'
       : status === Status.VALIDATING
       ? 'Подтверждение результатов'
+      : status === Status.PENDING
+      ? 'Ожидание оплаты'
       : '';
 
   const statusBgColor =
-    status === Status.CANCELED
+    status === Status.CANCELED || status === Status.PENDING
       ? '#fff6f5'
       : status === Status.WAITING_FOR_RESULTS
       ? '#ffe0ed'
@@ -218,7 +213,7 @@ const WithoutResults: React.FC<IWithoutResults> = ({
       : '';
 
   const statusTextColor =
-    status === Status.CANCELED
+    status === Status.CANCELED || status === Status.PENDING
       ? '#d05e73'
       : status === Status.WAITING_FOR_RESULTS
       ? '#ff4588'
@@ -308,7 +303,7 @@ interface IResults {
   date: string;
   status: Status;
   results: any;
-  winningTeam: string;
+  winningTeam: string | null;
 }
 const Results: React.FC<IResults> = ({
   date,
@@ -320,6 +315,7 @@ const Results: React.FC<IResults> = ({
     status === Status.INCOMPLETE ||
     status === Status.VALIDATING ||
     status === Status.WITHOUT_RESULT ||
+    status === Status.INVALID_RESULT ||
     status === Status.WAITING_FOR_RESULTS;
 
   const statusText =
@@ -327,6 +323,8 @@ const Results: React.FC<IResults> = ({
       ? 'Maтч не завершён'
       : status === Status.VALIDATING
       ? 'Запись результатов'
+      : status === Status.INVALID_RESULT
+      ? 'Невалидный результат'
       : status === Status.WITHOUT_RESULT
       ? 'Результат не загружен'
       : '';
@@ -413,7 +411,7 @@ const Results: React.FC<IResults> = ({
                   ? '#eeeeff'
                   : status === Status.INCOMPLETE
                   ? '#ffefe3'
-                  : '',
+                  : '#ffefe3',
             }}
           >
             <Typography
@@ -426,7 +424,7 @@ const Results: React.FC<IResults> = ({
                     ? '#8a9dfa'
                     : status === Status.INCOMPLETE
                     ? '#ff9848'
-                    : '',
+                    : '#ff9848',
               }}
             >
               {statusText}

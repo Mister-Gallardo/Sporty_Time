@@ -1,4 +1,4 @@
-import { MatchMember, MatchMemberShort } from '../services/user/interface';
+import { MatchMember, MatchMemberShort } from '../services/matches/interface';
 
 export type Member = MatchMember | MatchMemberShort;
 

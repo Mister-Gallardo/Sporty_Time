@@ -17,7 +17,7 @@ export const getMatchStatus = (match: MatchData) => {
   if (match.isCancelled) return Status.CANCELED;
 
   //isPending
-  // if(!isPaied) status pending
+  if (!match.paid) return Status.PENDING;
 
   //isUpcomming
   if (currendDateISO.getTime() < matchDateISO.getTime()) return Status.UPCOMING;
@@ -42,4 +42,13 @@ export const getMatchStatus = (match: MatchData) => {
   //isCompleteWithoutResults
   if (match.confirmMatchResults && !match.matchResults)
     return Status.WITHOUT_RESULT;
+
+  //invalid results
+  if (match.winningTeam === 'I') return Status.INVALID_RESULT;
+
+  //match wasn't finished
+  if (match.winningTeam === 'T') return Status.INCOMPLETE;
+
+  // there's winner - valid results
+  return Status.COMPLETE;
 };

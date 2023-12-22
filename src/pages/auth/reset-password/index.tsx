@@ -4,12 +4,15 @@ import useSearchParams from '../../../hooks/useSearchParams';
 import { changePassword } from '../../../services/auth/service';
 import { useMutation } from '@tanstack/react-query';
 import { useHistory } from 'react-router';
-import { isPlatform } from '@ionic/react';
+import { isPlatform, useIonToast } from '@ionic/react';
 
 export function ResetPassword() {
   const isMobile = isPlatform('mobile');
+
   const history = useHistory();
   const [getParams] = useSearchParams();
+
+  const [showToast] = useIonToast();
 
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -19,6 +22,13 @@ export function ResetPassword() {
   const changePswrdMutation = useMutation({
     mutationFn: changePassword,
     onSuccess() {
+      showToast({
+        color: 'success',
+        message: `Пароль был успешно изменён`,
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
       history.push('/');
     },
     onError(e: any) {
@@ -45,7 +55,7 @@ export function ResetPassword() {
       return setErrorMsg('Пароли должны совпадать');
 
     changePswrdMutation.mutate({
-      email: getParams('email') + '@gmail.com',
+      email: getParams('email'),
       otp: getParams('otp'),
       password,
     });

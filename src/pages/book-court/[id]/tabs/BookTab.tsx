@@ -1,19 +1,19 @@
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { IonSpinner, IonToast, IonToggle, isPlatform } from '@ionic/react';
-import { SportsTennis } from '@mui/icons-material';
 import { Box, Typography, Divider, Stack } from '@mui/material';
-import React, { useState } from 'react';
+import { SportsTennis } from '@mui/icons-material';
 import { getClub } from '../../../../services/club/service';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { CalendarDay } from '../../../../components/molecules/CalendarDay';
 import { CourtAccordion } from '../../../../components/molecules/CourtAccordion';
 import { ConfigMatchModal } from '../../../../components/modals/ConfigMatchModal';
+import { CheckoutModal } from '../../../../components/modals/CheckoutModal';
 import { createMatch } from '../../../../services/matches/service';
 import useSearchParams from '../../../../hooks/useSearchParams';
 import { IConfigMatchModalData } from '../../../../types';
 import useToggle from '../../../../hooks/useToggle';
 import { useForm } from 'react-hook-form';
-import { CheckoutModal } from '../../../../components/modals/CheckoutModal';
 
 const now = new Date();
 const dates = Array.from(Array(100)).map(
@@ -97,7 +97,7 @@ export function BookTab() {
     },
   });
 
-  const onCheckout = () => {
+  const onCheckout = (money: number) => {
     createMatchMutation.mutate({
       slotId,
       gameDate: gameDate,
@@ -107,6 +107,7 @@ export function BookTab() {
       type: getValues('matchType').toUpperCase(),
       ratingFrom: getValues('ratingFrom'),
       ratingTo: getValues('ratingTo'),
+      money,
     });
     setOpenCheckoutModal();
   };
@@ -310,6 +311,7 @@ export function BookTab() {
           message="Корт был успешно забронирован!"
           onDidDismiss={() => setOpenSuccessBookToast(false)}
           duration={2000}
+          color="success"
         ></IonToast>
       </Box>
 

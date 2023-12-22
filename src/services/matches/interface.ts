@@ -1,51 +1,65 @@
-import { Court, Slot } from '../club/interface';
-import { MatchMember } from '../user/interface';
+import { Court } from '../club/interface';
+import { Player } from '../user/interface';
 
-export interface Match {
-  id: number;
-  slot: Slot;
-  gameDate: Date;
-  matchBookings: MatchMember[];
-  createdAt: Date;
-  updatedAt: Date;
+export enum EMatchType {
+  FRIENDLY = 'FRIENDLY',
+  COMPETITIVE = 'COMPETITIVE',
 }
 
 export type matchResults = Array<number[]> | null;
 
-export interface MatchData {
+export interface IMatchSlot {
   id: number;
-  title: string; 
-  isCancelled: boolean;
+  time: string;
+  updatedAt: string;
+  createdAt: string;
+  court: Court;
+}
+
+export interface MatchMember {
+  id: number;
+  paid: number;
   confirmMatchResults: boolean;
+  team: string;
+  createdAt: Date;
+  updatedAt: Date;
+  player: Player;
+}
+
+export interface MatchMemberShort {
+  team: string;
+  paid: number;
+  player: Player;
+}
+
+export interface MatchData {
+  paid: boolean;
+  id: number;
   gameDate: string;
-  price: number;
   minutes: number;
-  matchBookings: MatchMember[];
-  slot: {
-    id: number;
-    time: string;
-    updatedAt: string;
-    createdAt: string;
-    court: Court;
-  };
+  price: number;
+  isPrivate: boolean;
+  isCancelled: boolean;
+  sport: string;
   matchResults: matchResults;
+  confirmMatchResults: boolean;
+  winningTeam: string | null;
+  matchBookings: MatchMember[];
+  slot: IMatchSlot;
+  owner: Player;
   ratingFrom: number;
   ratingTo: number;
-  img: string;
-  sport: string;
-  time: string;
   createdAt: string;
   updatedAt: string;
-  winningTeam: string;
   type: string;
   timeExpires: string;
-  isPrivate: boolean;
 }
 [];
 
 export interface CreateMatchDTO {
   slotId: number;
-  gameDate: Date;
+  money: number;
+  gameDate: Date | string;
   type: string;
   playTime: number;
   ratingFrom: number;
@@ -57,6 +71,7 @@ export interface CreateMatchDTO {
 export interface JoinMatchDTO {
   matchId: number;
   team: string;
+  money: number;
 }
 
 export interface UploadResultsDTO {

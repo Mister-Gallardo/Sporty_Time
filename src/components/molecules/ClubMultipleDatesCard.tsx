@@ -34,6 +34,7 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
     <Card
       onClick={() => history.push(`/book-court/1?tab=2&day=${date}`)}
       sx={{
+        width: '100%',
         maxWidth: isMobile ? '100%' : '400px',
         boxShadow: '0px 0px 5px #e3e3e3',
       }}
