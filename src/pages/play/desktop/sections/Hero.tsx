@@ -1,5 +1,4 @@
-import { Box, TextField, Typography } from '@mui/material';
-import { Button } from '../../../../components/atoms/Button';
+import { Box, Button, TextField, Typography } from '@mui/material';
 
 export function Hero() {
   return (

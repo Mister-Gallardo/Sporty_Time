@@ -5,7 +5,7 @@ import useSortTeamMembers from '../../hooks/useSortTeamMembers';
 import { MatchData } from '../../services/matches/interface';
 import { Box, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from './PlayerSlot';
-import { ITeamSlot } from '../../types';
+import { ITeamSlot, Status } from '../../types';
 
 export const MatchCard: React.FC<MatchData> = ({
   matchBookings,
@@ -72,6 +72,7 @@ export const MatchCard: React.FC<MatchData> = ({
                     const teamSlotIndex = { teamIndex, slotIndex };
                     return (
                       <PlayerSlot
+                        matchStatus={Status.COMPLETE}
                         key={slotIndex}
                         member={member}
                         teamSlotIndex={teamSlotIndex}

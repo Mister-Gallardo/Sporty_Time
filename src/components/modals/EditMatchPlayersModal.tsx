@@ -5,6 +5,7 @@ import { Member } from '../../helpers/sortTeamMembers';
 import { PlayerSlot } from '../molecules/PlayerSlot';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { usePlayerProfile } from '../../services/api/hooks';
+import { Status } from '../../types';
 
 interface IEditMatchPlayersModal {
   openState: boolean;
@@ -58,6 +59,7 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
                         />
                       ) : null}
                       <PlayerSlot
+                        matchStatus={Status.COMPLETE}
                         member={member}
                         teamSlotIndex={teamSlotIndex}
                         isUserOwner={isUserOwner}
