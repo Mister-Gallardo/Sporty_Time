@@ -49,3 +49,7 @@ ion-toolbar {
 ion-tabs:has(.ion-page.notabs:not(.ion-page-hidden)) > ion-tab-bar {
     display: none !important;
 }
+
+.ion-page {
+    justify-content: flex-start;
+}

@@ -28,7 +28,7 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
       openState={openState}
       handleModal={handleModal}
       headerTitle="Изменить состав команд"
-      initialBreakpoint={0.5}
+      initialBreakpoint={0.3}
     >
       <Box display="flex" justifyContent="center" gap={1.5}>
         {players.map((team, teamIndex) => {

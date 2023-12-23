@@ -2,7 +2,6 @@ import { PropsWithChildren } from 'react';
 import {
   IonButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonModal,
   IonTitle,
@@ -11,6 +10,7 @@ import {
 } from '@ionic/react';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { Box, IconButton, Modal, Typography } from '@mui/material';
+import { IonScrollableModalContent } from '../atoms/IonScrollableModalContent';
 
 interface IModalContainer extends PropsWithChildren<{}> {
   openState: boolean;
@@ -24,7 +24,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
   openState,
   handleModal,
   headerTitle,
-  initialBreakpoint = 0.95,
+  initialBreakpoint = 1,
 }) => {
   const isMobile = isPlatform('mobile');
 
@@ -35,7 +35,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
           onDidDismiss={() => handleModal(false)}
           isOpen={openState}
           initialBreakpoint={initialBreakpoint}
-          breakpoints={[0, 0.25, 0.5, 0.75, 0.95]}
+          breakpoints={[0, initialBreakpoint]}
           handleBehavior="cycle"
         >
           <IonHeader>
@@ -48,7 +48,9 @@ export const ModalContainer: React.FC<IModalContainer> = ({
               </IonButtons>
             </IonToolbar>
           </IonHeader>
-          <IonContent className="ion-padding">{children}</IonContent>
+          <IonScrollableModalContent className="ion-padding">
+            {children}
+          </IonScrollableModalContent>
         </IonModal>
       ) : (
         <Modal open={openState} onClose={() => handleModal()}>

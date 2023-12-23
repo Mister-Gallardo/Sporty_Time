@@ -43,7 +43,8 @@
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-swipeable-views": "^0.14.0",
-    "react-swipeable-views-utils": "^0.14.0"
+    "react-swipeable-views-utils": "^0.14.0",
+    "recharts": "^2.10.3"
   },
   "devDependencies": {
     "@capacitor/cli": "5.5.1",

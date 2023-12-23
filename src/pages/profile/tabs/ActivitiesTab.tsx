@@ -8,6 +8,7 @@ import { InfoRounded } from '@mui/icons-material';
 import { isPlatform } from '@ionic/react';
 import { useHistory } from 'react-router';
 import { Sport } from '../../../types';
+import { RatingChart } from '../../../components/molecules/RatingChart';
 
 export default function ActivitiesTab() {
   const isMobile = isPlatform('mobile');
@@ -106,6 +107,7 @@ export default function ActivitiesTab() {
           </Button>
         </Box>
       )}
+      <RatingChart />
     </Box>
   );
 }
