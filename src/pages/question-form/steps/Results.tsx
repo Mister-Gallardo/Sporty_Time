@@ -3,6 +3,7 @@ import { Avatar, Box, Button, Typography } from '@mui/material';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { SportsBaseballOutlined } from '@mui/icons-material';
 import { BgContainer } from '../components/BgContainer';
+import { getSportRating } from '../../../helpers/getSportRating';
 
 interface ResultsStepProps {
   firstName: string;
@@ -14,9 +15,9 @@ export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
 
   const profile = usePlayerProfile();
 
-  const sport = localStorage.getItem('sport');
-  const rating = profile ? (profile as any)[`rating${sport}`] : '';
-  const initials = (firstName || lastName) && firstName[0] + '' + lastName[0];
+  const sport = localStorage.getItem('sport')?.toLocaleLowerCase() || '';
+  const rating = profile ? getSportRating(profile, sport) : 0;
+  const initials = firstName && lastName && firstName[0] + '' + lastName[0];
 
   return (
     <BgContainer>
@@ -43,10 +44,10 @@ export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
               {initials}
             </Avatar>
             <Typography>{firstName + ' ' + lastName}</Typography>
-            {/* <Box display="flex" gap={1}>
+            <Box display="flex" gap={1}>
               <Typography component="span">🇷🇺</Typography>
               <Typography>Russian Federation</Typography>
-            </Box> */}
+            </Box>
           </Box>
           <Box>
             <Box
@@ -56,10 +57,10 @@ export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
               gap={1}
             >
               <SportsBaseballOutlined />
-              <Typography>{sport}</Typography>
+              <Typography textTransform="capitalize">{sport}</Typography>
             </Box>
-            {/* <Typography textAlign="center">Level {rating}</Typography> */}
-            <Typography textAlign="center">Тест успешно пройден!</Typography>
+            <Typography textAlign="center">Level {rating}</Typography>
+            {/* <Typography textAlign="center">Тест успешно пройден!</Typography> */}
           </Box>
         </Box>
       </Box>

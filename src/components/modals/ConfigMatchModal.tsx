@@ -9,25 +9,28 @@ import {
   IConfigMatchModalData,
   PreferedGender,
 } from '../../types';
-import { useUserInfo } from '../../services/api/hooks';
+import { usePlayerProfile } from '../../services/api/hooks';
 import { ModalContainer } from './ModalContainer';
 import useToggle from '../../hooks/useToggle';
+import { getSportRating } from '../../helpers/getSportRating';
 
 interface IConfigMatchModal {
+  sport: string;
   openState: boolean;
   handleModal: (val?: boolean) => void;
   getData: (data: IConfigMatchModalData) => void;
 }
 
 export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
+  sport,
   openState,
   handleModal,
   getData,
 }) => {
   const isMobile = isPlatform('mobile');
 
-  const user = useUserInfo();
-  const padelRating = user?.player.ratingPadel;
+  const player = usePlayerProfile();
+  const rating = player ? getSportRating(player, sport) : 0;
 
   const [isPrivate, setIsPrivate] = useToggle();
   const [matchType, setMatchType] = useState<string>('competitive');
@@ -39,13 +42,13 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
   const [rangeMaxValue, setRangeMaxValue] = useState<number>(0);
 
   useEffect(() => {
-    if (padelRating) {
-      const ratingFrom = padelRating < 0.25 ? 0 : padelRating - 0.25;
-      const ratingTo = padelRating > 6.25 ? 7 : padelRating + 0.75;
+    if (rating) {
+      const ratingFrom = rating < 0.25 ? 0 : rating - 0.25;
+      const ratingTo = rating > 6.25 ? 7 : rating + 0.75;
       setRangeMinValue(ratingFrom);
       setRangeMaxValue(ratingTo);
     }
-  }, [padelRating]);
+  }, [rating]);
 
   const handleRangeValueChange = (_: Event, values: number | number[]) => {
     if (Array.isArray(values)) {
@@ -109,7 +112,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
                             src="https://ionicframework.com/docs/img/demos/avatar.svg"
                           />
                         </IonAvatar>
-                        <Typography align="center">{padelRating}</Typography>
+                        <Typography align="center">{rating}</Typography>
                       </Box>
                       <Box>
                         <Typography>Диапазон уровней</Typography>
@@ -157,7 +160,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
                     </Box>
 
                     <MultiThumbSlider
-                      userPoint={padelRating}
+                      userPoint={rating}
                       curentMinValue={rangeMinValue}
                       curentMaxValue={rangeMaxValue}
                       handleChange={handleRangeValueChange}

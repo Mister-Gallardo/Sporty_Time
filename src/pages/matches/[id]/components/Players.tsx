@@ -4,7 +4,7 @@ import useSortTeamMembers from '../../../../hooks/useSortTeamMembers';
 import { MatchMember } from '../../../../services/matches/interface';
 import { Box, Button, Divider, Typography } from '@mui/material';
 import useSearchParams from '../../../../hooks/useSearchParams';
-import { ITeamSlot } from '../../../../types';
+import { ITeamSlot, Status } from '../../../../types';
 import useToggle from '../../../../hooks/useToggle';
 import { EditMatchPlayersModal } from '../../../../components/modals/EditMatchPlayersModal';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -17,14 +17,14 @@ import { useIonToast } from '@ionic/react';
 import { CancelDialogModal } from './CancelDialogModal';
 
 interface IPlayers {
-  isCancelled: boolean;
+  matchStatus: Status;
   players: MatchMember[];
   isUserOwner: boolean;
   isUserAlredyInMatch: boolean;
 }
 
 export const Players: React.FC<IPlayers> = ({
-  isCancelled,
+  matchStatus,
   players,
   isUserOwner,
   isUserAlredyInMatch,
@@ -114,7 +114,7 @@ export const Players: React.FC<IPlayers> = ({
                       onSlotSelect={onSlotSelect}
                       isUserOwner={isUserOwner}
                       isUserAlredyInMatch={isUserAlredyInMatch}
-                      isCancelled={isCancelled}
+                      matchStatus={matchStatus}
                     />
                   );
                 })}

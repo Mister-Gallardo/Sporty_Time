@@ -1,6 +1,7 @@
 type TNext = string | null;
 
 export interface IOption {
+  i: string;
   answer: string;
   next: TNext;
 }

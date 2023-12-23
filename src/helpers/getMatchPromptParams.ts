@@ -54,6 +54,18 @@ export const getPromptParams = (matchData: MatchData, isOwner: boolean) => {
     };
   }
 
+  if (status === Status.WAITING_FOR_RESULTS) {
+    return {
+      color: PromptIconColor.DANGER,
+      bgColor: PromptBGColor.DANGER,
+      title: 'Ожидается загрузка результатов',
+      description: '',
+    };
+  }
+  if (status === Status.COMPLETE) {
+    return null;
+  }
+
   if (isToday(matchDate)) {
     return {
       color: PromptIconColor.WARNING,

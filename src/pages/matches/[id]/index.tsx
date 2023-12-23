@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import { ArrowBackIosNewOutlined, ChatBubbleOutlineRounded } from '@mui/icons-material';
+import {
+  ArrowBackIosNewOutlined,
+  ChatBubbleOutlineRounded,
+} from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
 import { SwipeablePage } from '../../../components/SwipeablePage';
 import {
@@ -30,6 +33,7 @@ import useToggle from '../../../hooks/useToggle';
 import { Players } from './components/Players';
 import { Prompt } from './components/Prompt';
 import { getMatchStatus } from '../../../helpers/getMatchStatus';
+import { Status } from '../../../types';
 
 export const SingleMatchPage: React.FC = () => {
   const isMobile = isPlatform('mobile');
@@ -39,7 +43,7 @@ export const SingleMatchPage: React.FC = () => {
   const { matchId } = useParams<{ matchId: string }>();
   const [error, setError] = useState<string | undefined>();
 
-  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
+  const [openUploadModal, setOpenUploadModal] = useToggle();
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   const [openToast, setOpenToast] = useState<boolean>(false);
 
@@ -195,8 +199,8 @@ export const SingleMatchPage: React.FC = () => {
                 <Players
                   players={matchData.matchBookings}
                   isUserOwner={isUserOwner}
-                  isCancelled={matchData.isCancelled}
                   isUserAlredyInMatch={!!isUserAlredyInMatch}
+                  matchStatus={matchStatus}
                 />
               </Box>
 
@@ -226,6 +230,32 @@ export const SingleMatchPage: React.FC = () => {
                   status={matchStatus}
                   matchResults={matchData.matchResults}
                 />
+              )}
+
+              {matchStatus === Status.WAITING_FOR_RESULTS && (
+                <Box
+                  my={4}
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  gap={3}
+                  border="1px solid #ddd"
+                  borderRadius={2}
+                  bgcolor="#fff"
+                  py={1.5}
+                  px={1}
+                >
+                  <Typography fontSize={16} fontWeight={600} textAlign="center">
+                    Матч завершён, загрузить хотите результаты?
+                  </Typography>
+                  <Button
+                    onClick={() => setOpenUploadModal()}
+                    variant="contained"
+                    sx={{ borderRadius: 20, paddingX: 2 }}
+                  >
+                    Загрузить
+                  </Button>
+                </Box>
               )}
 
               <MatchInfoBlock data={matchData} />
