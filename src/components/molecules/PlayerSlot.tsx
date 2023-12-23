@@ -7,10 +7,10 @@ import { Avatar, Box, Typography } from '@mui/material';
 import { usePlayerProfile } from '../../services/api/hooks';
 import { Add } from '@mui/icons-material';
 import { isPlatform } from '@ionic/react';
-import { ITeamSlot } from '../../types';
+import { ITeamSlot, Status } from '../../types';
 
 interface IPlayerSlot {
-  isCancelled?: boolean;
+  matchStatus: Status;
   member: MatchMember | MatchMemberShort;
   teamSlotIndex: ITeamSlot;
   onSlotSelect?: (val: ITeamSlot) => void;
@@ -19,7 +19,7 @@ interface IPlayerSlot {
 }
 
 export const PlayerSlot: React.FC<IPlayerSlot> = ({
-  isCancelled,
+  matchStatus,
   member,
   teamSlotIndex,
   onSlotSelect,
@@ -67,7 +67,7 @@ export const PlayerSlot: React.FC<IPlayerSlot> = ({
           >
             <Typography fontSize={12}>{member.player.ratingTennis}</Typography>
 
-            {!isCancelled && !isUserOwner && isUser && (
+            {matchStatus !== Status.CANCELED && !isUserOwner && isUser && (
               <>
                 <Typography
                   textAlign="center"
@@ -99,17 +99,19 @@ export const PlayerSlot: React.FC<IPlayerSlot> = ({
             width={50}
             height={50}
             borderRadius={50}
-            border={`1px solid ${isCancelled ? '#eee' : '#c6dcf2'}`}
+            border={`1px solid ${
+              matchStatus !== Status.UPCOMING ? '#eee' : '#c6dcf2'
+            }`}
             display="flex"
             justifyContent="center"
             alignItems="center"
           >
             <Add
               fontSize="small"
-              color={isCancelled ? 'disabled' : 'primary'}
+              color={matchStatus !== Status.UPCOMING ? 'disabled' : 'primary'}
             />
           </Box>
-          {isCancelled || (
+          {matchStatus !== Status.UPCOMING || (
             <Typography color="gray" fontSize={12} maxWidth={60} noWrap>
               {isUserOwner || isUserAlredyInMatch
                 ? 'Свободно'

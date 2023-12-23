@@ -92,8 +92,7 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
 
   const createRatingMutation = useMutation({
     mutationFn: createSportRating,
-    onSuccess(data) {
-      console.log(data);
+    onSuccess() {
       handleStep(1);
     },
     onError(e) {

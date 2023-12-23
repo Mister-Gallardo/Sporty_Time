@@ -62,6 +62,9 @@ export const getPromptParams = (matchData: MatchData, isOwner: boolean) => {
       description: '',
     };
   }
+  if (status === Status.COMPLETE) {
+    return null;
+  }
 
   if (isToday(matchDate)) {
     return {
