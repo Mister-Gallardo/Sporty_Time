@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { IonSpinner, IonToast, IonToggle, isPlatform } from '@ionic/react';
 import { Box, Typography, Divider, Stack } from '@mui/material';
 import { SportsTennis } from '@mui/icons-material';
@@ -27,7 +27,7 @@ const isValidDate = (date: string) => !isNaN(Number(new Date(date)));
 
 export function BookTab() {
   const { clubId } = useParams<{ clubId: string }>();
-
+  const history = useHistory();
   const [searchParam, setSearchParam] = useSearchParams();
 
   const daySearchParam = searchParam('day');
@@ -89,7 +89,8 @@ export function BookTab() {
 
   const createMatchMutation = useMutation({
     mutationFn: createMatch,
-    onSuccess() {
+    onSuccess(data) {
+      data?.matchId && history.push(`/matches/${data.matchId}`);
       refetchClubs();
       setOpenSuccessBookToast(true);
     },

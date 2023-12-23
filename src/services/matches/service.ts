@@ -42,8 +42,8 @@ export function getOneAvailableMatch(id: number) {
   return res;
 }
 
-export function createMatch(data: CreateMatchDTO) {
-  const res = api.post('/matches', data);
+export async function createMatch(data: CreateMatchDTO) {
+  const { data: res } = await api.post('/matches', data);
   return res;
 }
 export function joinMatch(data: JoinMatchDTO) {
