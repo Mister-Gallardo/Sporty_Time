@@ -1,7 +1,15 @@
 import { useHistory } from 'react-router';
 import { SportsBaseballOutlined } from '@mui/icons-material';
-import { Box, Button, MenuItem, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Link,
+  MenuItem,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useIsAuthorized, useUserInfo } from '../services/api/hooks';
+import { Link as RouterLink } from 'react-router-dom';
 
 function DesktopHeader() {
   const history = useHistory();
@@ -132,7 +140,9 @@ function DesktopHeader() {
                 </>
               )}
               {isAuthorized ? (
-                <Typography
+                <Link
+                  component={RouterLink}
+                  to="/profile"
                   sx={{
                     opacity: '0.6',
                     textDecoration: 'underline',
@@ -140,7 +150,7 @@ function DesktopHeader() {
                   }}
                 >
                   {firstName} {lastName}
-                </Typography>
+                </Link>
               ) : (
                 <Typography
                   onClick={() => history.push('/auth')}

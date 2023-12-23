@@ -19,7 +19,7 @@ export function ProfilePage() {
 
   return (
     <>
-      <Box padding={2}>
+      <Box padding={2} maxWidth={1240} mx="auto">
         <Box display="flex" alignItems="end">
           <Avatar
             alt={fullname}
@@ -126,7 +126,7 @@ export function ProfilePage() {
       </Box>
 
       <TabContext value={tabIndex}>
-        <Box>
+        <Box maxWidth={1240} mx="auto">
           {/* <TabList
             tabs={['Activities', 'Posts']}
             onChange={(_, value) => setTabIndex(value)}
