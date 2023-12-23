@@ -1,21 +1,20 @@
-import { Match } from '../matches/interface';
+import { MatchData } from '../matches/interface';
 import { User } from '../user/interface';
+
+export interface IAvailableTime {
+  slotId: number;
+  playtime: number;
+  time: string;
+}
 
 export interface Club {
   id: number;
-
   title: string;
-
   img: string;
-
   user: User;
-
   courts: Court[];
-
   createdAt: Date;
-
   updatedAt: Date;
-
   availableSlots?: Record<
     string,
     {
@@ -23,14 +22,13 @@ export interface Club {
       booked: Omit<Court, 'slots'>[];
     }
   >;
-
-  availableTimes?: string[];
+  availableTimes?: string[] | IAvailableTime[];
   minPrice: number;
 }
 
 export interface Court {
   id: number;
-
+  title: string;
   address: string;
 
   sport: CourtTypes;
@@ -74,7 +72,7 @@ export interface Slot {
 
   court: Court;
 
-  matches: Match[];
+  matches: MatchData[];
 
   time: string;
 

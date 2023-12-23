@@ -13,7 +13,7 @@ export function MobileMatchesPage() {
   return (
     <IonPage>
       <IonHeader style={{ boxShadow: '0px 1px 4px #0000001a' }}>
-        <IonToolbar>
+        <IonToolbar style={{ display: 'flex' }}>
           <IonBackButton
             text={''}
             style={{

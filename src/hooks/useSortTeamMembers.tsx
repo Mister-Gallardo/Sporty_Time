@@ -1,33 +1,33 @@
 import { useState } from 'react';
 import { sortTeamMembers } from '../helpers/sortTeamMembers';
-import { useUserInfo } from '../services/api/hooks';
-import { MatchMember } from '../services/user/interface';
+import { MatchMember } from '../services/matches/interface';
+import { usePlayerProfile } from '../services/api/hooks';
 import { ITeamSlot } from '../types';
 
 export default function useSortTeamMembers(players: MatchMember[]) {
   const sortedTeams = sortTeamMembers(players);
+
   const [selectedTeamSlot, setSelectedTeamSlot] = useState<ITeamSlot | null>(
     null,
   );
 
-  const user = useUserInfo();
+  const profile = usePlayerProfile();
 
-  if (!selectedTeamSlot || !user) {
+  if (!selectedTeamSlot || !profile) {
     return [sortedTeams, setSelectedTeamSlot] as const;
   } else {
-    const newMemberId = user.id;
-
+    const { teamIndex, slotIndex } = selectedTeamSlot;
     const newMember = {
-      id: newMemberId,
-      team: selectedTeamSlot.teamIndex === 0 ? 'A' : 'B',
-      player: {
-        ratingTennis: user.player.ratingTennis,
-        user: { avatarUrl: user.avatarUrl, firstname: user.firstname },
-      },
+      team: teamIndex === 0 ? 'A' : 'B',
+      paid: 0,
+      player: profile,
     };
 
-    sortedTeams[selectedTeamSlot.teamIndex][selectedTeamSlot.slotIndex] =
-      newMember;
+    if (slotIndex === 1 && !sortedTeams[teamIndex][0]) {
+      sortedTeams[teamIndex][0] = newMember;
+    } else {
+      sortedTeams[teamIndex][slotIndex] = newMember;
+    }
 
     return [sortedTeams, setSelectedTeamSlot] as const;
   }

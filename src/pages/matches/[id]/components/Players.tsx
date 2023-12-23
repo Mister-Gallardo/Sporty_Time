@@ -1,16 +1,35 @@
 import React, { useEffect } from 'react';
 import { PlayerSlot } from '../../../../components/molecules/PlayerSlot';
 import useSortTeamMembers from '../../../../hooks/useSortTeamMembers';
-import { MatchMember } from '../../../../services/user/interface';
-import { Box, Divider, Typography } from '@mui/material';
+import { MatchMember } from '../../../../services/matches/interface';
+import { Box, Button, Divider, Typography } from '@mui/material';
 import useSearchParams from '../../../../hooks/useSearchParams';
 import { ITeamSlot } from '../../../../types';
+import useToggle from '../../../../hooks/useToggle';
+import { EditMatchPlayersModal } from '../../../../components/modals/EditMatchPlayersModal';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  cancelMatch,
+  getOneAvailableMatch,
+} from '../../../../services/matches/service';
+import { useParams } from 'react-router';
+import { useIonToast } from '@ionic/react';
+import { CancelDialogModal } from './CancelDialogModal';
 
 interface IPlayers {
+  isCancelled: boolean;
   players: MatchMember[];
+  isUserOwner: boolean;
+  isUserAlredyInMatch: boolean;
 }
 
-export const Players: React.FC<IPlayers> = ({ players }) => {
+export const Players: React.FC<IPlayers> = ({
+  isCancelled,
+  players,
+  isUserOwner,
+  isUserAlredyInMatch,
+}) => {
+  const { matchId } = useParams<{ matchId: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedTeam = searchParams('team');
   const selectedSlot = searchParams('slot');
@@ -32,10 +51,52 @@ export const Players: React.FC<IPlayers> = ({ players }) => {
     setNewPlayer(teamSlotIndex);
   };
 
+  const [openEditModal, setOpenEditModal] = useToggle();
+  const [openCancelDialogModal, setOpenCancelDialogModal] = useToggle();
+
+  const [showToast] = useIonToast();
+
+  const { refetch: refetchMatch } = useQuery({
+    queryKey: [`match`, +matchId],
+    queryFn: () => getOneAvailableMatch(+matchId),
+  });
+
+  const cancelMatchMutation = useMutation({
+    mutationFn: cancelMatch,
+    onSuccess() {
+      setOpenEditModal();
+      setOpenCancelDialogModal();
+      showToast({
+        color: 'success',
+        message: `Ваше бронирование отменено`,
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
+      refetchMatch();
+    },
+    onError(e: any) {
+      console.log('error!', e);
+    },
+  });
+
+  const cancelOrLeaveMatch = () => {
+    cancelMatchMutation.mutate(+matchId);
+  };
+
   return (
     <Box border="1px solid #ddd" borderRadius={2} py={1} px={2} bgcolor="#fff">
-      <Box>
+      <Box display="flex" justifyContent="space-between">
         <Typography fontWeight={700}>Игроки</Typography>
+
+        {(isUserOwner || isUserAlredyInMatch) && (
+          <Button
+            sx={{ p: 0, fontSize: 13 }}
+            onClick={() => setOpenEditModal()}
+          >
+            Изменить
+          </Button>
+        )}
         {/* <Box>out of range</Box> */}
       </Box>
       <Box display="flex" justifyContent="space-evenly" my={1.5}>
@@ -51,6 +112,9 @@ export const Players: React.FC<IPlayers> = ({ players }) => {
                       member={member}
                       teamSlotIndex={teamSlotIndex}
                       onSlotSelect={onSlotSelect}
+                      isUserOwner={isUserOwner}
+                      isUserAlredyInMatch={isUserAlredyInMatch}
+                      isCancelled={isCancelled}
                     />
                   );
                 })}
@@ -71,6 +135,20 @@ export const Players: React.FC<IPlayers> = ({ players }) => {
           B
         </Typography>
       </Box>
+
+      <EditMatchPlayersModal
+        openState={openEditModal}
+        handleModal={setOpenEditModal}
+        players={playersArr}
+        isUserOwner={isUserOwner}
+        onCancel={setOpenCancelDialogModal}
+      />
+      <CancelDialogModal
+        openState={openCancelDialogModal}
+        handleDialog={setOpenCancelDialogModal}
+        isUserOwner={isUserOwner}
+        handleCancel={cancelOrLeaveMatch}
+      />
     </Box>
   );
 };

@@ -1,5 +1,5 @@
 import { IonSpinner, isPlatform } from '@ionic/react';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { ClubCard } from '../../components/molecules/ClubCard';
 import { getClubs } from '../../services/club/service';
 import { useQuery } from '@tanstack/react-query';
@@ -35,9 +35,13 @@ export function BookCourt() {
           mx: 'auto',
         }}
       >
-        {data?.map((club) => (
-          <ClubCard key={club.id} {...club} />
-        ))}
+        {!data || data.length === 0 ? (
+          <Typography textAlign="center" mt={3} color="gray">
+            На данный момент нет доступных клубов по заданным параметрам
+          </Typography>
+        ) : (
+          data?.map((club) => <ClubCard key={club.id} {...club} />)
+        )}
       </Box>
     </>
   );

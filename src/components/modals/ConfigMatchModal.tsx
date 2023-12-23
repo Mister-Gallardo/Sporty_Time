@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IonAvatar, isPlatform } from '@ionic/react';
 import { Box, Button, RadioGroup, Switch, Typography } from '@mui/material';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
@@ -9,9 +9,9 @@ import {
   IConfigMatchModalData,
   PreferedGender,
 } from '../../types';
-import useToggle from '../../hooks/useToggle';
+import { useUserInfo } from '../../services/api/hooks';
 import { ModalContainer } from './ModalContainer';
-// import { useUserInfo } from '../../services/api/hooks';
+import useToggle from '../../hooks/useToggle';
 
 interface IConfigMatchModal {
   openState: boolean;
@@ -25,13 +25,9 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
   getData,
 }) => {
   const isMobile = isPlatform('mobile');
-  // const user = useUserInfo();
 
-  // const padelRating = user?.player.ratingPadel;
-  const padelRating = 1.5;
-
-  const ratingFrom = padelRating < 0.25 ? 0 : padelRating - 0.25;
-  const ratingTo = padelRating > 6.25 ? 7 : padelRating + 0.75;
+  const user = useUserInfo();
+  const padelRating = user?.player.ratingPadel;
 
   const [isPrivate, setIsPrivate] = useToggle();
   const [matchType, setMatchType] = useState<string>('competitive');
@@ -39,18 +35,31 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
     PreferedGender.ALL,
   );
 
-  const [rangeMinValue, setRangeMinValue] = useState<number>(ratingFrom);
-  const [rangeMaxValue, setRangeMaxValue] = useState<number>(ratingTo);
+  const [rangeMinValue, setRangeMinValue] = useState<number>(0);
+  const [rangeMaxValue, setRangeMaxValue] = useState<number>(0);
+
+  useEffect(() => {
+    if (padelRating) {
+      const ratingFrom = padelRating < 0.25 ? 0 : padelRating - 0.25;
+      const ratingTo = padelRating > 6.25 ? 7 : padelRating + 0.75;
+      setRangeMinValue(ratingFrom);
+      setRangeMaxValue(ratingTo);
+    }
+  }, [padelRating]);
 
   const handleRangeValueChange = (_: Event, values: number | number[]) => {
     if (Array.isArray(values)) {
       if (rangeMinValue !== values[0]) setRangeMinValue(values[0]);
-      if (rangeMaxValue !== values[2]) setRangeMaxValue(values[2]);
+      if (rangeMaxValue !== values[1]) setRangeMaxValue(values[1]);
     }
   };
 
   return (
-    <ModalContainer openState={openState} handleModal={handleModal}>
+    <ModalContainer
+      openState={openState}
+      handleModal={handleModal}
+      headerTitle="Настройте свой матч"
+    >
       <Box mb={2} display="flex" flexDirection="column" gap={4}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" gap={1} alignItems="center">
@@ -148,6 +157,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
                     </Box>
 
                     <MultiThumbSlider
+                      userPoint={padelRating}
                       curentMinValue={rangeMinValue}
                       curentMaxValue={rangeMaxValue}
                       handleChange={handleRangeValueChange}
@@ -217,7 +227,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
             mb: isMobile ? 5 : 0,
           }}
         >
-          Создать матч
+          Перейти к оплате
         </Button>
       </Box>
     </ModalContainer>

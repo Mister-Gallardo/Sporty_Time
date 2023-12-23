@@ -21,11 +21,10 @@ export enum PreferedGender {
   MIXED = 'mixed',
 }
 
-// need to change(?) !!!
-export enum Sports {
-  PADEL = 'Padel',
-  TENNIS = 'Tennis',
-  PICKEBALL = 'Pickleball',
+export enum Sport {
+  PADEL = 'PADEL',
+  TENNIS = 'TENNIS',
+  PICKLEBALL = 'PICKLEBALL',
 }
 
 // when join to team
@@ -37,13 +36,22 @@ export interface ITeamSlot {
 // possible match statuses (planning)
 export enum Status {
   CANCELED,
+  PENDING,
   COMPLETE,
-  UPCOMING, // current date < match date
-  IN_PROGRESS, // current date between playtime range
-  VALIDATING, // confirmMatchResults: flase && matchResults: [smth]
-  WITHOUT_RESULT, // confirmMatchResults: true && matchResults: null
-  VALID_RESULT, // confirmMatchResults: true  && matchResults: [smth] && winningTeam: 'team'
-  INVALID_RESULT, //(?)
-  INCOMPLETE, // === tied in playtomic
-  WAITING_FOR_RESULTS, // confirmMatchResults: false && matchResults: null
+  UPCOMING,
+  IN_PROGRESS,
+  VALIDATING,
+  WITHOUT_RESULT,
+  VALID_RESULT,
+  INVALID_RESULT,
+  INCOMPLETE,
+  WAITING_FOR_RESULTS,
+}
+
+// court tag
+export interface ITag {
+  createdAt: string;
+  id: number;
+  title: string;
+  updatedAt: string;
 }

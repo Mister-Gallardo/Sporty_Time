@@ -1,9 +1,15 @@
+import React from 'react';
+import { MatchData } from '../../../../services/matches/interface';
 import { Box, IconButton, Link, Typography } from '@mui/material';
 import { Block } from '../../../../components/molecules/Block';
-import { IMatchBlockProps } from './interface';
 import { Directions } from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router-dom';
-export function ClubInfoBlock({ data }: IMatchBlockProps) {
+
+interface IClubInfoBlock {
+  data: MatchData;
+}
+
+export const ClubInfoBlock: React.FC<IClubInfoBlock> = ({ data }) => {
   return (
     <Block
       component={RouterLink}
@@ -47,4 +53,4 @@ export function ClubInfoBlock({ data }: IMatchBlockProps) {
       </Box>
     </Block>
   );
-}
+};

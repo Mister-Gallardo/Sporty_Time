@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 export function MobileSingleMatchPage() {
   return (
     <IonPage>
-      <IonContent scrollEvents={true}>
+      <IonContent scrollEvents>
         <Box
           sx={{
             width: '100%',

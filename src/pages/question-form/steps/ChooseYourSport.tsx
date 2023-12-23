@@ -8,8 +8,9 @@ import {
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { SportTypeRow } from '../components/SportTypeRow';
 import { BgContainer } from '../components/BgContainer';
-import { Sports } from '../../../types';
 import { useHistory } from 'react-router';
+import { Sport } from '../../../types';
+import { getSportRating } from '../../../helpers/getSportRating';
 
 interface ChooseYourSportProps {
   firstName: string;
@@ -22,16 +23,10 @@ export function ChooseYourSport({
 }: ChooseYourSportProps) {
   const history = useHistory();
 
-  const [selectedSport, setSelectedSport] = useState<string>(Sports.PADEL);
+  const [selectedSport, setSelectedSport] = useState<Sport>(Sport.PADEL);
 
   const player = usePlayerProfile();
-
-  const checkRating = (sport: string) => {
-    if (!player) return '';
-
-    const currentSportRate = (player as any)['rating' + sport];
-    return currentSportRate ? currentSportRate : null;
-  };
+  const currentSportRate = player ? getSportRating(player, selectedSport) : '';
 
   return (
     <BgContainer>
@@ -61,25 +56,25 @@ export function ChooseYourSport({
         </Typography>
         <Box>
           <SportTypeRow
-            type={Sports.PADEL}
+            type={Sport.PADEL}
             icon={<SportsBaseballOutlined />}
             level={player?.ratingPadel}
-            isActive={selectedSport === Sports.PADEL}
-            onClick={() => setSelectedSport(Sports.PADEL)}
+            isActive={selectedSport === Sport.PADEL}
+            onClick={() => setSelectedSport(Sport.PADEL)}
           />
           <SportTypeRow
-            type={Sports.TENNIS}
+            type={Sport.TENNIS}
             icon={<SportsBasketballOutlined />}
             level={player?.ratingTennis}
-            isActive={selectedSport === Sports.TENNIS}
-            onClick={() => setSelectedSport(Sports.TENNIS)}
+            isActive={selectedSport === Sport.TENNIS}
+            onClick={() => setSelectedSport(Sport.TENNIS)}
           />
           <SportTypeRow
-            type={Sports.PICKEBALL}
+            type={Sport.PICKLEBALL}
             icon={<SportsTennisOutlined />}
             level={player?.ratingPickleball}
-            isActive={selectedSport === Sports.PICKEBALL}
-            onClick={() => setSelectedSport(Sports.PICKEBALL)}
+            isActive={selectedSport === Sport.PICKLEBALL}
+            onClick={() => setSelectedSport(Sport.PICKLEBALL)}
           />
         </Box>
       </Box>
@@ -91,7 +86,7 @@ export function ChooseYourSport({
         width="100%"
         height={100}
       >
-        {checkRating(selectedSport) ? (
+        {currentSportRate ? (
           <Button
             onClick={() => history.push('/')}
             variant="contained"

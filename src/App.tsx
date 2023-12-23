@@ -17,6 +17,8 @@ import { SingleMatchPage } from './pages/matches/[id]';
 import { MobileSingleMatchPage } from './pages/matches/[id]/index.mobile';
 import { ProfilePage } from './pages/profile';
 import { MobileProfilePage } from './pages/profile/index.mobile';
+import { MobileResetPassword } from './pages/auth/reset-password/index.mobile';
+import { ResetPassword } from './pages/auth/reset-password';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
@@ -83,6 +85,11 @@ const mobileRoutes = [
     component: MobileAuthPage,
   },
   {
+    path: '/auth/reset-password',
+    exact: true,
+    component: MobileResetPassword,
+  },
+  {
     path: '/question-form',
     exact: true,
     component: MobileQuestionFormPage,
@@ -131,6 +138,7 @@ const App: React.FC = () => {
         <BrowserRouter>
           <Switch>
             <Route path="/auth" component={AuthPage} exact />
+            <Route path="/auth/reset-password" component={ResetPassword} />
             <Route path="/" component={DesktopRouter} />
           </Switch>
         </BrowserRouter>

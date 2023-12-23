@@ -12,6 +12,19 @@ export const useIsAuthorized = () => {
   return isAuthorized();
 };
 
+export const useFullUserData = () => {
+  const isAuthorized = useIsAuthorized();
+
+  const { data } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUserInfo,
+    retry: false,
+    enabled: isAuthorized,
+  });
+
+  return data?.data;
+};
+
 export const useUserInfo = () => {
   const isAuthorized = useIsAuthorized();
 

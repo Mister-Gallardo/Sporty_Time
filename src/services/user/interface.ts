@@ -16,7 +16,7 @@ export interface Player {
   createdAt: Date;
   updatedAt: Date;
 
-  user: User;
+  user?: User;
 }
 
 export interface User {
@@ -30,24 +30,6 @@ export interface User {
   updatedAt: Date;
   player: Player;
   club: Club;
-}
-
-export interface MatchMember {
-  id: number;
-  confirmMatchResults: boolean;
-  team: string;
-  createdAt: Date;
-  updatedAt: Date;
-  player: Player;
-}
-
-export interface MatchMemberShort {
-  id: number;
-  team: string;
-  player: {
-    ratingTennis: number;
-    user: { avatarUrl: string; firstname: string };
-  };
 }
 
 export interface UserProfile {

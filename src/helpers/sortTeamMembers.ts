@@ -1,6 +1,6 @@
-import { MatchMember, MatchMemberShort } from '../services/user/interface';
+import { MatchMember, MatchMemberShort } from '../services/matches/interface';
 
-type Member = MatchMember | MatchMemberShort;
+export type Member = MatchMember | MatchMemberShort;
 
 export const sortTeamMembers = (members: MatchMember[]): Array<Member[]> => {
   const teamA: any = [];

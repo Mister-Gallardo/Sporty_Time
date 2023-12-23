@@ -34,7 +34,7 @@ export function SingleCourtPage() {
 
   if (isLoading) return <IonLoading isOpen />;
 
-  const renderImageSlot = () => (
+  const renderImageSlot = (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
       <AutoPlaySwipeableViews
         index={activeStep}
@@ -58,7 +58,7 @@ export function SingleCourtPage() {
     </Box>
   );
 
-  const renderTopSlot = () => (
+  const renderTopSlot = (
     <Box px={1} display="flex" alignItems="center">
       <IonBackButton
         text={''}
@@ -82,7 +82,7 @@ export function SingleCourtPage() {
   );
 
   return (
-    <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
+    <SwipeablePage imageSlot={renderImageSlot} topSlot={renderTopSlot}>
       <TabContext value={tabIndex!}>
         <Box
           sx={{

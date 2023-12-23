@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { ToggleButton } from '../../../components/atoms/ToggleButton';
+import { getSportRating } from '../../../helpers/getSportRating';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { Box, Button, Typography } from '@mui/material';
 import dummy from '../../../images/home/booking-bg.png';
 import { InfoRounded } from '@mui/icons-material';
 import { isPlatform } from '@ionic/react';
 import { useHistory } from 'react-router';
+import { Sport } from '../../../types';
 
 export default function ActivitiesTab() {
   const isMobile = isPlatform('mobile');
@@ -13,9 +15,15 @@ export default function ActivitiesTab() {
   const history = useHistory();
 
   const [activeSport, setActiveSport] = useState<string>('Padel');
+  const sport =
+    activeSport === 'Padel'
+      ? Sport.PADEL
+      : activeSport === 'Tennis'
+      ? Sport.TENNIS
+      : Sport.PICKLEBALL;
 
-  const user = usePlayerProfile();
-  const sportLevel = user && (user as any)['rating' + activeSport];
+  const player = usePlayerProfile();
+  const sportLevel = player && getSportRating(player, sport);
 
   return (
     <Box

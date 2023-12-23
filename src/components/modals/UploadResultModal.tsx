@@ -1,14 +1,9 @@
-import { IonContent, IonModal, isPlatform, useIonToast } from '@ionic/react';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Modal,
-  Typography,
-} from '@mui/material';
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { getMyMatches, uploadResults } from '../../services/matches/service';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { uploadResults } from '../../services/matches/service';
+import { ModalContainer } from './ModalContainer';
+import { useIonToast } from '@ionic/react';
 
 interface IUploadResultModalProps {
   matchId?: number;
@@ -83,6 +78,7 @@ export function UploadResultModal({
     onSuccess() {
       handleModal();
       qc.resetQueries({ queryKey: ['match', matchId] });
+      getMyMatches();
     },
     onError(e: any) {
       setError(e.response.data.message);
@@ -102,35 +98,23 @@ export function UploadResultModal({
     inputRef.current?.focus();
   }, [activeMyTeamIndex]);
 
-  const renderContnet = () => {
-    return (
-      <Box
-        sx={{
-          width: '100%',
-          maxWidth: '400px',
-          background: '#fff',
-          borderRadius: '15px',
-          padding: '30px 25px',
-        }}
-      >
-        <Box>
-          <Typography
-            sx={{ fontSize: '1rem', fontWeight: '600', paddingBottom: '.5rem' }}
-          >
-            Добавить результаты
-          </Typography>
-          <Typography>
-            После добавления результата другая команда должна подтвердить или
-            изменить его, иначе он будет автоматически утвержден через 24 часа.
-          </Typography>
-        </Box>
-
+  return (
+    <ModalContainer
+      openState={openState}
+      handleModal={handleModal}
+      headerTitle="Добавить результаты"
+    >
+      <Box>
+        <Typography mt={-1} lineHeight={1.3} textAlign="center" color="gray">
+          После добавления результата другая команда должна подтвердить или
+          изменить его, иначе он будет автоматически утвержден через 24 часа.
+        </Typography>
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-end',
-            gap: '1rem',
+            gap: 1.5,
             marginTop: '1.25rem',
             marginRight: '1rem',
           }}
@@ -148,7 +132,10 @@ export function UploadResultModal({
             <Typography>Set-2</Typography>
             <Typography>Set-3</Typography>
           </Box>
-          <Box sx={{ display: 'flex', gap: '10px' }}>
+          <Box display="flex" alignItems="center" gap={1.5}>
+            <Typography fontSize={18} color="gray" mr={2}>
+              Команда А
+            </Typography>
             {matchResultFields.slice(1, 4).map((_, index) => (
               <input
                 style={{
@@ -172,7 +159,10 @@ export function UploadResultModal({
             ))}
           </Box>
 
-          <Box sx={{ display: 'flex', gap: '10px' }}>
+          <Box display="flex" alignItems="center" gap={1.5}>
+            <Typography fontSize={18} color="gray" mr={2}>
+              Команда B
+            </Typography>
             {matchResultFields.slice(3).map((_, index) => {
               const newIndex = index + 3;
               return (
@@ -226,6 +216,7 @@ export function UploadResultModal({
               boxShadow:
                 'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
             }}
+            fullWidth
           >
             {uploadMatchReslultsMutation.isPending ? (
               <CircularProgress />
@@ -235,26 +226,6 @@ export function UploadResultModal({
           </Button>
         </Box>
       </Box>
-    );
-  };
-
-  if (isPlatform('mobile')) {
-    return (
-      <IonModal
-        isOpen={openState}
-        onWillDismiss={handleModal}
-        mode="ios"
-        initialBreakpoint={0.82}
-        breakpoints={[0, 0.82]}
-      >
-        <IonContent>{renderContnet()}</IonContent>
-      </IonModal>
-    );
-  } else {
-    return (
-      <Modal open={openState} onClose={handleModal}>
-        {renderContnet()}
-      </Modal>
-    );
-  }
+    </ModalContainer>
+  );
 }

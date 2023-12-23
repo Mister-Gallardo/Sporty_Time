@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import { ArrowBackIosNewOutlined } from '@mui/icons-material';
+import { ArrowBackIosNewOutlined, ChatBubbleOutlineRounded } from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
 import { SwipeablePage } from '../../../components/SwipeablePage';
 import {
@@ -17,26 +17,34 @@ import {
   joinMatch,
 } from '../../../services/matches/service';
 import { UploadResultModal } from '../../../components/modals/UploadResultModal';
+import { CheckoutModal } from '../../../components/modals/CheckoutModal';
+import { usePlayerProfile } from '../../../services/api/hooks';
+import useSearchParams from '../../../hooks/useSearchParams';
 import { MatchDataBlock } from './components/MatchDataBlock';
-import { MatchInfoBlock } from './sections/MatchInfoBlock';
-import { ClubInfoBlock } from './sections/ClubInfoBlock';
+import { MatchInfoBlock } from './components/MatchInfoBlock';
+import { ClubInfoBlock } from './components/ClubInfoBlock';
+import { ResultsTable } from './components/ResultsTable';
 import { PrivacyType } from './components/PrivacyType';
 import { MatchType } from './components/MatchType';
+import useToggle from '../../../hooks/useToggle';
 import { Players } from './components/Players';
-
-enum PromptType {
-  PRIMARY,
-  WARNING,
-  DANGER,
-}
+import { Prompt } from './components/Prompt';
+import { getMatchStatus } from '../../../helpers/getMatchStatus';
 
 export const SingleMatchPage: React.FC = () => {
   const isMobile = isPlatform('mobile');
+
   const [showToast] = useIonToast();
+
   const { matchId } = useParams<{ matchId: string }>();
   const [error, setError] = useState<string | undefined>();
+
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
+  const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   const [openToast, setOpenToast] = useState<boolean>(false);
+
+  const [getParams] = useSearchParams();
+  const isSlotSelected = getParams('team');
 
   // Get Particular Club Request
   const {
@@ -44,11 +52,29 @@ export const SingleMatchPage: React.FC = () => {
     isLoading,
     refetch: refetchMatch,
   } = useQuery({
-    queryKey: [`match`, Number(matchId)],
-    queryFn: () => getOneAvailableMatch(Number(matchId)),
+    queryKey: [`match`, +matchId],
+    queryFn: () => getOneAvailableMatch(+matchId),
   });
 
+  const player = usePlayerProfile();
+  const currentPlayerId = player?.id;
+
   const matchData = data?.data;
+  const isUserOwner = matchData?.owner?.id === currentPlayerId;
+
+  const isUserAlredyInMatch = matchData?.matchBookings.find(
+    (member) => member.player.id === currentPlayerId,
+  );
+
+  const onBookSpot = (total: number) => {
+    setOpenCheckoutModal();
+    const selectedTeam = isSlotSelected === '0' ? 'A' : 'B';
+    joinMatchMutation.mutate({
+      matchId: +matchId,
+      team: selectedTeam,
+      money: total,
+    });
+  };
 
   // Join Match / Book a Place Request
   const joinMatchMutation = useMutation({
@@ -61,7 +87,8 @@ export const SingleMatchPage: React.FC = () => {
         position: 'bottom',
         color: 'success',
       });
-      refetchMatch();
+      location.replace(`/matches/${matchId}`);
+      // refetchMatch();
     },
     onError(e: any) {
       showToast({
@@ -78,7 +105,7 @@ export const SingleMatchPage: React.FC = () => {
     return <IonLoading isOpen />;
   }
 
-  const renderImageSlot = () => (
+  const renderImageSlot = (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
       <Box
         sx={{ objectFit: 'cover' }}
@@ -89,7 +116,7 @@ export const SingleMatchPage: React.FC = () => {
     </Box>
   );
 
-  const renderTopSlot = () => (
+  const renderTopSlot = (
     <Box px={1} display="flex" alignItems="center">
       <IonBackButton
         text={''}
@@ -117,215 +144,133 @@ export const SingleMatchPage: React.FC = () => {
     console.log("Match with current id doesn't exist (cause it was hardcoded)");
     return null;
   }
+  const matchStatus = getMatchStatus(matchData);
+
+  const courtData = {
+    price: matchData.price,
+    tags: [],
+    date: matchData.gameDate,
+    startTime: matchData.slot.time,
+    playtime: matchData.minutes,
+    sport: matchData.sport,
+    courtName: matchData.slot.court.title,
+  };
 
   return (
     <>
-      <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
-        <Box
-          pt={isMobile ? 'unset' : '1.5rem'}
-          minHeight={isMobile ? 'unset' : '100%'}
-          bgcolor={isMobile ? 'unset' : '#fff'}
-          mb={4}
-          px={2}
-        >
+      <SwipeablePage imageSlot={renderImageSlot} topSlot={renderTopSlot}>
+        <>
           <Box
-            width="100%"
-            maxWidth={isMobile ? 'unset' : '1000px'}
-            margin="0 auto"
-            display="flex"
-            flexDirection="column"
-            gap={2}
+            pt={isMobile ? 'unset' : '1.5rem'}
+            minHeight={isMobile ? 'unset' : '100%'}
+            bgcolor={isMobile ? 'unset' : '#fff'}
+            mb={4}
+            px={2}
           >
-            {/* <Prompt
-              type={PromptType.PRIMARY}
-              description="Some text"
-              title="title"
-            /> */}
             <Box
-              display={isMobile ? 'block' : 'flex'}
-              justifyContent={isMobile ? 'none' : 'center'}
+              width="100%"
+              maxWidth={isMobile ? 'unset' : '1000px'}
+              margin="0 auto"
+              display="flex"
+              flexDirection="column"
+              gap={2}
             >
-              <MatchDataBlock
-                minutes={matchData.minutes}
-                startTime={matchData.slot.time}
-                sport={matchData.sport}
-                ratingFrom={matchData.ratingFrom}
-                ratingTo={matchData.ratingTo}
-                date={matchData.gameDate}
-                price={matchData.price}
-                gender="All"
-              />
-            </Box>
+              <Prompt matchData={matchData} isOwner={isUserOwner} />
 
-            <PrivacyType isPrivate={matchData.isPrivate} />
-            <MatchType type="COMPETITIVE" />
-
-            <Box
-              display={isMobile ? 'block' : 'flex'}
-              justifyContent={isMobile ? 'none' : 'center'}
-            >
-              <Players players={matchData.matchBookings} />
-            </Box>
-
-            {/* <Box display="flex" justifyContent="center" my={2}>
-              <Button
-                sx={{
-                  borderRadius: 20,
-                  backgroundColor: '#2561F8',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  color: '#fff',
-                  paddingX: 2,
-                  paddingY: 1,
-                }}
-              >
-                <ChatBubbleOutlineRounded fontSize="small" />
-                <Typography>Чат</Typography>
-              </Button>
-            </Box> */}
-
-            {/* {matchData.matchResults && (
               <Box
-                sx={{
-                  border: '1px solid #e5e5e5',
-
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '.75rem',
-                  marginBottom: '1.5rem',
-                }}
+                display={isMobile ? 'block' : 'flex'}
+                justifyContent={isMobile ? 'none' : 'center'}
               >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingBottom: '.5rem',
-                  }}
-                >
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {matchData.matchResults[0][0]}
-                  </Typography>
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {matchData.matchResults[1][0]}
-                  </Typography>
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {matchData.matchResults[2][0]}
-                  </Typography>
-                </Box>
-
-                <Box
-                  sx={{ width: '100%', height: '1px', background: '#e5e5e5' }}
-                />
-
-                <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {matchData.matchResults[0][1]}
-                  </Typography>
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {matchData.matchResults[1][1]}
-                  </Typography>
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                    {matchData.matchResults[2][1]}
-                  </Typography>
-                </Box>
+                <MatchDataBlock {...matchData} />
               </Box>
-            )}
 
-            {!playerAlreadyInSomeTeam && (
+              <PrivacyType isPrivate={matchData.isPrivate} />
+
+              <MatchType type={matchData.type} />
+
               <Box
-                sx={{
-                  position: 'fixed',
-                  left: '0',
-                  right: '0',
-                  bottom: '1.5rem',
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
+                display={isMobile ? 'block' : 'flex'}
+                justifyContent={isMobile ? 'none' : 'center'}
               >
+                <Players
+                  players={matchData.matchBookings}
+                  isUserOwner={isUserOwner}
+                  isCancelled={matchData.isCancelled}
+                  isUserAlredyInMatch={!!isUserAlredyInMatch}
+                />
+              </Box>
+
+              <Box display="flex" justifyContent="center" my={2}>
                 <Button
-                  onClick={() => {
-                    if (matchId && playerInTeam) {
-                      joinMatchMutation.mutate({
-                        matchId: Number(matchId),
-                        team: playerInTeam,
-                      });
-                    } else {
-                      showToast({
-                        message: 'Выберите команду!',
-                        duration: 1000,
-                        color: 'danger',
-                      });
-                    }
-                  }}
                   sx={{
-                    background: '#0D2432',
-                    borderRadius: '25px',
+                    borderRadius: 20,
+                    backgroundColor: '#2561F8',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
                     color: '#fff',
-                    fontSize: '1.1rem',
-                    fontWeight: '500',
-                    boxShadow:
-                      'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
                     paddingX: 2,
+                    paddingY: 1,
                   }}
                 >
-                  {joinMatchMutation.isPending ? (
-                    <CircularProgress />
-                  ) : (
-                    `Забронировать место - ₽ ${matchData.price || ''}`
-                  )}
-                </Box>
-              )}
-
-              <Box
-                sx={{
-                  maxWidth: '125px',
-                  marginInline: 'auto',
-                  marginBottom: '1rem',
-                }}
-              >
-                <Button sx={{ height: '40px' }}>
-                  <ChatBubbleOutlineRounded sx={{ marginRight: '.75rem' }} />
-                  <Typography sx={{ fontSize: '1.1rem', fontWeight: '600' }}>
-                    Чат
-                  </Typography>
+                  <ChatBubbleOutlineRounded fontSize="small" />
+                  <Typography>Чат</Typography>
                 </Button>
               </Box>
-            )} */}
-            <ClubInfoBlock data={matchData} />
-            <MatchInfoBlock data={matchData} />
+
+              <ClubInfoBlock data={matchData} />
+
+              {matchData.matchResults && (
+                <ResultsTable
+                  winningTeam={matchData.winningTeam}
+                  status={matchStatus}
+                  matchResults={matchData.matchResults}
+                />
+              )}
+
+              <MatchInfoBlock data={matchData} />
+            </Box>
           </Box>
-        </Box>
-        <Box
-          my={isMobile ? 'none' : 10}
-          position={isMobile ? 'sticky' : 'static'}
-          width="100%"
-          bottom={0}
-          py={2}
-          display="flex"
-          justifyContent="center"
-          bgcolor="#fff"
-        >
-          <Button
-            disabled
-            sx={{
-              backgroundColor: '#0d2432',
-              color: '#fff',
-              borderRadius: 20,
-              paddingX: 3,
-              '&:disabled': {
-                backgroundColor: '#eee',
-              },
-            }}
-          >
-            Забронировать место - ₽ {matchData.price || ''}
-          </Button>
-        </Box>
+          {isUserOwner || !!isUserAlredyInMatch || (
+            <Box
+              my={isMobile ? 'none' : 10}
+              position={isMobile ? 'sticky' : 'static'}
+              width="100%"
+              bottom={0}
+              py={2}
+              display="flex"
+              justifyContent="center"
+              bgcolor="#fff"
+            >
+              <Button
+                disabled={!isSlotSelected}
+                onClick={() => setOpenCheckoutModal()}
+                sx={{
+                  backgroundColor: '#0d2432',
+                  color: '#fff',
+                  borderRadius: 20,
+                  paddingX: 3,
+                  '&:disabled': {
+                    backgroundColor: '#eee',
+                  },
+                }}
+              >
+                Забронировать место - ₽
+                {matchData.paid ? 0 : matchData.price / 4}
+              </Button>
+            </Box>
+          )}
+        </>
       </SwipeablePage>
+
+      <CheckoutModal
+        isJoin
+        isPaid={!!matchData.paid}
+        courtData={courtData}
+        openState={openCheckoutModal}
+        handleModal={setOpenCheckoutModal}
+        handleCheckout={onBookSpot}
+      />
 
       <UploadResultModal
         openState={openUploadModal}
@@ -334,13 +279,13 @@ export const SingleMatchPage: React.FC = () => {
       />
 
       <IonToast
-        header="Возникла ошибка"
+        header={error ? 'Возникла ошибка' : ''}
         position="top"
         isOpen={openToast}
         message={error || 'Вы подтвердили результаты матча'}
         onDidDismiss={() => setOpenToast(false)}
         duration={2000}
-        color={error && 'danger'}
+        color={error ? 'danger' : 'success'}
       />
     </>
   );

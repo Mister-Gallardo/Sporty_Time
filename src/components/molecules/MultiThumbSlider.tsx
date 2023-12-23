@@ -1,50 +1,30 @@
-import { IonAvatar } from '@ionic/react';
-import { Box, Typography } from '@mui/material';
-import Slider, { SliderThumb } from '@mui/material/Slider';
-import { styled } from '@mui/material/styles';
 import React from 'react';
+import Slider, { SliderThumb } from '@mui/material/Slider';
+import { Box, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { IonAvatar } from '@ionic/react';
 
 interface ThumbComponentProps extends React.HTMLAttributes<unknown> {}
 
 interface IMultiThumbSlider {
+  userPoint?: number;
   curentMinValue: number;
   curentMaxValue: number;
   handleChange: (_: Event, values: number | number[]) => void;
 }
 
 export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
+  userPoint = 0,
   curentMinValue,
   curentMaxValue,
   handleChange,
 }) => {
-  return (
-    <CustomSlider
-      getAriaLabel={(index) => (index === 0 ? 'min' : 'max')}
-      slots={{ thumb: ThumbComponent }}
-      value={[curentMinValue, 1.5, curentMaxValue]}
-      onChange={handleChange}
-      min={0}
-      max={7}
-      marks={marks}
-      valueLabelDisplay="on"
-      step={0.1}
-    />
-  );
-};
+  const marks = Array.from({ length: 8 }, (_, index) => ({
+    value: index,
+    label: index,
+  }));
 
-const ThumbComponent = (props: ThumbComponentProps) => {
-  const { children, className, ...other } = props;
-
-  const thumbIndex = (other as any)['data-index'];
-
-  const extraClassName =
-    thumbIndex === 0
-      ? 'first-thumb'
-      : thumbIndex === 1
-      ? 'second-thumb'
-      : 'third-thumb';
-
-  const custonthumb = (
+  const userIcon: any = (
     <Box
       position="relative"
       alignItems="center"
@@ -54,8 +34,8 @@ const ThumbComponent = (props: ThumbComponentProps) => {
       py={0.6}
       borderRadius={0.8}
       bgcolor="white"
-      boxShadow="1px 1px 12px #dadada"
-      mb={12}
+      boxShadow="1px 1px 10px #eeeeeed6"
+      mt={-11}
     >
       <IonAvatar style={{ width: 30, height: 30 }}>
         <img
@@ -63,7 +43,7 @@ const ThumbComponent = (props: ThumbComponentProps) => {
           src="https://ionicframework.com/docs/img/demos/avatar.svg"
         />
       </IonAvatar>
-      <Typography color="#000">1.5</Typography>
+      <Typography color="#000">{userPoint}</Typography>
       <Box
         sx={{
           position: 'absolute',
@@ -79,37 +59,51 @@ const ThumbComponent = (props: ThumbComponentProps) => {
     </Box>
   );
 
+  marks.forEach((elem, i) => {
+    if (i === marks.length - 1) return;
+
+    const curValue = elem.value;
+    const nextValue = marks[i + 1].value;
+
+    if (userPoint > curValue && userPoint < nextValue) {
+      marks.splice(curValue, 0, {
+        value: userPoint,
+        label: userIcon,
+      });
+    }
+  });
+
+  return (
+    <CustomSlider
+      getAriaLabel={(index) => (index === 0 ? 'min' : 'max')}
+      slots={{ thumb: ThumbComponent }}
+      value={[curentMinValue, curentMaxValue]}
+      onChange={handleChange}
+      min={0}
+      max={7}
+      marks={marks}
+      valueLabelDisplay="on"
+      step={0.1}
+    />
+  );
+};
+
+const ThumbComponent = (props: ThumbComponentProps) => {
+  const { children, className, ...other } = props;
+
+  const thumbIndex = (other as any)['data-index'];
+  const extraClassName = thumbIndex === 0 ? 'first-thumb' : 'second-thumb';
+
   return (
     <SliderThumb {...other} className={`${className} ${extraClassName}`}>
       {children}
-      {thumbIndex && thumbIndex === 1 && custonthumb}
     </SliderThumb>
   );
 };
 
-const marks = Array.from({ length: 8 }, (_, index) => ({
-  value: index,
-  label: index,
-}));
-
-const boxShadow =
-  '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)';
-
-const CustomSlider = styled(Slider)(({ theme }) => ({
-  color: theme.palette.mode === 'dark' ? '#3880ff' : '#3880ff',
+const CustomSlider = styled(Slider)(() => ({
   height: 2,
   padding: '15px 0',
-
-  '& .MuiSlider-thumb': {
-    boxShadow: boxShadow,
-    '&:focus, &:hover, &.Mui-active': {
-      boxShadow:
-        '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
-      '@media (hover: none)': {
-        boxShadow: boxShadow,
-      },
-    },
-  },
   '& .MuiSlider-thumb>span': {
     display: 'none',
   },
@@ -119,16 +113,6 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     width: 15,
   },
   '& .second-thumb': {
-    boxShadow: 'none',
-    backgroundColor: 'transparent',
-    '&:focus, &:hover, &.Mui-active': {
-      boxShadow: 'none',
-    },
-  },
-  '& .second-thumb:before': {
-    boxShadow: 'none',
-  },
-  '& .third-thumb': {
     zIndex: 1,
     height: 20,
     width: 20,
@@ -138,13 +122,11 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     fontWeight: 'normal',
     top: -6,
     backgroundColor: 'unset',
-    color: theme.palette.text.primary,
     '&:before': {
       display: 'none',
     },
     '& *': {
       background: 'transparent',
-      color: theme.palette.mode === 'dark' ? '#fff' : '#000',
     },
   },
   '& .MuiSlider-track': {
