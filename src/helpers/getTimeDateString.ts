@@ -10,14 +10,13 @@ export enum EType {
 // adds minutes to passed time
 export const addTime = (time: string, mins: number) => {
   const [hours, minutes] = time.split(':').map(Number);
-  const currentDate = new Date();
 
-  currentDate.setHours(hours);
-  currentDate.setMinutes(minutes);
+  const date = new Date(0, 0, 0, hours, minutes);
+  date.setMinutes(date.getMinutes() + mins);
 
-  currentDate.setMinutes(currentDate.getMinutes() + mins);
+  const newTime = date.toLocaleTimeString('en-US', { hour12: false });
 
-  return currentDate.toLocaleTimeString().slice(0, -3);
+  return newTime.slice(0, -3);
 };
 
 // return date as 'today'/ 'tomorrow' / day of the week / month day

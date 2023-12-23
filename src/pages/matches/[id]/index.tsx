@@ -109,7 +109,7 @@ export const SingleMatchPage: React.FC = () => {
     return <IonLoading isOpen />;
   }
 
-  const renderImageSlot = (
+  const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
       <Box
         sx={{ objectFit: 'cover' }}
@@ -120,7 +120,7 @@ export const SingleMatchPage: React.FC = () => {
     </Box>
   );
 
-  const renderTopSlot = (
+  const renderTopSlot = () => (
     <Box px={1} display="flex" alignItems="center">
       <IonBackButton
         text={''}
@@ -162,7 +162,7 @@ export const SingleMatchPage: React.FC = () => {
 
   return (
     <>
-      <SwipeablePage imageSlot={renderImageSlot} topSlot={renderTopSlot}>
+      <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
         <>
           <Box
             pt={isMobile ? 'unset' : '1.5rem'}
@@ -246,7 +246,7 @@ export const SingleMatchPage: React.FC = () => {
                   px={1}
                 >
                   <Typography fontSize={16} fontWeight={600} textAlign="center">
-                    Матч завершён, загрузить хотите результаты?
+                    Матч завершён, хотите загрузить результаты?
                   </Typography>
                   <Button
                     onClick={() => setOpenUploadModal()}

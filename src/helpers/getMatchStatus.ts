@@ -16,11 +16,13 @@ export const getMatchStatus = (match: MatchData) => {
   //isCancelled
   if (match.isCancelled) return Status.CANCELED;
 
-  //isPending
-  if (!match.paid) return Status.PENDING;
-
   //isUpcomming
-  if (currendDateISO.getTime() < matchDateISO.getTime()) return Status.UPCOMING;
+  const isUpcomming = currendDateISO.getTime() < matchDateISO.getTime();
+  //isPending
+  const isPaid = match.paid;
+
+  if (isUpcomming && isPaid) return Status.UPCOMING;
+  if (isUpcomming && !isPaid) return Status.PENDING;
 
   //inProgress
   if (

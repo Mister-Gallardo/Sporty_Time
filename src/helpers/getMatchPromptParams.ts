@@ -62,7 +62,7 @@ export const getPromptParams = (matchData: MatchData, isOwner: boolean) => {
       description: '',
     };
   }
-  if (status === Status.COMPLETE) {
+  if (status === Status.COMPLETE || status === Status.INVALID_RESULT) {
     return null;
   }
 
