@@ -35,7 +35,6 @@ export interface IMobileLayoutProps {
 export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
   const { children } = props;
   const defaultRef = useRef<HTMLIonIconElement>(null);
-  const path = window.location.pathname;
 
   return (
     <IonApp style={{ minHeight: '100dvh' }}>
@@ -49,10 +48,6 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
           <IonTabBar
             slot="bottom"
             style={{
-              display:
-                path.startsWith('/auth') || path.startsWith('/question-form')
-                  ? 'none'
-                  : 'flex',
               paddingBlock: '.50rem',
               borderRadius: '0',
               borderTop: '1px solid #cdcccc',

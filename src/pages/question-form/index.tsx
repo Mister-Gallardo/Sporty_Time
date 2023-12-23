@@ -11,7 +11,7 @@ import { ResultsStep } from './steps/Results';
 export function QuestionFormPage() {
   const isMobile = isPlatform('mobile');
 
-  const [activeStep, setActiveStep] = useState<number>(0);
+  const [activeStep, setActiveStep] = useState<number>(3);
 
   const user = useUserInfo();
   const firstName = user?.firstname || '';
