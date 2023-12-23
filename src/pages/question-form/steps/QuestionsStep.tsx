@@ -3,11 +3,29 @@ import { useForm } from 'react-hook-form';
 import { IOption, IQuestion, getQuestionsByLvlAndSport } from '../questions';
 import { Box, Button, Input, RadioGroup, Typography } from '@mui/material';
 import { RadioLabel } from '../../../components/molecules/RadioLabel';
-// import { createSportRating } from '../../../services/rating';
 import { QuestionTitle } from '../components/QuestionTitle';
-import { ERadioLabelType } from '../../../types';
+import { ERadioLabelType, Sport } from '../../../types';
 import { isPlatform } from '@ionic/react';
-// import { useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { createSportRating } from '../../../services/rating';
+
+// leave just for now
+const getSportAndLevel = (sport: string, level: string) => {
+  const sportIndex = sport === Sport.PADEL ? 0 : sport === Sport.TENNIS ? 1 : 2;
+  const levelIndex =
+    level === 'none'
+      ? 0
+      : level === 'beginner'
+      ? 1
+      : level === 'intermediate'
+      ? 2
+      : level === 'intermediate hight'
+      ? 3
+      : level === 'advanced'
+      ? 4
+      : 5;
+  return { sportIndex, levelIndex };
+};
 
 interface QuestionsStepStepProps {
   handleStep: (stap: number) => void;
@@ -31,7 +49,7 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     questionID: string,
     isAnswerMatter: boolean,
   ) => {
-    const { answer, next }: IOption = JSON.parse(question);
+    const { next, i }: IOption = JSON.parse(question);
     if (!next) return setIsLastQuestion(true);
 
     const isExist = getValues(questionID);
@@ -54,11 +72,14 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
       const removeQuestions = currentQuestions.slice(curQuestionIdx + 1);
       removeQuestions.map((q) => unregister(q.id));
     }
-    setValue(questionID, answer);
+    setValue(questionID, i);
   };
 
   // scroll to bottom when new question appears
   const questionsEndRef = useRef<HTMLDivElement>(null);
+
+  const sport = localStorage.getItem('sport') || '';
+  const userSelectedLevel = localStorage.getItem('userSelectedLevel') || '';
 
   useEffect(() => {
     if (currentQuestions.length > 2) {
@@ -69,15 +90,28 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     }
   }, [currentQuestions.length]);
 
-  // const createRatingMutation = useMutation({
-  //   mutationFn: createSportRating,
-  //   onSuccess(data) {
-  //     handleStep(1);
-  //   },
-  //   onError(e) {
-  //     console.log(e);
-  //   },
-  // });
+  const createRatingMutation = useMutation({
+    mutationFn: createSportRating,
+    onSuccess(data) {
+      console.log(data);
+      handleStep(1);
+    },
+    onError(e) {
+      console.log(e);
+    },
+  });
+
+  const onApplyResults = () => {
+    const { sportIndex, levelIndex } = getSportAndLevel(
+      sport,
+      userSelectedLevel,
+    );
+    createRatingMutation.mutate({
+      ...getValues(),
+      sport: sportIndex,
+      level: levelIndex,
+    });
+  };
 
   if (!allQuestions) {
     return (
@@ -136,11 +170,12 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
                         }
                         sx={{ gap: 0.7 }}
                       >
-                        {questionBlock.options?.map((option) => {
+                        {questionBlock.options?.map((option, i) => {
                           return (
                             <RadioLabel
                               key={option.answer}
-                              value={JSON.stringify(option)}
+                              value={JSON.stringify({ ...option, i })}
+                              // value={JSON.stringify(option)}
                               labelType={ERadioLabelType.TITLE_ONLY}
                               title={option.answer}
                             />
@@ -160,7 +195,6 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
       <Box
         position="fixed"
         bottom={0}
-        // width="auto"
         display="flex"
         justifyContent="center"
         left={16}
@@ -169,8 +203,7 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
         paddingY={1.25}
       >
         <Button
-          // onClick={() => createRatingMutation.mutate(getValues())}
-          onClick={() => handleStep(1)}
+          onClick={onApplyResults}
           variant="contained"
           sx={{ fontSize: 18, borderRadius: 20, px: isMobile ? 'unset' : 10 }}
           disabled={!isLastQuestion}

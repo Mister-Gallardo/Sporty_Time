@@ -49,6 +49,7 @@ export function BookTab() {
   const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(true);
   const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(true);
   const [slotId, setSlotId] = useState<number>(0);
+  const [sport, setSport] = useState<string>('');
 
   const [selectedCourt, setSelectedCourt] = useState<any>(null);
 
@@ -277,6 +278,7 @@ export function BookTab() {
                         court={court}
                         getOptionTime={getOptionTime}
                         onClick={() => {
+                          setSport(court.sport);
                           setOpenConfigMatchModal();
                           setSlotId(court.slotId);
                         }}
@@ -316,6 +318,7 @@ export function BookTab() {
       </Box>
 
       <ConfigMatchModal
+        sport={sport}
         openState={openConfigMatchModal}
         handleModal={setOpenConfigMatchModal}
         getData={(data: IConfigMatchModalData) => {

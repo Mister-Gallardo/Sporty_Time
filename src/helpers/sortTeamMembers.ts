@@ -11,6 +11,7 @@ export const sortTeamMembers = (members: MatchMember[]): Array<Member[]> => {
     if (member.team === 'B') teamB.push(member);
   });
 
+  if (teamA.length === 0) teamA.push(null);
   if (teamA.length === 1) teamA.push(null);
   if (teamB.length === 0) teamB.push(null);
   if (teamB.length === 1) teamB.push(null);
