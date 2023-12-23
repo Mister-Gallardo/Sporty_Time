@@ -40,7 +40,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
         >
           <IonHeader>
             <IonToolbar>
-              <IonTitle>{headerTitle}</IonTitle>
+              <IonTitle className="ion-padding">{headerTitle}</IonTitle>
               <IonButtons slot="end">
                 <IonButton onClick={() => handleModal()}>
                   <CloseRoundedIcon sx={{ color: '#000' }} />
