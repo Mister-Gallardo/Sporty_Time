@@ -10,7 +10,7 @@ import {
 } from '@ionic/react';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { Box, IconButton, Modal, Typography } from '@mui/material';
-import { IonScrollableModalContent } from '../atoms/IonScrollableModalContent';
+import { IonScrollableModalContent } from '@musaev/ionic-ui';
 
 interface IModalContainer extends PropsWithChildren<{}> {
   openState: boolean;
@@ -35,7 +35,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
           onDidDismiss={() => handleModal(false)}
           isOpen={openState}
           initialBreakpoint={initialBreakpoint}
-          breakpoints={[0, initialBreakpoint]}
+          breakpoints={[0, 0.5, initialBreakpoint]}
           handleBehavior="cycle"
         >
           <IonHeader>
