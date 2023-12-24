@@ -41,8 +41,3 @@ ion-loading {
 ion-loading .loading-wrapper {
   box-shadow: none !important;
 }
-
-ion-content {
-  --ion-safe-area-top: env(safe-area-inset-top);
-  --ion-safe-area-bottom: env(safe-area-inset-bottom);
-}

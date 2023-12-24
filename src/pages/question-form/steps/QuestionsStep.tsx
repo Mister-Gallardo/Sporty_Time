@@ -49,12 +49,11 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     questionID: string,
     isAnswerMatter: boolean,
   ) => {
-    const { next, i }: IOption = JSON.parse(question);
+    const { answer, next, i }: IOption = JSON.parse(question);
     if (!next) return setIsLastQuestion(true);
-
     const isExist = getValues(questionID);
 
-    if (!isExist) {
+    if (isExist === undefined) {
       setCurrentQuestions((prev) => [...prev, allQuestions[next]]);
     }
 
@@ -72,7 +71,7 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
       const removeQuestions = currentQuestions.slice(curQuestionIdx + 1);
       removeQuestions.map((q) => unregister(q.id));
     }
-    setValue(questionID, i);
+    setValue(questionID, { answer, i });
   };
 
   // scroll to bottom when new question appears
@@ -105,8 +104,16 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
       sport,
       userSelectedLevel,
     );
+
+    const data = getValues();
+    const answerI: any = {};
+
+    for (const key in data) {
+      answerI[key] = data[key].i;
+    }
+
     createRatingMutation.mutate({
-      ...getValues(),
+      ...answerI,
       sport: sportIndex,
       level: levelIndex,
     });
