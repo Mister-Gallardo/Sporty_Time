@@ -30,15 +30,15 @@ export function ChooseYourSport({
 
   return (
     <BgContainer>
-      <Box color="white">
+      <Box color="#fff">
         <Typography fontSize={22} fontWeight={600} textAlign="center">
-          Hello {firstName}
+          Привет {firstName}!
         </Typography>
         <Typography textAlign="center">
           Заполните свой профиль, чтобы максимально использовать возможности
           Sportytime
         </Typography>
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
           <Avatar
             sx={{
               width: '75px',
@@ -50,7 +50,7 @@ export function ChooseYourSport({
           <Typography fontWeight={500}>Изменить фото</Typography>
         </Box>
       </Box>
-      <Box mb={5} color="white">
+      <Box mb={5} color="#fff">
         <Typography textAlign="center" mb={4}>
           Для какого вида спорта Вы хотите узнать уровень?
         </Typography>
@@ -84,7 +84,7 @@ export function ChooseYourSport({
         justifyContent="flex-end"
         gap={1}
         width="100%"
-        height={100}
+        height={90}
       >
         {currentSportRate ? (
           <Button

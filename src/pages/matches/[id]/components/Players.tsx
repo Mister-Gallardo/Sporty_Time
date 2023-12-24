@@ -103,7 +103,7 @@ export const Players: React.FC<IPlayers> = ({
         {playersArr.map((team, teamIndex) => {
           return (
             <React.Fragment key={teamIndex}>
-              <Box display="flex" alignItems="flex-start" gap={2}>
+              <Box display="flex" alignItems="flex-start" gap={1}>
                 {team.map((member: any, slotIndex: number) => {
                   const teamSlotIndex = { teamIndex, slotIndex };
                   return (

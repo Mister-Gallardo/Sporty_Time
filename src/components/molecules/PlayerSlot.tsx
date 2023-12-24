@@ -84,7 +84,7 @@ export const PlayerSlot: React.FC<IPlayerSlot> = ({
         </Box>
       ) : (
         <Box
-          minWidth={60}
+          minWidth={70}
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -100,7 +100,9 @@ export const PlayerSlot: React.FC<IPlayerSlot> = ({
             height={50}
             borderRadius={50}
             border={`1px solid ${
-              matchStatus !== Status.UPCOMING ? '#eee' : '#c6dcf2'
+              matchStatus === Status.UPCOMING || isUserAlredyInMatch
+                ? '#eee'
+                : '#c6dcf2'
             }`}
             display="flex"
             justifyContent="center"
@@ -108,10 +110,14 @@ export const PlayerSlot: React.FC<IPlayerSlot> = ({
           >
             <Add
               fontSize="small"
-              color={matchStatus !== Status.UPCOMING ? 'disabled' : 'primary'}
+              color={
+                matchStatus === Status.UPCOMING || isUserAlredyInMatch
+                  ? 'disabled'
+                  : 'primary'
+              }
             />
           </Box>
-          {matchStatus !== Status.UPCOMING || (
+          {matchStatus === Status.UPCOMING || (
             <Typography color="gray" fontSize={12} maxWidth={60} noWrap>
               {isUserOwner || isUserAlredyInMatch
                 ? 'Свободно'

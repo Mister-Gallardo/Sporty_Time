@@ -28,12 +28,12 @@ export const SportTypeRow = ({
         onClick={() => onClick()}
         startIcon={icon}
         sx={{
+          textTransform: 'capitalize',
           paddingX: 2,
           border: '1px solid #fff',
           color: isActive ? '#000' : '#fff',
           backgroundColor: isActive ? '#fff' : 'transparent',
           borderRadius: 20,
-          textTransform: 'initial',
 
           '&.MuiButtonBase-root:hover': {
             color: '#000',
@@ -41,7 +41,7 @@ export const SportTypeRow = ({
           },
         }}
       >
-        {type}
+        {type.toLowerCase()}
       </Button>
       {isActive && !!level && (
         <Box display="flex" alignItems="center" gap={1.5}>
