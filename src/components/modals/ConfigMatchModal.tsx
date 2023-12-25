@@ -43,8 +43,8 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
 
   useEffect(() => {
     if (rating) {
-      const ratingFrom = rating < 0.25 ? 0 : rating - 0.25;
-      const ratingTo = rating > 6.25 ? 7 : rating + 0.75;
+      const ratingFrom = rating < 0.25 ? 0 : +(rating - 0.25).toFixed(2);
+      const ratingTo = rating > 6.25 ? 7 : +(rating + 0.75).toFixed(2);
       setRangeMinValue(ratingFrom);
       setRangeMaxValue(ratingTo);
     }

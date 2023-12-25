@@ -17,8 +17,9 @@ export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
 
   const profile = usePlayerProfile();
 
-  const sport = localStorage.getItem('sport')?.toLocaleLowerCase() || '';
+  const sport = localStorage.getItem('sport') || '';
   const rating = profile ? getSportRating(profile, sport) : 0;
+
   const initials = firstName && lastName && firstName[0] + '' + lastName[0];
 
   return (
@@ -58,7 +59,9 @@ export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
             gap={1}
           >
             <SportsBaseballOutlined />
-            <Typography textTransform="capitalize">{sport}</Typography>
+            <Typography textTransform="capitalize">
+              {sport.toLocaleLowerCase()}
+            </Typography>
           </Box>
           <Typography textAlign="center">Level {rating}</Typography>
         </Box>

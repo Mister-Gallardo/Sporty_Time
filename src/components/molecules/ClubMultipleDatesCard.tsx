@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { isPlatform } from '@ionic/react';
 import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import { CourtSlot } from '../../services/club/interface';
+import useToggle from '../../hooks/useToggle';
 import { DateBox } from './DateBox';
 
 interface Slot {
@@ -29,6 +31,16 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
   const history = useHistory();
 
   const availableTimesArray = availableTimes && Object.entries(availableTimes);
+  const [eachDateIsEmpty, setEachDateIsEmpty] = useToggle();
+
+  useEffect(() => {
+    if (availableTimesArray) {
+      const allSlots = availableTimesArray.map(
+        (item: Array<[string, string[]]>) => item[1],
+      );
+      if (!allSlots.flat().length) return setEachDateIsEmpty(true);
+    }
+  }, [availableTimesArray]);
 
   return (
     <Card
@@ -60,47 +72,56 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
       />
 
       <CardContent>
-        {availableTimesArray?.map((item: AvailableTimeItem, i: number) => {
-          const rowDate = new Date(item[0]);
+        {eachDateIsEmpty ? (
+          <Typography color="gray">
+            На данный момент нет свободных кортов по вашему запросу
+          </Typography>
+        ) : (
+          availableTimesArray?.map((item: AvailableTimeItem, i: number) => {
+            const rowDate = new Date(item[0]);
 
-          return (
-            <Box key={i}>
-              <Typography fontWeight={700} mb={1}>
-                {`${rowDate.getDate()} ${rowDate.toLocaleString('ru', {
-                  month: 'short',
-                })}`}
-              </Typography>
-              <Box
-                display="flex"
-                gap={2}
-                pb={1.2}
-                overflow="auto"
-                sx={{
-                  scrollSnapType: 'x mandatory',
-                  scrollBehavior: 'smooth',
-                  '&::-webkit-scrollbar': {
-                    display: 'none',
-                  },
-                }}
-              >
-                {item[1].length > 0 &&
-                  item[1].map((slot: CourtSlot) => (
-                    <DateBox
-                      key={slot.slotId}
-                      startTime={slot.time}
-                      gameDuration={slot.playTime}
-                      onClick={(e: Event) => {
-                        e.stopPropagation();
-                        history.push(
-                          `/book-court/1?tab=2&day=${item[0]}&time=${slot.time}`,
-                        );
-                      }}
-                    />
-                  ))}
+            return (
+              <Box key={i}>
+                <Typography fontWeight={700} mb={1}>
+                  {`${rowDate.getDate()} ${rowDate.toLocaleString('ru', {
+                    month: 'short',
+                  })}`}
+                </Typography>
+                <Box
+                  display="flex"
+                  gap={2}
+                  pb={1.2}
+                  overflow="auto"
+                  sx={{
+                    scrollSnapType: 'x mandatory',
+                    scrollBehavior: 'smooth',
+                    '&::-webkit-scrollbar': {
+                      display: 'none',
+                    },
+                  }}
+                >
+                  {item[1].length > 0 ? (
+                    item[1].map((slot: CourtSlot) => (
+                      <DateBox
+                        key={slot.slotId}
+                        startTime={slot.time}
+                        gameDuration={slot.playTime}
+                        onClick={(e: Event) => {
+                          e.stopPropagation();
+                          history.push(
+                            `/book-court/1?tab=2&day=${item[0]}&time=${slot.time}`,
+                          );
+                        }}
+                      />
+                    ))
+                  ) : (
+                    <Typography color="gray">Нет свободных кортов</Typography>
+                  )}
+                </Box>
               </Box>
-            </Box>
-          );
-        })}
+            );
+          })
+        )}
       </CardContent>
     </Card>
   );

@@ -50,6 +50,7 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     isAnswerMatter: boolean,
   ) => {
     const { answer, next, i }: IOption = JSON.parse(question);
+
     if (!next) return setIsLastQuestion(true);
     const isExist = getValues(questionID);
 
@@ -137,6 +138,8 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     );
   }
 
+  console.log('array: ', currentQuestions);
+
   return (
     <Box mt={1}>
       <Box
@@ -151,7 +154,7 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
             Эти вопросы помогут определить Ваш уровень Sportytime.
           </Typography>
           {currentQuestions.length > 0 &&
-            currentQuestions.map((questionBlock) => {
+            currentQuestions.map((questionBlock, i) => {
               return (
                 <React.Fragment key={questionBlock.id}>
                   {questionBlock.isInput ? (
@@ -181,7 +184,6 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
                             <RadioLabel
                               key={option.answer}
                               value={JSON.stringify({ ...option, i })}
-                              // value={JSON.stringify(option)}
                               labelType={ERadioLabelType.TITLE_ONLY}
                               title={option.answer}
                             />

@@ -447,8 +447,8 @@ const tennisAdvancedAndCompet = {
     id: 'gender',
     question: 'Вы мужчина или женщина?',
     options: [
-      { answer: 'Мужчина', next: 'competeLevel' },
-      { answer: 'Женщина', next: 'competeLevel' },
+      { answer: 'Мужчина', next: 'age' },
+      { answer: 'Женщина', next: 'age' },
     ],
     isInput: false,
     isMatter: false,
@@ -752,10 +752,10 @@ const pickleballCompet = {
     question:
       'Сколько матчей по пиклболу Вы играли в среднем в неделю за последние 6 месяцев?',
     options: [
-      { answer: '0', next: 'lessons' },
-      { answer: '1', next: 'lessons' },
-      { answer: '2', next: 'lessons' },
-      { answer: '3 или больше', next: 'lessons' },
+      { answer: '0', next: 'fitness' },
+      { answer: '1', next: 'fitness' },
+      { answer: '2', next: 'fitness' },
+      { answer: '3 или больше', next: 'fitness' },
     ],
     isInput: false,
     isMatter: false,

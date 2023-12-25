@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import {
   ArrowBackIosNewOutlined,
   ChatBubbleOutlineRounded,
@@ -37,6 +37,7 @@ import { Status } from '../../../types';
 
 export const SingleMatchPage: React.FC = () => {
   const isMobile = isPlatform('mobile');
+  const history = useHistory();
 
   const [showToast] = useIonToast();
 
@@ -105,10 +106,6 @@ export const SingleMatchPage: React.FC = () => {
     },
   });
 
-  if (isLoading) {
-    return <IonLoading isOpen />;
-  }
-
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
       <Box
@@ -143,11 +140,30 @@ export const SingleMatchPage: React.FC = () => {
     </Box>
   );
 
-  // leave just for now
-  if (!matchData) {
-    console.log("Match with current id doesn't exist (cause it was hardcoded)");
-    return null;
+  if (isLoading) {
+    return <IonLoading isOpen />;
   }
+  if (!matchData) {
+    return (
+      <Box
+        height="50dvh"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        gap={2}
+        px={2}
+      >
+        <Typography fontSize={18} textAlign="center">
+          На данный момент страница недоступна
+        </Typography>
+        <Button onClick={() => history.push('/')} variant="contained">
+          Вернуться на главную страницу
+        </Button>
+      </Box>
+    );
+  }
+
   const matchStatus = getMatchStatus(matchData);
 
   const courtData = {

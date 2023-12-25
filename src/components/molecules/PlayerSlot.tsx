@@ -14,7 +14,7 @@ interface IPlayerSlot {
   member: MatchMember | MatchMemberShort;
   teamSlotIndex: ITeamSlot;
   onSlotSelect?: (val: ITeamSlot) => void;
-  isUserOwner?: boolean;
+  isUserOwner: boolean;
   isUserAlredyInMatch?: boolean;
 }
 
@@ -75,7 +75,9 @@ export const PlayerSlot: React.FC<IPlayerSlot> = ({
                   maxWidth={isMobile ? 70 : 'auto'}
                   fontSize={12}
                 >
-                  {member.paid ? 'Оплачено' : 'Ожидается оплата'}
+                  {member.paid || matchStatus !== Status.PENDING
+                    ? 'Оплачено'
+                    : 'Ожидается оплата'}
                 </Typography>
                 <MonetizationOnOutlinedIcon fontSize="small" />
               </>
