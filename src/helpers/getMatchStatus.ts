@@ -7,7 +7,7 @@ export const getMatchStatus = (match: MatchData) => {
   const matchDate = new Date(match.gameDate);
 
   const currendDateISO = new Date(currendDate.toISOString());
-  const matchDateISO = new Date(`${match.gameDate}T${match.slot.time}`);
+  const matchDateISO = new Date(`${match.gameDate}T${match.slot.time}Z`);
 
   const currendTime = currendDate.getTime();
   const matchTime = matchDate.getTime();

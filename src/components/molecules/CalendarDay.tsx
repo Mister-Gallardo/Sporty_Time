@@ -33,7 +33,7 @@ export const CalendarDay: React.FC<ICalendarDayProps> = (props) => {
         flexDirection: 'column',
       }}
     >
-      <Typography>{WEEK_DAYS[date.getUTCDay()]}</Typography>
+      <Typography>{WEEK_DAYS[date.getDay()]}</Typography>
       <Box
         sx={{
           background: selected ? '#0D2433' : '',
@@ -48,10 +48,10 @@ export const CalendarDay: React.FC<ICalendarDayProps> = (props) => {
           fontSize={18}
           sx={{ color: selected ? 'white' : 'black', padding: '7px 10px' }}
         >
-          {date.getUTCDate()}
+          {date.getDate()}
         </Typography>
       </Box>
-      <Typography variant="body2">{MONTHS[date.getUTCMonth()]}</Typography>
+      <Typography variant="body2">{MONTHS[date.getMonth()]}</Typography>
     </Box>
   );
 };
