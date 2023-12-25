@@ -69,6 +69,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
       border="1px solid #E5E5E5"
       borderRadius={2}
       onClick={() => history.push(`/matches/${id}`)}
+      sx={{ cursor: isMobile ? 'unset' : 'pointer' }}
     >
       <Typography
         lineHeight={1}

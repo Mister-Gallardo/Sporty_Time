@@ -2,7 +2,7 @@ import React from 'react';
 import Slider, { SliderThumb } from '@mui/material/Slider';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { IonAvatar } from '@ionic/react';
+import { IonAvatar, isPlatform } from '@ionic/react';
 
 interface ThumbComponentProps extends React.HTMLAttributes<unknown> {}
 
@@ -13,18 +13,20 @@ interface IMultiThumbSlider {
   handleChange: (_: Event, values: number | number[]) => void;
 }
 
+const marks = Array.from({ length: 8 }, (_, index) => ({
+  value: index,
+  label: index,
+}));
+
 export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
   userPoint = 0,
   curentMinValue,
   curentMaxValue,
   handleChange,
 }) => {
-  const marks = Array.from({ length: 8 }, (_, index) => ({
-    value: index,
-    label: index,
-  }));
+  const isMobile = isPlatform('mobile');
 
-  const userIcon: any = (
+  const userIcon: any = () => (
     <Box
       position="relative"
       alignItems="center"
@@ -33,9 +35,10 @@ export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
       px={0.8}
       py={0.6}
       borderRadius={0.8}
-      bgcolor="white"
+      bgcolor="#fff"
       boxShadow="1px 1px 10px #eeeeeed6"
       mt={-11}
+      sx={{ cursor: isMobile ? 'unset' : 'pointer' }}
     >
       <IonAvatar style={{ width: 30, height: 30 }}>
         <img
@@ -68,7 +71,7 @@ export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
     if (userPoint > curValue && userPoint < nextValue) {
       marks.splice(curValue, 0, {
         value: userPoint,
-        label: userIcon,
+        label: userIcon(),
       });
     }
   });

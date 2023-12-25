@@ -8,9 +8,13 @@ import { Box, Typography } from '@mui/material';
 
 interface IMatchInfoBlock {
   data: MatchData;
+  isUserAlredyInMatch: boolean;
 }
 
-export const MatchInfoBlock: React.FC<IMatchInfoBlock> = ({ data }) => {
+export const MatchInfoBlock: React.FC<IMatchInfoBlock> = ({
+  data,
+  isUserAlredyInMatch,
+}) => {
   return (
     <Box>
       <Typography
@@ -39,13 +43,15 @@ export const MatchInfoBlock: React.FC<IMatchInfoBlock> = ({ data }) => {
           </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <DialpadOutlined />
-          <Box>
-            <Typography>Код доступа</Typography>
-            <Typography>9714#</Typography>
+        {isUserAlredyInMatch && (
+          <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <DialpadOutlined />
+            <Box>
+              <Typography>Код доступа</Typography>
+              <Typography>9714#</Typography>
+            </Box>
           </Box>
-        </Box>
+        )}
       </Box>
     </Box>
   );

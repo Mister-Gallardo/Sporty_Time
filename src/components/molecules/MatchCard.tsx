@@ -3,9 +3,11 @@ import { useHistory } from 'react-router';
 import { EType, getDayFormat } from '../../helpers/getTimeDateString';
 import useSortTeamMembers from '../../hooks/useSortTeamMembers';
 import { MatchData } from '../../services/matches/interface';
+import { usePlayerProfile } from '../../services/api/hooks';
 import { Box, Divider, Typography } from '@mui/material';
-import { PlayerSlot } from './PlayerSlot';
 import { ITeamSlot, Status } from '../../types';
+import { PlayerSlot } from './PlayerSlot';
+import { isPlatform } from '@ionic/react';
 
 export const MatchCard: React.FC<MatchData> = ({
   matchBookings,
@@ -18,7 +20,9 @@ export const MatchCard: React.FC<MatchData> = ({
   price,
   minutes,
   type,
+  owner,
 }) => {
+  const isMobile = isPlatform('mobile');
   const history = useHistory();
 
   const [playersArr] = useSortTeamMembers(matchBookings);
@@ -31,6 +35,15 @@ export const MatchCard: React.FC<MatchData> = ({
     );
   };
 
+  const player = usePlayerProfile();
+  const currentPlayerId = player?.id;
+
+  const isUserAlredyInMatch = matchBookings.find(
+    (member) => member.player.id === currentPlayerId,
+  );
+
+  const isUserOwner = owner?.id === currentPlayerId;
+
   return (
     <Box
       onClick={() => history.push(`/matches/${id}`)}
@@ -40,6 +53,7 @@ export const MatchCard: React.FC<MatchData> = ({
       boxShadow="rgba(99, 99, 99, 0.2) 0px 2px 8px 0px"
       display="flex"
       flexDirection="column"
+      sx={{ cursor: isMobile ? 'unset' : 'pointer' }}
     >
       <Box px={2} flexGrow={1}>
         <Box mt={1} display="flex" justifyContent="space-between">
@@ -77,6 +91,8 @@ export const MatchCard: React.FC<MatchData> = ({
                         member={member}
                         teamSlotIndex={teamSlotIndex}
                         onSlotSelect={onSlotSelect}
+                        isUserOwner={isUserOwner}
+                        isUserAlredyInMatch={!!isUserAlredyInMatch}
                       />
                     );
                   })}

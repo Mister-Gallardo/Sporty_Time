@@ -3,6 +3,7 @@ import { Club, IAvailableTime } from '../../services/club/interface';
 import { FavoriteBorderOutlined } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
 import { DateBox } from './DateBox';
+import { isPlatform } from '@ionic/react';
 
 interface IClubCard extends Club {}
 
@@ -13,12 +14,16 @@ export const ClubCard: React.FC<IClubCard> = ({
   minPrice,
   availableTimes,
 }) => {
+  const isMobile = isPlatform('mobile');
   const history = useHistory();
 
   const timeArray: any = availableTimes && Object.values(availableTimes);
 
   return (
-    <Box onClick={() => history.push(`/book-court/${id}?tab=2`)}>
+    <Box
+      onClick={() => history.push(`/book-court/${id}?tab=2`)}
+      sx={{ cursor: isMobile ? 'unset' : 'pointer' }}
+    >
       <Box
         position="relative"
         height="180px"
