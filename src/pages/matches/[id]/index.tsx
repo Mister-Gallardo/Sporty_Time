@@ -274,7 +274,10 @@ export const SingleMatchPage: React.FC = () => {
                 </Box>
               )}
 
-              <MatchInfoBlock data={matchData} />
+              <MatchInfoBlock
+                data={matchData}
+                isUserAlredyInMatch={!!isUserAlredyInMatch}
+              />
             </Box>
           </Box>
           {isUserOwner || !!isUserAlredyInMatch || (
