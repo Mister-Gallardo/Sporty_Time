@@ -41,3 +41,8 @@ ion-loading {
 ion-loading .loading-wrapper {
   box-shadow: none !important;
 }
+
+ion-datetime {
+  --wheel-highlight-background: #fff;
+  --background: #fff;
+}

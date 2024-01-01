@@ -21,6 +21,8 @@ export const ClubCard: React.FC<IClubCard> = ({
 
   return (
     <Box
+      bgcolor="#fff"
+      boxShadow="0 7px 8px -2px #e0e0e0"
       onClick={() => history.push(`/book-court/${id}?tab=2`)}
       sx={{ cursor: isMobile ? 'unset' : 'pointer' }}
     >
