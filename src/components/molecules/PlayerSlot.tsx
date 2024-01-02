@@ -1,133 +1,44 @@
-import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
-import {
-  MatchMember,
-  MatchMemberShort,
-} from '../../services/matches/interface';
 import { Avatar, Box, Typography } from '@mui/material';
-import { usePlayerProfile } from '../../services/api/hooks';
-import { Add } from '@mui/icons-material';
-import { isPlatform } from '@ionic/react';
-import { ITeamSlot, Status } from '../../types';
+import { Player } from '../../services/user/interface';
 
-interface IPlayerSlot {
-  matchStatus: Status;
-  member: MatchMember | MatchMemberShort;
-  teamSlotIndex: ITeamSlot;
-  onSlotSelect?: (val: ITeamSlot) => void;
-  isUserOwner: boolean;
-  isUserAlredyInMatch?: boolean;
+interface IPlayerSlotProps {
+  player: Player;
+  onClick?: any;
 }
 
-export const PlayerSlot: React.FC<IPlayerSlot> = ({
-  matchStatus,
-  member,
-  teamSlotIndex,
-  onSlotSelect,
-  isUserOwner,
-  isUserAlredyInMatch,
-}) => {
-  const isMobile = isPlatform('mobile');
-
-  const player = usePlayerProfile();
-  const isUser = player?.id === member?.player?.id;
-
+export const PlayerSlot: React.FC<IPlayerSlotProps> = ({ player, onClick }) => {
   return (
-    <>
-      {member ? (
-        <Box
-          minWidth={60}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-        >
-          <Box sx={{ opacity: isUser && !member.paid ? 0.3 : 1 }}>
-            <Avatar
-              src={member.player.user?.avatarUrl}
-              sx={{ width: 50, height: 50 }}
-            />
-          </Box>
-          <Box display="flex" flexWrap="nowrap" gap={0.5}>
-            <Typography
-              fontSize={12}
-              maxWidth={60}
-              noWrap
-              overflow="hidden"
-              textOverflow="ellipsis"
-            >
-              {member.player.user?.firstname}
-            </Typography>
-            {isUser && <Typography fontSize={12}>(Вы)</Typography>}
-          </Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
 
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            color="gray"
-          >
-            <Typography fontSize={12}>{member.player.ratingTennis}</Typography>
-
-            {matchStatus !== Status.CANCELED && !isUserOwner && isUser && (
-              <>
-                <Typography
-                  textAlign="center"
-                  lineHeight={1.2}
-                  maxWidth={isMobile ? 70 : 'auto'}
-                  fontSize={12}
-                >
-                  {member.paid || matchStatus !== Status.PENDING
-                    ? 'Оплачено'
-                    : 'Ожидается оплата'}
-                </Typography>
-                <MonetizationOnOutlinedIcon fontSize="small" />
-              </>
-            )}
-          </Box>
-        </Box>
-      ) : (
-        <Box
-          minWidth={70}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          sx={{ cursor: 'pointer' }}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (isUserOwner || !onSlotSelect || isUserAlredyInMatch) return;
-            onSlotSelect(teamSlotIndex);
+          width: '63px',
+          height: '63px',
+          borderRadius: '50%',
+          border: '2px solid #EED790',
+        }}
+      >
+        <Avatar
+          src={player ? player?.user?.avatarUrl : undefined}
+          onClick={onClick}
+          sx={{
+            width: '60px',
+            height: '60px',
+            opacity: player?.mark ? '.7' : 'unset',
           }}
-        >
-          <Box
-            width={50}
-            height={50}
-            borderRadius={50}
-            border={`1px solid ${
-              matchStatus === Status.UPCOMING || isUserAlredyInMatch
-                ? '#eee'
-                : '#c6dcf2'
-            }`}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Add
-              fontSize="small"
-              color={
-                matchStatus === Status.UPCOMING || isUserAlredyInMatch
-                  ? 'disabled'
-                  : 'primary'
-              }
-            />
-          </Box>
-          {matchStatus === Status.UPCOMING || (
-            <Typography color="gray" fontSize={12} maxWidth={60} noWrap>
-              {isUserOwner || isUserAlredyInMatch
-                ? 'Свободно'
-                : 'Присоединиться'}
-            </Typography>
-          )}
-        </Box>
-      )}
-    </>
+        />
+      </Box>
+      <Typography>{player?.user?.firstname || 'Доступно'}</Typography>
+      <Typography>{'' || ''}</Typography>
+    </Box>
   );
 };

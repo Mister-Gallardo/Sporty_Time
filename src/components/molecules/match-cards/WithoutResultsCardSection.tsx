@@ -2,7 +2,7 @@ import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutline
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { Status } from '../../types';
+import { Status } from '../../../types';
 
 interface IWithoutResults {
   date: string;

@@ -1,6 +1,6 @@
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import { Box, Divider, Typography } from '@mui/material';
-import { Status } from '../../types';
+import { Status } from '../../../types';
 import React from 'react';
 
 interface IResults {
