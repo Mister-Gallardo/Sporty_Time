@@ -19,12 +19,14 @@ export const MONTHS = [
 export interface ICalendarDayProps {
   date: Date;
   selected?: boolean;
+  onSelect?: () => void;
 }
 export const CalendarDay: React.FC<ICalendarDayProps> = (props) => {
-  const { date, selected } = props;
+  const { date, selected, onSelect } = props;
 
   return (
     <Box
+      onClick={onSelect}
       sx={{
         cursor: 'pointer',
         display: 'flex',

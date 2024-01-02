@@ -6,6 +6,7 @@ interface IDateBox extends ButtonProps {
   gameDuration?: number;
   onClick: any;
   disabled?: boolean;
+  isSelected?: boolean;
 }
 
 export const DateBox: React.FC<IDateBox> = ({
@@ -13,17 +14,20 @@ export const DateBox: React.FC<IDateBox> = ({
   gameDuration,
   onClick,
   disabled,
+  isSelected,
 }) => {
   return (
     <Button
       onClick={onClick}
       disabled={disabled}
       sx={{
+        cursor: 'pointer',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         textTransform: 'initial',
-        color: '#000',
+        color: isSelected ? '#fff' : '#000',
+        backgroundColor: isSelected ? '#333' : '#fff',
         border: '1px solid #ddd',
         borderRadius: 1,
         minHeight: '38px',
