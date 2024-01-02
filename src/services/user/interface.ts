@@ -15,8 +15,9 @@ export interface Player {
   ratingTennis: number;
   createdAt: Date;
   updatedAt: Date;
-
   user?: User;
+
+  mark?: boolean;
 }
 
 export interface User {

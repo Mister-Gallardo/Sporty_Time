@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { UploadResultModal } from '../../../components/modals/UploadResultModal';
-import { MyMatchCard } from '../../../components/molecules/MyMatchCard';
+import { MyMatchCard } from '../../../components/molecules/match-cards/MyMatchCard';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { getMyMatches } from '../../../services/matches/service';
+import { Box, Switch, Typography } from '@mui/material';
 import useToggle from '../../../hooks/useToggle';
-import { Box, Typography } from '@mui/material';
 import { isPlatform } from '@ionic/react';
 
 export function MyMatchesTab() {
   const isMobile = isPlatform('mobile');
+
+  const [showCanceled, setShowCanceled] = useToggle();
 
   const { data, isLoading } = useQuery({
     queryKey: ['my-matches'],
@@ -27,43 +29,60 @@ export function MyMatchesTab() {
   };
 
   return (
-    <Box px={1} py={3}>
+    <Box position="relative">
       <Box
-        display="flex"
-        flexDirection={isMobile ? 'column' : 'unset'}
-        justifyContent={isMobile ? 'unset' : 'center'}
-        flexWrap="wrap"
+        position={isMobile ? 'fixed' : 'unset'}
+        zIndex={1}
         width="100%"
-        maxWidth={isMobile ? 'unset' : 1000}
-        gap={1.5}
+        bgcolor="#fff"
+        borderBottom="1px solid #eaeaea"
+        px={2}
+        py={0.5}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
       >
-        {isLoading ? (
-          <LoadingCircle />
-        ) : (
-          !myMatchesData ||
-          (myMatchesData.length === 0 ? (
-            <Typography textAlign="center" width="100%" mt={3} color="gray">
-              На данный момент история матчей пуста, но в любой момент вы можете
-              забронировать корт и начать играть!
-            </Typography>
-          ) : (
-            myMatchesData.map((card) => {
-              return (
-                <MyMatchCard
-                  key={card.id}
-                  {...card}
-                  uploadResults={uploadResults}
-                />
-              );
-            })
-          ))
-        )}
+        <Typography fontWeight={600}>Показать отменённые матчи</Typography>
+        <Switch value={showCanceled} />
       </Box>
-      <UploadResultModal
-        matchId={matchId}
-        openState={openUploadResultModal}
-        handleModal={setOpenUploadResultModal}
-      />
+
+      <Box px={1} py={3} pt={8}>
+        <Box
+          display="flex"
+          flexDirection={isMobile ? 'column' : 'unset'}
+          flexWrap="wrap"
+          width="100%"
+          maxWidth={isMobile ? 'unset' : 1000}
+          gap={1.5}
+        >
+          {isLoading ? (
+            <LoadingCircle />
+          ) : (
+            !myMatchesData ||
+            (myMatchesData.length === 0 ? (
+              <Typography textAlign="center" width="100%" mt={3} color="gray">
+                На данный момент история матчей пуста, но в любой момент вы
+                можете забронировать корт и начать играть!
+              </Typography>
+            ) : (
+              myMatchesData.map((card) => {
+                return (
+                  <MyMatchCard
+                    key={card.id}
+                    {...card}
+                    uploadResults={uploadResults}
+                  />
+                );
+              })
+            ))
+          )}
+        </Box>
+        <UploadResultModal
+          matchId={matchId}
+          openState={openUploadResultModal}
+          handleModal={setOpenUploadResultModal}
+        />
+      </Box>
     </Box>
   );
 }

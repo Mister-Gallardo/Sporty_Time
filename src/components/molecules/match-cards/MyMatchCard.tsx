@@ -1,12 +1,12 @@
 import React from 'react';
-import { EType, getDayFormat } from '../../helpers/getTimeDateString';
 import { Avatar, Box, Divider, Typography } from '@mui/material';
-import { sortTeamMembers } from '../../helpers/sortTeamMembers';
-import { getMatchStatus } from '../../helpers/getMatchStatus';
-import { MatchData } from '../../services/matches/interface';
 import { useHistory } from 'react-router';
-import { Status } from '../../types';
 import { isPlatform } from '@ionic/react';
+import { MatchData } from '../../../services/matches/interface';
+import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
+import { sortTeamMembers } from '../../../helpers/sortTeamMembers';
+import { getMatchStatus } from '../../../helpers/getMatchStatus';
+import { Status } from '../../../types';
 import { WithoutResultsCardSection } from './WithoutResultsCardSection';
 import { ResultsCardSection } from './ResultsCardSection';
 
@@ -66,6 +66,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
     <Box
       width="100%"
       maxWidth={isMobile ? 'unset' : 325}
+      bgcolor="#fff"
       border="1px solid #E5E5E5"
       borderRadius={2}
       onClick={() => history.push(`/matches/${id}`)}

@@ -1,16 +1,16 @@
-import { getPromptParams } from '../../../../helpers/getMatchPromptParams';
-import { MatchData } from '../../../../services/matches/interface';
 import InfoIcon from '@mui/icons-material/Info';
 import { Box, Typography } from '@mui/material';
 
 interface IPrompt {
-  isOwner: boolean;
-  matchData: MatchData;
+  params: {
+    bgColor: string;
+    color: string;
+    title: string;
+    description: string;
+  } | null;
 }
 
-export const Prompt: React.FC<IPrompt> = ({ isOwner, matchData }) => {
-  const params = getPromptParams(matchData, isOwner);
-
+export const Prompt: React.FC<IPrompt> = ({ params }) => {
   if (!params) return;
   return (
     <Box

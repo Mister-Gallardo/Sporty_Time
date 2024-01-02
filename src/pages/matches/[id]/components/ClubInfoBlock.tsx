@@ -1,6 +1,6 @@
 import React from 'react';
 import { MatchData } from '../../../../services/matches/interface';
-import { Box, IconButton, Link, Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { Block } from '../../../../components/molecules/Block';
 import { Directions } from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router-dom';
@@ -42,7 +42,7 @@ export const ClubInfoBlock: React.FC<IClubInfoBlock> = ({ data }) => {
             </Typography>
           </Box>
           <Box>
-            <Link sx={{ fontSize: '.75rem' }}>More info </Link>
+            <Typography sx={{ fontSize: '.75rem' }}>More info </Typography>
           </Box>
         </Box>
       </Box>
