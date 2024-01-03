@@ -16,8 +16,12 @@ export interface Player {
   createdAt: Date;
   updatedAt: Date;
   user?: User;
+}
 
+export interface MatchPlayer extends Player {
   mark?: boolean;
+  paid?: number;
+  isOwner?: boolean;
 }
 
 export interface User {

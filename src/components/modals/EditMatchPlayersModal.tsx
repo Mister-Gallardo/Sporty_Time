@@ -1,29 +1,24 @@
+import React from 'react';
 import { Box, Divider } from '@mui/material';
 import { ModalContainer } from './ModalContainer';
-import React from 'react';
-import { Member } from '../../helpers/sortTeamMembers';
-import { PlayerSlot } from '../molecules/PlayerSlot';
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
-import { usePlayerProfile } from '../../services/api/hooks';
-import { Status } from '../../types';
+import { MatchPlayer } from '../../services/user/interface';
+import { EditPlayerSlot } from '../molecules/player-slot/EditPlayerSlot';
 
 interface IEditMatchPlayersModal {
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  players: Array<Member[]>;
-  isUserOwner: boolean;
+  players: MatchPlayer[];
   onCancel: () => void;
+  sport: string;
 }
 
 export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
   openState,
   handleModal,
   players,
-  isUserOwner,
   onCancel,
+  sport,
 }) => {
-  const player = usePlayerProfile();
-
   return (
     <ModalContainer
       openState={openState}
@@ -31,50 +26,32 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
       headerTitle="Изменить состав команд"
       initialBreakpoint={0.3}
     >
-      <Box display="flex" justifyContent="center" gap={1.5}>
-        {players.map((team, teamIndex) => {
-          return (
-            <React.Fragment key={teamIndex}>
-              <Box display="flex" alignItems="flex-start" gap={2}>
-                {team.map((member: any, slotIndex: number) => {
-                  const teamSlotIndex = { teamIndex, slotIndex };
-                  const isUser = player?.id === member?.player?.id;
-
-                  return (
-                    <Box key={slotIndex} position="relative">
-                      {member && (isUserOwner || (!isUserOwner && isUser)) ? (
-                        <CancelRoundedIcon
-                          onClick={() => {
-                            handleModal();
-                            onCancel();
-                          }}
-                          sx={{
-                            cursor: 'pointer',
-                            color: '#ff484e',
-                            position: 'absolute',
-                            zIndex: 1,
-                            right: -3,
-                            top: -10,
-                          }}
-                        />
-                      ) : null}
-                      <PlayerSlot
-                        matchStatus={Status.COMPLETE}
-                        member={member}
-                        teamSlotIndex={teamSlotIndex}
-                        isUserOwner={isUserOwner}
-                      />
-                    </Box>
-                  );
-                })}
-              </Box>
-
-              {teamIndex === 0 && (
-                <Divider orientation="vertical" flexItem sx={{ marginX: 1 }} />
-              )}
-            </React.Fragment>
-          );
-        })}
+      <Box py={1} display="flex" justifyContent="space-betweenF" gap={2}>
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <EditPlayerSlot
+            player={players[0]}
+            sport={sport}
+            onCancel={onCancel}
+          />
+          <EditPlayerSlot
+            player={players[1]}
+            sport={sport}
+            onCancel={onCancel}
+          />
+        </Box>
+        <Divider orientation="vertical" flexItem variant="middle" />
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <EditPlayerSlot
+            player={players[2]}
+            sport={sport}
+            onCancel={onCancel}
+          />
+          <EditPlayerSlot
+            player={players[3]}
+            sport={sport}
+            onCancel={onCancel}
+          />
+        </Box>
       </Box>
     </ModalContainer>
   );
