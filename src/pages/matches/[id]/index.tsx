@@ -16,6 +16,7 @@ import { useParams } from 'react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
+  cancelMatch,
   getOneAvailableMatch,
   joinMatch,
   uploadResults,
@@ -25,13 +26,16 @@ import { UploadResultModal } from '../../../components/modals/UploadResultModal'
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { MatchInfoBlock } from './components/MatchInfoBlock';
 import { ClubInfoBlock } from './components/ClubInfoBlock';
-import { Player } from '../../../services/user/interface';
+import { MatchPlayer } from '../../../services/user/interface';
 import { gameDateToDate } from '../../../services/helper';
 import { Prompt } from './components/Prompt';
 import { PrivacyType } from './components/PrivacyType';
 import { MatchType } from './components/MatchType';
 import { getPromptParams } from '../../../helpers/getMatchPromptParams';
 import { MatchDataBlock } from './components/MatchDataBlock';
+import { EditMatchPlayersModal } from '../../../components/modals/EditMatchPlayersModal';
+import { CancelDialogModal } from './components/CancelDialogModal';
+import useToggle from '../../../hooks/useToggle';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
@@ -44,7 +48,10 @@ export function SingleMatchPage() {
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [openToast, setOpenToast] = useState<boolean>(false);
 
-  // Get Particular Club Request
+  const [openEditModal, setOpenEditModal] = useToggle();
+  const [openCancelDialogModal, setOpenCancelDialogModal] = useToggle();
+
+  // Get Particular Match Request
   const {
     data,
     isLoading,
@@ -93,7 +100,26 @@ export function SingleMatchPage() {
     },
   });
 
-  const [players, setPlayers] = useState<Player[]>([]);
+  // Cancel / Leave match
+  const cancelMatchMutation = useMutation({
+    mutationFn: cancelMatch,
+    onSuccess() {
+      setOpenCancelDialogModal();
+      showToast({
+        color: 'success',
+        message: `Ваше бронирование отменено`,
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
+      refetchMatch();
+    },
+    onError(e: any) {
+      console.log('error!', e);
+    },
+  });
+
+  const [players, setPlayers] = useState<MatchPlayer[]>([]);
   const playerAlreadyInSomeTeam = !!singleMatchData?.matchBookings.find(
     (booking) => booking.player?.id === myPlayer?.id,
   );
@@ -106,21 +132,43 @@ export function SingleMatchPage() {
     setPlayerInTeam(playerAlreadyInSomeTeam ? '' : 'B');
   }, [playerAlreadyInSomeTeam]);
 
+  const isUserOwner = singleMatchData?.owner?.id === myPlayer?.id;
+
   useEffect(() => {
     const teamAPlayers =
       singleMatchData?.matchBookings
         ?.filter((booking) => booking.team === 'A')
-        ?.map((booking) => booking.player) || [];
+        ?.map((booking) => ({
+          mark: false,
+          paid: booking.paid,
+          isOwner: isUserOwner,
+          ...booking.player,
+        })) || [];
 
     const teamBPlayers =
       singleMatchData?.matchBookings
         ?.filter((booking) => booking.team === 'B')
-        ?.map((booking) => booking.player) || [];
+        ?.map((booking) => ({
+          mark: false,
+          paid: booking.paid,
+          isOwner: isUserOwner,
+          ...booking.player,
+        })) || [];
 
     if (playerInTeam === 'A' && myPlayer)
-      teamAPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
+      teamAPlayers.push({
+        ...myPlayer,
+        mark: !playerAlreadyInSomeTeam,
+        paid: 0,
+        isOwner: isUserOwner,
+      });
     if (playerInTeam === 'B' && myPlayer)
-      teamBPlayers.push({ ...myPlayer, mark: !playerAlreadyInSomeTeam });
+      teamBPlayers.push({
+        ...myPlayer,
+        mark: !playerAlreadyInSomeTeam,
+        paid: 0,
+        isOwner: isUserOwner,
+      });
     teamAPlayers.length = 2;
     teamBPlayers.length = 2;
 
@@ -171,8 +219,6 @@ export function SingleMatchPage() {
     </Box>
   );
 
-  const isUserOwner = singleMatchData?.owner?.id === myPlayer?.id;
-
   return (
     <>
       <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
@@ -202,7 +248,13 @@ export function SingleMatchPage() {
               <PlayersMatchCard
                 players={players}
                 playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
-                setPlayerInTeam={setPlayerInTeam}
+                setPlayerInTeam={(team) => {
+                  if (playerAlreadyInSomeTeam) return;
+                  setPlayerInTeam(team);
+                }}
+                sport={singleMatchData.sport}
+                handleEditModal={setOpenEditModal}
+                isMatchPaid={singleMatchData.paid}
               />
 
               {singleMatchData?.matchResults && (
@@ -278,7 +330,11 @@ export function SingleMatchPage() {
                         onClick={() =>
                           uploadMatchReslultsMutation.mutate({
                             matchId: +matchId,
-                            matchResults: singleMatchData?.matchResults,
+                            matchResults: singleMatchData?.matchResults || [
+                              [0, 0],
+                              [0, 0],
+                              [0, 0],
+                            ],
                           })
                         }
                         sx={{
@@ -321,6 +377,7 @@ export function SingleMatchPage() {
                 <Box
                   sx={{
                     position: 'fixed',
+                    zIndex: 1,
                     left: '0',
                     right: '0',
                     bottom: '1.5rem',
@@ -336,8 +393,9 @@ export function SingleMatchPage() {
                         joinMatchMutation.mutate({
                           matchId: Number(matchId),
                           team: playerInTeam,
-                          //ADD REAL PRICE
-                          money: 0,
+                          money: singleMatchData.paid
+                            ? 0
+                            : singleMatchData.price / 4,
                         });
                       } else {
                         showToast({
@@ -348,13 +406,10 @@ export function SingleMatchPage() {
                       }
                     }}
                     sx={{
-                      height: '45px',
+                      paddingX: 2,
                       background: '#0D2432',
                       borderRadius: '25px',
                       color: '#fff',
-                      fontSize: '1.1rem',
-                      fontWeight: '500',
-                      maxWidth: '350px',
                       boxShadow:
                         'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
                     }}
@@ -362,7 +417,11 @@ export function SingleMatchPage() {
                     {joinMatchMutation.isPending ? (
                       <CircularProgress />
                     ) : (
-                      `Забронировать место - ₽ ${singleMatchData?.price}`
+                      `Забронировать место ${
+                        singleMatchData.paid
+                          ? ''
+                          : '- ₽' + singleMatchData.price / 4
+                      }`
                     )}
                   </Button>
                 </Box>
@@ -373,6 +432,23 @@ export function SingleMatchPage() {
           </Box>
         </>
       </SwipeablePage>
+
+      <EditMatchPlayersModal
+        openState={openEditModal}
+        handleModal={setOpenEditModal}
+        players={players}
+        onCancel={() => {
+          setOpenEditModal();
+          setOpenCancelDialogModal();
+        }}
+        sport={singleMatchData.sport}
+      />
+      <CancelDialogModal
+        openState={openCancelDialogModal}
+        handleDialog={setOpenCancelDialogModal}
+        isUserOwner={isUserOwner}
+        handleCancel={() => cancelMatchMutation.mutate(+matchId)}
+      />
 
       <UploadResultModal
         openState={openUploadModal}

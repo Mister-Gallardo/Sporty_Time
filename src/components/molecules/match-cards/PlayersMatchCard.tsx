@@ -1,85 +1,88 @@
 import { isPlatform } from '@ionic/react';
-import { Player } from '../../../services/user/interface';
-import { Box, Typography } from '@mui/material';
-import { PlayerSlot } from '../PlayerSlot';
+import { MatchPlayer } from '../../../services/user/interface';
+import { Box, Button, Divider, Typography } from '@mui/material';
+import { PlayerSlot } from '../player-slot/PlayerSlot';
 
 interface IPlayersMatchCardProps {
-  players: Player[];
+  players: MatchPlayer[];
   playerAlreadyInSomeTeam: boolean;
   setPlayerInTeam: (team: string) => void;
+  sport: string;
+  handleEditModal: (val?: boolean) => void;
+  isMatchPaid: boolean;
 }
+const isMobile = isPlatform('mobile');
 
 export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
   players,
   playerAlreadyInSomeTeam,
   setPlayerInTeam,
+  sport,
+  handleEditModal,
+  isMatchPaid,
 }) => {
   return (
     <Box
-      sx={{
-        padding: '1rem .75rem',
-        marginBlock: '1.25rem',
-        width: '100%',
-        background: '#fff',
-        border: '1px #e5e5e5 solid',
-        borderRadius: '10px',
-      }}
+      py={1}
+      border="1px #e5e5e5 solid"
+      borderRadius={2.5}
+      px={2}
+      bgcolor="#fff"
+      m={isMobile ? 'unset' : '0 auto'}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingBottom: '.5rem',
-        }}
-      >
-        <Typography sx={{ fontSize: '1.1rem', fontWeight: '600' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography fontSize={15} fontWeight={600}>
           Игроки
         </Typography>
+        {playerAlreadyInSomeTeam && (
+          <Button
+            onClick={() => handleEditModal()}
+            sx={{ fontSize: 13, padding: 0 }}
+          >
+            Изменить
+          </Button>
+        )}
       </Box>
 
-      <Box
-        sx={{
-          display: 'flex',
-          gap: isPlatform('mobile') ? '1rem' : '48px',
-          justifyContent: 'center',
-        }}
-      >
-        <PlayerSlot
-          player={players[0]}
-          onClick={() => {
-            if (playerAlreadyInSomeTeam) return;
-            setPlayerInTeam('A');
-          }}
-        />
-        <PlayerSlot
-          player={players[1]}
-          onClick={() => {
-            if (playerAlreadyInSomeTeam) return;
-            setPlayerInTeam('A');
-          }}
-        />
-        <Box
-          sx={{
-            width: '2px',
-            height: '100px',
-            background: '#e5e5e5',
-          }}
-        />
-        <PlayerSlot
-          player={players[2]}
-          onClick={() => {
-            if (playerAlreadyInSomeTeam) return;
-            setPlayerInTeam('B');
-          }}
-        />
-        <PlayerSlot
-          player={players[3]}
-          onClick={() => {
-            if (playerAlreadyInSomeTeam) return;
-            setPlayerInTeam('B');
-          }}
-        />
+      <Box py={1} display="flex" justifyContent="space-betweenF" gap={2}>
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <PlayerSlot
+            player={players[0]}
+            onClick={() => setPlayerInTeam('A')}
+            sport={sport}
+            isMatchPaid={isMatchPaid}
+            playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
+          />
+          <PlayerSlot
+            player={players[1]}
+            onClick={() => setPlayerInTeam('A')}
+            sport={sport}
+            isMatchPaid={isMatchPaid}
+            playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
+          />
+        </Box>
+        <Divider orientation="vertical" flexItem variant="middle" />
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <PlayerSlot
+            player={players[2]}
+            onClick={() => setPlayerInTeam('B')}
+            sport={sport}
+            isMatchPaid={isMatchPaid}
+            playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
+          />
+          <PlayerSlot
+            player={players[3]}
+            onClick={() => setPlayerInTeam('B')}
+            sport={sport}
+            isMatchPaid={isMatchPaid}
+            playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
+          />
+        </Box>
+      </Box>
+
+      <Box display="flex" justifyContent="space-between">
+        <Typography>A</Typography>
+        <Typography>B</Typography>
       </Box>
     </Box>
   );

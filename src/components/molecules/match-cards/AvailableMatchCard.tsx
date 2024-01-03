@@ -1,7 +1,7 @@
 import { useHistory } from 'react-router';
 import { EMatchType, MatchData } from '../../../services/matches/interface';
 import { Box, Divider, Typography } from '@mui/material';
-import { PlayerSlot } from '../PlayerSlot';
+import { PlayerSlot } from '../player-slot/PlayerSlot';
 
 interface IAvailableMatchCardProps {
   matchData: MatchData;
@@ -66,11 +66,11 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
         <Typography color="gray">11km · Dubai</Typography>
 
         <Box mt={2} display="flex" justifyContent="space-between">
-          <PlayerSlot player={players[0]} sport={matchData.sport} />
-          <PlayerSlot player={players[1]} sport={matchData.sport} />
+          <PlayerSlot player={players[0]} sport={matchData.sport} hideStatus />
+          <PlayerSlot player={players[1]} sport={matchData.sport} hideStatus />
           <Divider orientation="vertical" variant="middle" flexItem />
-          <PlayerSlot player={players[2]} sport={matchData.sport} />
-          <PlayerSlot player={players[3]} sport={matchData.sport} />
+          <PlayerSlot player={players[2]} sport={matchData.sport} hideStatus />
+          <PlayerSlot player={players[3]} sport={matchData.sport} hideStatus />
         </Box>
       </Box>
 
