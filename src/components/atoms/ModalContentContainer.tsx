@@ -11,7 +11,7 @@ export const ModalContentContainer: React.FC<IModalContentContainerProps> = ({
   children,
 }) => {
   return (
-    <Box flexGrow={1}>
+    <Box>
       <Typography mb={1.5} fontSize={16} fontWeight={600}>
         {title}
       </Typography>

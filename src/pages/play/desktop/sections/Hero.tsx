@@ -22,7 +22,7 @@ export function Hero() {
             lineHeight: '1',
           }}
         >
-          Находи где и с кем ты можешь сыграть в тенис!
+          Находи где и с кем ты можешь играть в тенис!
         </Typography>
         <Typography
           variant="h2"

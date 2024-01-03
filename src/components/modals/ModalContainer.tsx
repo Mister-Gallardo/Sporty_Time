@@ -10,7 +10,7 @@ import {
 } from '@ionic/react';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { Box, IconButton, Modal, Typography } from '@mui/material';
-import { IonScrollableModalContent } from '../atoms/IonScrollableModalContent';
+import { IonScrollableModalContent } from '@musaev/ionic-ui';
 
 interface IModalContainer extends PropsWithChildren<{}> {
   openState: boolean;
@@ -55,10 +55,11 @@ export const ModalContainer: React.FC<IModalContainer> = ({
       ) : (
         <Modal open={openState} onClose={() => handleModal()}>
           <Box
+            position="relative"
             borderRadius={3}
             overflow="hidden"
             width="100%"
-            minWidth="30vw"
+            minWidth={450}
             maxWidth="50vw"
           >
             <Box

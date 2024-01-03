@@ -9,46 +9,74 @@ import { AdvancedFilterAvailableMatchesModal } from '../../../components/modals/
 import { FilterAvailableMatchesModal } from '../../../components/modals/FilterAvailableMatchesModal';
 import { AvailableMatchCard } from '../../../components/molecules/match-cards/AvailableMatchCard';
 import { ClubMultipleDatesCard } from '../../../components/molecules/ClubMultipleDatesCard';
+import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { Accordion } from '../../../components/molecules/Accordion';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+import { getSportName } from '../../../helpers/getSportName';
 import { getClubs } from '../../../services/club/service';
+import { FormProvider, useForm } from 'react-hook-form';
+import noResults from '../../../images/no-results.svg';
 import useToggle from '../../../hooks/useToggle';
+import { Sport } from '../../../types';
 
-// static 'gameDates' array for daily requests with actual dates (just for now)
-const today = new Date();
-const tomorrow = new Date(today);
-tomorrow.setDate(today.getDate() + 1);
+interface FilterFormDate {
+  sport: string;
+  gamedates: { value: Date }[];
+  time: string;
+  times: { value: string }[];
+}
 
-const dayAfterTomorrow = new Date(tomorrow);
-dayAfterTomorrow.setDate(tomorrow.getDate() + 1);
-
-const gameDates = [today, tomorrow, dayAfterTomorrow];
+const isMobile = isPlatform('mobile');
 
 export function AvailableMatchesTab() {
-  const isMobile = isPlatform('mobile');
+  const filterParams = useForm<FilterFormDate>({
+    defaultValues: {
+      sport: '',
+      gamedates: [],
+    },
+  });
+  const { watch } = filterParams;
+  const { sport, gamedates } = watch();
+  const gameDatesToString = gamedates
+    .map((date) => date.value.toLocaleDateString('en-ca'))
+    .join(',');
+
+  const [openFilterModal, setOpenFilterModal] = useToggle();
+  const [openAdvancedFilterModal, setOpenAdvancedFilterModal] = useToggle();
 
   const availableMatches = useQuery({
     queryKey: [`available-matches`],
-    queryFn: getAvailableMatches,
+    queryFn: () => getAvailableMatches({ sport, gamedates: gameDatesToString }),
+    enabled: false,
   });
   const availableArray = availableMatches.data?.data;
 
   const noRatingMatches = useQuery({
     queryKey: [`available-no-rating`],
-    queryFn: getAvailableNoRatingMatches,
+    queryFn: () =>
+      getAvailableNoRatingMatches({ sport, gamedates: gameDatesToString }),
+    enabled: false,
   });
   const noRatingArray = noRatingMatches.data?.data;
 
   const clubs = useQuery({
-    queryKey: ['clubs', gameDates],
-    queryFn: () => getClubs(gameDates),
+    queryKey: ['clubs'],
+    queryFn: () => getClubs(gameDatesToString),
+    enabled: false,
   });
 
   const clubsArray = clubs.data;
 
-  const [openFilterModal, setOpenFilterModal] = useToggle();
-  const [openAdvancedFilterModal, setOpenAdvancedFilterModal] = useToggle();
+  const onFiltersApply = () => {
+    availableMatches.refetch();
+    noRatingMatches.refetch();
+    clubs.refetch();
+    if (openFilterModal) setOpenFilterModal();
+    if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
+  };
+
+  const isMainFilters = !!sport && gamedates.length > 0;
 
   return (
     <Box position="relative">
@@ -57,14 +85,72 @@ export function AvailableMatchesTab() {
         zIndex={1}
         width="100%"
         display="flex"
+        alignItems="center"
+        gap={1}
         bgcolor="#fff"
         borderBottom="1px solid #eaeaea"
-        py={0.5}
+        height={50}
+        px={1}
       >
-        <IconButton onClick={() => setOpenAdvancedFilterModal()}>
-          <TuneOutlinedIcon sx={{ color: '#000' }} />
-        </IconButton>
-        <Button onClick={() => setOpenFilterModal()}>Set filter</Button>
+        {isMainFilters && (
+          <IconButton
+            onClick={() => setOpenAdvancedFilterModal()}
+            sx={{ padding: 0 }}
+            disabled
+          >
+            <TuneOutlinedIcon />
+          </IconButton>
+        )}
+
+        {isMainFilters ? (
+          <Box
+            display="flex"
+            overflow="auto"
+            gap={1}
+            onClick={() => setOpenFilterModal()}
+          >
+            <Typography
+              px={2}
+              py={0.5}
+              bgcolor="#0D2433"
+              color="#fff"
+              borderRadius={5}
+              fontSize={13}
+              lineHeight={1.2}
+              whiteSpace="nowrap"
+            >
+              {getSportName(sport as Sport)}
+            </Typography>
+            <Typography
+              px={2}
+              py={0.5}
+              bgcolor="#0D2433"
+              color="#fff"
+              borderRadius={5}
+              fontSize={13}
+              lineHeight={1.2}
+              whiteSpace="nowrap"
+            >
+              {gamedates
+                .map((date) => getDayFormat(date.value, EType.MONTH_AND_DAY))
+                .join(' | ')}
+            </Typography>
+          </Box>
+        ) : (
+          <Button
+            onClick={() => setOpenFilterModal()}
+            sx={{
+              fontSize: 13,
+              color: '#333',
+              border: '1px solid #eee',
+              borderRadius: 5,
+              padding: 0,
+              paddingX: 1,
+            }}
+          >
+            Спорт | Клубы | Даты и время
+          </Button>
+        )}
       </Box>
       <Box
         maxWidth={isMobile ? 'unset' : 1000}
@@ -73,95 +159,109 @@ export function AvailableMatchesTab() {
         pt={6}
         pb="1.25rem"
       >
-        <Accordion
-          title="Для вашего уровня"
-          description="Эти матчи полностью соответствуют вашему запросу и текущему уровню"
-        >
-          <Box
-            sx={{
-              paddingBottom: '.75rem',
-              display: 'flex',
-              overflowX: 'auto',
-              scrollSnapType: 'x mandatory',
-              scrollBehavior: 'smooth',
-            }}
-          >
-            {availableMatches.isLoading ? (
-              <LoadingCircle />
-            ) : (
-              !availableArray ||
-              (availableArray.length === 0 ? (
-                <Typography textAlign="center" width="100%" mt={3} color="gray">
-                  На данный момент нет доступных матчей для вашего уровня
-                </Typography>
-              ) : (
-                availableArray.map((card, index) => {
-                  return <AvailableMatchCard key={index} matchData={card} />;
-                })
-              ))
-            )}
+        {isMainFilters ? (
+          <>
+            <Accordion
+              title="Для вашего уровня"
+              description="Эти матчи полностью соответствуют вашему запросу и текущему уровню"
+            >
+              <Box display="flex" gap={1.5} overflow="auto" pb={1}>
+                {availableMatches.isLoading ? (
+                  <LoadingCircle />
+                ) : !availableArray || availableArray.length === 0 ? (
+                  <Typography
+                    textAlign="center"
+                    width="100%"
+                    mt={3}
+                    color="gray"
+                  >
+                    На данный момент нет доступных матчей для вашего уровня по
+                    текущему запросу
+                  </Typography>
+                ) : (
+                  availableArray.map((card, index) => {
+                    return <AvailableMatchCard key={index} matchData={card} />;
+                  })
+                )}
+              </Box>
+            </Accordion>
+            <Accordion
+              title="Запросить место"
+              description="Эти матчи не соответствуют вашему текущему уровню. Вам необходимо сделать запрос на присоединение"
+            >
+              <Box display="flex" gap={1.5} overflow="auto" pb={1}>
+                {noRatingMatches.isLoading ? (
+                  <LoadingCircle />
+                ) : !noRatingArray || noRatingArray.length === 0 ? (
+                  <Typography
+                    textAlign="center"
+                    width="100%"
+                    mt={3}
+                    color="gray"
+                  >
+                    На данный момент нет доступных матчей по текущему запросу
+                  </Typography>
+                ) : (
+                  noRatingArray.map((card, index) => {
+                    return <AvailableMatchCard key={index} matchData={card} />;
+                  })
+                )}
+              </Box>
+            </Accordion>
+            <Accordion
+              title="Стать первым игроком!"
+              description="Создайте новый матч, выбрав подходящее время"
+            >
+              <Box
+                display="flex"
+                flexDirection={isMobile ? 'column' : 'row'}
+                gap={2}
+                width="100%"
+              >
+                {!clubsArray || clubsArray.length === 0 ? (
+                  <Typography
+                    textAlign="center"
+                    width="100%"
+                    mt={3}
+                    color="gray"
+                  >
+                    На данный момент нет доступных матчей
+                  </Typography>
+                ) : (
+                  clubsArray.map((club, index) => {
+                    return <ClubMultipleDatesCard key={index} {...club} />;
+                  })
+                )}
+              </Box>
+            </Accordion>
+          </>
+        ) : (
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <Box
+              component="img"
+              src={noResults}
+              width="100%"
+              maxWidth={isMobile ? 250 : 500}
+            />
+            <Button onClick={() => setOpenFilterModal()} sx={{ fontSize: 14 }}>
+              Настройте фильтры, что бы увидеть доступные матчи
+            </Button>
           </Box>
-        </Accordion>
-        <Accordion
-          title="Запросить место"
-          description="Эти матчи не соответствуют вашему текущему уровню. Вам необходимо сделать запрос на присоединение"
-        >
-          <Box
-            sx={{
-              paddingBottom: '.75rem',
-              display: 'flex',
-              overflowX: 'auto',
-              scrollSnapType: 'x mandatory',
-              scrollBehavior: 'smooth',
-            }}
-          >
-            {noRatingMatches.isLoading ? (
-              <LoadingCircle />
-            ) : (
-              !noRatingArray ||
-              (noRatingArray.length === 0 ? (
-                <Typography textAlign="center" width="100%" mt={3} color="gray">
-                  На данный момент нет доступных матчей
-                </Typography>
-              ) : (
-                noRatingArray.map((card, index) => {
-                  return <AvailableMatchCard key={index} matchData={card} />;
-                })
-              ))
-            )}
-          </Box>
-        </Accordion>
-        <Accordion
-          title="Стать первым игроком!"
-          description="Создайте новый матч, выбрав подходящее время"
-        >
-          <Box
-            display="flex"
-            flexDirection={isMobile ? 'column' : 'row'}
-            gap={2}
-            width="100%"
-          >
-            {!clubsArray || clubsArray.length === 0 ? (
-              <Typography textAlign="center" width="100%" mt={3} color="gray">
-                На данный момент нет доступных матчей
-              </Typography>
-            ) : (
-              clubsArray.map((club, index) => {
-                return <ClubMultipleDatesCard key={index} {...club} />;
-              })
-            )}
-          </Box>
-        </Accordion>
+        )}
       </Box>
 
-      <FilterAvailableMatchesModal
-        openState={openFilterModal}
-        handleModal={setOpenFilterModal}
-      />
-      <AdvancedFilterAvailableMatchesModal
-        openState={openAdvancedFilterModal}
-        handleModal={setOpenAdvancedFilterModal}
-      />
+      <FormProvider {...filterParams}>
+        <FilterAvailableMatchesModal
+          openState={openFilterModal}
+          handleModal={setOpenFilterModal}
+          onApply={onFiltersApply}
+        />
+        <AdvancedFilterAvailableMatchesModal
+          openState={openAdvancedFilterModal}
+          handleModal={setOpenAdvancedFilterModal}
+          onApply={onFiltersApply}
+        />
+      </FormProvider>
     </Box>
   );
 }

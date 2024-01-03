@@ -52,8 +52,6 @@ export const RestorePasswordModal: React.FC<IRestorePasswordModal> = ({
         display="flex"
         flexDirection="column"
         gap={5}
-        bgcolor="#fff"
-        maxWidth={isMobile ? 'unset' : '40vw'}
       >
         <Typography color="gray" textAlign="center">
           Введите адрес электронной почты, привязанный к вашей учетной записи, и

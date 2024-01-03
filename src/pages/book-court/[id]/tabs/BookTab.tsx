@@ -146,18 +146,15 @@ export function BookTab() {
             <Box display="flex" gap={2} overflow="auto">
               {dates.map((date, i) => {
                 return (
-                  <Box
+                  <CalendarDay
                     key={i}
-                    onClick={() => {
+                    onSelect={() => {
                       setSearchParam('day', date.toLocaleDateString('en-ca'));
                       setGameDate(date);
                     }}
-                  >
-                    <CalendarDay
-                      date={date}
-                      selected={gameDate.toISOString() === date.toISOString()}
-                    />
-                  </Box>
+                    date={date}
+                    selected={gameDate.toISOString() === date.toISOString()}
+                  />
                 );
               })}
             </Box>
