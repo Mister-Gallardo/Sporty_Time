@@ -77,6 +77,7 @@ export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
                 textAlign="center"
                 sx={{
                   background: '#6E8FFD',
+                  cursor: 'pointer',
                 }}
               >
                 <Typography fontSize={20} fontWeight={700} whiteSpace="nowrap">

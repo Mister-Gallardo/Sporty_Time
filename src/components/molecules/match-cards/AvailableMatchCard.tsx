@@ -1,6 +1,6 @@
 import { useHistory } from 'react-router';
-import { MatchData } from '../../../services/matches/interface';
-import { Box, Typography } from '@mui/material';
+import { EMatchType, MatchData } from '../../../services/matches/interface';
+import { Box, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from '../PlayerSlot';
 
 interface IAvailableMatchCardProps {
@@ -25,35 +25,28 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
   teamBPlayers.length = 2;
   const players = [...Array.from(teamAPlayers), ...Array.from(teamBPlayers)];
 
+  const matchType =
+    matchData.type === EMatchType.COMPETITIVE
+      ? 'Соревновательный'
+      : matchData.type === EMatchType.FRIENDLY
+      ? 'Дружеский'
+      : '';
+
   return (
     <Box
       onClick={() => history.push(`/matches/${matchData.id}`)}
-      sx={{
-        marginInline: '.75rem',
-        marginTop: '.75rem',
-        width: '100%',
-        maxWidth: '370px',
-        background: '#fff',
-        border: '2px solid #EED790',
-        borderRadius: '10px',
-
-        boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;',
-      }}
+      display="flex"
+      flexDirection="column"
+      width="100%"
+      maxWidth={370}
+      border="2px solid #EED790"
+      borderRadius={2}
+      boxShadow="rgba(99, 99, 99, 0.2) 0px 2px 8px 0px"
+      bgcolor="#fff"
     >
-      <Box
-        sx={{
-          paddingInline: '15px',
-        }}
-      >
-        <Box
-          sx={{
-            paddingTop: '.5rem',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }}>
+      <Box px={2} py={1.5}>
+        <Box display="flex" gap={2}>
+          <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }} noWrap>
             {matchData.gameDate} | {matchData?.slot?.time.slice(0, -3)}
           </Typography>
           <Box
@@ -63,76 +56,58 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
               gap: '10px',
             }}
           >
-            <Typography sx={{ fontSize: '.9rem', fontWeight: '500' }}>
-              {matchData.slot ? 'Корт забронирован' : 'Корт не забронирован'}
+            <Typography fontSize={13}>
+              {matchData.slot ? 'Забронирован' : 'Нет брони'}
             </Typography>
             <Typography>{matchData.slot ? '✅' : '🔴'}</Typography>
           </Box>
         </Box>
 
-        <Box>
-          <Typography sx={{ paddingBlock: '.25rem' }}>11km · Dubai</Typography>
-        </Box>
+        <Typography color="gray">11km · Dubai</Typography>
 
-        <Box
-          sx={{
-            paddingBlock: '.75rem',
-            display: 'flex',
-            maxWidth: '320px',
-            margin: '0 auto',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Box sx={{ display: 'flex', gap: '14px' }}>
-            <PlayerSlot player={players[0]} />
-            <PlayerSlot player={players[1]} />
-            <Box sx={{ width: '2px', height: '50px', background: '#e5e5e5' }} />
-            <PlayerSlot player={players[2]} />
-            <PlayerSlot player={players[3]} />
-          </Box>
+        <Box mt={2} display="flex" justifyContent="space-between">
+          <PlayerSlot player={players[0]} sport={matchData.sport} />
+          <PlayerSlot player={players[1]} sport={matchData.sport} />
+          <Divider orientation="vertical" variant="middle" flexItem />
+          <PlayerSlot player={players[2]} sport={matchData.sport} />
+          <PlayerSlot player={players[3]} sport={matchData.sport} />
         </Box>
       </Box>
 
-      <Box sx={{ borderTop: '1px grey solid' }}>
+      <Box display="flex" gap={2} borderTop="1px solid #e8e8e8">
+        <Box py={0.5} pl={2}>
+          <Box display="flex">
+            <Typography
+              lineHeight={1.2}
+              fontSize={13}
+              fontWeight={600}
+              mr={0.5}
+              whiteSpace="nowrap"
+            >
+              {matchType} ·
+            </Typography>
+            <Typography fontSize={13} lineHeight={1.2} color="gray">
+              Уровень {matchData.ratingFrom} - {matchData.ratingTo}
+            </Typography>
+          </Box>
+          <Typography fontSize={13} color="gray">
+            Смешанный
+          </Typography>
+        </Box>
         <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
+          width={125}
+          color="#fff"
+          bgcolor="#6E8FFF"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          borderRadius="0 0 7px 0"
         >
-          <Box
-            sx={{
-              paddingLeft: '14px',
-              paddingTop: '.5rem',
-            }}
-          >
-            <Typography sx={{ fontWeight: '600', paddingBottom: '.25rem' }}>
-              Competetive ·{' '}
-              <span style={{ fontWeight: '400' }}>
-                Level {matchData.ratingFrom} - {matchData.ratingTo}
-              </span>
-            </Typography>
-            <Typography sx={{ fontWeight: '600' }}>Mixed</Typography>
-          </Box>
-          <Box
-            sx={{
-              width: '100%',
-              maxWidth: '125px',
-              height: '100%',
-              background: '#6E8FFF',
-              textAlign: 'center',
-              paddingBlock: '.27rem',
-              borderRadius: '0 0 5px 0',
-              color: '#fff',
-            }}
-          >
-            <Typography sx={{ fontSize: '1.25rem', fontWeight: '700' }}>
-              ₽ {matchData.price}
-            </Typography>
-            <Typography>{matchData.minutes} мин</Typography>
-          </Box>
+          <Typography lineHeight={1.2} fontSize={18} fontWeight={700}>
+            {matchData.paid ? 'Оплачен' : `₽ ${matchData.price / 4}`}
+          </Typography>
+          <Typography lineHeight={1.2}>{matchData.minutes} мин</Typography>
         </Box>
       </Box>
     </Box>

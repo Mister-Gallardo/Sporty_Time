@@ -16,6 +16,7 @@ import { DistanceSlider } from '../molecules/DistanceSlider';
 interface IAdvancedFilterClubsModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
+  onApply: () => void;
 }
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
@@ -45,7 +46,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
 
 export const AdvancedFilterClubsModal: React.FC<
   IAdvancedFilterClubsModalProps
-> = ({ openState, handleModal }) => {
+> = ({ openState, handleModal, onApply }) => {
   const [sortBy, setSortBy] = useState('relevance');
 
   return (
@@ -135,10 +136,10 @@ export const AdvancedFilterClubsModal: React.FC<
         left={0}
         bgcolor="#fff"
         p={2}
-        // borderTop="1px solid #eee"
         boxShadow="0 3px 6px 8px #0000000a"
       >
         <Button
+          onClick={onApply}
           sx={{
             backgroundColor: '#0e2432',
             color: '#fff',

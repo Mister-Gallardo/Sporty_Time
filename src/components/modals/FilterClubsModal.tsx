@@ -1,50 +1,96 @@
 import React from 'react';
 import { ModalContainer } from './ModalContainer';
 import { IonDatetime } from '@ionic/react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Divider, Typography } from '@mui/material';
 import { ModalContentContainer } from '../atoms/ModalContentContainer';
+import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
+import { CalendarDay } from '../molecules/CalendarDay';
+import { useFormContext } from 'react-hook-form';
+
+const now = new Date();
+const dates = Array.from(Array(14)).map(
+  (_, i) =>
+    new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + i),
+    ),
+);
 
 interface IFilterClubsModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
+  onApply: () => void;
 }
 
 export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
   openState,
   handleModal,
+  onApply,
 }) => {
+  const { setValue, watch } = useFormContext();
+  const { date, time } = watch();
+
+  const handleDatetimeChange = (event: any) => {
+    const time = event.detail.value.slice(-8, -3);
+    const timePlus = addTime(time, 5 * 60);
+    setValue('time', `${time}-${timePlus}`);
+  };
+
   return (
     <ModalContainer
       openState={openState}
       handleModal={handleModal}
       headerTitle="Выбор даты и времени"
     >
-      <Box height="100%" display="flex" flexDirection="column">
-        <ModalContentContainer title="Выберете подходящие вам дату и время:">
-          <IonDatetime
-            presentation="date-time"
-            preferWheel
-            minuteValues="0,30"
-            locale="ru-RU"
-          ></IonDatetime>
+      <Box height="100%" display="flex" flexDirection="column" gap={2.5}>
+        <Box py={1} display="flex" gap={0.6} overflow="auto">
+          {dates.map((dateItem, i) => {
+            return (
+              <CalendarDay
+                key={i}
+                date={dateItem}
+                selected={date.toDateString() === dateItem.toDateString()}
+                onSelect={() => setValue('date', dateItem)}
+              />
+            );
+          })}
+        </Box>
 
+        <Divider />
+
+        <ModalContentContainer title="Выберете время">
+          <Box
+            maxHeight={100}
+            overflow="hidden"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <IonDatetime
+              onIonChange={handleDatetimeChange}
+              presentation="time"
+              preferWheel
+              minuteValues="0,30"
+              locale="ru-RU"
+              style={{ width: '100%' }}
+            />
+          </Box>
           <Typography
             mt={4}
             textAlign="center"
-            fontSize={20}
+            fontSize={18}
             fontWeight={600}
             borderTop="1px solid #7b96ff"
             borderBottom="1px solid #7b96ff"
             py={1}
           >
-            Selected date | time - time + 5h
+            {getDayFormat(date, EType.MONTH_AND_DAY)} | {time}
           </Typography>
 
           <Typography
             mt={2}
             color="gray"
             textAlign="center"
-            fontSize={15}
+            fontSize={13}
             lineHeight={1.3}
           >
             *Доступные корты будут показаны взависимости от выбранного вами
@@ -52,17 +98,28 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
           </Typography>
         </ModalContentContainer>
 
-        <Button
-          sx={{
-            backgroundColor: '#0e2432',
-            color: '#fff',
-            borderRadius: 20,
-            py: 1,
-          }}
-          fullWidth
+        <Box
+          position="absolute"
+          bottom={0}
+          right={0}
+          left={0}
+          bgcolor="#fff"
+          p={2}
+          borderTop="1px solid #eee"
         >
-          Сохранить
-        </Button>
+          <Button
+            onClick={onApply}
+            sx={{
+              backgroundColor: '#0e2432',
+              color: '#fff',
+              borderRadius: 20,
+              py: 1,
+            }}
+            fullWidth
+          >
+            Сохранить
+          </Button>
+        </Box>
       </Box>
     </ModalContainer>
   );

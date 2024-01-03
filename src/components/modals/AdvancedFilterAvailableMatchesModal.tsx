@@ -17,6 +17,7 @@ import { ModalContentContainer } from '../atoms/ModalContentContainer';
 interface IAdvancedFilterAvailableMatchesModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
+  onApply: () => void;
 }
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
@@ -45,7 +46,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
 
 export const AdvancedFilterAvailableMatchesModal: React.FC<
   IAdvancedFilterAvailableMatchesModalProps
-> = ({ openState, handleModal }) => {
+> = ({ openState, handleModal, onApply }) => {
   const [sortBy, setSortBy] = useState('recent');
 
   return (
@@ -196,6 +197,7 @@ export const AdvancedFilterAvailableMatchesModal: React.FC<
         borderTop="1px solid #eee"
       >
         <Button
+          onClick={onApply}
           sx={{
             backgroundColor: '#0e2432',
             color: '#fff',

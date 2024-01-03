@@ -27,7 +27,7 @@ export const DateBox: React.FC<IDateBox> = ({
         alignItems: 'center',
         textTransform: 'initial',
         color: isSelected ? '#fff' : '#000',
-        backgroundColor: isSelected ? '#333' : '#fff',
+        backgroundColor: isSelected ? '#0D2433' : '#fff',
         border: '1px solid #ddd',
         borderRadius: 1,
         minHeight: '38px',
@@ -35,6 +35,11 @@ export const DateBox: React.FC<IDateBox> = ({
         paddingX: 1,
         '&:disabled': {
           opacity: 0.8,
+        },
+        '&:hover': {
+          opacity: 0.8,
+          backgroundColor: isSelected ? '#0d2433de' : '#0D2433',
+          color: '#fff',
         },
       }}
     >

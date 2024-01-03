@@ -6,33 +6,21 @@ import {
 } from './interface';
 import { api } from '../api/service';
 
-// static 'gameDates' array for daily requests with actual dates (just for now)
-const today = new Date();
-const tomorrow = new Date(today);
-tomorrow.setDate(today.getDate() + 1);
-const dayAfterTomorrow = new Date(tomorrow);
-dayAfterTomorrow.setDate(tomorrow.getDate() + 1);
-
-const gameDates = [today, tomorrow, dayAfterTomorrow];
-const queryString = gameDates
-  .map((date: Date) => date.toLocaleDateString('en-ca'))
-  .join(',');
-
 export function getMyMatches() {
   const res = api.get<MatchData[]>('/matches/my');
   return res;
 }
 
-export function getAvailableMatches() {
+export function getAvailableMatches({ sport, gamedates }: any) {
   const res = api.get<MatchData[]>(
-    `/matches/available?sport=TENNIS&gamedates=${queryString}`,
+    `/matches/available?sport=${sport}&gamedates=${gamedates}`,
   );
   return res;
 }
 
-export function getAvailableNoRatingMatches() {
+export function getAvailableNoRatingMatches({ sport, gamedates }: any) {
   const res = api.get<MatchData[]>(
-    `/matches/available-no-rating?sport=TENNIS&gamedates=${queryString}`,
+    `/matches/available-no-rating?sport=${sport}&gamedates=${gamedates}`,
   );
   return res;
 }

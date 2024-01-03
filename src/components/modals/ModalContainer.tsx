@@ -55,10 +55,11 @@ export const ModalContainer: React.FC<IModalContainer> = ({
       ) : (
         <Modal open={openState} onClose={() => handleModal()}>
           <Box
+            position="relative"
             borderRadius={3}
             overflow="hidden"
             width="100%"
-            minWidth="30vw"
+            minWidth={450}
             maxWidth="50vw"
           >
             <Box

@@ -21,7 +21,7 @@ export function MatchesPage() {
         mx="auto"
         mt={isMobile ? 0 : 5}
         pb={10}
-        bgcolor={isMobile ? '#f5f6f8' : '#fff'}
+        bgcolor="#fff"
       >
         <TabContext value={tabIndex}>
           <TabList

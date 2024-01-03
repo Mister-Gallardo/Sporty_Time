@@ -1,11 +1,8 @@
 import { api } from '../api/service';
 import { Club } from './interface';
 
-export async function getClubs(params: any) {
-  const queryString = params
-    .map((date: Date) => date.toLocaleDateString('en-ca'))
-    .join(',');
-  const { data } = await api.get<Club[]>(`/clubs?gamedates=${queryString}`);
+export async function getClubs(gamedates: string) {
+  const { data } = await api.get<Club[]>(`/clubs?gamedates=${gamedates}`);
   return data;
 }
 export async function getClub(id: number, params: any) {
