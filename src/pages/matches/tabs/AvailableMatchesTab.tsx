@@ -23,6 +23,9 @@ import { Sport } from '../../../types';
 interface FilterFormDate {
   sport: string;
   gamedates: { value: Date }[];
+  range: number;
+  lat: number;
+  long: number;
   time: string;
   times: { value: string }[];
 }
@@ -34,6 +37,9 @@ export function AvailableMatchesTab() {
     defaultValues: {
       sport: '',
       gamedates: [],
+      range: 0,
+      lat: 45.421532,
+      long: -75.697189,
     },
   });
   const { watch } = filterParams;
@@ -45,21 +51,25 @@ export function AvailableMatchesTab() {
   const [openFilterModal, setOpenFilterModal] = useToggle();
   const [openAdvancedFilterModal, setOpenAdvancedFilterModal] = useToggle();
 
+  // Get Available matches
   const availableMatches = useQuery({
     queryKey: [`available-matches`],
-    queryFn: () => getAvailableMatches({ sport, gamedates: gameDatesToString }),
+    queryFn: () =>
+      getAvailableMatches({ ...watch(), gamedates: gameDatesToString }),
     enabled: false,
   });
   const availableArray = availableMatches.data?.data;
 
+  // Get available matches with out of lvl range
   const noRatingMatches = useQuery({
     queryKey: [`available-no-rating`],
     queryFn: () =>
-      getAvailableNoRatingMatches({ sport, gamedates: gameDatesToString }),
+      getAvailableNoRatingMatches({ ...watch(), gamedates: gameDatesToString }),
     enabled: false,
   });
   const noRatingArray = noRatingMatches.data?.data;
 
+  // Get available clubs
   const clubs = useQuery({
     queryKey: ['clubs'],
     queryFn: () => getClubs(gameDatesToString),

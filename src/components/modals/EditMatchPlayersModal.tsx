@@ -10,6 +10,7 @@ interface IEditMatchPlayersModal {
   players: MatchPlayer[];
   onCancel: () => void;
   sport: string;
+  setPlayerToRemoveId: (playerId?: number) => void;
 }
 
 export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
@@ -18,6 +19,7 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
   players,
   onCancel,
   sport,
+  setPlayerToRemoveId,
 }) => {
   return (
     <ModalContainer
@@ -32,11 +34,13 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
             player={players[0]}
             sport={sport}
             onCancel={onCancel}
+            setPlayerToRemoveId={setPlayerToRemoveId}
           />
           <EditPlayerSlot
             player={players[1]}
             sport={sport}
             onCancel={onCancel}
+            setPlayerToRemoveId={setPlayerToRemoveId}
           />
         </Box>
         <Divider orientation="vertical" flexItem variant="middle" />
@@ -45,11 +49,13 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
             player={players[2]}
             sport={sport}
             onCancel={onCancel}
+            setPlayerToRemoveId={setPlayerToRemoveId}
           />
           <EditPlayerSlot
             player={players[3]}
             sport={sport}
             onCancel={onCancel}
+            setPlayerToRemoveId={setPlayerToRemoveId}
           />
         </Box>
       </Box>

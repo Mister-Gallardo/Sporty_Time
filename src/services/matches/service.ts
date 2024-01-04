@@ -3,24 +3,30 @@ import {
   JoinMatchDTO,
   UploadResultsDTO,
   MatchData,
+  RemovePlayerFromMatch,
+  GetAvailableMatchesAndClubsDTO,
 } from './interface';
 import { api } from '../api/service';
 
-export function getMyMatches() {
-  const res = api.get<MatchData[]>('/matches/my');
+export function getMyMatches(cancel: boolean) {
+  const res = api.get<MatchData[]>(`/matches/my?cancel=${cancel}`);
   return res;
 }
 
-export function getAvailableMatches({ sport, gamedates }: any) {
+export function getAvailableMatches(data: GetAvailableMatchesAndClubsDTO) {
+  const { sport, gamedates, lat, long, range } = data;
   const res = api.get<MatchData[]>(
-    `/matches/available?sport=${sport}&gamedates=${gamedates}`,
+    `/matches/available?sport=${sport}&lat=${lat}&long=${long}&range=${range}&gamedates=${gamedates}`,
   );
   return res;
 }
 
-export function getAvailableNoRatingMatches({ sport, gamedates }: any) {
+export function getAvailableNoRatingMatches(
+  data: GetAvailableMatchesAndClubsDTO,
+) {
+  const { sport, gamedates, lat, long, range } = data;
   const res = api.get<MatchData[]>(
-    `/matches/available-no-rating?sport=${sport}&gamedates=${gamedates}`,
+    `/matches/available-no-rating?sport=${sport}&lat=${lat}&long=${long}&range=${range}&gamedates=${gamedates}`,
   );
   return res;
 }
@@ -46,5 +52,10 @@ export function uploadResults(data: UploadResultsDTO) {
 
 export function cancelMatch(matchId: number) {
   const res = api.delete('/matches/cancel', { data: { matchId } });
+  return res;
+}
+
+export function deletePlayerFromMatch(data: RemovePlayerFromMatch) {
+  const res = api.delete('/matches/delete-player', { data });
   return res;
 }

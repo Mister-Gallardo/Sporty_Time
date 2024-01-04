@@ -14,8 +14,8 @@ export function MyMatchesTab() {
   const [showCanceled, setShowCanceled] = useToggle();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['my-matches'],
-    queryFn: getMyMatches,
+    queryKey: ['my-matches', showCanceled],
+    queryFn: () => getMyMatches(showCanceled),
   });
 
   const myMatchesData = data?.data;
@@ -43,7 +43,7 @@ export function MyMatchesTab() {
         justifyContent="space-between"
       >
         <Typography fontWeight={600}>Показать отменённые матчи</Typography>
-        <Switch value={showCanceled} />
+        <Switch value={showCanceled} onChange={() => setShowCanceled()} />
       </Box>
 
       <Box px={1} py={3} pt={8}>
