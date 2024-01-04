@@ -11,12 +11,14 @@ interface IEditPlayerSlotProps {
   player?: MatchPlayer;
   sport: string;
   onCancel: () => void;
+  setPlayerToRemoveId: (playerId?: number) => void;
 }
 
 export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
   player,
   sport,
   onCancel,
+  setPlayerToRemoveId,
 }) => {
   const currentPlayer = usePlayerProfile();
   const isUser = currentPlayer?.id === player?.id;
@@ -35,11 +37,12 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
           {(player?.isOwner || isUser) && (
             <CancelRoundedIcon
               onClick={() => {
-                if (player?.isOwner) {
-                  console.log('is owner');
-                } else {
-                  console.log('Is member');
+                if (player?.isOwner && !isUser) {
+                  setPlayerToRemoveId(player?.id);
+                  return onCancel();
                 }
+
+                setPlayerToRemoveId();
                 onCancel();
               }}
               sx={{

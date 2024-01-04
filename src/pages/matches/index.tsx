@@ -7,6 +7,7 @@ import { TabContext, TabPanel } from '@mui/lab';
 import { Box, Button } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useHistory } from 'react-router';
+// import { Geolocation } from '@capacitor/geolocation';
 
 export function MatchesPage() {
   const isMobile = isPlatform('mobile');
@@ -14,8 +15,15 @@ export function MatchesPage() {
   const history = useHistory();
   const [tabIndex, setTabIndex] = useState<string>('1');
 
+  // const printCurrentPosition = async () => {
+  //   const coordinates = await Geolocation.getCurrentPosition();
+
+  //   console.log('Current position:', coordinates);
+  // };
+
   return (
     <>
+      {/* <Button onClick={printCurrentPosition}>TEST</Button> */}
       <Box
         maxWidth={1240}
         mx="auto"

@@ -1,14 +1,19 @@
 import React from 'react';
 import { useFieldArray, Controller, useFormContext } from 'react-hook-form';
+import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
+import NearMeIcon from '@mui/icons-material/NearMe';
 import {
   Box,
   Button,
   Divider,
   Fade,
+  Input,
+  InputAdornment,
   RadioGroup,
   Typography,
 } from '@mui/material';
 import { ModalContentContainer } from '../atoms/ModalContentContainer';
+import { DistanceSlider } from '../molecules/DistanceSlider';
 import { CalendarDay } from '../molecules/CalendarDay';
 import { ERadioLabelType, Sport } from '../../types';
 import { RadioLabel } from '../molecules/RadioLabel';
@@ -53,9 +58,9 @@ interface IFilterAvailableMatchesModalProps {
 export const FilterAvailableMatchesModal: React.FC<
   IFilterAvailableMatchesModalProps
 > = ({ openState, handleModal, onApply }) => {
-  const { control, watch } = useFormContext();
+  const { control, watch, setValue } = useFormContext();
 
-  const { sport, gamedates, time } = watch();
+  const { sport, gamedates, time, range } = watch();
 
   const {
     fields: dateFields,
@@ -66,6 +71,7 @@ export const FilterAvailableMatchesModal: React.FC<
     name: 'gamedates',
     rules: { maxLength: 7 },
   });
+
   const {
     fields: timeFields,
     append: timeAppend,
@@ -116,25 +122,40 @@ export const FilterAvailableMatchesModal: React.FC<
           />
         </ModalContentContainer>
 
-        {/* <ModalContentContainer title="Где будете играть?">
-          <Input
-            id="location"
-            placeholder="Рядом со мной"
-            startAdornment={
-              <InputAdornment position="start">
-                <FmdGoodOutlinedIcon fontSize="small" />
-              </InputAdornment>
-            }
-            endAdornment={
-              <InputAdornment position="end">
-                <NearMeSharpIcon fontSize="small" />
-              </InputAdornment>
-            }
-            fullWidth
-            disableUnderline
-            sx={{ bgcolor: '#f5f6f8', padding: 1, borderRadius: 1.5 }}
-          />
-          <FormGroup>
+        {sport && (
+          <>
+            <Divider />
+            <Fade in>
+              <Box>
+                <ModalContentContainer title="Где будете играть?">
+                  <Input
+                    disabled
+                    id="location"
+                    placeholder="Рядом со мной"
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <FmdGoodOutlinedIcon fontSize="small" />
+                      </InputAdornment>
+                    }
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <NearMeIcon
+                          fontSize="small"
+                          sx={{ color: '#c1c1c1' }}
+                        />
+                      </InputAdornment>
+                    }
+                    fullWidth
+                    disableUnderline
+                    sx={{
+                      bgcolor: '#f5f6f8',
+                      padding: 1,
+                      borderRadius: 1.5,
+                      mb: 1,
+                    }}
+                  />
+
+                  {/* <FormGroup>
             <FormControlLabel
               control={<Checkbox />}
               label="Недавние"
@@ -150,12 +171,19 @@ export const FilterAvailableMatchesModal: React.FC<
               label="Выбрать дистанцию"
               sx={{ marginLeft: 0 }}
             />
-          </FormGroup>
-          <DistanceSlider />
-        </ModalContentContainer>
+          </FormGroup> */}
+                  <DistanceSlider
+                    value={range}
+                    setValue={(val: number) => setValue('range', val)}
+                  />
+                </ModalContentContainer>
+              </Box>
+            </Fade>
+          </>
+        )}
 
-        <Divider /> */}
-        {sport && (
+        {/* remove this line ('range !== 0') after adding real location search */}
+        {range !== 0 && (
           <>
             <Divider />
             <Fade in>

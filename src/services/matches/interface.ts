@@ -78,3 +78,18 @@ export interface UploadResultsDTO {
   matchId: number;
   matchResults: number[][];
 }
+
+export interface RemovePlayerFromMatch {
+  matchId: number;
+  playerId: number;
+}
+
+export interface GetAvailableMatchesAndClubsDTO {
+  sport: string;
+  gamedates: string;
+  range: number;
+  lat: number;
+  long: number;
+  // time: string;
+  // times: { value: string }[];
+}

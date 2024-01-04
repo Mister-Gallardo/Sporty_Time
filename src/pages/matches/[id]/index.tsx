@@ -17,6 +17,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
   cancelMatch,
+  deletePlayerFromMatch,
   getOneAvailableMatch,
   joinMatch,
   uploadResults,
@@ -50,6 +51,10 @@ export function SingleMatchPage() {
 
   const [openEditModal, setOpenEditModal] = useToggle();
   const [openCancelDialogModal, setOpenCancelDialogModal] = useToggle();
+
+  const [playerToRemoveId, setPlayerToRemoveId] = useState<
+    number | undefined
+  >();
 
   // Get Particular Match Request
   const {
@@ -108,6 +113,25 @@ export function SingleMatchPage() {
       showToast({
         color: 'success',
         message: `Ваше бронирование отменено`,
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
+      refetchMatch();
+    },
+    onError(e: any) {
+      console.log('error!', e);
+    },
+  });
+
+  // Remove Player from match
+  const deletePlayerFromMatchMutation = useMutation({
+    mutationFn: deletePlayerFromMatch,
+    onSuccess() {
+      setOpenCancelDialogModal();
+      showToast({
+        color: 'success',
+        message: `Игрок был удалён из матча`,
         mode: 'ios',
         position: 'top',
         duration: 2000,
@@ -437,6 +461,7 @@ export function SingleMatchPage() {
         openState={openEditModal}
         handleModal={setOpenEditModal}
         players={players}
+        setPlayerToRemoveId={setPlayerToRemoveId}
         onCancel={() => {
           setOpenEditModal();
           setOpenCancelDialogModal();
@@ -447,7 +472,17 @@ export function SingleMatchPage() {
         openState={openCancelDialogModal}
         handleDialog={setOpenCancelDialogModal}
         isUserOwner={isUserOwner}
-        handleCancel={() => cancelMatchMutation.mutate(+matchId)}
+        playerToRemoveId={playerToRemoveId}
+        handleCancel={() => {
+          if (playerToRemoveId) {
+            deletePlayerFromMatchMutation.mutate({
+              matchId: +matchId,
+              playerId: playerToRemoveId,
+            });
+          } else {
+            cancelMatchMutation.mutate(+matchId);
+          }
+        }}
       />
 
       <UploadResultModal

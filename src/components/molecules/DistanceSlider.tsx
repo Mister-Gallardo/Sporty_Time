@@ -4,8 +4,8 @@ import Slider from '@mui/material/Slider';
 
 const marks = [
   {
-    value: 1,
-    label: '1',
+    value: 0,
+    label: '0',
   },
   {
     value: 10,
@@ -29,19 +29,29 @@ const marks = [
   },
 ];
 
-interface IDistanceSliderProps {}
+interface IDistanceSliderProps {
+  value: number;
+  setValue: any;
+}
 
-export const DistanceSlider: React.FC<IDistanceSliderProps> = () => {
+export const DistanceSlider: React.FC<IDistanceSliderProps> = ({
+  value,
+  setValue,
+}) => {
+  const handleChange = (_: Event, newValue: number | number[]) => {
+    setValue(newValue as number);
+  };
+
   return (
-    <Box px={1}>
+    <Box px={0.5}>
       <Slider
-        aria-label="Distance"
-        defaultValue={40}
-        min={1}
+        min={0}
         max={50}
-        getAriaValueText={(value) => value.toString()}
         step={10}
         marks={marks}
+        value={value}
+        onChange={handleChange}
+        aria-label="'Distance range"
       />
     </Box>
   );
