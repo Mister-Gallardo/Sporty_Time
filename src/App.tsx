@@ -19,6 +19,10 @@ import { ProfilePage } from './pages/profile';
 import { MobileProfilePage } from './pages/profile/index.mobile';
 import { MobileResetPassword } from './pages/auth/reset-password/index.mobile';
 import { ResetPassword } from './pages/auth/reset-password';
+import { ChatsPage } from './pages/chats';
+import { MobileChatsPage } from './pages/chats/index.mobile';
+import { MobileSingleChatPage } from './pages/chats/[id]/index.mobile';
+import { SingleChatPage } from './pages/chats/[id]';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
@@ -60,6 +64,16 @@ const desktopRoutes = [
     path: '/profile',
     exact: true,
     component: ProfilePage,
+  },
+  {
+    path: '/chats',
+    exact: true,
+    component: ChatsPage,
+  },
+  {
+    path: '/chats/:chatId',
+    exact: true,
+    component: SingleChatPage,
   },
 ] as React.ComponentProps<typeof Route>[];
 
@@ -108,6 +122,16 @@ const mobileRoutes = [
     path: '/profile',
     exact: true,
     component: MobileProfilePage,
+  },
+  {
+    path: '/chats',
+    exact: true,
+    component: MobileChatsPage,
+  },
+  {
+    path: '/chats/:chatId',
+    exact: true,
+    component: MobileSingleChatPage,
   },
 ] as React.ComponentProps<typeof Route>[];
 
