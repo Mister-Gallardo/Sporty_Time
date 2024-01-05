@@ -35,7 +35,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
           onDidDismiss={() => handleModal(false)}
           isOpen={openState}
           initialBreakpoint={initialBreakpoint}
-          breakpoints={[0, initialBreakpoint]}
+          breakpoints={[0, 0.5, initialBreakpoint]}
           handleBehavior="cycle"
         >
           <IonHeader>
