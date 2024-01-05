@@ -2,6 +2,7 @@ import { useHistory } from 'react-router';
 import { EMatchType, MatchData } from '../../../services/matches/interface';
 import { Box, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from '../player-slot/PlayerSlot';
+import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
 
 interface IAvailableMatchCardProps {
   matchData: MatchData;
@@ -32,6 +33,12 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
       ? 'Дружеский'
       : '';
 
+  const matchTime = getDayFormat(
+    matchData.gameDate,
+    EType.MONTH_AND_DAY,
+    matchData?.slot?.time,
+  );
+
   return (
     <Box
       onClick={() => history.push(`/matches/${matchData.id}`)}
@@ -47,7 +54,7 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
       <Box px={2} py={1.5}>
         <Box display="flex" gap={2}>
           <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }} noWrap>
-            {matchData.gameDate} | {matchData?.slot?.time.slice(0, -3)}
+            {matchTime}
           </Typography>
           <Box
             sx={{

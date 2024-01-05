@@ -16,7 +16,7 @@ export const addTime = (time: string, mins: number) => {
 
   const newTime = date.toLocaleTimeString('en-US', { hour12: false });
 
-  return newTime.slice(0, -3);
+  return newTime.slice(0, 5);
 };
 
 // return date as 'today'/ 'tomorrow' / day of the week / month day
@@ -46,7 +46,7 @@ export const getDayFormat = (
 
   if (startTime)
     formatDate += ` | ${
-      startTime.length < 6 ? startTime : startTime.slice(0, -3)
+      startTime.length < 6 ? startTime : startTime.slice(0, 5)
     }`;
   if (startTime && addMinutes)
     formatDate += ` - ${addTime(startTime, addMinutes)}`;

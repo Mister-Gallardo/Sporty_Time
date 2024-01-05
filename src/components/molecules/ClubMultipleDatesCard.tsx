@@ -5,6 +5,7 @@ import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import { CourtSlot } from '../../services/club/interface';
 import useToggle from '../../hooks/useToggle';
 import { DateBox } from './DateBox';
+import noImage from '../../images/no-image.jpg';
 
 interface Slot {
   time: string;
@@ -58,8 +59,9 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
             height={60}
             borderRadius={2}
             sx={{
-              backgroundImage: `url(${img})`,
+              backgroundImage: `url(${img ? img : noImage})`,
               backgroundSize: 'cover',
+              backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
             }}
           />

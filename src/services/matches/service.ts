@@ -8,8 +8,10 @@ import {
 } from './interface';
 import { api } from '../api/service';
 
-export function getMyMatches(cancel: boolean) {
-  const res = api.get<MatchData[]>(`/matches/my?cancel=${cancel}`);
+export function getMyMatches(cancel?: boolean) {
+  const res = api.get<MatchData[]>(
+    `/matches/my${cancel ? '?cancel=' + cancel : ''}`,
+  );
   return res;
 }
 
@@ -57,5 +59,10 @@ export function cancelMatch(matchId: number) {
 
 export function deletePlayerFromMatch(data: RemovePlayerFromMatch) {
   const res = api.delete('/matches/delete-player', { data });
+  return res;
+}
+
+export function extraMatchPayment(matchId: number) {
+  const res = api.post(`/matches/extra-payment/${matchId}`);
   return res;
 }
