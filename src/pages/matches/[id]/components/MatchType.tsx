@@ -11,7 +11,7 @@ export const MatchType: React.FC<IMatchType> = ({ type }) => {
     type === EMatchType.FRIENDLY ? 'Дружеский' : 'Соревновательный';
 
   return (
-    <Box border="1px solid #ddd" borderRadius={2} p={1} bgcolor="#fff">
+    <Box border="1px solid #ddd" borderRadius={2} p={1} bgcolor="#fff" mb={2}>
       <Typography textTransform="capitalize">{isFriendly}</Typography>
       <Typography color="gray">{`Результат этого матча ${
         isFriendly ? 'не' : ''

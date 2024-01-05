@@ -33,13 +33,14 @@ interface FilterFormDate {
 const isMobile = isPlatform('mobile');
 
 export function AvailableMatchesTab() {
+  // hardcoded lat and long while real location is not specified
   const filterParams = useForm<FilterFormDate>({
     defaultValues: {
       sport: '',
       gamedates: [],
-      range: 0,
-      lat: 45.421532,
-      long: -75.697189,
+      range: 20000,
+      lat: 55.130108,
+      long: 25.07354,
     },
   });
   const { watch } = filterParams;

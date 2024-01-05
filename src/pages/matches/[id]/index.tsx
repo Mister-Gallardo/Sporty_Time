@@ -37,6 +37,7 @@ import { MatchDataBlock } from './components/MatchDataBlock';
 import { EditMatchPlayersModal } from '../../../components/modals/EditMatchPlayersModal';
 import { CancelDialogModal } from './components/CancelDialogModal';
 import useToggle from '../../../hooks/useToggle';
+import { EditPayment } from './components/EditPayment';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
@@ -266,8 +267,16 @@ export function SingleMatchPage() {
 
               <MatchDataBlock {...singleMatchData} />
 
-              <MatchType type={singleMatchData.type} />
-              <PrivacyType isPrivate={singleMatchData.isPrivate} />
+              <EditPayment
+                {...singleMatchData}
+                isUserOwner={isUserOwner}
+                refetchMatch={refetchMatch}
+              />
+
+              <Box my={2}>
+                <MatchType type={singleMatchData.type} />
+                <PrivacyType isPrivate={singleMatchData.isPrivate} />
+              </Box>
 
               <PlayersMatchCard
                 players={players}
@@ -312,7 +321,11 @@ export function SingleMatchPage() {
                   </Box>
 
                   <Box
-                    sx={{ width: '100%', height: '1px', background: '#e5e5e5' }}
+                    sx={{
+                      width: '100%',
+                      height: '1px',
+                      background: '#e5e5e5',
+                    }}
                   />
 
                   <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
