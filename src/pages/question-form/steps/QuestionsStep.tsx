@@ -138,8 +138,6 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     );
   }
 
-  console.log('array: ', currentQuestions);
-
   return (
     <Box mt={1}>
       <Box
@@ -154,7 +152,7 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
             Эти вопросы помогут определить Ваш уровень Sportytime.
           </Typography>
           {currentQuestions.length > 0 &&
-            currentQuestions.map((questionBlock, i) => {
+            currentQuestions.map((questionBlock) => {
               return (
                 <React.Fragment key={questionBlock.id}>
                   {questionBlock.isInput ? (
