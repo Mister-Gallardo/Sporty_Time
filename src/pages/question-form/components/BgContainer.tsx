@@ -1,31 +1,27 @@
 import { Box } from '@mui/material';
 import mobile_bg from '../../../images/question-form/bg_events_tennis_mobile.png';
 import desktop_bg from '../../../images/question-form/bg_events_tennis_desktop.png';
-import { IonContent, IonPage, isPlatform } from '@ionic/react';
+import { isPlatform } from '@ionic/react';
 
+const isMobile = isPlatform('mobile');
 export const BgContainer = ({ children }: { children: JSX.Element[] }) => {
-  const isMobile = isPlatform('mobile');
   return (
-    <>
+    <Box>
       {isMobile ? (
-        <IonPage>
-          <IonContent fullscreen>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '100dvh',
-                backgroundImage: `url(${mobile_bg})`,
-                backgroundSize: 'cover',
-                paddingX: 2,
-              }}
-            >
-              {children}
-            </Box>
-          </IonContent>
-        </IonPage>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '100dvh',
+            backgroundImage: `url(${mobile_bg})`,
+            backgroundSize: 'cover',
+            paddingX: 2,
+          }}
+        >
+          {children}
+        </Box>
       ) : (
         <>
           <Box
@@ -53,6 +49,6 @@ export const BgContainer = ({ children }: { children: JSX.Element[] }) => {
           </Box>
         </>
       )}
-    </>
+    </Box>
   );
 };

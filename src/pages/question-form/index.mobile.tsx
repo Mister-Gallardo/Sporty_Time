@@ -1,10 +1,9 @@
-import { IonContent, IonHeader, IonPage } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import { QuestionFormPage } from '.';
 
 export function MobileQuestionFormPage() {
   return (
     <IonPage className="notabs">
-      <IonHeader style={{ border: 'none' }}></IonHeader>
       <IonContent
         fullscreen
         style={{

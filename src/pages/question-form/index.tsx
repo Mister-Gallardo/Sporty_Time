@@ -71,13 +71,13 @@ export function QuestionFormPage() {
             </Box>
           }
         </>
-      ) : activeStep === 3 ? (
+      ) : (
         <Fade in>
           <Box>
             <ResultsStep firstName={firstName} lastName={lastName} />
           </Box>
         </Fade>
-      ) : null}
+      )}
     </>
   );
 }

@@ -14,7 +14,7 @@ export const addTime = (time: string, mins: number) => {
   const date = new Date(0, 0, 0, hours, minutes);
   date.setMinutes(date.getMinutes() + mins);
 
-  const newTime = date.toLocaleTimeString('en-US', { hour12: false });
+  const newTime = date.toLocaleTimeString('ru-RU');
 
   return newTime.slice(0, 5);
 };
@@ -48,6 +48,7 @@ export const getDayFormat = (
     formatDate += ` | ${
       startTime.length < 6 ? startTime : startTime.slice(0, 5)
     }`;
+
   if (startTime && addMinutes)
     formatDate += ` - ${addTime(startTime, addMinutes)}`;
 
