@@ -52,7 +52,7 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
       bgcolor="#fff"
     >
       <Box px={2} py={1.5}>
-        <Box display="flex" gap={2}>
+        <Box display="flex" justifyContent="space-between" gap={2}>
           <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }} noWrap>
             {matchTime}
           </Typography>

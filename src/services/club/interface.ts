@@ -24,6 +24,7 @@ export interface Club {
   >;
   availableTimes?: string[] | IAvailableTime[];
   minPrice: number;
+  timezone: string;
 }
 
 export interface Court {
