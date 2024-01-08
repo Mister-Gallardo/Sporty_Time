@@ -6,14 +6,7 @@ import { ModalContentContainer } from '../atoms/ModalContentContainer';
 import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
 import { CalendarDay } from '../molecules/CalendarDay';
 import { useFormContext } from 'react-hook-form';
-
-const now = new Date();
-const dates = Array.from(Array(14)).map(
-  (_, i) =>
-    new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + i),
-    ),
-);
+import { getDatesList } from '../../helpers/getDatesList';
 
 interface IFilterClubsModalProps {
   openState: boolean;
@@ -26,6 +19,8 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
   handleModal,
   onApply,
 }) => {
+  const dates = getDatesList(14);
+
   const { setValue, watch } = useFormContext();
   const { date, time } = watch();
 

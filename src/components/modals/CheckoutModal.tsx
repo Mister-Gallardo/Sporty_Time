@@ -18,6 +18,10 @@ import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
 import { RadioLabel } from '../molecules/RadioLabel';
 import { ERadioLabelType, ITag } from '../../types';
 import { ModalContainer } from './ModalContainer';
+import {
+  currentTimeInCLubTimezone,
+  parseDate,
+} from '../../helpers/getMatchStatus';
 
 interface MainCourtInfo {
   price: number;
@@ -27,6 +31,7 @@ interface MainCourtInfo {
   playtime: number;
   sport: string;
   courtName: string;
+  timezone?: string;
 }
 
 interface ICheckoutModal {
@@ -48,7 +53,8 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
 }) => {
   if (!courtData) return;
 
-  const { price, tags, date, startTime, playtime, courtName } = courtData;
+  const { price, tags, date, startTime, playtime, courtName, timezone } =
+    courtData;
 
   const [payFor, setPayFor] = useState('0');
 
@@ -66,6 +72,13 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
   const total = isPaid ? 0 : payFor === '0' || isJoin ? price / 4 : price;
   const priceFor3 = price - price / 4;
   const courtTags = tags.length > 0 ? tags.map((tag: any) => tag.title) : [];
+
+  // user must pay full price if there's < 12h left before the match
+  const currentTime = timezone ? currentTimeInCLubTimezone(timezone) : 0;
+  const matchData = new Date(date).toLocaleDateString('en-ca');
+  const matchStartTime = parseDate(matchData, startTime, '');
+
+  const isPayingFullPrice = (matchStartTime - currentTime) / 1000 / 3600 < 12;
 
   return (
     <ModalContainer
@@ -103,7 +116,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
                   <Typography noWrap>{playtime} мин</Typography>
                 </Box>
               </Box>
-              {!isJoin && (
+              {!isJoin && !isPayingFullPrice && (
                 <>
                   <Divider />
                   <Box my={2}>
@@ -168,7 +181,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
               </Typography>
             </Box>
             <Typography color="blue" whiteSpace="nowrap" fontSize={20}>
-              {total} RUB
+              {isPayingFullPrice ? price : total} RUB
             </Typography>
           </Box>
           <Box border="1px solid #ddd" borderRadius={2} py={2.5} px={2}>
@@ -223,7 +236,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
           </Box>
         </Box>
 
-        <Box mb={5} py={1.5} px={2} borderTop="1px solid #ddd">
+        <Box py={1.5} px={2} borderTop="1px solid #ddd">
           <Button
             onClick={() => handleCheckout(total)}
             variant="contained"

@@ -38,11 +38,15 @@ import { EditMatchPlayersModal } from '../../../components/modals/EditMatchPlaye
 import { CancelDialogModal } from './components/CancelDialogModal';
 import useToggle from '../../../hooks/useToggle';
 import { EditPayment } from './components/EditPayment';
+import { CheckoutModal } from '../../../components/modals/CheckoutModal';
+import { NotFoundPage } from '../../../components/NotFoundPage';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
-  const [showToast] = useIonToast();
+
   const { matchId } = useParams<{ matchId: string }>();
+
+  const [showToast] = useIonToast();
   const myPlayer = usePlayerProfile();
 
   const [error, setError] = useState<string | undefined>();
@@ -51,6 +55,7 @@ export function SingleMatchPage() {
   const [openToast, setOpenToast] = useState<boolean>(false);
 
   const [openEditModal, setOpenEditModal] = useToggle();
+  const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   const [openCancelDialogModal, setOpenCancelDialogModal] = useToggle();
 
   const [playerToRemoveId, setPlayerToRemoveId] = useState<
@@ -203,7 +208,9 @@ export function SingleMatchPage() {
   if (isLoading) {
     return <IonLoading isOpen />;
   }
-  if (!singleMatchData) return null;
+  if (!singleMatchData) {
+    return <NotFoundPage />;
+  }
 
   const gameDate = gameDateToDate(
     singleMatchData.gameDate,
@@ -243,6 +250,32 @@ export function SingleMatchPage() {
       </Typography>
     </Box>
   );
+
+  const onBookSpot = () => {
+    if (matchId && playerInTeam) {
+      joinMatchMutation.mutate({
+        matchId: Number(matchId),
+        team: playerInTeam,
+        money: singleMatchData.paid ? 0 : singleMatchData.price / 4,
+      });
+    } else {
+      showToast({
+        message: 'Выберите команду!',
+        duration: 1000,
+        color: 'danger',
+      });
+    }
+  };
+
+  const courtData = {
+    price: singleMatchData.price,
+    tags: [],
+    date: singleMatchData.gameDate,
+    startTime: singleMatchData.slot.time,
+    playtime: singleMatchData.minutes,
+    sport: singleMatchData.sport,
+    courtName: singleMatchData.slot.court.title,
+  };
 
   return (
     <>
@@ -425,23 +458,7 @@ export function SingleMatchPage() {
                   }}
                 >
                   <Button
-                    onClick={() => {
-                      if (matchId && playerInTeam) {
-                        joinMatchMutation.mutate({
-                          matchId: Number(matchId),
-                          team: playerInTeam,
-                          money: singleMatchData.paid
-                            ? 0
-                            : singleMatchData.price / 4,
-                        });
-                      } else {
-                        showToast({
-                          message: 'Выберите команду!',
-                          duration: 1000,
-                          color: 'danger',
-                        });
-                      }
-                    }}
+                    onClick={() => setOpenCheckoutModal()}
                     sx={{
                       paddingX: 2,
                       background: '#0D2432',
@@ -469,6 +486,14 @@ export function SingleMatchPage() {
           </Box>
         </>
       </SwipeablePage>
+      <CheckoutModal
+        isJoin
+        isPaid={!!singleMatchData.paid}
+        courtData={courtData}
+        openState={openCheckoutModal}
+        handleModal={setOpenCheckoutModal}
+        handleCheckout={onBookSpot}
+      />
 
       <EditMatchPlayersModal
         openState={openEditModal}

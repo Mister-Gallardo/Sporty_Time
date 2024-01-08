@@ -14,18 +14,13 @@ import useSearchParams from '../../../../hooks/useSearchParams';
 import { IConfigMatchModalData } from '../../../../types';
 import useToggle from '../../../../hooks/useToggle';
 import { useForm } from 'react-hook-form';
-
-const now = new Date();
-const dates = Array.from(Array(100)).map(
-  (n, i) =>
-    new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + i),
-    ),
-);
+import { getDatesList } from '../../../../helpers/getDatesList';
 
 const isValidDate = (date: string) => !isNaN(Number(new Date(date)));
 
 export function BookTab() {
+  const dates = getDatesList(100);
+
   const { clubId } = useParams<{ clubId: string }>();
   const history = useHistory();
   const [searchParam, setSearchParam] = useSearchParams();
@@ -99,20 +94,24 @@ export function BookTab() {
     },
   });
 
+  const { gender, isPrivate, matchType, ratingFrom, ratingTo } = getValues();
+
   const onCheckout = (money: number) => {
     createMatchMutation.mutate({
       slotId,
-      gameDate: gameDate,
+      gameDate,
       playTime: selectedMinutes,
-      gender: getValues('gender').toUpperCase(),
-      isPrivate: getValues('isPrivate'),
-      type: getValues('matchType').toUpperCase(),
-      ratingFrom: getValues('ratingFrom'),
-      ratingTo: getValues('ratingTo'),
+      gender: gender.toUpperCase(),
+      isPrivate,
+      type: matchType.toUpperCase(),
+      ratingFrom,
+      ratingTo,
       money,
     });
     setOpenCheckoutModal();
   };
+
+  if (!data) return null;
 
   return (
     <>
@@ -331,6 +330,7 @@ export function BookTab() {
           courtData={{
             date: gameDate,
             startTime: selectedSlot,
+            timezone: data.timezone,
             ...selectedCourt,
           }}
           openState={openCheckoutModal}

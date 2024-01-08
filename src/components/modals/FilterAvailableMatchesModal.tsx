@@ -19,6 +19,7 @@ import { ERadioLabelType, Sport } from '../../types';
 import { RadioLabel } from '../molecules/RadioLabel';
 import { ModalContainer } from './ModalContainer';
 import { DateBox } from '../molecules/DateBox';
+import { getDatesList } from '../../helpers/getDatesList';
 
 const times = [
   '6:00',
@@ -41,14 +42,6 @@ const times = [
   '23:00',
 ];
 
-const now = new Date();
-const dates = Array.from(Array(14)).map(
-  (_, i) =>
-    new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + i),
-    ),
-);
-
 interface IFilterAvailableMatchesModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
@@ -58,6 +51,8 @@ interface IFilterAvailableMatchesModalProps {
 export const FilterAvailableMatchesModal: React.FC<
   IFilterAvailableMatchesModalProps
 > = ({ openState, handleModal, onApply }) => {
+  const dates = getDatesList(14);
+
   const { control, watch, setValue } = useFormContext();
 
   const { sport, gamedates, time, range } = watch();

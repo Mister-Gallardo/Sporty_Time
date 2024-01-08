@@ -39,8 +39,8 @@ export function AvailableMatchesTab() {
       sport: '',
       gamedates: [],
       range: 20000,
-      lat: 55.130108,
-      long: 25.07354,
+      lat: 25.07354,
+      long: 55.130108,
     },
   });
   const { watch } = filterParams;

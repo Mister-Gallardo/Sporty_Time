@@ -63,7 +63,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
       handleModal={handleModal}
       headerTitle="Настройте свой матч"
     >
-      <Box mb={2} display="flex" flexDirection="column" gap={4}>
+      <Box display="flex" flexDirection="column" gap={4}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" gap={1} alignItems="center">
             <CheckCircleOutlinedIcon />
@@ -227,7 +227,6 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
             borderRadius: 12,
             fontSize: 18,
             fontWeight: 600,
-            mb: isMobile ? 5 : 0,
           }}
         >
           Перейти к оплате
