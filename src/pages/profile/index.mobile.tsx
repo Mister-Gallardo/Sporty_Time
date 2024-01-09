@@ -14,18 +14,17 @@ import { useHistory } from 'react-router';
 
 export function MobileProfilePage() {
   const history = useHistory();
-
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle style={{ fontSize: '1.2rem' }}>Profile</IonTitle>
+          <IonTitle style={{ fontSize: '1.2rem' }}>Профиль</IonTitle>
 
           <IonButtons slot="end">
             <IonButton onClick={() => history.push('/chats')}>
               <ChatBubbleOutlineRoundedIcon sx={{ color: '#000' }} />
             </IonButton>
-            <IonButton onClick={() => console.log('menu')}>
+            <IonButton onClick={() => history.push('/profile/navigation')}>
               <MenuRoundedIcon sx={{ color: '#000' }} />
             </IonButton>
           </IonButtons>
