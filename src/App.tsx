@@ -23,6 +23,10 @@ import { ChatsPage } from './pages/chats';
 import { MobileChatsPage } from './pages/chats/index.mobile';
 import { MobileSingleChatPage } from './pages/chats/[id]/index.mobile';
 import { SingleChatPage } from './pages/chats/[id]';
+import { EditProfilePage } from './pages/profile/nested-pages/edit';
+import { MobileEditProfilePage } from './pages/profile/nested-pages/edit/index.mobile';
+import { MobileProfileNavPage } from './pages/profile/nested-pages/navigation/index.mobile';
+import { ProfileNavPage } from './pages/profile/nested-pages/navigation';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
@@ -74,6 +78,16 @@ const desktopRoutes = [
     path: '/chats/:chatId',
     exact: true,
     component: SingleChatPage,
+  },
+  {
+    path: '/profile/edit',
+    exact: true,
+    component: EditProfilePage,
+  },
+  {
+    path: '/profile/navigation',
+    exact: true,
+    component: ProfileNavPage,
   },
 ] as React.ComponentProps<typeof Route>[];
 
@@ -132,6 +146,16 @@ const mobileRoutes = [
     path: '/chats/:chatId',
     exact: true,
     component: MobileSingleChatPage,
+  },
+  {
+    path: '/profile/edit',
+    exact: true,
+    component: MobileEditProfilePage,
+  },
+  {
+    path: '/profile/navigation',
+    exact: true,
+    component: MobileProfileNavPage,
   },
 ] as React.ComponentProps<typeof Route>[];
 

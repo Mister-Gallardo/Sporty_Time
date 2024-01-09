@@ -29,8 +29,9 @@ export interface User {
   firstname: string;
   lastname: string;
   email: string;
+  gender: string;
   roles: Role[];
-  avatarUrl: string;
+  avatar: string;
   createdAt: Date;
   updatedAt: Date;
   player: Player;
@@ -40,4 +41,13 @@ export interface User {
 export interface UserProfile {
   countMatches: number;
   user: User;
+}
+
+export interface EditUserProfile {
+  image?: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  password?: string;
+  gender?: string;
 }

@@ -17,13 +17,14 @@ export function ProfilePage() {
     ? profile.user.firstname + ' ' + profile.user.lastname
     : '';
 
+  // const [openProfileDataModal, setOpenProfileDataModal] = useToggle();
   return (
     <>
       <Box padding={2} maxWidth={1240} mx="auto">
         <Box display="flex" alignItems="end">
           <Avatar
             alt={fullname}
-            src="/static/images/avatar/1.jpg"
+            src={`https://playpadel.lakileki.ru${profile?.user?.avatar}`}
             sx={{ width: 60, height: 60 }}
           />
           <Box marginLeft={2}>
@@ -97,6 +98,7 @@ export function ProfilePage() {
               fontSize: 15,
               paddingY: 0.25,
               borderRadius: 10,
+              whiteSpace: 'nowrap',
               '&:hover': {
                 backgroundColor: '#eee',
               },
@@ -114,6 +116,7 @@ export function ProfilePage() {
               fontSize: 15,
               paddingY: 0.25,
               borderRadius: 10,
+              whiteSpace: 'nowrap',
               '&:hover': {
                 backgroundColor: '#123347',
               },
