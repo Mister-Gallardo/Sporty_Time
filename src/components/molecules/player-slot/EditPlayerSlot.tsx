@@ -20,7 +20,7 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
   onCancel,
   setPlayerToRemoveId,
 }) => {
-  const currentPlayer = usePlayerProfile();
+  const [currentPlayer] = usePlayerProfile();
   const isUser = currentPlayer?.id === player?.id;
 
   const playerRating = player ? getSportRating(player, sport) : 0;

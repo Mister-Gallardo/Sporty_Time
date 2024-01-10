@@ -5,19 +5,20 @@ import { useFullUserData } from '../../services/api/hooks';
 import ActivitiesTab from './tabs/ActivitiesTab';
 import { isPlatform } from '@ionic/react';
 import PostsTab from './tabs/PostsTab';
+import { useHistory } from 'react-router';
 
 export function ProfilePage() {
   const isMobile = isPlatform('mobile');
+  const history = useHistory();
 
   const [tabIndex, setTabIndex] = useState<string>('1');
 
-  const profile = useFullUserData();
+  const [profile] = useFullUserData();
 
   const fullname = profile
     ? profile.user.firstname + ' ' + profile.user.lastname
     : '';
 
-  // const [openProfileDataModal, setOpenProfileDataModal] = useToggle();
   return (
     <>
       <Box padding={2} maxWidth={1240} mx="auto">
@@ -89,7 +90,7 @@ export function ProfilePage() {
           marginX="auto"
         >
           <Button
-            disabled
+            onClick={() => history.push('/profile/edit')}
             variant="contained"
             sx={{
               border: '1px solid #333',
@@ -105,7 +106,7 @@ export function ProfilePage() {
             }}
             fullWidth
           >
-            Edit profile
+            Изменить профиль
           </Button>
           <Button
             disabled

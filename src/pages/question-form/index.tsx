@@ -13,7 +13,7 @@ export function QuestionFormPage() {
 
   const [activeStep, setActiveStep] = useState<number>(0);
 
-  const user = useUserInfo();
+  const [user] = useUserInfo();
   const firstName = user?.firstname || '';
   const lastName = user?.lastname || '';
 

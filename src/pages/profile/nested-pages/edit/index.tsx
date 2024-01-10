@@ -29,14 +29,14 @@ const isMobile = isPlatform('mobile');
 export const EditProfilePage = () => {
   const [showPassword, setShowPassword] = useToggle();
 
-  const user = useUserInfo();
+  const [user, query] = useUserInfo();
 
   const { getValues, watch, setValue, reset } = useForm();
   const [showToast] = useIonToast();
 
   const editProfileMutation = useMutation({
     mutationFn: editUserProfile,
-    onSuccess(e) {
+    onSuccess() {
       showToast({
         color: 'success',
         message: 'Изменения сохранены!',
@@ -44,9 +44,10 @@ export const EditProfilePage = () => {
         position: 'top',
         duration: 2000,
       });
+      query.refetch();
       reset();
     },
-    onError(e) {
+    onError() {
       showToast({
         color: 'danger',
         message: 'Произошла ошибка! Попробуйте ещё раз.',
@@ -67,8 +68,6 @@ export const EditProfilePage = () => {
 
     if (!photo.webPath) return;
     setValue('image', photo.webPath);
-
-    return photo;
   };
 
   const onSaveChanges = async () => {
@@ -90,12 +89,6 @@ export const EditProfilePage = () => {
     });
 
     editProfileMutation.mutate(formData);
-  };
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    event.preventDefault();
   };
 
   const isSmthChanged = Object.keys(watch()).length > 0;
@@ -247,7 +240,6 @@ export const EditProfilePage = () => {
                 <IconButton
                   aria-label="toggle password visibility"
                   onClick={() => setShowPassword()}
-                  onMouseDown={handleMouseDownPassword}
                   edge="end"
                 >
                   {showPassword ? <VisibilityOff /> : <Visibility />}

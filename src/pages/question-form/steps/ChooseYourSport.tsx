@@ -11,6 +11,10 @@ import { BgContainer } from '../components/BgContainer';
 import { useHistory } from 'react-router';
 import { Sport } from '../../../types';
 import { getSportRating } from '../../../helpers/getSportRating';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { useMutation } from '@tanstack/react-query';
+import { editUserProfile } from '../../../services/user/service';
+import { useIonToast } from '@ionic/react';
 
 interface ChooseYourSportProps {
   firstName: string;
@@ -25,8 +29,56 @@ export function ChooseYourSport({
 
   const [selectedSport, setSelectedSport] = useState<Sport>(Sport.PADEL);
 
-  const player = usePlayerProfile();
+  const [player, query] = usePlayerProfile();
   const currentSportRate = player ? getSportRating(player, selectedSport) : '';
+
+  const [showToast] = useIonToast();
+
+  const addPhotoMutation = useMutation({
+    mutationFn: editUserProfile,
+    onSuccess() {
+      showToast({
+        color: 'success',
+        message: 'Новое фото профиля добавлено!',
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
+      query.refetch();
+    },
+    onError() {
+      showToast({
+        color: 'danger',
+        message: 'Произошла ошибка! Попробуйте ещё раз.',
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
+    },
+  });
+
+  const takePhoto = async () => {
+    const photo = await Camera.getPhoto({
+      resultType: CameraResultType.Uri,
+      source: CameraSource.Camera,
+      quality: 100,
+      correctOrientation: false,
+    });
+
+    if (!photo.webPath) return;
+
+    const formData = new FormData();
+
+    try {
+      const res = await fetch(photo.webPath);
+      const imageBlob = await res.blob();
+      formData.append('image', imageBlob);
+    } catch (error) {
+      console.log(error);
+    }
+
+    addPhotoMutation.mutate(formData);
+  };
 
   return (
     <BgContainer>
@@ -38,16 +90,24 @@ export function ChooseYourSport({
           Заполните свой профиль, чтобы максимально использовать возможности
           Sportytime
         </Typography>
-        <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          mt={2}
+          mb={3}
+        >
           <Avatar
+            src={`https://playpadel.lakileki.ru${player?.user?.avatar}`}
             sx={{
               width: '75px',
               height: '75px',
               border: '2px solid #fff',
-              margin: '1.5rem 0 .25rem 0',
             }}
           />
-          <Typography fontWeight={500}>Изменить фото</Typography>
+          <Button onClick={takePhoto} sx={{ color: '#fff' }}>
+            Изменить фото
+          </Button>
         </Box>
       </Box>
       <Box mb={5} color="#fff">
