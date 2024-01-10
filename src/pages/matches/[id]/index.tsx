@@ -12,7 +12,7 @@ import {
   useIonToast,
 } from '@ionic/react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
@@ -43,6 +43,7 @@ import { ResultsTable } from './components/ResultsTable';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
+  const history = useHistory();
 
   const { matchId } = useParams<{ matchId: string }>();
 
@@ -402,7 +403,10 @@ export function SingleMatchPage() {
                   marginBottom: '1rem',
                 }}
               >
-                <Button sx={{ height: '40px' }}>
+                <Button
+                  sx={{ height: '40px' }}
+                  onClick={() => history.push(`/chats/${matchId}`)}
+                >
                   <ChatBubbleOutlineRounded sx={{ marginRight: '.75rem' }} />
                   <Typography sx={{ fontSize: '1.1rem', fontWeight: '600' }}>
                     Чат
