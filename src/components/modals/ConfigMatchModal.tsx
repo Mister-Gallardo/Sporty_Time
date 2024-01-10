@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IonAvatar, isPlatform } from '@ionic/react';
+import { IonAvatar } from '@ionic/react';
 import { Box, Button, RadioGroup, Switch, Typography } from '@mui/material';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import { RadioLabel } from '../../components/molecules/RadioLabel';
@@ -27,9 +27,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
   handleModal,
   getData,
 }) => {
-  const isMobile = isPlatform('mobile');
-
-  const player = usePlayerProfile();
+  const [player] = usePlayerProfile();
   const rating = player ? getSportRating(player, sport) : 0;
 
   const [isPrivate, setIsPrivate] = useToggle();

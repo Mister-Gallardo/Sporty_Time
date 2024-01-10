@@ -11,7 +11,7 @@ export default function useSortTeamMembers(players: MatchMember[]) {
     null,
   );
 
-  const profile = usePlayerProfile();
+  const [profile] = usePlayerProfile();
 
   if (!selectedTeamSlot || !profile) {
     return [sortedTeams, setSelectedTeamSlot] as const;

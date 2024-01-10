@@ -23,7 +23,7 @@ export default function ActivitiesTab() {
       ? Sport.TENNIS
       : Sport.PICKLEBALL;
 
-  const player = usePlayerProfile();
+  const [player] = usePlayerProfile();
   const sportLevel = player && getSportRating(player, sport);
 
   return (

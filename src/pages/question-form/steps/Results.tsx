@@ -15,7 +15,7 @@ export function ResultsStep({ firstName, lastName }: ResultsStepProps) {
   const isMobile = isPlatform('mobile');
   const history = useHistory();
 
-  const profile = usePlayerProfile();
+  const [profile] = usePlayerProfile();
 
   const sport = localStorage.getItem('sport') || '';
   const rating = profile ? getSportRating(profile, sport) : 0;

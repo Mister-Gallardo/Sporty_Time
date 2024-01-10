@@ -47,7 +47,7 @@ export function SingleMatchPage() {
   const { matchId } = useParams<{ matchId: string }>();
 
   const [showToast] = useIonToast();
-  const myPlayer = usePlayerProfile();
+  const [myPlayer] = usePlayerProfile();
 
   const [error, setError] = useState<string | undefined>();
 

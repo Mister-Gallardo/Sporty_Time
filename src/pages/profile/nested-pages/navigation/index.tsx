@@ -16,7 +16,7 @@ const isMobile = isPlatform('mobile');
 
 export const ProfileNavPage = () => {
   const history = useHistory();
-  const user = useUserInfo();
+  const [user] = useUserInfo();
 
   return (
     <Box
