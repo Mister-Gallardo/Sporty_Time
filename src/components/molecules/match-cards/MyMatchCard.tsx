@@ -105,7 +105,10 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
                         width="50%"
                       >
                         {member ? (
-                          <Avatar sx={{ width: 40, height: 40 }} />
+                          <Avatar
+                            src={`https://playpadel.lakileki.ru${member?.player.user?.avatar}`}
+                            sx={{ width: 40, height: 40 }}
+                          />
                         ) : (
                           <Box
                             width={40}

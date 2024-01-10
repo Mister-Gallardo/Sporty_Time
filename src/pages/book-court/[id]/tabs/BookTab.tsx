@@ -111,8 +111,6 @@ export function BookTab() {
     setOpenCheckoutModal();
   };
 
-  if (!data) return null;
-
   return (
     <>
       <Box
@@ -330,7 +328,7 @@ export function BookTab() {
           courtData={{
             date: gameDate,
             startTime: selectedSlot,
-            timezone: data.timezone,
+            timezone: data?.timezone,
             ...selectedCourt,
           }}
           openState={openCheckoutModal}

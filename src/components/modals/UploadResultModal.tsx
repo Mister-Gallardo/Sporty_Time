@@ -78,6 +78,7 @@ export function UploadResultModal({
     onSuccess() {
       handleModal();
       qc.resetQueries({ queryKey: ['match', matchId] });
+      qc.resetQueries({ queryKey: ['my-matches', false] });
       () => getMyMatches();
     },
     onError(e: any) {

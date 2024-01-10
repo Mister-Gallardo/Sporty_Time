@@ -1,17 +1,20 @@
 import InfoIcon from '@mui/icons-material/Info';
 import { Box, Typography } from '@mui/material';
+import { MatchData } from '../../../../services/matches/interface';
+import { getPromptParams } from '../../../../helpers/getMatchPromptParams';
 
-interface IPrompt {
-  params: {
-    bgColor: string;
-    color: string;
-    title: string;
-    description: string;
-  } | null;
+interface IPromptProps {
+  matchData: MatchData;
+  playerAlreadyInSomeTeam: boolean;
 }
 
-export const Prompt: React.FC<IPrompt> = ({ params }) => {
+export const Prompt: React.FC<IPromptProps> = ({
+  matchData,
+  playerAlreadyInSomeTeam,
+}) => {
+  const params = getPromptParams(matchData, playerAlreadyInSomeTeam);
   if (!params) return;
+
   return (
     <Box
       bgcolor={params.bgColor}

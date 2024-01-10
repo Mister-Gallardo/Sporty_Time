@@ -3,6 +3,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { Avatar, Box, Typography } from '@mui/material';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
+import { Status } from '../../../types';
 
 interface IPlayerSlotProps {
   player: MatchPlayer;
@@ -11,6 +12,7 @@ interface IPlayerSlotProps {
   isMatchPaid?: boolean;
   playerAlreadyInSomeTeam?: boolean;
   hideStatus?: boolean;
+  matchStatus: Status;
 }
 
 export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
@@ -20,11 +22,15 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
   isMatchPaid,
   playerAlreadyInSomeTeam,
   hideStatus,
+  matchStatus,
 }) => {
   const playerRating = player ? getSportRating(player, sport) : '';
 
   const isShown =
     !hideStatus && (player?.isOwner || playerAlreadyInSomeTeam || player?.mark);
+
+  // if match is cancelled -> hide payment status and available slot text
+  const isHidden = matchStatus === Status.CANCELED;
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
@@ -36,7 +42,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           sx={{ opacity: player?.mark ? 0.5 : 1 }}
         >
           <Avatar
-            src={player.user?.avatarUrl}
+            src={`https://playpadel.lakileki.ru${player.user?.avatar}`}
             sx={{
               width: '50px',
               height: '50px',
@@ -47,7 +53,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           <Typography fontSize={12} lineHeight={1.1} color="gray">
             {playerRating}
           </Typography>
-          {isShown && (
+          {isShown && !isHidden && (
             <Box textAlign="center">
               <Typography
                 textAlign="center"
@@ -66,7 +72,12 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           )}
         </Box>
       ) : (
-        <>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          sx={{ opacity: isHidden ? 0.3 : 1 }}
+        >
           <Box
             onClick={onClick}
             width={50}
@@ -80,8 +91,8 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           >
             <AddRoundedIcon sx={{ color: '#2d5df1' }} />
           </Box>
-          <Typography fontSize={12}>Свободно</Typography>
-        </>
+          {!isHidden && <Typography fontSize={12}>Свободно</Typography>}
+        </Box>
       )}
     </Box>
   );

@@ -14,7 +14,10 @@ enum PromptBGColor {
   DANGER = '#fff3f5',
 }
 
-export const getPromptParams = (matchData: MatchData, isOwner: boolean) => {
+export const getPromptParams = (
+  matchData: MatchData,
+  playerAlreadyInSomeTeam: boolean,
+) => {
   const status = getMatchStatus(matchData);
   const matchDate = new Date(matchData.gameDate);
 
@@ -45,7 +48,7 @@ export const getPromptParams = (matchData: MatchData, isOwner: boolean) => {
         'Одна команда добавляет результат, а другая команда должна его подтвердить или изменить, иначе он будет одобрен автоматически через 24 часа.',
     };
   }
-  if (isOwner) {
+  if (playerAlreadyInSomeTeam) {
     return {
       color: PromptIconColor.PRIMARY,
       bgColor: PromptBGColor.PRIMARY,

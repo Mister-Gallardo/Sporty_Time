@@ -32,7 +32,6 @@ import { gameDateToDate } from '../../../services/helper';
 import { Prompt } from './components/Prompt';
 import { PrivacyType } from './components/PrivacyType';
 import { MatchType } from './components/MatchType';
-import { getPromptParams } from '../../../helpers/getMatchPromptParams';
 import { MatchDataBlock } from './components/MatchDataBlock';
 import { EditMatchPlayersModal } from '../../../components/modals/EditMatchPlayersModal';
 import { CancelDialogModal } from './components/CancelDialogModal';
@@ -40,6 +39,7 @@ import useToggle from '../../../hooks/useToggle';
 import { EditPayment } from './components/EditPayment';
 import { CheckoutModal } from '../../../components/modals/CheckoutModal';
 import { NotFoundPage } from '../../../components/NotFoundPage';
+import { ResultsTable } from './components/ResultsTable';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
@@ -78,21 +78,23 @@ export function SingleMatchPage() {
   const joinMatchMutation = useMutation({
     mutationFn: joinMatch,
     onSuccess() {
+      setOpenCheckoutModal();
       showToast({
         header: 'Поздравляем!',
         message: 'Вы присоединились к матчу',
         duration: 2000,
-        position: 'bottom',
+        position: 'top',
         color: 'success',
       });
       refetchMatch();
     },
-    onError(e: any) {
+    onError() {
+      setOpenCheckoutModal();
       showToast({
-        header: 'Ошибка',
-        message: e.response.data.message,
+        header: 'Ошибка!',
+        message: 'Не удалось присоединиться к матчу',
         duration: 20000,
-        position: 'bottom',
+        position: 'top',
         color: 'danger',
       });
     },
@@ -125,8 +127,14 @@ export function SingleMatchPage() {
       });
       refetchMatch();
     },
-    onError(e: any) {
-      console.log('error!', e);
+    onError() {
+      showToast({
+        color: 'danger',
+        message: `Ошибка, попробуйте ещё раз`,
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
     },
   });
 
@@ -144,8 +152,15 @@ export function SingleMatchPage() {
       });
       refetchMatch();
     },
-    onError(e: any) {
-      console.log('error!', e);
+    onError() {
+      setOpenCancelDialogModal();
+      showToast({
+        color: 'danger',
+        message: `Ошибка, попробуйте ещё раз`,
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
     },
   });
 
@@ -296,12 +311,15 @@ export function SingleMatchPage() {
               flexDirection="column"
               gap={2}
             >
-              <Prompt params={getPromptParams(singleMatchData, isUserOwner)} />
+              <Prompt
+                matchData={singleMatchData}
+                playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
+              />
 
               <MatchDataBlock {...singleMatchData} />
 
               <EditPayment
-                {...singleMatchData}
+                matchData={singleMatchData}
                 isUserOwner={isUserOwner}
                 refetchMatch={refetchMatch}
               />
@@ -318,62 +336,11 @@ export function SingleMatchPage() {
                   if (playerAlreadyInSomeTeam) return;
                   setPlayerInTeam(team);
                 }}
-                sport={singleMatchData.sport}
                 handleEditModal={setOpenEditModal}
-                isMatchPaid={singleMatchData.paid}
+                matchData={singleMatchData}
               />
 
-              {singleMatchData?.matchResults && (
-                <Box
-                  sx={{
-                    border: '1px solid #e5e5e5',
-
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '.75rem',
-                    marginBottom: '1.5rem',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '1.75rem',
-                      opacity: '.5',
-                    }}
-                  >
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[0][0]}
-                    </Typography>
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[1][0]}
-                    </Typography>
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[2][0]}
-                    </Typography>
-                  </Box>
-
-                  <Box
-                    sx={{
-                      width: '100%',
-                      height: '1px',
-                      background: '#e5e5e5',
-                    }}
-                  />
-
-                  <Box sx={{ display: 'flex', gap: '1.75rem', opacity: '.5' }}>
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[0][1]}
-                    </Typography>
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[1][1]}
-                    </Typography>
-                    <Typography sx={{ fontSize: '2.5rem', fontWeight: '700' }}>
-                      {singleMatchData?.matchResults[2][1]}
-                    </Typography>
-                  </Box>
-                </Box>
-              )}
+              <ResultsTable matchResults={singleMatchData?.matchResults} />
 
               {Date.now() > gameDate && (
                 <Box
@@ -515,7 +482,7 @@ export function SingleMatchPage() {
           if (playerToRemoveId) {
             deletePlayerFromMatchMutation.mutate({
               matchId: +matchId,
-              playerId: playerToRemoveId,
+              deletePlayerId: playerToRemoveId,
             });
           } else {
             cancelMatchMutation.mutate(+matchId);

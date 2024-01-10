@@ -39,13 +39,15 @@ export const MatchInfoBlock: React.FC<IMatchInfoBlock> = ({ data }) => {
           </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <DialpadOutlined />
-          <Box>
-            <Typography>Код доступа</Typography>
-            <Typography>9714#</Typography>
+        {data.paid && (
+          <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <DialpadOutlined />
+            <Box>
+              <Typography>Код доступа</Typography>
+              <Typography>9714#</Typography>
+            </Box>
           </Box>
-        </Box>
+        )}
       </Box>
     </Box>
   );
