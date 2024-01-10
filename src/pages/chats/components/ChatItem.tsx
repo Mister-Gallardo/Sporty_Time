@@ -1,26 +1,27 @@
-import { Avatar, Box, Typography } from '@mui/material';
 import React from 'react';
+import { Avatar, Box, Typography } from '@mui/material';
 import { useHistory } from 'react-router';
+import { Chat } from '../../../services/chats/interface';
+import { isToday } from 'date-fns';
 
-interface IChatItemProps {
-  id: number;
-  title: string;
-  someDate: string;
-  lastMessage: string;
-  lastEventDate: string;
+interface IChatItemProps extends Chat {
+  chatId: number;
 }
 
-export const ChatItem: React.FC<IChatItemProps> = ({
-  title,
-  someDate,
-  lastMessage,
-  lastEventDate,
-}) => {
+export const ChatItem: React.FC<IChatItemProps> = ({ lastMessage, chatId }) => {
   const history = useHistory();
+
+  const lastMsg = lastMessage?.createdAt;
+
+  const lastMsgDate =
+    lastMsg &&
+    (isToday(new Date(lastMsg))
+      ? 'Сегодня'
+      : new Date(lastMsg).toLocaleDateString());
 
   return (
     <Box
-      onClick={() => history.push(`/chats/${1}`)}
+      onClick={() => history.push(`/chats/${chatId}`)}
       display="flex"
       alignItems="center"
       gap={1.5}
@@ -36,16 +37,16 @@ export const ChatItem: React.FC<IChatItemProps> = ({
       >
         <Box height={50}>
           <Typography lineHeight={1.2} fontSize={13} fontWeight={700}>
-            {title}
+            Chat Title
           </Typography>
           <Typography lineHeight={1.2} fontSize={12} color="gray">
-            {someDate}
+            match date
           </Typography>
           <Typography fontSize={12} color="gray" maxWidth={220} noWrap>
-            {lastMessage}
+            {lastMessage?.message}
           </Typography>
         </Box>
-        <Typography fontSize={13}>{lastEventDate}</Typography>
+        <Typography fontSize={13}>{lastMsgDate}</Typography>
       </Box>
     </Box>
   );

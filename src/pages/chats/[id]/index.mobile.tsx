@@ -20,7 +20,7 @@ export function MobileSingleChatPage() {
               <ArrowBackIosNewOutlined />
             </IonBackButton>
           </IonButtons>
-          <IonTitle>Chat title</IonTitle>
+          <IonTitle>Чат матча</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
