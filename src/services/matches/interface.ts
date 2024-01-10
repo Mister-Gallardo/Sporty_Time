@@ -81,7 +81,7 @@ export interface UploadResultsDTO {
 
 export interface RemovePlayerFromMatch {
   matchId: number;
-  playerId: number;
+  deletePlayerId: number;
 }
 
 export interface GetAvailableMatchesAndClubsDTO {

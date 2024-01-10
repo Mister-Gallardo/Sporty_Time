@@ -1,28 +1,29 @@
 import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import { MatchData } from '../../../../services/matches/interface';
-import { parseDate } from '../../../../helpers/getMatchStatus';
+import { getMatchStatus, parseDate } from '../../../../helpers/getMatchStatus';
 import { EType, getDayFormat } from '../../../../helpers/getTimeDateString';
 import { useMutation } from '@tanstack/react-query';
 import { extraMatchPayment } from '../../../../services/matches/service';
 import { useParams } from 'react-router';
 import { useIonToast } from '@ionic/react';
+import { Status } from '../../../../types';
 
-interface IEditPaymentProps extends MatchData {
+interface IEditPaymentProps {
+  matchData: MatchData;
   isUserOwner: boolean;
   refetchMatch: () => void;
 }
 
 export const EditPayment: React.FC<IEditPaymentProps> = ({
+  matchData,
   isUserOwner,
-  paid,
-  matchBookings,
-  price,
-  gameDate,
-  slot,
   refetchMatch,
 }) => {
-  if (paid || !isUserOwner) return;
+  const { paid, matchBookings, price, gameDate, slot } = matchData;
+  const matchStatus = getMatchStatus(matchData);
+
+  if (paid || !isUserOwner || matchStatus === Status.CANCELED) return;
 
   const { matchId } = useParams<{ matchId: string }>();
 

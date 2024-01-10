@@ -24,7 +24,7 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
   const isUser = currentPlayer?.id === player?.id;
 
   const playerRating = player ? getSportRating(player, sport) : 0;
-
+  console.log('player: ', player);
   return (
     <Box
       position="relative"
@@ -57,7 +57,10 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
           )}
 
           <CircularLevelProgress rating={playerRating}>
-            <Avatar sx={{ width: 45, height: 45 }} />
+            <Avatar
+              src={`https://playpadel.lakileki.ru${player?.user?.avatar}`}
+              sx={{ width: 45, height: 45 }}
+            />
           </CircularLevelProgress>
           <Typography mt={1} fontSize={12}>
             {player.user?.firstname}

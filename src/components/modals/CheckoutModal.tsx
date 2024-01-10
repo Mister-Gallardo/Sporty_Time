@@ -238,7 +238,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
 
         <Box py={1.5} px={2} borderTop="1px solid #ddd">
           <Button
-            onClick={() => handleCheckout(total)}
+            onClick={() => handleCheckout(isPayingFullPrice ? price : total)}
             variant="contained"
             sx={{
               backgroundColor: '#0d2432',
