@@ -1,4 +1,4 @@
-import { Court } from '../club/interface';
+import { Court, MatchTimeRange } from '../club/interface';
 import { Player } from '../user/interface';
 
 export enum EMatchType {
@@ -87,9 +87,6 @@ export interface RemovePlayerFromMatch {
 export interface GetAvailableMatchesAndClubsDTO {
   sport: string;
   gamedates: string;
-  range: number;
-  lat: number;
-  long: number;
-  // time: string;
-  // times: { value: string }[];
+  time: MatchTimeRange;
+  clubs: string;
 }

@@ -19,44 +19,68 @@ import { FormProvider, useForm } from 'react-hook-form';
 import noResults from '../../../images/no-results.svg';
 import useToggle from '../../../hooks/useToggle';
 import { Sport } from '../../../types';
+import { useEffect, useState } from 'react';
+import { MatchTimeRange } from '../../../services/club/interface';
 
-interface FilterFormDate {
+export interface FilterFormDate {
   sport: string;
+  clubsId: { value: number }[];
   gamedates: { value: Date }[];
-  range: number;
   lat: number;
   long: number;
-  time: string;
+  selectedLocation: string;
+  time: MatchTimeRange;
   times: { value: string }[];
 }
 
 const isMobile = isPlatform('mobile');
 
 export function AvailableMatchesTab() {
-  // hardcoded lat and long while real location is not specified
-  const filterParams = useForm<FilterFormDate>({
-    defaultValues: {
-      sport: '',
-      gamedates: [],
-      range: 20000,
-      lat: 25.07354,
-      long: 55.130108,
-    },
-  });
-  const { watch } = filterParams;
-  const { sport, gamedates } = watch();
-  const gameDatesToString = gamedates
-    .map((date) => date.value.toLocaleDateString('en-ca'))
-    .join(',');
-
   const [openFilterModal, setOpenFilterModal] = useToggle();
   const [openAdvancedFilterModal, setOpenAdvancedFilterModal] = useToggle();
+
+  const filtersFromLocalStorage = localStorage.getItem(
+    'availableMatchesFilters',
+  );
+  const [localFilters] = useState(
+    filtersFromLocalStorage ? JSON.parse(filtersFromLocalStorage) : null,
+  );
+
+  useEffect(() => {
+    if (localFilters) return;
+    setOpenFilterModal(true);
+  }, []);
+
+  const filterParams = useForm<FilterFormDate>({
+    defaultValues: {
+      sport: localFilters?.sport || '',
+      clubsId: localFilters?.clubsId || [],
+      gamedates: localFilters?.gamedates || [],
+      lat: localFilters?.lat || 0,
+      long: localFilters?.long || 0,
+      selectedLocation: localFilters?.selectedLocation || '',
+      time: localFilters?.time || 'ALL',
+    },
+  });
+  const { watch, getValues } = filterParams;
+
+  const { sport, gamedates, clubsId, time } = watch();
+
+  const gameDatesToString = gamedates
+    .map((date) => new Date(date.value).toLocaleDateString('en-ca'))
+    .join(',');
+  const clubsIdToString = clubsId.map((clubVal) => clubVal.value).join(',');
 
   // Get Available matches
   const availableMatches = useQuery({
     queryKey: [`available-matches`],
     queryFn: () =>
-      getAvailableMatches({ ...watch(), gamedates: gameDatesToString }),
+      getAvailableMatches({
+        sport,
+        gamedates: gameDatesToString,
+        clubs: clubsIdToString,
+        time,
+      }),
     enabled: false,
   });
   const availableArray = availableMatches.data?.data;
@@ -65,7 +89,12 @@ export function AvailableMatchesTab() {
   const noRatingMatches = useQuery({
     queryKey: [`available-no-rating`],
     queryFn: () =>
-      getAvailableNoRatingMatches({ ...watch(), gamedates: gameDatesToString }),
+      getAvailableNoRatingMatches({
+        sport,
+        gamedates: gameDatesToString,
+        clubs: clubsIdToString,
+        time,
+      }),
     enabled: false,
   });
   const noRatingArray = noRatingMatches.data?.data;
@@ -73,18 +102,28 @@ export function AvailableMatchesTab() {
   // Get available clubs
   const clubs = useQuery({
     queryKey: ['clubs'],
-    queryFn: () => getClubs(gameDatesToString),
+    queryFn: () =>
+      getClubs({
+        sport,
+        gamedates: gameDatesToString,
+        clubs: clubsIdToString,
+        time,
+      }),
     enabled: false,
   });
-
-  const clubsArray = clubs.data;
+  const clubsArray = clubs.data?.data;
 
   const onFiltersApply = () => {
     availableMatches.refetch();
     noRatingMatches.refetch();
     clubs.refetch();
+
+    localStorage.setItem(
+      'availableMatchesFilters',
+      JSON.stringify(getValues()),
+    );
     if (openFilterModal) setOpenFilterModal();
-    if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
+    // if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
   };
 
   const isMainFilters = !!sport && gamedates.length > 0;
@@ -119,6 +158,13 @@ export function AvailableMatchesTab() {
             overflow="auto"
             gap={1}
             onClick={() => setOpenFilterModal()}
+            sx={{
+              cursor: 'pointer',
+              '&::-webkit-scrollbar': {
+                display: 'none',
+              },
+              msOverflowStyle: 'none',
+            }}
           >
             <Typography
               px={2}
@@ -141,6 +187,8 @@ export function AvailableMatchesTab() {
               fontSize={13}
               lineHeight={1.2}
               whiteSpace="nowrap"
+              maxWidth={210}
+              noWrap
             >
               {gamedates
                 .map((date) => getDayFormat(date.value, EType.MONTH_AND_DAY))
@@ -266,6 +314,7 @@ export function AvailableMatchesTab() {
           openState={openFilterModal}
           handleModal={setOpenFilterModal}
           onApply={onFiltersApply}
+          localFilters={localFilters}
         />
         <AdvancedFilterAvailableMatchesModal
           openState={openAdvancedFilterModal}

@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useFieldArray, Controller, useFormContext } from 'react-hook-form';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
-import NearMeIcon from '@mui/icons-material/NearMe';
 import {
+  Autocomplete,
   Box,
   Button,
+  CircularProgress,
   Divider,
   Fade,
-  Input,
   InputAdornment,
   RadioGroup,
+  TextField,
   Typography,
 } from '@mui/material';
 import { ModalContentContainer } from '../atoms/ModalContentContainer';
@@ -18,44 +19,53 @@ import { CalendarDay } from '../molecules/CalendarDay';
 import { ERadioLabelType, Sport } from '../../types';
 import { RadioLabel } from '../molecules/RadioLabel';
 import { ModalContainer } from './ModalContainer';
-import { DateBox } from '../molecules/DateBox';
 import { getDatesList } from '../../helpers/getDatesList';
+import { getClubsByLocation, getLocations } from '../../services/club/service';
+import { useQuery } from '@tanstack/react-query';
+import { debounce } from 'lodash-es';
+import { SelectClubBlock } from '../molecules/SelectClubBlock';
+import { LoadingCircle } from '../atoms/LoadingCircle';
+import { FilterFormDate } from '../../pages/matches/tabs/AvailableMatchesTab';
 
-const times = [
-  '6:00',
-  '7:00',
-  '8:00',
-  '9:00',
-  '10:00',
-  '11:00',
-  '12:00',
-  '13:00',
-  '14:00',
-  '15:00',
-  '16:00',
-  '17:00',
-  '18:00',
-  '19:00',
-  '20:00',
-  '21:00',
-  '22:00',
-  '23:00',
-];
+// const times = [
+//   '6:00',
+//   '7:00',
+//   '8:00',
+//   '9:00',
+//   '10:00',
+//   '11:00',
+//   '12:00',
+//   '13:00',
+//   '14:00',
+//   '15:00',
+//   '16:00',
+//   '17:00',
+//   '18:00',
+//   '19:00',
+//   '20:00',
+//   '21:00',
+//   '22:00',
+//   '23:00',
+// ];
 
 interface IFilterAvailableMatchesModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
   onApply: () => void;
+  localFilters: FilterFormDate | null;
 }
 
 export const FilterAvailableMatchesModal: React.FC<
   IFilterAvailableMatchesModalProps
-> = ({ openState, handleModal, onApply }) => {
+> = ({ openState, handleModal, onApply, localFilters }) => {
   const dates = getDatesList(14);
 
-  const { control, watch, setValue } = useFormContext();
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const { sport, gamedates, time, range } = watch();
+  const { control, watch, setValue, resetField } = useFormContext();
+  const { sport, gamedates, lat, long, clubsId } = watch();
+
+  const [range, setRange] = useState(0);
 
   const {
     fields: dateFields,
@@ -68,14 +78,52 @@ export const FilterAvailableMatchesModal: React.FC<
   });
 
   const {
-    fields: timeFields,
-    append: timeAppend,
-    remove: timeRemove,
+    fields: clubsIdFields,
+    append: clubsIdAppend,
+    remove: clubsIdRemove,
   } = useFieldArray({
     control,
-    name: 'times',
-    rules: { maxLength: 6 },
+    name: 'clubsId',
   });
+
+  // const {
+  //   fields: timeFields,
+  //   append: timeAppend,
+  //   remove: timeRemove,
+  // } = useFieldArray({
+  //   control,
+  //   name: 'times',
+  //   rules: { maxLength: 6 },
+  // });
+
+  const { data: clubs, isLoading: isLoadingClubs } = useQuery({
+    queryKey: ['clubs/all', lat, long, sport],
+    queryFn: () => getClubsByLocation({ lat, long, sport }),
+    // enabled: !!lat,
+  });
+
+  const { data, isLoading } = useQuery({
+    queryKey: [searchTerm],
+    queryFn: () => getLocations(searchTerm),
+    enabled: searchTerm !== '',
+  });
+
+  const delayedQuery = useCallback(
+    debounce((query) => setSearchTerm(query), 300),
+    [],
+  );
+
+  // When the range changes, filter clubs corresponding to this range
+  useEffect(() => {
+    if (!clubs) return;
+
+    const filterClubs = clubs.filter((club) => club.range! <= range);
+
+    const correspondingClubsId = filterClubs.map((club) => ({
+      value: club.id,
+    }));
+    setValue('clubsId', correspondingClubsId);
+  }, [range]);
 
   return (
     <ModalContainer
@@ -123,32 +171,112 @@ export const FilterAvailableMatchesModal: React.FC<
             <Fade in>
               <Box>
                 <ModalContentContainer title="Где будете играть?">
-                  <Input
-                    disabled
-                    id="location"
-                    placeholder="Рядом со мной"
-                    startAdornment={
-                      <InputAdornment position="start">
-                        <FmdGoodOutlinedIcon fontSize="small" />
-                      </InputAdornment>
+                  <Autocomplete
+                    options={data || []}
+                    getOptionLabel={(option) =>
+                      `${option.properties.name} (${option.properties.country})`
                     }
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <NearMeIcon
-                          fontSize="small"
-                          sx={{ color: '#c1c1c1' }}
-                        />
-                      </InputAdornment>
-                    }
-                    fullWidth
-                    disableUnderline
-                    sx={{
-                      bgcolor: '#f5f6f8',
-                      padding: 1,
-                      borderRadius: 1.5,
-                      mb: 1,
+                    renderOption={(props, option) => {
+                      return (
+                        <Typography {...props} key={option.properties.osm_id}>
+                          {`${option.properties.name} (${option.properties.country})`}
+                        </Typography>
+                      );
                     }}
+                    onChange={(_, value) => {
+                      if (value) {
+                        resetField('clubsId');
+                        const [long, lat] = value.geometry.coordinates;
+                        setValue('long', long);
+                        setValue('lat', lat);
+
+                        setValue(
+                          'selectedLocation',
+                          `${value.properties.name} (${value.properties.country})`,
+                        );
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Рядом со мной"
+                        value={searchTerm}
+                        onChange={(e) => delayedQuery(e.target.value)}
+                        InputProps={{
+                          ...params.InputProps,
+                          type: 'search',
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <FmdGoodOutlinedIcon fontSize="small" />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <>
+                              <InputAdornment position="end">
+                                {isLoading ? (
+                                  <CircularProgress color="inherit" size={20} />
+                                ) : null}
+                              </InputAdornment>
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                          disableUnderline: true,
+                          sx: {
+                            bgcolor: '#f5f6f8',
+                            borderRadius: 1.5,
+                            padding: 1,
+                          },
+                        }}
+                      />
+                    )}
                   />
+
+                  <Box
+                    display="flex"
+                    gap={1.5}
+                    overflow="auto"
+                    py={2}
+                    px={1}
+                    sx={{
+                      '&::-webkit-scrollbar': {
+                        display: 'none',
+                      },
+                      msOverflowStyle: 'none',
+                    }}
+                  >
+                    {isLoadingClubs ? (
+                      <LoadingCircle />
+                    ) : clubs && clubs.length > 0 ? (
+                      clubs.map((club) => {
+                        const selectedIndx = clubsId.findIndex(
+                          (item: { value: number }) => item.value == club.id,
+                        );
+                        const isSelected = selectedIndx !== -1;
+
+                        return (
+                          <SelectClubBlock
+                            key={club.id}
+                            {...club}
+                            isChecked={isSelected}
+                            onCheck={() => {
+                              if (isSelected)
+                                return clubsIdRemove(selectedIndx);
+                              if (clubsIdFields.length < 7) {
+                                clubsIdAppend({ value: club.id });
+                              } else {
+                                clubsIdRemove(0);
+                                clubsIdAppend({ value: club.id });
+                              }
+                            }}
+                          />
+                        );
+                      })
+                    ) : (
+                      <Typography py={2} textAlign="center" color="gray">
+                        No clubs
+                      </Typography>
+                    )}
+                  </Box>
 
                   {/* <FormGroup>
             <FormControlLabel
@@ -167,10 +295,7 @@ export const FilterAvailableMatchesModal: React.FC<
               sx={{ marginLeft: 0 }}
             />
           </FormGroup> */}
-                  <DistanceSlider
-                    value={range}
-                    setValue={(val: number) => setValue('range', val)}
-                  />
+                  <DistanceSlider value={range} setValue={setRange} />
                 </ModalContentContainer>
               </Box>
             </Fade>
@@ -178,7 +303,7 @@ export const FilterAvailableMatchesModal: React.FC<
         )}
 
         {/* remove this line ('range !== 0') after adding real location search */}
-        {range !== 0 && (
+        {clubsId.length > 0 && (
           <>
             <Divider />
             <Fade in>
@@ -191,7 +316,8 @@ export const FilterAvailableMatchesModal: React.FC<
                     {dates.map((date, i) => {
                       const selectedIndx = gamedates?.findIndex(
                         (item: { value: Date }) =>
-                          item.value.toDateString() === date.toDateString(),
+                          new Date(item.value).toDateString() ===
+                          date.toDateString(),
                       );
                       const isSelected = selectedIndx !== -1;
                       return (
@@ -218,7 +344,7 @@ export const FilterAvailableMatchesModal: React.FC<
           </>
         )}
 
-        {gamedates.length > 0 && (
+        {!!gamedates.length && !!clubsId.length && (
           <>
             <Divider />
             <Fade in>
@@ -227,11 +353,11 @@ export const FilterAvailableMatchesModal: React.FC<
                   <Controller
                     name="time"
                     control={control}
-                    defaultValue="ANY"
+                    defaultValue="ALL"
                     render={({ field }) => (
                       <RadioGroup {...field} sx={{ gap: 1 }}>
                         <RadioLabel
-                          value="ANY"
+                          value="ALL"
                           labelType={ERadioLabelType.TITLE_ONLY}
                           title="Любое время"
                         />
@@ -250,16 +376,16 @@ export const FilterAvailableMatchesModal: React.FC<
                           labelType={ERadioLabelType.TITLE_ONLY}
                           title="Вечер (18:00 - 00:00)"
                         />
-                        <RadioLabel
+                        {/* <RadioLabel
                           value="SPECIFIC"
                           labelType={ERadioLabelType.TITLE_ONLY}
                           title="Выбрать конкретное время (максимум 6)"
-                        />
+                        /> */}
                       </RadioGroup>
                     )}
                   />
 
-                  {time === 'SPECIFIC' && (
+                  {/* {time === 'SPECIFIC' && (
                     <Fade in>
                       <Box
                         mt={1.6}
@@ -292,7 +418,7 @@ export const FilterAvailableMatchesModal: React.FC<
                         })}
                       </Box>
                     </Fade>
-                  )}
+                  )} */}
                 </ModalContentContainer>
               </Box>
             </Fade>
@@ -309,12 +435,18 @@ export const FilterAvailableMatchesModal: React.FC<
         borderTop="1px solid #eee"
       >
         <Button
+          disabled={
+            !sport || !gamedates.length || !lat || !long || !clubsId.length
+          }
           onClick={onApply}
           sx={{
             backgroundColor: '#0e2432',
             color: '#fff',
             borderRadius: 20,
             py: 1,
+            '&:disabled': {
+              backgroundColor: '#ddd',
+            },
           }}
           fullWidth
         >
