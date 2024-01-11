@@ -24,7 +24,7 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
   const isUser = currentPlayer?.id === player?.id;
 
   const playerRating = player ? getSportRating(player, sport) : 0;
-  console.log('player: ', player);
+
   return (
     <Box
       position="relative"

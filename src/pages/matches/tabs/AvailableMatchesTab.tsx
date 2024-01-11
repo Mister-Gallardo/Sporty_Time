@@ -23,7 +23,7 @@ import { Sport } from '../../../types';
 interface FilterFormDate {
   sport: string;
   gamedates: { value: Date }[];
-  range: number;
+  clubsId: { value: string }[];
   lat: number;
   long: number;
   time: string;
@@ -37,13 +37,17 @@ export function AvailableMatchesTab() {
   const filterParams = useForm<FilterFormDate>({
     defaultValues: {
       sport: '',
+      clubsId: [],
       gamedates: [],
-      range: 20000,
-      lat: 25.07354,
-      long: 55.130108,
+      lat: 0,
+      long: 0,
+      // range: 50,
+      // lat: 25.07354,
+      // long: 55.130108,
     },
   });
   const { watch } = filterParams;
+
   const { sport, gamedates } = watch();
   const gameDatesToString = gamedates
     .map((date) => date.value.toLocaleDateString('en-ca'))
@@ -84,7 +88,7 @@ export function AvailableMatchesTab() {
     noRatingMatches.refetch();
     clubs.refetch();
     if (openFilterModal) setOpenFilterModal();
-    if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
+    // if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
   };
 
   const isMainFilters = !!sport && gamedates.length > 0;

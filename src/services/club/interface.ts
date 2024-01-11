@@ -87,3 +87,33 @@ export interface CourtSlot {
   slotId: number;
   time: string;
 }
+
+export interface SingleLocationData {
+  geometry: {
+    coordinates: [number, number];
+    type: string;
+  };
+  type: string;
+  properties: {
+    osm_type: string;
+    osm_id: number;
+    extent: number[];
+    country: string;
+    osm_key: string;
+    countrycode: string;
+    osm_value: string;
+    name: string;
+    county: string;
+    type: string;
+  };
+}
+
+export interface LocationsData {
+  features: SingleLocationData[];
+  type: string;
+}
+
+export interface LocationLatAndLong {
+  lat: number;
+  long: number;
+}
