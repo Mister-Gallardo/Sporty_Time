@@ -30,8 +30,8 @@ const marks = [
 ];
 
 interface IDistanceSliderProps {
-  value?: number;
-  setValue?: any;
+  value: number;
+  setValue: (range: number) => void;
 }
 
 export const DistanceSlider: React.FC<IDistanceSliderProps> = ({

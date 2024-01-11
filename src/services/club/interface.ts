@@ -1,5 +1,13 @@
+import { Sport } from '../../types';
 import { MatchData } from '../matches/interface';
 import { User } from '../user/interface';
+
+export enum MatchTimeRange {
+  ALL = 'ALL',
+  MORNING = 'MORNING',
+  AFTERNOON = 'AFTERNOON',
+  EVENING = 'EVENING',
+}
 
 export interface IAvailableTime {
   slotId: number;
@@ -25,60 +33,38 @@ export interface Club {
   availableTimes?: string[] | IAvailableTime[];
   minPrice: number;
   timezone: string;
+  range?: number;
 }
 
 export interface Court {
   id: number;
   title: string;
   address: string;
-
-  sport: CourtTypes;
-
+  sport: Sport;
   location: string;
-
   price: number;
-
   club: Club;
-
   options: { playtime: number; price: number }[];
-
   slotId: number;
-
   tags: Tag[];
-
   createdAt: Date;
-
   updatedAt: Date;
 }
 
 export interface Tag {
   id: number;
-
   title: string;
-
   courts: Court[];
-
   createdAt: Date;
-
   updatedAt: Date;
-}
-
-export enum CourtTypes {
-  PADEL = 'PADEL',
-  TENNIS = 'TENNIS',
 }
 
 export interface Slot {
   id: number;
-
   court: Court;
-
   matches: MatchData[];
-
   time: string;
-
   createdAt: Date;
-
   updatedAt: Date;
 }
 
@@ -116,4 +102,5 @@ export interface LocationsData {
 export interface LocationLatAndLong {
   lat: number;
   long: number;
+  sport: Sport;
 }

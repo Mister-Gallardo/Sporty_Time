@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { api } from '../api/service';
 import { Club, LocationLatAndLong, LocationsData } from './interface';
+import { GetAvailableMatchesAndClubsDTO } from '../matches/interface';
 
-// hardcoded time while filter is not finished
-export async function getClubs(gamedates: string) {
-  const { data } = await api.get<Club[]>(
-    `/clubs?gamedates=${gamedates}&timefrom=10:00&timeto=18:00`,
+export async function getClubs(data: GetAvailableMatchesAndClubsDTO) {
+  const { sport, gamedates, clubs, time } = data;
+  const res = api.get<Club[]>(
+    `/clubs?sport=${sport}&gamedates=${gamedates}&clubs=${clubs}&time=${time}`,
   );
-  return data;
+  return res;
 }
 export async function getClub(id: number, params: any) {
   const { data } = await api.get<Club>('/clubs/' + id, { params });
@@ -24,8 +25,14 @@ export async function bookCourt(id: number, params: any) {
   return data;
 }
 
-export async function getClubsByLocation({ lat, long }: LocationLatAndLong) {
-  const { data } = await api.get<Club[]>(`/clubs/all?lat=${lat}&long=${long}`);
+export async function getClubsByLocation({
+  lat,
+  long,
+  sport,
+}: LocationLatAndLong) {
+  const { data } = await api.get<Club[]>(
+    `/clubs/all?lat=${lat}&long=${long}&sport=${sport}`,
+  );
   return data;
 }
 

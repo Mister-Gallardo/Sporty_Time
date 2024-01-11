@@ -16,9 +16,9 @@ export function getMyMatches(cancel?: boolean) {
 }
 
 export function getAvailableMatches(data: GetAvailableMatchesAndClubsDTO) {
-  const { sport, gamedates, lat, long, range } = data;
+  const { sport, gamedates, clubs, time } = data;
   const res = api.get<MatchData[]>(
-    `/matches/available?sport=${sport}&lat=${lat}&long=${long}&range=${range}&gamedates=${gamedates}`,
+    `/matches/available?sport=${sport}&gamedates=${gamedates}&clubs=${clubs}&time=${time}`,
   );
   return res;
 }
@@ -26,9 +26,9 @@ export function getAvailableMatches(data: GetAvailableMatchesAndClubsDTO) {
 export function getAvailableNoRatingMatches(
   data: GetAvailableMatchesAndClubsDTO,
 ) {
-  const { sport, gamedates, lat, long, range } = data;
+  const { sport, gamedates, clubs, time } = data;
   const res = api.get<MatchData[]>(
-    `/matches/available-no-rating?sport=${sport}&lat=${lat}&long=${long}&range=${range}&gamedates=${gamedates}`,
+    `/matches/available-no-rating?sport=${sport}&gamedates=${gamedates}&clubs=${clubs}&time=${time}`,
   );
   return res;
 }

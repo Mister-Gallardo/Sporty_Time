@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useFieldArray, Controller, useFormContext } from 'react-hook-form';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import {
@@ -19,13 +19,13 @@ import { CalendarDay } from '../molecules/CalendarDay';
 import { ERadioLabelType, Sport } from '../../types';
 import { RadioLabel } from '../molecules/RadioLabel';
 import { ModalContainer } from './ModalContainer';
-// import { DateBox } from '../molecules/DateBox';
 import { getDatesList } from '../../helpers/getDatesList';
 import { getClubsByLocation, getLocations } from '../../services/club/service';
 import { useQuery } from '@tanstack/react-query';
 import { debounce } from 'lodash-es';
 import { SelectClubBlock } from '../molecules/SelectClubBlock';
 import { LoadingCircle } from '../atoms/LoadingCircle';
+import { FilterFormDate } from '../../pages/matches/tabs/AvailableMatchesTab';
 
 // const times = [
 //   '6:00',
@@ -52,18 +52,21 @@ interface IFilterAvailableMatchesModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
   onApply: () => void;
+  localFilters: FilterFormDate | null;
 }
 
 export const FilterAvailableMatchesModal: React.FC<
   IFilterAvailableMatchesModalProps
-> = ({ openState, handleModal, onApply }) => {
+> = ({ openState, handleModal, onApply, localFilters }) => {
   const dates = getDatesList(14);
 
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const { control, watch, setValue, getValues } = useFormContext();
-  const { sport, gamedates, range, lat, long, clubsId } = watch();
-  console.log('id: ', watch('clubsId'));
+  const { control, watch, setValue, resetField } = useFormContext();
+  const { sport, gamedates, lat, long, clubsId } = watch();
+
+  const [range, setRange] = useState(0);
+
   const {
     fields: dateFields,
     append: dateAppend,
@@ -72,6 +75,15 @@ export const FilterAvailableMatchesModal: React.FC<
     control,
     name: 'gamedates',
     rules: { maxLength: 7 },
+  });
+
+  const {
+    fields: clubsIdFields,
+    append: clubsIdAppend,
+    remove: clubsIdRemove,
+  } = useFieldArray({
+    control,
+    name: 'clubsId',
   });
 
   // const {
@@ -85,9 +97,9 @@ export const FilterAvailableMatchesModal: React.FC<
   // });
 
   const { data: clubs, isLoading: isLoadingClubs } = useQuery({
-    queryKey: ['clubs/all', lat, long],
-    queryFn: () => getClubsByLocation({ lat, long }),
-    enabled: !!lat,
+    queryKey: ['clubs/all', lat, long, sport],
+    queryFn: () => getClubsByLocation({ lat, long, sport }),
+    // enabled: !!lat,
   });
 
   const { data, isLoading } = useQuery({
@@ -100,6 +112,18 @@ export const FilterAvailableMatchesModal: React.FC<
     debounce((query) => setSearchTerm(query), 300),
     [],
   );
+
+  // When the range changes, filter clubs corresponding to this range
+  useEffect(() => {
+    if (!clubs) return;
+
+    const filterClubs = clubs.filter((club) => club.range! <= range);
+
+    const correspondingClubsId = filterClubs.map((club) => ({
+      value: club.id,
+    }));
+    setValue('clubsId', correspondingClubsId);
+  }, [range]);
 
   return (
     <ModalContainer
@@ -152,11 +176,24 @@ export const FilterAvailableMatchesModal: React.FC<
                     getOptionLabel={(option) =>
                       `${option.properties.name} (${option.properties.country})`
                     }
+                    renderOption={(props, option) => {
+                      return (
+                        <Typography {...props} key={option.properties.osm_id}>
+                          {`${option.properties.name} (${option.properties.country})`}
+                        </Typography>
+                      );
+                    }}
                     onChange={(_, value) => {
                       if (value) {
-                        const [lat, long] = value.geometry.coordinates;
-                        setValue('lat', lat);
+                        resetField('clubsId');
+                        const [long, lat] = value.geometry.coordinates;
                         setValue('long', long);
+                        setValue('lat', lat);
+
+                        setValue(
+                          'selectedLocation',
+                          `${value.properties.name} (${value.properties.country})`,
+                        );
                       }
                     }}
                     renderInput={(params) => (
@@ -207,19 +244,30 @@ export const FilterAvailableMatchesModal: React.FC<
                       msOverflowStyle: 'none',
                     }}
                   >
-                    {/* {isLoadingClubs ? (
+                    {isLoadingClubs ? (
                       <LoadingCircle />
                     ) : clubs && clubs.length > 0 ? (
-                      [1, 2, 3, 4, 5, 6].map((club, i) => {
+                      clubs.map((club) => {
+                        const selectedIndx = clubsId.findIndex(
+                          (item: { value: number }) => item.value == club.id,
+                        );
+                        const isSelected = selectedIndx !== -1;
+
                         return (
                           <SelectClubBlock
-                            key={club}
-                            onCheck={() =>
-                              setValue(
-                                'clubsId',
-                                getValues('clubsId') + `,${i}`,
-                              )
-                            }
+                            key={club.id}
+                            {...club}
+                            isChecked={isSelected}
+                            onCheck={() => {
+                              if (isSelected)
+                                return clubsIdRemove(selectedIndx);
+                              if (clubsIdFields.length < 7) {
+                                clubsIdAppend({ value: club.id });
+                              } else {
+                                clubsIdRemove(0);
+                                clubsIdAppend({ value: club.id });
+                              }
+                            }}
                           />
                         );
                       })
@@ -227,21 +275,7 @@ export const FilterAvailableMatchesModal: React.FC<
                       <Typography py={2} textAlign="center" color="gray">
                         No clubs
                       </Typography>
-                    )} */}
-
-                    {/* <SelectClubBlock /> */}
-                    {[1, 2, 3, 4, 5, 6].map((club, i) => {
-                      return (
-                        <SelectClubBlock
-                          key={club}
-                          onCheck={() => {
-                            const values = getValues('clubsId');
-                            if (!values) return setValue('clubsId', values + i);
-                            setValue('clubsId', values + `,${i}`);
-                          }}
-                        />
-                      );
-                    })}
+                    )}
                   </Box>
 
                   {/* <FormGroup>
@@ -261,10 +295,7 @@ export const FilterAvailableMatchesModal: React.FC<
               sx={{ marginLeft: 0 }}
             />
           </FormGroup> */}
-                  <DistanceSlider
-                    value={range}
-                    setValue={(val: number) => setValue('range', val)}
-                  />
+                  <DistanceSlider value={range} setValue={setRange} />
                 </ModalContentContainer>
               </Box>
             </Fade>
@@ -272,7 +303,7 @@ export const FilterAvailableMatchesModal: React.FC<
         )}
 
         {/* remove this line ('range !== 0') after adding real location search */}
-        {clubsId && (
+        {clubsId.length > 0 && (
           <>
             <Divider />
             <Fade in>
@@ -285,7 +316,8 @@ export const FilterAvailableMatchesModal: React.FC<
                     {dates.map((date, i) => {
                       const selectedIndx = gamedates?.findIndex(
                         (item: { value: Date }) =>
-                          item.value.toDateString() === date.toDateString(),
+                          new Date(item.value).toDateString() ===
+                          date.toDateString(),
                       );
                       const isSelected = selectedIndx !== -1;
                       return (
@@ -312,7 +344,7 @@ export const FilterAvailableMatchesModal: React.FC<
           </>
         )}
 
-        {gamedates.length > 0 && (
+        {!!gamedates.length && !!clubsId.length && (
           <>
             <Divider />
             <Fade in>
@@ -321,11 +353,11 @@ export const FilterAvailableMatchesModal: React.FC<
                   <Controller
                     name="time"
                     control={control}
-                    defaultValue="ANY"
+                    defaultValue="ALL"
                     render={({ field }) => (
                       <RadioGroup {...field} sx={{ gap: 1 }}>
                         <RadioLabel
-                          value="ANY"
+                          value="ALL"
                           labelType={ERadioLabelType.TITLE_ONLY}
                           title="Любое время"
                         />
@@ -403,12 +435,18 @@ export const FilterAvailableMatchesModal: React.FC<
         borderTop="1px solid #eee"
       >
         <Button
+          disabled={
+            !sport || !gamedates.length || !lat || !long || !clubsId.length
+          }
           onClick={onApply}
           sx={{
             backgroundColor: '#0e2432',
             color: '#fff',
             borderRadius: 20,
             py: 1,
+            '&:disabled': {
+              backgroundColor: '#ddd',
+            },
           }}
           fullWidth
         >

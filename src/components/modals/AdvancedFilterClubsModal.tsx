@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { ModalContentContainer } from '../atoms/ModalContentContainer';
-import { DistanceSlider } from '../molecules/DistanceSlider';
+// import { DistanceSlider } from '../molecules/DistanceSlider';
 
 interface IAdvancedFilterClubsModalProps {
   openState: boolean;
@@ -87,7 +87,7 @@ export const AdvancedFilterClubsModal: React.FC<
             Выберите максимальное расстояние для поиска
           </Typography>
 
-          <DistanceSlider />
+          {/* <DistanceSlider /> */}
         </ModalContentContainer>
 
         <Divider />

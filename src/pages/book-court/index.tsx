@@ -23,6 +23,7 @@ import { getClubs } from '../../services/club/service';
 import noResults from '../../images/no-results.svg';
 import { useQuery } from '@tanstack/react-query';
 import useToggle from '../../hooks/useToggle';
+import { MatchTimeRange } from '../../services/club/interface';
 
 interface FiltersFormData {
   date: Date;
@@ -60,9 +61,16 @@ export function BookCourt() {
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['clubs', date.toLocaleDateString('en-ca')],
-    queryFn: () => getClubs(date.toLocaleDateString('en-ca')),
+    queryFn: () =>
+      getClubs({
+        sport: 'TENNIS',
+        gamedates: date.toLocaleDateString('en-ca'),
+        clubs: '1,2,3',
+        time: MatchTimeRange.ALL,
+      }),
     enabled: false,
   });
+  const clubs = data?.data;
 
   useEffect(() => {
     refetch();
@@ -186,7 +194,7 @@ export function BookCourt() {
           mx: 'auto',
         }}
       >
-        {!data || data.length === 0 ? (
+        {!clubs || clubs.length === 0 ? (
           <Box display="flex" flexDirection="column" alignItems="center">
             <Box
               component="img"
@@ -200,7 +208,7 @@ export function BookCourt() {
             </Button>
           </Box>
         ) : (
-          data?.map((club) => <ClubCard key={club.id} {...club} />)
+          clubs?.map((club) => <ClubCard key={club.id} {...club} />)
         )}
       </Box>
 
