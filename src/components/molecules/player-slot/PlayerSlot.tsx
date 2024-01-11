@@ -11,8 +11,7 @@ interface IPlayerSlotProps {
   onClick?: any;
   isMatchPaid?: boolean;
   playerAlreadyInSomeTeam?: boolean;
-  hideStatus?: boolean;
-  matchStatus: Status;
+  matchStatus?: Status;
 }
 
 export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
@@ -21,13 +20,12 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
   sport,
   isMatchPaid,
   playerAlreadyInSomeTeam,
-  hideStatus,
   matchStatus,
 }) => {
   const playerRating = player ? getSportRating(player, sport) : '';
 
   const isShown =
-    !hideStatus && (player?.isOwner || playerAlreadyInSomeTeam || player?.mark);
+    matchStatus && (player?.isOwner || playerAlreadyInSomeTeam || player?.mark);
 
   // if match is cancelled -> hide payment status and available slot text
   const isHidden = matchStatus === Status.CANCELED;

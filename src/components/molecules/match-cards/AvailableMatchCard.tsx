@@ -73,11 +73,11 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
         <Typography color="gray">11km · Dubai</Typography>
 
         <Box mt={2} display="flex" justifyContent="space-between">
-          <PlayerSlot player={players[0]} sport={matchData.sport} hideStatus />
-          <PlayerSlot player={players[1]} sport={matchData.sport} hideStatus />
+          <PlayerSlot player={players[0]} sport={matchData.sport} />
+          <PlayerSlot player={players[1]} sport={matchData.sport} />
           <Divider orientation="vertical" variant="middle" flexItem />
-          <PlayerSlot player={players[2]} sport={matchData.sport} hideStatus />
-          <PlayerSlot player={players[3]} sport={matchData.sport} hideStatus />
+          <PlayerSlot player={players[2]} sport={matchData.sport} />
+          <PlayerSlot player={players[3]} sport={matchData.sport} />
         </Box>
       </Box>
 
