@@ -1,5 +1,5 @@
 import { api } from '../api/service';
-import { Chat, SendingMsdData, SingleChatData } from './interface';
+import { Chat, ChatSingleMessage, SendingMsdData } from './interface';
 
 export async function getChats() {
   const { data } = await api.get<Chat[]>(`/chats`);
@@ -7,7 +7,7 @@ export async function getChats() {
 }
 
 export async function getSingleChat(id: number) {
-  const { data } = await api.get<SingleChatData>(`/chat/${id}?offset=0`);
+  const { data } = await api.get<ChatSingleMessage[]>(`/chat/${id}?offset=0`);
   return data;
 }
 

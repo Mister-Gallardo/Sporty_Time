@@ -1,4 +1,3 @@
-import { MatchData } from '../matches/interface';
 import { User } from '../user/interface';
 
 export interface ChatSingleMessage {
@@ -11,11 +10,13 @@ export interface ChatSingleMessage {
 
 export interface Chat {
   id: number;
-  lastMessage?: ChatSingleMessage;
-}
-
-export interface SingleChatData extends MatchData {
-  messages: ChatSingleMessage[];
+  message: string;
+  messagecreatedat: string;
+  firstname: string;
+  lastname: string;
+  avatar: string;
+  gamedate: string;
+  title: string;
 }
 
 export interface SendingMsdData {
