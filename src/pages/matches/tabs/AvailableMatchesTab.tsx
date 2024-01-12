@@ -65,7 +65,7 @@ export function AvailableMatchesTab() {
   const { watch, getValues } = filterParams;
 
   const { sport, gamedates, clubsId, time } = watch();
-  console.log(time);
+
   const gameDatesToString = gamedates
     .map((date) => new Date(date.value).toLocaleDateString('en-ca'))
     .join(',');

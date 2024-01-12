@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { ModalContainer } from './ModalContainer';
 import {
   Box,
+  Button,
   CircularProgress,
   Divider,
   InputAdornment,
@@ -19,6 +20,8 @@ import { transliterate } from 'transliteration';
 import { debounce } from 'lodash-es';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import EastRoundedIcon from '@mui/icons-material/EastRounded';
+import { Geolocation } from '@capacitor/geolocation';
+import useToggle from '../../hooks/useToggle';
 
 interface ISelectClubLocationModalProps {
   openState: boolean;
@@ -53,6 +56,28 @@ export const SelectClubLocationModal: React.FC<
     [],
   );
 
+  const [isUserLocationLoading, setIsUserLocationLoading] = useToggle();
+
+  const setUserLocation = async () => {
+    setIsUserLocationLoading(true);
+    try {
+      const { coords } = await Geolocation.getCurrentPosition();
+      const { latitude, longitude } = coords;
+      setIsUserLocationLoading(false);
+
+      setValue('long', longitude);
+      setValue('lat', latitude);
+
+      setValue('selectedLocation', 'Рядом со мной');
+
+      handleModal();
+    } catch (error: any) {
+      setIsUserLocationLoading(false);
+      if (error.message === 'User denied Geolocation')
+        console.log('Allow location first');
+    }
+  };
+
   return (
     <ModalContainer
       openState={openState}
@@ -60,6 +85,20 @@ export const SelectClubLocationModal: React.FC<
       headerTitle="Где Вы хотите играть?"
     >
       <Box height="80vh">
+        <Button
+          disabled={isUserLocationLoading}
+          onClick={setUserLocation}
+          variant="contained"
+          sx={{ borderRadius: 5, fontSize: 14, fontWeight: 600, mb: 5 }}
+          endIcon={
+            isUserLocationLoading && (
+              <CircularProgress size={15} sx={{ color: '#fff' }} />
+            )
+          }
+        >
+          Рядом со мной
+        </Button>
+
         <TextField
           value={currentSearchTerm}
           onChange={(e) => {
