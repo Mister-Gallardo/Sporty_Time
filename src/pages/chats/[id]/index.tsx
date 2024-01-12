@@ -11,32 +11,46 @@ import { IonLoading, isPlatform, useIonToast } from '@ionic/react';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import SendSharpIcon from '@mui/icons-material/SendSharp';
 import { SubmitHandler, useForm, Controller } from 'react-hook-form';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useHistory, useParams } from 'react-router';
 import { getSingleChat, sendMessage } from '../../../services/chats/service';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
-import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
 import { NotFoundPage } from '../../../components/NotFoundPage';
+import { getOneAvailableMatch } from '../../../services/matches/service';
+import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
+import { v4 as uuid } from 'uuid';
+import { useUserInfo } from '../../../services/api/hooks';
 
 const isMobile = isPlatform('mobile');
+
 export function SingleChatPage() {
   const history = useHistory();
 
   const { chatId } = useParams<{ chatId: string }>();
+
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       message: '',
     },
   });
 
+  const { data: matchData, isLoading: isMatchLoading } = useQuery({
+    queryKey: [`match`, +chatId],
+    queryFn: () => getOneAvailableMatch(+chatId),
+  });
+  const match = matchData?.data;
+
   const { data, isLoading } = useQuery({
     queryKey: ['chat', +chatId],
     queryFn: () => getSingleChat(+chatId),
     refetchInterval: 5000,
   });
-  const messages = data?.messages;
 
   const [showToast] = useIonToast();
+
+  const [user] = useUserInfo();
+
+  const qc = useQueryClient();
 
   const sendMsgMutation = useMutation({
     mutationFn: sendMessage,
@@ -49,9 +63,27 @@ export function SingleChatPage() {
         duration: 2000,
       });
     },
+    onMutate(data) {
+      const message = {
+        id: uuid(),
+        message: data.message,
+        createdAt: new Date().toLocaleString(),
+        updatedAt: new Date().toLocaleString(),
+        userFrom: {
+          firstname: user?.firstname,
+          lastname: user?.lastname,
+          id: user?.id,
+        },
+      };
+      qc.setQueryData(['chat', +chatId], (prev: any = {}) => [
+        ...prev,
+        message,
+      ]);
+    },
   });
 
   const onSendMessage: SubmitHandler<any> = ({ message }) => {
+    if (!message.trim()) return;
     sendMsgMutation.mutate({ id: +chatId, message });
     reset();
   };
@@ -78,9 +110,17 @@ export function SingleChatPage() {
         py={1}
       >
         <Box>
-          <Typography>Title</Typography>
+          {isMatchLoading ? (
+            <LoadingCircle />
+          ) : (
+            <Typography>{`${
+              match?.slot.court.club.title
+            } ${match?.slot.time.slice(0, 5)}, ${
+              match?.slot.court.title
+            }`}</Typography>
+          )}
           <Typography color="gray">
-            {getDayFormat(data.gameDate, EType.MONTH_AND_DAY)}
+            {match && getDayFormat(match.gameDate, EType.MONTH_AND_DAY)}
           </Typography>
         </Box>
         <Button
@@ -91,24 +131,24 @@ export function SingleChatPage() {
         </Button>
       </Box>
       <Box
+        alignSelf="end"
         display="flex"
         flexDirection="column"
-        px={isMobile ? 'unset' : 3}
-        pr={isMobile ? 1 : 5}
-        py={isMobile ? 8 : 5}
+        p={isMobile ? '4rem 0.5rem 4rem 0' : '3rem 0.5rem 0'}
         height="100%"
         maxHeight={isMobile ? 'unset' : 600}
         overflow={isMobile ? 'unset' : 'auto'}
+        // ref={chatRef}
       >
         {isLoading ? (
           <LoadingCircle />
         ) : (
-          messages &&
-          messages.length > 0 &&
-          messages.map((message, i) => {
-            const prevUserId = i === 0 ? null : messages[i - 1].userFrom.id;
+          data &&
+          data.length > 0 &&
+          data.map((message, i) => {
+            const prevUserId = i === 0 ? null : data[i - 1].userFrom.id;
             const nextUserId =
-              i === messages.length - 1 ? null : messages[i + 1].userFrom.id;
+              i === data.length - 1 ? null : data[i + 1].userFrom.id;
             return (
               <MessageItem
                 key={message.id}

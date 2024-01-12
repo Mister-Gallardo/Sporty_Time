@@ -1,4 +1,4 @@
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Skeleton, Typography } from '@mui/material';
 import React from 'react';
 import { useUserInfo } from '../../../services/api/hooks';
 import { ChatSingleMessage } from '../../../services/chats/interface';
@@ -29,11 +29,12 @@ export const MessageItem: React.FC<IMessageItemProps> = ({
   prevMsgFromSameUser,
   nextMsgFromSameUser,
 }) => {
-  const [user] = useUserInfo();
+  const [user, state] = useUserInfo();
   const currentUserId = user?.id;
 
   const msgSentTime = new Date(createdAt).toLocaleTimeString().slice(0, 5);
 
+  if (state.isLoading) return <Skeleton animation="wave" height={50} />;
   return (
     <>
       {userFrom.id === currentUserId ? (

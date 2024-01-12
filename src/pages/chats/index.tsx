@@ -18,9 +18,7 @@ export function ChatsPage() {
     <Container maxWidth="md">
       <Box my={2} display="flex" flexDirection="column" gap={2.5}>
         {data.length > 0 &&
-          data.map((chat) => (
-            <ChatItem key={chat.id} {...chat} chatId={chat.id} />
-          ))}
+          data.map((chat) => <ChatItem key={chat.id} {...chat} />)}
       </Box>
     </Container>
   );
