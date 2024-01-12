@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isPlatform } from '@ionic/react';
 import { AvailableMatchesTab } from './tabs/AvailableMatchesTab';
 import { TabList } from '../../components/molecules/TabList';
@@ -7,10 +7,14 @@ import { TabContext, TabPanel } from '@mui/lab';
 import { Box, Button } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useHistory } from 'react-router';
-// import { Geolocation } from '@capacitor/geolocation';
+import { Geolocation } from '@capacitor/geolocation';
 
 export function MatchesPage() {
   const isMobile = isPlatform('mobile');
+
+  useEffect(() => {
+    Geolocation.getCurrentPosition().then(console.log);
+  }, []);
 
   const history = useHistory();
   const [tabIndex, setTabIndex] = useState<string>('1');

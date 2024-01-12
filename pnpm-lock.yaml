@@ -20,6 +20,9 @@ dependencies:
   '@capacitor/dialog':
     specifier: ^5.0.6
     version: 5.0.6(@capacitor/core@5.5.1)
+  '@capacitor/geolocation':
+    specifier: ^5.0.6
+    version: 5.0.6(@capacitor/core@5.5.1)
   '@capacitor/haptics':
     specifier: 5.0.6
     version: 5.0.6(@capacitor/core@5.5.1)
@@ -1450,6 +1453,14 @@ packages:
 
   /@capacitor/dialog@5.0.6(@capacitor/core@5.5.1):
     resolution: {integrity: sha512-/F9aSADswh+5pBE5810vD/N+Ox3KmahLXn1rMqisao8gNVI/Lk4YanWSPqDJCauHwOfZyeZscmDsETizAlSLFA==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.5.1
+    dev: false
+
+  /@capacitor/geolocation@5.0.6(@capacitor/core@5.5.1):
+    resolution: {integrity: sha512-3pB3CBa38aDMk7zouGbjOMBytcaqRMBosMcqNrOQjE5LMBAPUI1cEGrUzmkj+scP0SIyYGA95Tkj0BAnzvNWag==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:

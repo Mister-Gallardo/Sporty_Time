@@ -104,7 +104,7 @@ export const FilterAvailableMatchesModal: React.FC<
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: [searchTerm],
+    queryKey: ['cities', searchTerm],
     queryFn: () => getLocations(searchTerm),
     enabled: searchTerm !== '',
   });
@@ -182,6 +182,7 @@ export const FilterAvailableMatchesModal: React.FC<
               <Box>
                 <ModalContentContainer title="Где будете играть?">
                   <Autocomplete
+                    filterOptions={(x) => x}
                     options={locationOptions}
                     isOptionEqualToValue={(option, value) =>
                       option.title === value.title
