@@ -3,10 +3,10 @@ import { MatchData } from '../matches/interface';
 import { User } from '../user/interface';
 
 export enum MatchTimeRange {
-  ALL = 'ALL',
-  MORNING = 'MORNING',
-  AFTERNOON = 'AFTERNOON',
-  EVENING = 'EVENING',
+  ALL = '6:00:00-23:59:00',
+  MORNING = '6:00:00-12:00:00',
+  AFTERNOON = '12:00:00-18:00:00',
+  EVENING = '18:00:00-23:59:00',
 }
 
 export interface IAvailableTime {

@@ -59,13 +59,13 @@ export function AvailableMatchesTab() {
       lat: localFilters?.lat || 0,
       long: localFilters?.long || 0,
       selectedLocation: localFilters?.selectedLocation || '',
-      time: localFilters?.time || 'ALL',
+      time: localFilters?.time || MatchTimeRange.ALL,
     },
   });
   const { watch, getValues } = filterParams;
 
   const { sport, gamedates, clubsId, time } = watch();
-
+  console.log(time);
   const gameDatesToString = gamedates
     .map((date) => new Date(date.value).toLocaleDateString('en-ca'))
     .join(',');
@@ -79,7 +79,7 @@ export function AvailableMatchesTab() {
         sport,
         gamedates: gameDatesToString,
         clubs: clubsIdToString,
-        time,
+        time: 'ALL',
       }),
     enabled: false,
   });
@@ -93,11 +93,14 @@ export function AvailableMatchesTab() {
         sport,
         gamedates: gameDatesToString,
         clubs: clubsIdToString,
-        time,
+        time: 'ALL',
       }),
     enabled: false,
   });
   const noRatingArray = noRatingMatches.data?.data;
+
+  //leave for now
+  const [timefrom, timeto] = time.split('-');
 
   // Get available clubs
   const clubs = useQuery({
@@ -107,7 +110,8 @@ export function AvailableMatchesTab() {
         sport,
         gamedates: gameDatesToString,
         clubs: clubsIdToString,
-        time,
+        timefrom,
+        timeto,
       }),
     enabled: false,
   });
