@@ -22,12 +22,14 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
   const dates = getDatesList(14);
 
   const { setValue, watch } = useFormContext();
-  const { date, time } = watch();
+  const { gamedates, timefrom, timeto } = watch();
 
   const handleDatetimeChange = (event: any) => {
     const time = event.detail.value.slice(-8, -3);
     const timePlus = addTime(time, 5 * 60);
-    setValue('time', `${time}-${timePlus}`);
+
+    setValue('timefrom', time);
+    setValue('timeto', timePlus);
   };
 
   return (
@@ -36,15 +38,17 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
       handleModal={handleModal}
       headerTitle="Выбор даты и времени"
     >
-      <Box height="100%" display="flex" flexDirection="column" gap={2.5}>
+      <Box height="70vh" display="flex" flexDirection="column" gap={2.5}>
         <Box py={1} display="flex" gap={0.6} overflow="auto">
           {dates.map((dateItem, i) => {
             return (
               <CalendarDay
                 key={i}
                 date={dateItem}
-                selected={date.toDateString() === dateItem.toDateString()}
-                onSelect={() => setValue('date', dateItem)}
+                selected={
+                  new Date(gamedates).toDateString() === dateItem.toDateString()
+                }
+                onSelect={() => setValue('gamedates', dateItem)}
               />
             );
           })}
@@ -59,6 +63,8 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
             display="flex"
             alignItems="center"
             justifyContent="center"
+            position="relative"
+            zIndex={20010}
           >
             <IonDatetime
               onIonChange={handleDatetimeChange}
@@ -78,7 +84,8 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
             borderBottom="1px solid #7b96ff"
             py={1}
           >
-            {getDayFormat(date, EType.MONTH_AND_DAY)} | {time}
+            {getDayFormat(gamedates, EType.MONTH_AND_DAY)} | {timefrom} -{' '}
+            {timeto}
           </Typography>
 
           <Typography
@@ -109,6 +116,9 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
               color: '#fff',
               borderRadius: 20,
               py: 1,
+              '&:hover': {
+                backgroundColor: '#0d2433de',
+              },
             }}
             fullWidth
           >

@@ -4,9 +4,13 @@ import { Club, LocationLatAndLong, LocationsData } from './interface';
 import { GetAvailableMatchesAndClubsDTO } from '../matches/interface';
 
 export async function getClubs(data: GetAvailableMatchesAndClubsDTO) {
-  const { sport, gamedates, clubs, time } = data;
+  const { sport, gamedates, clubs, timefrom, timeto, lat, long } = data;
+
+  const clubsData = clubs ? `&clubs=${clubs}` : '';
+  const latAndLong = lat && long ? `&lat=${lat}&long=${long}` : '';
+
   const res = api.get<Club[]>(
-    `/clubs?sport=${sport}&gamedates=${gamedates}&clubs=${clubs}&time=${time}`,
+    `/clubs?sport=${sport}&gamedates=${gamedates}${clubsData}&timefrom=${timefrom}&timeto=${timeto}${latAndLong}`,
   );
   return res;
 }

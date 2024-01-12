@@ -1,33 +1,35 @@
-import { useEffect } from 'react';
-import { IonSpinner, isPlatform } from '@ionic/react';
-import {
-  Box,
-  Button,
-  IconButton,
-  // Input,
-  // InputAdornment,
-  Stack,
-} from '@mui/material';
+import { useState } from 'react';
+import { isPlatform } from '@ionic/react';
+import { Box, Button, IconButton, Typography } from '@mui/material';
 import { AdvancedFilterClubsModal } from '../../components/modals/AdvancedFilterClubsModal';
-// import SportsTennisOutlinedIcon from '@mui/icons-material/SportsTennisOutlined';
+import SportsTennisOutlinedIcon from '@mui/icons-material/SportsTennisOutlined';
 import { FilterClubsModal } from '../../components/modals/FilterClubsModal';
-// import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
+import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import { EType, getDayFormat } from '../../helpers/getTimeDateString';
-// import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import { ClubCard } from '../../components/molecules/ClubCard';
-// import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
-// import NearMeSharpIcon from '@mui/icons-material/NearMeSharp';
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import NearMeSharpIcon from '@mui/icons-material/NearMeSharp';
 import { FormProvider, useForm } from 'react-hook-form';
 import { getClubs } from '../../services/club/service';
 import noResults from '../../images/no-results.svg';
 import { useQuery } from '@tanstack/react-query';
 import useToggle from '../../hooks/useToggle';
-import { MatchTimeRange } from '../../services/club/interface';
+import { SelectSportModal } from '../../components/modals/SelectSportModal';
+import { getSportName } from '../../helpers/getSportName';
+import { Sport } from '../../types';
+import { LoadingCircle } from '../../components/atoms/LoadingCircle';
+import { SelectClubLocationModal } from '../../components/modals/SelectClubLocationModal';
 
-interface FiltersFormData {
-  date: Date;
-  time: string;
+export interface FilterFormDate {
+  sport: Sport;
+  gamedates: Date;
+  lat: number;
+  long: number;
+  timefrom: string;
+  timeto: string;
+  selectedLocation: string;
 }
 
 const now = new Date();
@@ -49,48 +51,55 @@ const countDefaultTime = () => {
 export function BookCourt() {
   const isMobile = isPlatform('mobile');
 
-  const filterParams = useForm<FiltersFormData>({
+  const filtersFromLocalStorage = localStorage.getItem('clubsFilters');
+  const [localFilters] = useState(
+    filtersFromLocalStorage ? JSON.parse(filtersFromLocalStorage) : null,
+  );
+
+  const filterParams = useForm<FilterFormDate>({
     defaultValues: {
-      date: now,
-      time: countDefaultTime(),
+      sport: localFilters?.sport || '',
+      gamedates: localFilters?.gamedates || now,
+      lat: localFilters?.lat || 0,
+      long: localFilters?.long || 0,
+      timefrom: localFilters?.timefrom || countDefaultTime(),
+      timeto: localFilters?.timeto || '',
+      selectedLocation: localFilters?.selectedLocation || 'Рядом со мной',
     },
   });
 
-  const { getValues } = filterParams;
-  const { date, time } = getValues();
+  const { watch, getValues } = filterParams;
+  const { sport, gamedates, lat, long, timefrom, timeto, selectedLocation } =
+    watch();
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['clubs', date.toLocaleDateString('en-ca')],
+    queryKey: ['clubs', gamedates, sport, lat, long],
     queryFn: () =>
       getClubs({
-        sport: 'TENNIS',
-        gamedates: date.toLocaleDateString('en-ca'),
-        clubs: '1,2,3',
-        time: MatchTimeRange.ALL,
+        sport,
+        gamedates: new Date(gamedates).toLocaleDateString('en-ca'),
+        lat,
+        long,
+        timefrom: timefrom,
+        timeto: timeto,
       }),
-    enabled: false,
   });
+
   const clubs = data?.data;
 
-  useEffect(() => {
-    refetch();
-  }, []);
-
+  const [openSelectSport, setOpenSelectSport] = useToggle();
+  const [openClubLocation, setOpenClubLocation] = useToggle();
   const [openFilterModal, setOpenFilterModal] = useToggle();
   const [openAdvancedFilterModal, setOpenAdvancedFilterModal] = useToggle();
 
   const onFilterApply = () => {
     refetch();
-    if (openFilterModal) setOpenFilterModal();
-    if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
-  };
 
-  if (isLoading)
-    return (
-      <Stack alignItems="center" mt={5}>
-        <IonSpinner />
-      </Stack>
-    );
+    localStorage.setItem('clubsFilters', JSON.stringify(getValues()));
+
+    if (openFilterModal) setOpenFilterModal();
+    // if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
+  };
 
   return (
     <>
@@ -99,61 +108,81 @@ export function BookCourt() {
         zIndex={2}
         bgcolor="#fff"
         width="100%"
+        maxWidth={1240}
+        mx="auto"
         px={2}
         pb={2}
         boxShadow="0 7px 8px -2px #0000000f"
       >
-        {/* <Box display="flex" gap={1} mb={1}>
-          <Input
-            id="sport"
-            placeholder="Sport"
-            startAdornment={
-              <InputAdornment position="start">
-                <SportsTennisOutlinedIcon fontSize="small" />
-              </InputAdornment>
-            }
-            fullWidth
-            disableUnderline
-            sx={{ bgcolor: '#f5f6f8', padding: 1, borderRadius: 1.5 }}
-          />
+        <Box display="flex" gap={1} mb={1}>
+          <Button
+            onClick={() => setOpenSelectSport()}
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              gap: 2,
+              justifyContent: 'start',
+              backgroundColor: '#f5f6f8',
+              color: '#676767',
+            }}
+          >
+            <SportsTennisOutlinedIcon
+              fontSize="small"
+              sx={{ justifySelf: 'end' }}
+            />
+            <Typography>{getSportName(sport) || 'Вид спорта'}</Typography>
+          </Button>
+
           <IconButton
+            disabled
             sx={{
               backgroundColor: '#f5f6f8',
               borderRadius: 1.5,
               minWidth: '45px',
+              '&:disabled': {
+                backgroundColor: '#f5f6f8',
+              },
             }}
           >
             <FavoriteBorderIcon fontSize="small" />
           </IconButton>
         </Box>
+
         <Box display="flex" gap={1}>
-          <Input
-            id="location"
-            placeholder="Location"
-            startAdornment={
-              <InputAdornment position="start">
-                <FmdGoodOutlinedIcon fontSize="small" />
-              </InputAdornment>
-            }
-            endAdornment={
-              <InputAdornment position="end">
-                <NearMeSharpIcon fontSize="small" />
-              </InputAdornment>
-            }
-            fullWidth
-            disableUnderline
-            sx={{ bgcolor: '#f5f6f8', padding: 1, borderRadius: 1.5 }}
-          />
+          <Button
+            onClick={() => setOpenClubLocation()}
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              backgroundColor: '#f5f6f8',
+              color: '#676767',
+            }}
+          >
+            <Box display="flex" gap={2}>
+              <FmdGoodOutlinedIcon
+                fontSize="small"
+                sx={{ justifySelf: 'end' }}
+              />
+              <Typography>{selectedLocation}</Typography>
+            </Box>
+            <NearMeSharpIcon fontSize="small" sx={{ justifySelf: 'end' }} />
+          </Button>
+
           <IconButton
+            disabled
             sx={{
               backgroundColor: '#f5f6f8',
               borderRadius: 1.5,
               minWidth: '45px',
+              '&:disabled': {
+                backgroundColor: '#f5f6f8',
+              },
             }}
           >
-            <MapOutlinedIcon fontSize="small" sx={{ color: '#000' }} />
+            <MapOutlinedIcon fontSize="small" />
           </IconButton>
-        </Box> */}
+        </Box>
 
         <Box mt={2} display="flex" gap={1.5} alignItems="center">
           <IconButton
@@ -172,45 +201,57 @@ export function BookCourt() {
               paddingX: 1.5,
               borderRadius: 5,
               fontSize: 13,
+              '&:hover': {
+                backgroundColor: '#0d2433de',
+              },
             }}
           >
-            {getDayFormat(date, EType.MONTH_AND_DAY)} | {time}
+            {getDayFormat(gamedates, EType.MONTH_AND_DAY)} | {timefrom}
+            {timeto ? ` - ${timeto}` : ''}
           </Button>
         </Box>
       </Box>
 
-      <Box
-        // pt={20}
-        pt={8}
-        pb={5}
-        sx={{
-          paddingInline: isMobile ? '0' : '10px',
-          display: 'grid',
-          justifyContent: 'center',
-          gridTemplateColumns: 'repeat(auto-fit,minmax(260px,500px))',
-          marginTop: '.5rem',
-          gap: '1rem',
-          maxWidth: 1240,
-          mx: 'auto',
-        }}
-      >
-        {!clubs || clubs.length === 0 ? (
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <Box
-              component="img"
-              src={noResults}
-              width="100%"
-              maxWidth={isMobile ? 250 : 500}
-            />
-            <Button onClick={() => setOpenFilterModal()} sx={{ fontSize: 14 }}>
-              Свободных клубов не найдено. Настройте фильтры, что бы увидеть
-              доступные клубы
-            </Button>
-          </Box>
-        ) : (
-          clubs?.map((club) => <ClubCard key={club.id} {...club} />)
-        )}
-      </Box>
+      {isLoading ? (
+        <Box marginTop={30}>
+          <LoadingCircle />
+        </Box>
+      ) : (
+        <Box
+          pt={18}
+          pb={5}
+          sx={{
+            paddingInline: isMobile ? '0' : '10px',
+            display: 'grid',
+            justifyContent: 'center',
+            gridTemplateColumns: 'repeat(auto-fit,minmax(260px,500px))',
+            marginTop: '.5rem',
+            gap: '1rem',
+            maxWidth: 1240,
+            mx: 'auto',
+          }}
+        >
+          {!clubs || clubs.length === 0 ? (
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                component="img"
+                src={noResults}
+                width="100%"
+                maxWidth={isMobile ? 250 : 300}
+              />
+              <Button
+                onClick={() => setOpenFilterModal()}
+                sx={{ fontSize: 14 }}
+              >
+                Свободных клубов не найдено. Настройте фильтры, что бы увидеть
+                доступные клубы
+              </Button>
+            </Box>
+          ) : (
+            clubs?.map((club) => <ClubCard key={club.id} {...club} />)
+          )}
+        </Box>
+      )}
 
       <FormProvider {...filterParams}>
         <FilterClubsModal
@@ -222,6 +263,14 @@ export function BookCourt() {
           openState={openAdvancedFilterModal}
           handleModal={setOpenAdvancedFilterModal}
           onApply={onFilterApply}
+        />
+        <SelectSportModal
+          openState={openSelectSport}
+          handleModal={setOpenSelectSport}
+        />
+        <SelectClubLocationModal
+          openState={openClubLocation}
+          handleModal={setOpenClubLocation}
         />
       </FormProvider>
     </>

@@ -87,6 +87,10 @@ export interface RemovePlayerFromMatch {
 export interface GetAvailableMatchesAndClubsDTO {
   sport: string;
   gamedates: string;
-  time: MatchTimeRange;
-  clubs: string;
+  time?: MatchTimeRange | string;
+  timefrom?: string;
+  timeto?: string;
+  clubs?: string;
+  lat?: number;
+  long?: number;
 }

@@ -26,7 +26,8 @@ import { debounce } from 'lodash-es';
 import { SelectClubBlock } from '../molecules/SelectClubBlock';
 import { LoadingCircle } from '../atoms/LoadingCircle';
 import { FilterFormDate } from '../../pages/matches/tabs/AvailableMatchesTab';
-
+import { transliterate } from 'transliteration';
+import { MatchTimeRange } from '../../services/club/interface';
 // const times = [
 //   '6:00',
 //   '7:00',
@@ -57,7 +58,7 @@ interface IFilterAvailableMatchesModalProps {
 
 export const FilterAvailableMatchesModal: React.FC<
   IFilterAvailableMatchesModalProps
-> = ({ openState, handleModal, onApply, localFilters }) => {
+> = ({ openState, handleModal, onApply }) => {
   const dates = getDatesList(14);
 
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -108,8 +109,17 @@ export const FilterAvailableMatchesModal: React.FC<
     enabled: searchTerm !== '',
   });
 
+  const locationOptions = data
+    ? data
+        .sort((a, b) => a.properties.name.localeCompare(b.properties.name))
+        .map((b) => ({
+          title: `${b.properties.name} (${b.properties.country})`,
+          coordinates: b.geometry.coordinates,
+        }))
+    : [];
+
   const delayedQuery = useCallback(
-    debounce((query) => setSearchTerm(query), 300),
+    debounce((query) => setSearchTerm(transliterate(query)), 300),
     [],
   );
 
@@ -172,28 +182,27 @@ export const FilterAvailableMatchesModal: React.FC<
               <Box>
                 <ModalContentContainer title="Где будете играть?">
                   <Autocomplete
-                    options={data || []}
-                    getOptionLabel={(option) =>
-                      `${option.properties.name} (${option.properties.country})`
+                    options={locationOptions}
+                    isOptionEqualToValue={(option, value) =>
+                      option.title === value.title
                     }
+                    getOptionLabel={(option) => option.title}
                     renderOption={(props, option) => {
                       return (
-                        <Typography {...props} key={option.properties.osm_id}>
-                          {`${option.properties.name} (${option.properties.country})`}
+                        <Typography {...props} key={props.id}>
+                          {option.title}
                         </Typography>
                       );
                     }}
                     onChange={(_, value) => {
                       if (value) {
                         resetField('clubsId');
-                        const [long, lat] = value.geometry.coordinates;
+
+                        const [long, lat] = value.coordinates;
                         setValue('long', long);
                         setValue('lat', lat);
 
-                        setValue(
-                          'selectedLocation',
-                          `${value.properties.name} (${value.properties.country})`,
-                        );
+                        // setValue('selectedLocation', value.title);
                       }
                     }}
                     renderInput={(params) => (
@@ -230,6 +239,72 @@ export const FilterAvailableMatchesModal: React.FC<
                       />
                     )}
                   />
+
+                  {/* <Box position="relative">
+                    <TextField
+                      value={currentSearchTerm}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // to escape delay on typing
+                        setCurrentSearchTerm(value);
+                        delayedQuery(value);
+                      }}
+                      autoFocus
+                      autoComplete="off"
+                      label="Выбор локации"
+                      fullWidth
+                      InputProps={{
+                        endAdornment: (
+                          <>
+                            <InputAdornment position="end">
+                              {isLoading ? (
+                                <CircularProgress color="inherit" size={20} />
+                              ) : <NearMeSharpIcon/>}
+                            </InputAdornment>
+                          </>
+                        ),
+                        sx: { paddingInline: 2 },
+                      }}
+                      sx={{ marginBottom: 2 }}
+                    />
+                    <List
+                      sx={{
+                        position: 'absolute',
+                        zIndex: 1,
+                        width: '100%',
+                        maxHeight: 500,
+                        overflow: 'auto',
+                        bgcolor: '#fff',
+                        border: '1px solid #eee',
+                        borderRadius: 2,
+                      }}
+                    >
+                      {locationOptions.map((location) => {
+                        return (
+                          <>
+                            <ListItem disablePadding>
+                              <ListItemButton
+                                onClick={() => {
+                                  const [long, lat] = location.coordinates;
+                                  setValue('long', long);
+                                  setValue('lat', lat);
+
+                                  setValue('selectedLocation', location.title);
+                                }}
+                                sx={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                }}
+                              >
+                                <ListItemText primary={location.title} />
+                              </ListItemButton>
+                            </ListItem>
+                            <Divider />
+                          </>
+                        );
+                      })}
+                    </List>
+                  </Box> */}
 
                   <Box
                     display="flex"
@@ -353,26 +428,26 @@ export const FilterAvailableMatchesModal: React.FC<
                   <Controller
                     name="time"
                     control={control}
-                    defaultValue="ALL"
+                    defaultValue={MatchTimeRange.ALL}
                     render={({ field }) => (
                       <RadioGroup {...field} sx={{ gap: 1 }}>
                         <RadioLabel
-                          value="ALL"
+                          value={MatchTimeRange.ALL}
                           labelType={ERadioLabelType.TITLE_ONLY}
                           title="Любое время"
                         />
                         <RadioLabel
-                          value="MORNING"
+                          value={MatchTimeRange.MORNING}
                           labelType={ERadioLabelType.TITLE_ONLY}
                           title="Утро (6:00 - 12:00)"
                         />
                         <RadioLabel
-                          value="AFTERNOON"
+                          value={MatchTimeRange.AFTERNOON}
                           labelType={ERadioLabelType.TITLE_ONLY}
                           title="День (12:00 - 18:00)"
                         />
                         <RadioLabel
-                          value="EVENING"
+                          value={MatchTimeRange.EVENING}
                           labelType={ERadioLabelType.TITLE_ONLY}
                           title="Вечер (18:00 - 00:00)"
                         />
