@@ -100,7 +100,7 @@ export default function ActivitiesTab() {
           </Typography>
           <Button
             variant="contained"
-            onClick={() => history.push('/question-form')}
+            onClick={() => history.push(`/question-form?sport=${sport}`)}
             sx={{ borderRadius: 10 }}
           >
             Начать тестирование

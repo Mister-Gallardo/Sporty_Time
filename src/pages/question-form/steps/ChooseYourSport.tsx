@@ -15,6 +15,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { useMutation } from '@tanstack/react-query';
 import { editUserProfile } from '../../../services/user/service';
 import { useIonToast } from '@ionic/react';
+import useSearchParams from '../../../hooks/useSearchParams';
 
 interface ChooseYourSportProps {
   firstName: string;
@@ -26,8 +27,12 @@ export function ChooseYourSport({
   firstName,
 }: ChooseYourSportProps) {
   const history = useHistory();
+  const [getParam, setParam] = useSearchParams();
 
-  const [selectedSport, setSelectedSport] = useState<Sport>(Sport.PADEL);
+  const searchSport = getParam('sport');
+  const [selectedSport, setSelectedSport] = useState<Sport | string>(
+    searchSport ? searchSport : Sport.PADEL,
+  );
 
   const [player, query] = usePlayerProfile();
   const currentSportRate = player ? getSportRating(player, selectedSport) : '';
@@ -120,21 +125,30 @@ export function ChooseYourSport({
             icon={<SportsBaseballOutlined />}
             level={player?.ratingPadel}
             isActive={selectedSport === Sport.PADEL}
-            onClick={() => setSelectedSport(Sport.PADEL)}
+            onClick={() => {
+              setParam('sport', Sport.PADEL);
+              setSelectedSport(Sport.PADEL);
+            }}
           />
           <SportTypeRow
             type={Sport.TENNIS}
             icon={<SportsBasketballOutlined />}
             level={player?.ratingTennis}
             isActive={selectedSport === Sport.TENNIS}
-            onClick={() => setSelectedSport(Sport.TENNIS)}
+            onClick={() => {
+              setParam('sport', Sport.TENNIS);
+              setSelectedSport(Sport.TENNIS);
+            }}
           />
           <SportTypeRow
             type={Sport.PICKLEBALL}
             icon={<SportsTennisOutlined />}
             level={player?.ratingPickleball}
             isActive={selectedSport === Sport.PICKLEBALL}
-            onClick={() => setSelectedSport(Sport.PICKLEBALL)}
+            onClick={() => {
+              setParam('sport', Sport.PICKLEBALL);
+              setSelectedSport(Sport.PICKLEBALL);
+            }}
           />
         </Box>
       </Box>
