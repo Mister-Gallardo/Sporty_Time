@@ -53,7 +53,7 @@ export function BookCourt() {
   const isMobile = isPlatform('mobile');
 
   useEffect(() => {
-    Geolocation.getCurrentPosition().then(console.log);
+    Geolocation.getCurrentPosition().then(console.log).catch(console.error);
   }, []);
 
   const filtersFromLocalStorage = localStorage.getItem('clubsFilters');

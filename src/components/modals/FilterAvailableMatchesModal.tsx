@@ -28,6 +28,9 @@ import { LoadingCircle } from '../atoms/LoadingCircle';
 import { FilterFormDate } from '../../pages/matches/tabs/AvailableMatchesTab';
 import { transliterate } from 'transliteration';
 import { MatchTimeRange } from '../../services/club/interface';
+import useToggle from '../../hooks/useToggle';
+import { Geolocation } from '@capacitor/geolocation';
+
 // const times = [
 //   '6:00',
 //   '7:00',
@@ -135,6 +138,26 @@ export const FilterAvailableMatchesModal: React.FC<
     setValue('clubsId', correspondingClubsId);
   }, [range]);
 
+  const [isUserLocationLoading, setIsUserLocationLoading] = useToggle();
+
+  const setUserLocation = async () => {
+    setIsUserLocationLoading(true);
+    try {
+      const { coords } = await Geolocation.getCurrentPosition();
+      const { latitude, longitude } = coords;
+      setIsUserLocationLoading(false);
+
+      setValue('long', longitude);
+      setValue('lat', latitude);
+
+      setValue('selectedLocation', 'Рядом со мной');
+    } catch (error: any) {
+      setIsUserLocationLoading(false);
+      if (error.message === 'User denied Geolocation')
+        console.log('Allow location first');
+    }
+  };
+
   return (
     <ModalContainer
       openState={openState}
@@ -181,6 +204,26 @@ export const FilterAvailableMatchesModal: React.FC<
             <Fade in>
               <Box>
                 <ModalContentContainer title="Где будете играть?">
+                  <Button
+                    disabled={isUserLocationLoading}
+                    onClick={setUserLocation}
+                    variant="contained"
+                    sx={{
+                      borderRadius: 5,
+                      fontSize: 14,
+                      fontWeight: 600,
+                      mb: 2,
+                      py: 0.5,
+                    }}
+                    endIcon={
+                      isUserLocationLoading && (
+                        <CircularProgress size={15} sx={{ color: '#fff' }} />
+                      )
+                    }
+                  >
+                    Рядом со мной
+                  </Button>
+
                   <Autocomplete
                     filterOptions={(x) => x}
                     options={locationOptions}
