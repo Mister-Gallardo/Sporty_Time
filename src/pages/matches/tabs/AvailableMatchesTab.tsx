@@ -124,10 +124,7 @@ export function AvailableMatchesTab() {
     noRatingMatches.refetch();
     clubs.refetch();
 
-    localStorage.setItem(
-      'availableMatchesFilters',
-      JSON.stringify(getValues()),
-    );
+    localStorage.setItem('availableMatchesFilters', JSON.stringify(watch()));
     if (openFilterModal) setOpenFilterModal();
     // if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
   };
@@ -162,7 +159,6 @@ export function AvailableMatchesTab() {
             <TuneOutlinedIcon />
           </IconButton>
         )}
-
         {isMainFilters ? (
           <>
             <Box

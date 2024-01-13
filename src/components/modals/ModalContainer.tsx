@@ -24,7 +24,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
   openState,
   handleModal,
   headerTitle,
-  initialBreakpoint = 1,
+  // initialBreakpoint = 1,
 }) => {
   const isMobile = isPlatform('mobile');
 
@@ -34,8 +34,10 @@ export const ModalContainer: React.FC<IModalContainer> = ({
         <IonModal
           onDidDismiss={() => handleModal(false)}
           isOpen={openState}
-          initialBreakpoint={initialBreakpoint}
-          breakpoints={[0, 0.5, initialBreakpoint]}
+          // initialBreakpoint={initialBreakpoint}
+          // breakpoints={[0, 0.5, initialBreakpoint]}
+          initialBreakpoint={1}
+          breakpoints={[1]}
           handleBehavior="cycle"
         >
           <IonHeader>
