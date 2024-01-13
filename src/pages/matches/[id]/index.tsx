@@ -13,7 +13,7 @@ import {
 } from '@ionic/react';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
   cancelMatch,
@@ -75,6 +75,8 @@ export function SingleMatchPage() {
 
   const singleMatchData = data?.data;
 
+  const qc = useQueryClient();
+
   // Join Match / Book a Place Request
   const joinMatchMutation = useMutation({
     mutationFn: joinMatch,
@@ -84,10 +86,11 @@ export function SingleMatchPage() {
         header: 'Поздравляем!',
         message: 'Вы присоединились к матчу',
         duration: 2000,
-       position: 'bottom',
+        position: 'bottom',
         color: 'success',
       });
       refetchMatch();
+      qc.resetQueries({ queryKey: ['my-matches', false] });
     },
     onError() {
       setOpenCheckoutModal();
@@ -95,7 +98,7 @@ export function SingleMatchPage() {
         header: 'Ошибка!',
         message: 'Не удалось присоединиться к матчу',
         duration: 20000,
-       position: 'bottom',
+        position: 'bottom',
         color: 'danger',
       });
     },
@@ -107,6 +110,7 @@ export function SingleMatchPage() {
     onSuccess() {
       setOpenToast(true);
       refetchMatch();
+      qc.resetQueries({ queryKey: ['my-matches', false] });
     },
     onError(e: any) {
       setError(e.response.data.message);
@@ -123,17 +127,18 @@ export function SingleMatchPage() {
         color: 'success',
         message: `Ваше бронирование отменено`,
         mode: 'ios',
-       position: 'bottom',
+        position: 'bottom',
         duration: 2000,
       });
       refetchMatch();
+      qc.resetQueries({ queryKey: ['my-matches', false] });
     },
     onError() {
       showToast({
         color: 'danger',
         message: `Ошибка, попробуйте ещё раз`,
         mode: 'ios',
-       position: 'bottom',
+        position: 'bottom',
         duration: 2000,
       });
     },
@@ -148,10 +153,11 @@ export function SingleMatchPage() {
         color: 'success',
         message: `Игрок был удалён из матча`,
         mode: 'ios',
-       position: 'bottom',
+        position: 'bottom',
         duration: 2000,
       });
       refetchMatch();
+      qc.resetQueries({ queryKey: ['my-matches', false] });
     },
     onError() {
       setOpenCancelDialogModal();
@@ -159,7 +165,7 @@ export function SingleMatchPage() {
         color: 'danger',
         message: `Ошибка, попробуйте ещё раз`,
         mode: 'ios',
-       position: 'bottom',
+        position: 'bottom',
         duration: 2000,
       });
     },

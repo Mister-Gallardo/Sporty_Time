@@ -50,6 +50,13 @@ export function AuthPage() {
       setAuthState(LoginStates.REGISTER);
     },
     onError(e: any) {
+      if (e.response.data.message[0] === 'email must be an email') {
+        setErrorMessage(
+          'Неверный email! Проверьте наличие "@" и правильность написания домена электронного адреса.',
+        );
+        setIsOpenErrorToast(true);
+      }
+
       if (e.response.data.message === 'Internal server error') {
         setErrorMessage('Возникла ошибка входа в аккаунт!');
         setIsOpenErrorToast(true);
@@ -400,7 +407,7 @@ export function AuthPage() {
           </Button>
           {authState !== LoginStates.REGISTER && (
             <>
-              <Typography
+              {/* <Typography
                 textAlign="center"
                 color="GrayText"
                 fontSize={18}
@@ -417,7 +424,7 @@ export function AuthPage() {
                 fullWidth
               >
                 Войти через VKонтакте
-              </Button>
+              </Button> */}
               <Typography
                 sx={{
                   fontSize: '.75rem',

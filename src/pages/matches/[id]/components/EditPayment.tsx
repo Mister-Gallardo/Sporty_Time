@@ -3,7 +3,7 @@ import React from 'react';
 import { MatchData } from '../../../../services/matches/interface';
 import { getMatchStatus, parseDate } from '../../../../helpers/getMatchStatus';
 import { EType, getDayFormat } from '../../../../helpers/getTimeDateString';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { extraMatchPayment } from '../../../../services/matches/service';
 import { useParams } from 'react-router';
 import { useIonToast } from '@ionic/react';
@@ -43,11 +43,13 @@ export const EditPayment: React.FC<IEditPaymentProps> = ({
   );
 
   const [showToast] = useIonToast();
+  const qc = useQueryClient();
 
   const extraPaymentMutation = useMutation({
     mutationFn: extraMatchPayment,
     onSuccess() {
       refetchMatch();
+      qc.resetQueries({ queryKey: ['my-matches', false] });
       showToast({
         color: 'success',
         message: 'Матч подтверждён, благодарим за оплату!',
