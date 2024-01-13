@@ -83,6 +83,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: 'ALL',
       }),
+    enabled: false,
   });
   const availableArray = availableMatches.data?.data;
 
@@ -96,6 +97,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: 'ALL',
       }),
+    enabled: false,
   });
   const noRatingArray = noRatingMatches.data?.data;
 
@@ -113,6 +115,7 @@ export function AvailableMatchesTab() {
         timefrom,
         timeto,
       }),
+    enabled: false,
   });
   const clubsArray = clubs.data?.data;
 

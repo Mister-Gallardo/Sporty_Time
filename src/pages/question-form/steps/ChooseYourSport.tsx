@@ -46,7 +46,7 @@ export function ChooseYourSport({
         color: 'success',
         message: 'Новое фото профиля добавлено!',
         mode: 'ios',
-        position: 'bottom',
+       position: 'bottom',
         duration: 2000,
       });
       query.refetch();
@@ -56,7 +56,7 @@ export function ChooseYourSport({
         color: 'danger',
         message: 'Произошла ошибка! Попробуйте ещё раз.',
         mode: 'ios',
-        position: 'bottom',
+       position: 'bottom',
         duration: 2000,
       });
     },

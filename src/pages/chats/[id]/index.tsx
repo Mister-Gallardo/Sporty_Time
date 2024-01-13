@@ -96,6 +96,7 @@ export function SingleChatPage() {
       <Box
         position="fixed"
         zIndex={2}
+        top={isMobile ? 'unset' : 90}
         right={0}
         left={0}
         maxWidth="md"
@@ -133,11 +134,10 @@ export function SingleChatPage() {
         alignSelf="end"
         display="flex"
         flexDirection="column"
-        p={isMobile ? '4rem 0.5rem 4rem 0' : '4rem 0.5rem 0'}
+        p={isMobile ? '4rem 0.5rem 4rem 0' : '3rem 0.5rem 0'}
         height="100%"
-        maxHeight={isMobile ? 'unset' : '80vh'}
-        overflow={isMobile ? 'unset' : 'hidden'}
-        sx={{ overflowY: isMobile ? 'unset' : 'scroll' }}
+        maxHeight={isMobile ? 'unset' : 600}
+        overflow={isMobile ? 'unset' : 'auto'}
         // ref={chatRef}
       >
         {isLoading ? (

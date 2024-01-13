@@ -1,6 +1,9 @@
 import { Box } from '@mui/material';
-import DesktopHeader from './DesktopHeader';
 import '../desktop.css';
+import DesktopHeader from './DesktopHeader';
+
+// /* Core CSS required for Ionic components to work properly */
+import '@ionic/react/css/core.css';
 
 export interface IDesktopLayoutProps {
   children: React.ReactNode;
