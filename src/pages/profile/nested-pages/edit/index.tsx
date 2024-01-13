@@ -24,10 +24,12 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { isPlatform, useIonToast } from '@ionic/react';
 import { NotFoundPage } from '../../../../components/NotFoundPage';
+import { useHistory } from 'react-router';
 
 const isMobile = isPlatform('mobile');
 
 export const EditProfilePage = () => {
+  const history = useHistory();
   const [showPassword, setShowPassword] = useToggle();
 
   const [user, query] = useUserInfo();
@@ -42,7 +44,7 @@ export const EditProfilePage = () => {
         color: 'success',
         message: 'Изменения сохранены!',
         mode: 'ios',
-       position: 'bottom',
+        position: 'bottom',
         duration: 2000,
       });
       query.refetch();
@@ -53,7 +55,7 @@ export const EditProfilePage = () => {
         color: 'danger',
         message: 'Произошла ошибка! Попробуйте ещё раз.',
         mode: 'ios',
-       position: 'bottom',
+        position: 'bottom',
         duration: 2000,
       });
     },
@@ -113,6 +115,9 @@ export const EditProfilePage = () => {
           Сохранить
         </Button>
       </Fade>
+
+      {!isMobile && <Button onClick={() => history.goBack()}>Назад</Button>}
+
       <Box display="flex" flexDirection="column" alignItems="center">
         <Avatar
           src={

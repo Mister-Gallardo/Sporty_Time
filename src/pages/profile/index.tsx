@@ -112,6 +112,7 @@ export function ProfilePage() {
             onClick={() => history.push('/profile/edit')}
             variant="contained"
             sx={{
+              minWidth: isMobile ? 'unset' : 170,
               border: '1px solid #333',
               backgroundColor: '#fff',
               color: '#333',
