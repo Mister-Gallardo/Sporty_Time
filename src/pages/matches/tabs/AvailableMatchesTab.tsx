@@ -31,6 +31,7 @@ export interface FilterFormDate {
   selectedLocation: string;
   time: MatchTimeRange;
   times: { value: string }[];
+  range: number;
 }
 
 const isMobile = isPlatform('mobile');
@@ -60,9 +61,10 @@ export function AvailableMatchesTab() {
       long: localFilters?.long || 0,
       selectedLocation: localFilters?.selectedLocation || 'Выбрать локацию',
       time: localFilters?.time || MatchTimeRange.ALL,
+      range: localFilters?.range || 1,
     },
   });
-  const { watch, getValues, reset } = filterParams;
+  const { watch, getValues } = filterParams;
 
   const { sport, gamedates, clubsId, time } = watch();
 
@@ -132,11 +134,7 @@ export function AvailableMatchesTab() {
 
   const onClearFilters = () => {
     localStorage.removeItem('availableMatchesFilters');
-    reset();
-    availableMatches.refetch();
-    noRatingMatches.refetch();
-    clubs.refetch();
-    setOpenFilterModal();
+    window.location.reload();
   };
 
   const isMainFilters = !!sport && gamedates.length > 0;

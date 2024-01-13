@@ -77,7 +77,7 @@ export const ClubCard: React.FC<IClubCard> = ({
 
       <Box py={1.5} pl={1.5}>
         <Typography mb={1} color="gray">
-          6km - L'Hospitalet de Llobregat (Barcelona)
+          6km - L'Hospitalet de Llobregat
         </Typography>
         <Box display="flex" gap={1} pb={2} sx={{ overflowX: 'auto' }}>
           {timeArray[0]?.map((elem: IAvailableTime, i: number) => (
