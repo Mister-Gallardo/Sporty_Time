@@ -59,7 +59,7 @@ export function SingleChatPage() {
         color: 'danger',
         message: 'Ошибка! Сообщение не отправлено, попробуйте ещё раз',
         mode: 'ios',
-        position: 'top',
+       position: 'bottom',
         duration: 2000,
       });
     },

@@ -27,7 +27,7 @@ export const RestorePasswordModal: React.FC<IRestorePasswordModal> = ({
         color: 'success',
         message: `Ссылка отправлена на почту ${email}`,
         mode: 'ios',
-        position: 'top',
+        position: 'bottom',
         duration: 2000,
       });
     },

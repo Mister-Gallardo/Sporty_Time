@@ -3,8 +3,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Box, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { Status } from '../../../types';
+import { useHistory } from 'react-router';
 
 interface IWithoutResults {
+  matchId: number;
   date: string;
   clubName?: string;
   courtName: string;
@@ -13,12 +15,15 @@ interface IWithoutResults {
 }
 
 export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
+  matchId,
   date,
   clubName,
   courtName,
   status,
   uploadResults,
 }) => {
+  const history = useHistory();
+
   const withStatus =
     status === Status.CANCELED ||
     status === Status.WAITING_FOR_RESULTS ||
@@ -128,6 +133,10 @@ export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
           <Add sx={{ color: '#fff' }} />
         ) : (
           <ChatBubbleOutlineOutlinedIcon
+            onClick={(e) => {
+              e.stopPropagation();
+              history.push(`/chats/${matchId}`);
+            }}
             fontSize="small"
             sx={{ color: '#fff' }}
           />

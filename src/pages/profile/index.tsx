@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { TabContext, TabPanel } from '@mui/lab';
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Skeleton,
+  Typography,
+} from '@mui/material';
 import { useFullUserData } from '../../services/api/hooks';
 import ActivitiesTab from './tabs/ActivitiesTab';
 import { isPlatform } from '@ionic/react';
 import PostsTab from './tabs/PostsTab';
 import { useHistory } from 'react-router';
+import { NotFoundPage } from '../../components/NotFoundPage';
 
 export function ProfilePage() {
   const isMobile = isPlatform('mobile');
@@ -13,11 +21,13 @@ export function ProfilePage() {
 
   const [tabIndex, setTabIndex] = useState<string>('1');
 
-  const [profile] = useFullUserData();
+  const [profile, rest] = useFullUserData();
 
   const fullname = profile
     ? profile.user.firstname + ' ' + profile.user.lastname
     : '';
+
+  if (!profile && !rest.isLoading) return <NotFoundPage />;
 
   return (
     <>
@@ -29,9 +39,13 @@ export function ProfilePage() {
             sx={{ width: 60, height: 60 }}
           />
           <Box marginLeft={2}>
-            <Typography fontSize="medium" fontWeight={700}>
-              {fullname}
-            </Typography>
+            {rest.isLoading ? (
+              <Skeleton animation="wave" height={40} />
+            ) : (
+              <Typography fontSize="medium" fontWeight={700}>
+                {fullname}
+              </Typography>
+            )}
             <Button
               disabled
               variant="text"
@@ -63,9 +77,14 @@ export function ProfilePage() {
                   maxWidth={isMobile ? '100%' : '150px'}
                   color="#333"
                 >
-                  <Typography fontSize={23}>
-                    {item === 'Matches' ? profile?.countMatches : 0}
-                  </Typography>
+                  {rest.isLoading ? (
+                    <CircularProgress size={20} />
+                  ) : (
+                    <Typography fontSize={23}>
+                      {item === 'Matches' ? profile?.countMatches : 0}
+                    </Typography>
+                  )}
+
                   <Typography>{item}</Typography>
                 </Box>
 

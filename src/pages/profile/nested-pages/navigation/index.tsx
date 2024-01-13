@@ -11,12 +11,15 @@ import { NavButton } from '../../components/NavButton';
 import { useHistory } from 'react-router';
 import { useUserInfo } from '../../../../services/api/hooks';
 import { isPlatform } from '@ionic/react';
+import { NotFoundPage } from '../../../../components/NotFoundPage';
 
 const isMobile = isPlatform('mobile');
 
 export const ProfileNavPage = () => {
   const history = useHistory();
-  const [user] = useUserInfo();
+  const [user, query] = useUserInfo();
+
+  if (!user && !query.isLoading) return <NotFoundPage />;
 
   return (
     <Box

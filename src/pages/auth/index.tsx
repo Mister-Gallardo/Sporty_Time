@@ -50,6 +50,10 @@ export function AuthPage() {
       setAuthState(LoginStates.REGISTER);
     },
     onError(e: any) {
+      if (e.response.data.message === 'Internal server error') {
+        setErrorMessage('Возникла ошибка входа в аккаунт!');
+        setIsOpenErrorToast(true);
+      }
       if (!e.response?.data?.message) return;
       if (e.response?.data?.message === 'Email already taken') {
         setAuthState(LoginStates.LOGIN);
@@ -388,8 +392,8 @@ export function AuthPage() {
           >
             {registerRequestMutation.isPending ||
             registerUserMutation.isPending ||
-            loginUserMutation.isPending ? (
-              <CircularProgress size={25} />
+            !loginUserMutation.isPending ? (
+              <CircularProgress size={25} sx={{ color: '#fff' }} />
             ) : (
               buttonText
             )}

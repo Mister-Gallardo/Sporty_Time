@@ -58,11 +58,11 @@ export function AvailableMatchesTab() {
       gamedates: localFilters?.gamedates || [],
       lat: localFilters?.lat || 0,
       long: localFilters?.long || 0,
-      selectedLocation: localFilters?.selectedLocation || '',
+      selectedLocation: localFilters?.selectedLocation || 'Выбрать локацию',
       time: localFilters?.time || MatchTimeRange.ALL,
     },
   });
-  const { watch, getValues } = filterParams;
+  const { watch, getValues, reset } = filterParams;
 
   const { sport, gamedates, clubsId, time } = watch();
 
@@ -130,6 +130,15 @@ export function AvailableMatchesTab() {
     // if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
   };
 
+  const onClearFilters = () => {
+    localStorage.removeItem('availableMatchesFilters');
+    reset();
+    availableMatches.refetch();
+    noRatingMatches.refetch();
+    clubs.refetch();
+    setOpenFilterModal();
+  };
+
   const isMainFilters = !!sport && gamedates.length > 0;
 
   return (
@@ -157,48 +166,62 @@ export function AvailableMatchesTab() {
         )}
 
         {isMainFilters ? (
-          <Box
-            display="flex"
-            overflow="auto"
-            gap={1}
-            onClick={() => setOpenFilterModal()}
-            sx={{
-              cursor: 'pointer',
-              '&::-webkit-scrollbar': {
-                display: 'none',
-              },
-              msOverflowStyle: 'none',
-            }}
-          >
-            <Typography
-              px={2}
-              py={0.5}
-              bgcolor="#0D2433"
-              color="#fff"
-              borderRadius={5}
-              fontSize={13}
-              lineHeight={1.2}
-              whiteSpace="nowrap"
+          <>
+            <Box
+              display="flex"
+              overflow="auto"
+              gap={1}
+              onClick={() => setOpenFilterModal()}
+              sx={{
+                cursor: 'pointer',
+                '&::-webkit-scrollbar': {
+                  display: 'none',
+                },
+                msOverflowStyle: 'none',
+              }}
             >
-              {getSportName(sport as Sport)}
-            </Typography>
-            <Typography
-              px={2}
-              py={0.5}
-              bgcolor="#0D2433"
-              color="#fff"
-              borderRadius={5}
-              fontSize={13}
-              lineHeight={1.2}
-              whiteSpace="nowrap"
-              maxWidth={210}
-              noWrap
+              <Typography
+                px={2}
+                py={0.5}
+                bgcolor="#0D2433"
+                color="#fff"
+                borderRadius={5}
+                fontSize={13}
+                lineHeight={1.2}
+                whiteSpace="nowrap"
+              >
+                {getSportName(sport as Sport)}
+              </Typography>
+              <Typography
+                px={2}
+                py={0.5}
+                bgcolor="#0D2433"
+                color="#fff"
+                borderRadius={5}
+                fontSize={13}
+                lineHeight={1.2}
+                whiteSpace="nowrap"
+                maxWidth={210}
+                noWrap
+              >
+                {gamedates
+                  .map((date) => getDayFormat(date.value, EType.MONTH_AND_DAY))
+                  .join(' | ')}
+              </Typography>
+            </Box>
+            <Button
+              onClick={onClearFilters}
+              variant="outlined"
+              sx={{
+                fontSize: 13,
+                borderRadius: 5,
+                py: 0,
+                whiteSpace: 'nowrap',
+              }}
             >
-              {gamedates
-                .map((date) => getDayFormat(date.value, EType.MONTH_AND_DAY))
-                .join(' | ')}
-            </Typography>
-          </Box>
+              Сбросить все
+            </Button>
+          </>
         ) : (
           <Button
             onClick={() => setOpenFilterModal()}
@@ -216,7 +239,7 @@ export function AvailableMatchesTab() {
         )}
       </Box>
       <Box
-        maxWidth={isMobile ? 'unset' : 1000}
+        maxWidth={isMobile ? 'unset' : 1240}
         mb={isMobile ? '2.5rem' : 'unset'}
         px={isMobile ? '10px' : '2rem'}
         pt={6}

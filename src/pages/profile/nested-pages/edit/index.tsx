@@ -23,6 +23,7 @@ import { useUserInfo } from '../../../../services/api/hooks';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { isPlatform, useIonToast } from '@ionic/react';
+import { NotFoundPage } from '../../../../components/NotFoundPage';
 
 const isMobile = isPlatform('mobile');
 
@@ -41,7 +42,7 @@ export const EditProfilePage = () => {
         color: 'success',
         message: 'Изменения сохранены!',
         mode: 'ios',
-        position: 'top',
+       position: 'bottom',
         duration: 2000,
       });
       query.refetch();
@@ -52,7 +53,7 @@ export const EditProfilePage = () => {
         color: 'danger',
         message: 'Произошла ошибка! Попробуйте ещё раз.',
         mode: 'ios',
-        position: 'top',
+       position: 'bottom',
         duration: 2000,
       });
     },
@@ -92,6 +93,8 @@ export const EditProfilePage = () => {
   };
 
   const isSmthChanged = Object.keys(watch()).length > 0;
+
+  if (!user && !query.isLoading) return <NotFoundPage />;
 
   return (
     <Box

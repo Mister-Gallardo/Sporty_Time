@@ -7,6 +7,7 @@ import { getMyMatches } from '../../../services/matches/service';
 import { Box, Switch, Typography } from '@mui/material';
 import useToggle from '../../../hooks/useToggle';
 import { isPlatform } from '@ionic/react';
+import { NotFoundPage } from '../../../components/NotFoundPage';
 
 export function MyMatchesTab() {
   const isMobile = isPlatform('mobile');
@@ -28,6 +29,8 @@ export function MyMatchesTab() {
     setOpenUploadResultModal();
   };
 
+  if (!myMatchesData && !isLoading) return <NotFoundPage />;
+
   return (
     <Box position="relative">
       <Box
@@ -40,7 +43,7 @@ export function MyMatchesTab() {
         py={0.5}
         display="flex"
         alignItems="center"
-        justifyContent="space-between"
+        justifyContent={isMobile ? 'space-between' : 'center'}
       >
         <Typography fontWeight={600}>Показать отменённые матчи</Typography>
         <Switch value={showCanceled} onChange={() => setShowCanceled()} />
@@ -50,31 +53,29 @@ export function MyMatchesTab() {
         <Box
           display="flex"
           flexDirection={isMobile ? 'column' : 'unset'}
+          justifyContent="center"
           flexWrap="wrap"
           width="100%"
-          maxWidth={isMobile ? 'unset' : 1000}
+          maxWidth={isMobile ? 'unset' : 1240}
           gap={1.5}
         >
           {isLoading ? (
             <LoadingCircle />
+          ) : myMatchesData?.length === 0 ? (
+            <Typography textAlign="center" width="100%" mt={3} color="gray">
+              На данный момент история матчей пуста, но в любой момент вы можете
+              забронировать корт и начать играть!
+            </Typography>
           ) : (
-            !myMatchesData ||
-            (myMatchesData.length === 0 ? (
-              <Typography textAlign="center" width="100%" mt={3} color="gray">
-                На данный момент история матчей пуста, но в любой момент вы
-                можете забронировать корт и начать играть!
-              </Typography>
-            ) : (
-              myMatchesData.map((card) => {
-                return (
-                  <MyMatchCard
-                    key={card.id}
-                    {...card}
-                    uploadResults={uploadResults}
-                  />
-                );
-              })
-            ))
+            myMatchesData?.map((card) => {
+              return (
+                <MyMatchCard
+                  key={card.id}
+                  {...card}
+                  uploadResults={uploadResults}
+                />
+              );
+            })
           )}
         </Box>
         <UploadResultModal

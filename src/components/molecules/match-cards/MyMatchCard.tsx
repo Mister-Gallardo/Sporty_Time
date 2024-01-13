@@ -147,6 +147,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
         </Box>
         {isWithoutResults ? (
           <WithoutResultsCardSection
+            matchId={id}
             date={matchDate}
             clubName={slot.court.club.title}
             courtName={slot.court.title}

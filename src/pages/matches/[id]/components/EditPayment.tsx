@@ -52,7 +52,7 @@ export const EditPayment: React.FC<IEditPaymentProps> = ({
         color: 'success',
         message: 'Матч подтверждён, благодарим за оплату!',
         mode: 'ios',
-        position: 'top',
+       position: 'bottom',
         duration: 2000,
       });
     },
@@ -61,7 +61,7 @@ export const EditPayment: React.FC<IEditPaymentProps> = ({
         color: 'danger',
         message: 'Ошибка! Попробуйте ещё раз!',
         mode: 'ios',
-        position: 'top',
+       position: 'bottom',
         duration: 2000,
       });
     },
