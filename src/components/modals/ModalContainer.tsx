@@ -36,9 +36,8 @@ export const ModalContainer: React.FC<IModalContainer> = ({
           isOpen={openState}
           // initialBreakpoint={initialBreakpoint}
           // breakpoints={[0, 0.5, initialBreakpoint]}
-          initialBreakpoint={1}
-          breakpoints={[1]}
-          handleBehavior="cycle"
+          initialBreakpoint={0.9}
+          breakpoints={[0, 0.9]}
         >
           <IonHeader>
             <IonToolbar>
