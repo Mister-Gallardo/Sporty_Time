@@ -27,9 +27,9 @@ import { SelectClubBlock } from '../molecules/SelectClubBlock';
 import { LoadingCircle } from '../atoms/LoadingCircle';
 import { FilterFormDate } from '../../pages/matches/tabs/AvailableMatchesTab';
 import { transliterate } from 'transliteration';
-import { MatchTimeRange } from '../../services/club/interface';
 import useToggle from '../../hooks/useToggle';
 import { Geolocation } from '@capacitor/geolocation';
+import { MatchTimeRange } from '../../services/club/interface';
 
 // const times = [
 //   '6:00',
@@ -67,9 +67,9 @@ export const FilterAvailableMatchesModal: React.FC<
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const { control, watch, setValue, resetField } = useFormContext();
-  const { sport, gamedates, lat, long, clubsId } = watch();
+  const { sport, gamedates, lat, long, clubsId, range } = watch();
 
-  const [range, setRange] = useState(0);
+  // const [disatanceRange, setDisatanceRange] = useState(range);
 
   const {
     fields: dateFields,
@@ -417,14 +417,17 @@ export const FilterAvailableMatchesModal: React.FC<
               sx={{ marginLeft: 0 }}
             />
           </FormGroup> */}
-                  <DistanceSlider value={range} setValue={setRange} />
+                  <DistanceSlider
+                    value={range}
+                    setValue={(range) => setValue('range', range)}
+                  />
                 </ModalContentContainer>
               </Box>
             </Fade>
           </>
         )}
 
-        {/* remove this line ('range !== 0') after adding real location search */}
+        {/* remove this line ('disatanceRange !== 0') after adding real location search */}
         {clubsId.length > 0 && (
           <>
             <Divider />
