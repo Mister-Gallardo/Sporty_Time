@@ -392,7 +392,7 @@ export function AuthPage() {
           >
             {registerRequestMutation.isPending ||
             registerUserMutation.isPending ||
-            !loginUserMutation.isPending ? (
+            loginUserMutation.isPending ? (
               <CircularProgress size={25} sx={{ color: '#fff' }} />
             ) : (
               buttonText
