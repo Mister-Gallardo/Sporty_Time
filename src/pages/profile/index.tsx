@@ -46,7 +46,18 @@ export function ProfilePage() {
                 {fullname}
               </Typography>
             )}
-            <Button
+            <Typography
+              sx={{
+                fontSize: 14,
+                fontWeight: 700,
+                padding: 0,
+                // color: '#1976d2',
+                color: 'gray',
+              }}
+            >
+              Add my location
+            </Typography>
+            {/* <Button
               disabled
               variant="text"
               sx={{
@@ -57,7 +68,7 @@ export function ProfilePage() {
               }}
             >
               Add my location
-            </Button>
+            </Button> */}
           </Box>
         </Box>
 
@@ -129,17 +140,18 @@ export function ProfilePage() {
             Изменить профиль
           </Button>
           <Button
-            disabled
+            // disabled
             variant="contained"
+            color="inherit"
             sx={{
-              backgroundColor: '#0d2432',
-              color: 'gold',
+              // backgroundColor: '#0d2432',
+              // color: 'gold',
               fontSize: 15,
               paddingY: 0.25,
               borderRadius: 10,
               whiteSpace: 'nowrap',
               '&:hover': {
-                backgroundColor: '#123347',
+                // backgroundColor: '#123347',
               },
             }}
             fullWidth

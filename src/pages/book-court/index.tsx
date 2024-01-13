@@ -6,10 +6,10 @@ import SportsTennisOutlinedIcon from '@mui/icons-material/SportsTennisOutlined';
 import { FilterClubsModal } from '../../components/modals/FilterClubsModal';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+// import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+// import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import { ClubCard } from '../../components/molecules/ClubCard';
-import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+// import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import NearMeSharpIcon from '@mui/icons-material/NearMeSharp';
 import { FormProvider, useForm } from 'react-hook-form';
 import { getClubs } from '../../services/club/service';
@@ -154,7 +154,7 @@ export function BookCourt() {
             <Typography>{getSportName(sport) || 'Вид спорта'}</Typography>
           </Button>
 
-          <IconButton
+          {/* <IconButton
             disabled
             sx={{
               backgroundColor: '#f5f6f8',
@@ -166,7 +166,7 @@ export function BookCourt() {
             }}
           >
             <FavoriteBorderIcon fontSize="small" />
-          </IconButton>
+          </IconButton> */}
         </Box>
 
         <Box display="flex" gap={1}>
@@ -190,7 +190,7 @@ export function BookCourt() {
             <NearMeSharpIcon fontSize="small" sx={{ justifySelf: 'end' }} />
           </Button>
 
-          <IconButton
+          {/* <IconButton
             disabled
             sx={{
               backgroundColor: '#f5f6f8',
@@ -202,17 +202,17 @@ export function BookCourt() {
             }}
           >
             <MapOutlinedIcon fontSize="small" />
-          </IconButton>
+          </IconButton> */}
         </Box>
 
         <Box mt={2} display="flex" gap={1.5} alignItems="center">
-          <IconButton
+          {/* <IconButton
             sx={{ padding: 0 }}
             onClick={() => setOpenAdvancedFilterModal()}
             disabled
           >
             <TuneOutlinedIcon fontSize="small" />
-          </IconButton>
+          </IconButton> */}
           <Button
             onClick={() => setOpenFilterModal()}
             sx={{
