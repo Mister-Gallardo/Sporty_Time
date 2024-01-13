@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isPlatform } from '@ionic/react';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { AdvancedFilterClubsModal } from '../../components/modals/AdvancedFilterClubsModal';
 import SportsTennisOutlinedIcon from '@mui/icons-material/SportsTennisOutlined';
 import { FilterClubsModal } from '../../components/modals/FilterClubsModal';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
-import { EType, getDayFormat } from '../../helpers/getTimeDateString';
+import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import { ClubCard } from '../../components/molecules/ClubCard';
@@ -21,6 +21,7 @@ import { getSportName } from '../../helpers/getSportName';
 import { Sport } from '../../types';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 import { SelectClubLocationModal } from '../../components/modals/SelectClubLocationModal';
+import { isBefore, isToday, parse } from 'date-fns';
 
 export interface FilterFormDate {
   sport: Sport;
@@ -62,15 +63,29 @@ export function BookCourt() {
       gamedates: localFilters?.gamedates || now,
       lat: localFilters?.lat || 0,
       long: localFilters?.long || 0,
-      timefrom: localFilters?.timefrom || countDefaultTime(),
+      timefrom: countDefaultTime(),
       timeto: localFilters?.timeto || '',
-      selectedLocation: localFilters?.selectedLocation || 'Рядом со мной',
+      selectedLocation: localFilters?.selectedLocation || 'Выбрать локацию',
     },
   });
 
-  const { watch, getValues } = filterParams;
+  const { watch, getValues, setValue } = filterParams;
   const { sport, gamedates, lat, long, timefrom, timeto, selectedLocation } =
     watch();
+
+  // If the date selected by the user in the past has gone, set current date
+  const isSelectedDateToday = isToday(new Date(localFilters?.gamedates));
+  const parsedTargetDate = parse(
+    localFilters?.gamedates,
+    'yyyy-MM-dd',
+    new Date(),
+  );
+
+  useEffect(() => {
+    if (isBefore(parsedTargetDate, new Date()) && !isSelectedDateToday) {
+      setValue('gamedates', now);
+    }
+  }, []);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['clubs', gamedates, sport, lat, long],
@@ -101,6 +116,12 @@ export function BookCourt() {
     // if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
   };
 
+  useEffect(() => {
+    if (!timeto) {
+      setValue('timeto', addTime(timefrom, 5 * 60));
+    }
+  }, []);
+
   return (
     <Box width="100%" display="flex" flexDirection="column" alignItems="center">
       <Box
@@ -108,7 +129,7 @@ export function BookCourt() {
         zIndex={2}
         bgcolor="#fff"
         width="100%"
-        maxWidth={1240}
+        maxWidth={isMobile ? 'unset' : 1240}
         mx="auto"
         px={2}
         pb={2}
@@ -227,7 +248,7 @@ export function BookCourt() {
             gridTemplateColumns: 'repeat(auto-fit,minmax(260px,500px))',
             marginTop: '.5rem',
             gap: '1rem',
-            maxWidth: 1240,
+            maxWidth: isMobile ? 'unset' : 1240,
             mx: 'auto',
           }}
         >
