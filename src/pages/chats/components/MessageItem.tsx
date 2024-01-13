@@ -32,7 +32,7 @@ export const MessageItem: React.FC<IMessageItemProps> = ({
   const [user, state] = useUserInfo();
   const currentUserId = user?.id;
 
-  const msgSentTime = new Date(createdAt).toLocaleTimeString().slice(0, 5);
+  const msgSentTime = new Date(createdAt).toLocaleTimeString('ru').slice(0, 5);
 
   if (state.isLoading) return <Skeleton animation="wave" height={50} />;
   return (

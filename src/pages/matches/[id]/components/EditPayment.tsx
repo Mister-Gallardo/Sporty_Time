@@ -39,7 +39,7 @@ export const EditPayment: React.FC<IEditPaymentProps> = ({
   const formatMustBePaidDate = getDayFormat(
     mustBePaidDate,
     EType.WEEK_DAY_MONTH,
-    mustBePaidDate.toLocaleTimeString(),
+    mustBePaidDate.toLocaleTimeString('ru'),
   );
 
   const [showToast] = useIonToast();
@@ -52,7 +52,7 @@ export const EditPayment: React.FC<IEditPaymentProps> = ({
         color: 'success',
         message: 'Матч подтверждён, благодарим за оплату!',
         mode: 'ios',
-       position: 'bottom',
+        position: 'bottom',
         duration: 2000,
       });
     },
@@ -61,7 +61,7 @@ export const EditPayment: React.FC<IEditPaymentProps> = ({
         color: 'danger',
         message: 'Ошибка! Попробуйте ещё раз!',
         mode: 'ios',
-       position: 'bottom',
+        position: 'bottom',
         duration: 2000,
       });
     },

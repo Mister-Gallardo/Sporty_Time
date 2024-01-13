@@ -14,7 +14,7 @@ export const addTime = (time: string, mins: number) => {
   const date = new Date(0, 0, 0, hours, minutes);
   date.setMinutes(date.getMinutes() + mins);
 
-  const newTime = date.toLocaleTimeString('ru-RU');
+  const newTime = date.toLocaleTimeString('ru');
 
   return newTime.slice(0, 5);
 };
