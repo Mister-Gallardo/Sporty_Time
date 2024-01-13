@@ -69,8 +69,6 @@ export const FilterAvailableMatchesModal: React.FC<
   const { control, watch, setValue, resetField } = useFormContext();
   const { sport, gamedates, lat, long, clubsId, range } = watch();
 
-  // const [disatanceRange, setDisatanceRange] = useState(range);
-
   const {
     fields: dateFields,
     append: dateAppend,
@@ -103,7 +101,7 @@ export const FilterAvailableMatchesModal: React.FC<
   const { data: clubs, isLoading: isLoadingClubs } = useQuery({
     queryKey: ['clubs/all', lat, long, sport],
     queryFn: () => getClubsByLocation({ lat, long, sport }),
-    // enabled: !!lat,
+    enabled: lat !== 0 && long !== 0,
   });
 
   const { data, isLoading } = useQuery({
@@ -243,6 +241,7 @@ export const FilterAvailableMatchesModal: React.FC<
                     onChange={(_, value) => {
                       if (value) {
                         resetField('clubsId');
+                        setValue('range', 1);
 
                         const [long, lat] = value.coordinates;
                         setValue('long', long);
@@ -287,72 +286,6 @@ export const FilterAvailableMatchesModal: React.FC<
                     )}
                   />
 
-                  {/* <Box position="relative">
-                    <TextField
-                      value={currentSearchTerm}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        // to escape delay on typing
-                        setCurrentSearchTerm(value);
-                        delayedQuery(value);
-                      }}
-                      autoFocus
-                      autoComplete="off"
-                      label="Выбор локации"
-                      fullWidth
-                      InputProps={{
-                        endAdornment: (
-                          <>
-                            <InputAdornment position="end">
-                              {isLoading ? (
-                                <CircularProgress color="inherit" size={20} />
-                              ) : <NearMeSharpIcon/>}
-                            </InputAdornment>
-                          </>
-                        ),
-                        sx: { paddingInline: 2 },
-                      }}
-                      sx={{ marginBottom: 2 }}
-                    />
-                    <List
-                      sx={{
-                        position: 'absolute',
-                        zIndex: 1,
-                        width: '100%',
-                        maxHeight: 500,
-                        overflow: 'auto',
-                        bgcolor: '#fff',
-                        border: '1px solid #eee',
-                        borderRadius: 2,
-                      }}
-                    >
-                      {locationOptions.map((location) => {
-                        return (
-                          <>
-                            <ListItem disablePadding>
-                              <ListItemButton
-                                onClick={() => {
-                                  const [long, lat] = location.coordinates;
-                                  setValue('long', long);
-                                  setValue('lat', lat);
-
-                                  setValue('selectedLocation', location.title);
-                                }}
-                                sx={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                }}
-                              >
-                                <ListItemText primary={location.title} />
-                              </ListItemButton>
-                            </ListItem>
-                            <Divider />
-                          </>
-                        );
-                      })}
-                    </List>
-                  </Box> */}
-
                   <Box
                     display="flex"
                     gap={1.5}
@@ -395,7 +328,7 @@ export const FilterAvailableMatchesModal: React.FC<
                       })
                     ) : (
                       <Typography py={2} textAlign="center" color="gray">
-                        No clubs
+                        {!lat && !long ? '' : 'Клубы не найдены'}
                       </Typography>
                     )}
                   </Box>
@@ -417,10 +350,16 @@ export const FilterAvailableMatchesModal: React.FC<
               sx={{ marginLeft: 0 }}
             />
           </FormGroup> */}
-                  <DistanceSlider
-                    value={range}
-                    setValue={(range) => setValue('range', range)}
-                  />
+                  {!!lat && !!long && (
+                    <Fade in>
+                      <Box>
+                        <DistanceSlider
+                          value={range}
+                          setValue={(range) => setValue('range', range)}
+                        />
+                      </Box>
+                    </Fade>
+                  )}
                 </ModalContentContainer>
               </Box>
             </Fade>

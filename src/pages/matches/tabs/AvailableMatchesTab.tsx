@@ -12,7 +12,7 @@ import { ClubMultipleDatesCard } from '../../../components/molecules/ClubMultipl
 import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { Accordion } from '../../../components/molecules/Accordion';
-import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+// import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import { getSportName } from '../../../helpers/getSportName';
 import { getClubs } from '../../../services/club/service';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -124,10 +124,7 @@ export function AvailableMatchesTab() {
     noRatingMatches.refetch();
     clubs.refetch();
 
-    localStorage.setItem(
-      'availableMatchesFilters',
-      JSON.stringify(getValues()),
-    );
+    localStorage.setItem('availableMatchesFilters', JSON.stringify(watch()));
     if (openFilterModal) setOpenFilterModal();
     // if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
   };
@@ -153,7 +150,7 @@ export function AvailableMatchesTab() {
         height={50}
         px={1}
       >
-        {isMainFilters && (
+        {/* {isMainFilters && (
           <IconButton
             onClick={() => setOpenAdvancedFilterModal()}
             sx={{ padding: 0 }}
@@ -161,8 +158,7 @@ export function AvailableMatchesTab() {
           >
             <TuneOutlinedIcon />
           </IconButton>
-        )}
-
+        )} */}
         {isMainFilters ? (
           <>
             <Box

@@ -106,7 +106,7 @@ export function SingleCourtPage() {
                 >
                   {data?.title}
                 </Typography>
-                <Typography variant="body2">JBR, Dubai</Typography>
+                <Typography variant="body2">{data?.city}</Typography>
               </Box>
               {/* <IconButton>
                 <FavoriteBorderOutlined

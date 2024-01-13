@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 
@@ -38,10 +38,10 @@ export const DistanceSlider: React.FC<IDistanceSliderProps> = ({
   value,
   setValue,
 }) => {
-  const handleChange = (_: Event, newValue: number | number[]) => {
-    setValue(newValue as number);
-  };
-
+  const [point, setPoint] = useState(value || 1);
+  useEffect(() => {
+    setPoint(value);
+  }, [value]);
   return (
     <Box px={0.5}>
       <Slider
@@ -49,9 +49,10 @@ export const DistanceSlider: React.FC<IDistanceSliderProps> = ({
         max={50}
         step={10}
         marks={marks}
-        value={value}
-        onChange={handleChange}
-        aria-label="'Distance range"
+        value={point}
+        onChange={(_, value) => setPoint(value as number)}
+        onChangeCommitted={(_, value) => setValue(value as number)}
+        aria-label="Distance"
       />
     </Box>
   );

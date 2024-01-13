@@ -18,6 +18,7 @@ export interface IAvailableTime {
 export interface Club {
   id: number;
   title: string;
+  city: string;
   img: string;
   user: User;
   courts: Court[];

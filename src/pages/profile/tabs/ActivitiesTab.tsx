@@ -65,9 +65,9 @@ export default function ActivitiesTab() {
             <Box>
               <Box display="flex" alignItems="center">
                 <Typography color="GrayText">Level reliability: 15%</Typography>
-                <Button>
+                {/* <Button>
                   <InfoRounded color="disabled" />
-                </Button>
+                </Button> */}
               </Box>
               <Typography
                 color="white"

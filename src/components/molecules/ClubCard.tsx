@@ -11,6 +11,7 @@ export const ClubCard: React.FC<IClubCard> = ({
   id,
   img,
   title,
+  city,
   minPrice,
   availableTimes,
 }) => {
@@ -77,19 +78,31 @@ export const ClubCard: React.FC<IClubCard> = ({
 
       <Box py={1.5} pl={1.5}>
         <Typography mb={1} color="gray">
-          6km - L'Hospitalet de Llobregat
+          {/* 6km - L'Hospitalet de Llobregat */}
+          {city}
         </Typography>
         <Box display="flex" gap={1} pb={2} sx={{ overflowX: 'auto' }}>
-          {timeArray[0]?.map((elem: IAvailableTime, i: number) => (
-            <DateBox
-              key={i}
-              startTime={elem.time}
-              onClick={(e: Event) => {
-                e.stopPropagation();
-                history.push(`/book-court/${id}?tab=2&time=${elem.time}`);
-              }}
-            />
-          ))}
+          {timeArray[0].length === 0 ? (
+            <Typography
+              color="gray"
+              width="100%"
+              textAlign="center"
+              fontSize={12}
+            >
+              По заданным параметрам нет свободных кортов
+            </Typography>
+          ) : (
+            timeArray[0]?.map((elem: IAvailableTime, i: number) => (
+              <DateBox
+                key={i}
+                startTime={elem.time}
+                onClick={(e: Event) => {
+                  e.stopPropagation();
+                  history.push(`/book-court/${id}?tab=2&time=${elem.time}`);
+                }}
+              />
+            ))
+          )}
         </Box>
       </Box>
     </Box>

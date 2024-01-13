@@ -3,10 +3,9 @@ import React from 'react';
 import noImage from '../../images/no-image.jpg';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Club } from '../../services/club/interface';
 
-interface ISelectClubBlockProps {
-  title: string;
-  img: string;
+interface ISelectClubBlockProps extends Club {
   isChecked: boolean;
   onCheck: () => void;
 }
@@ -14,6 +13,7 @@ interface ISelectClubBlockProps {
 export const SelectClubBlock: React.FC<ISelectClubBlockProps> = ({
   img,
   title,
+  city,
   isChecked,
   onCheck,
 }) => {
@@ -57,9 +57,27 @@ export const SelectClubBlock: React.FC<ISelectClubBlockProps> = ({
             opacity: isChecked ? 1 : 0.5,
           }}
         />
-        <Typography height={38} fontSize={11} px={0.5} py={1} lineHeight={1}>
-          {title.length > 35 ? `${title.slice(0, 35)}...` : title}
-        </Typography>
+        <Box
+          height={55}
+          p={0.5}
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
+        >
+          <Typography fontSize={11} lineHeight={1}>
+            {title.length > 35 ? `${title.slice(0, 35)}...` : title}
+          </Typography>
+
+          <Typography
+            color="gray"
+            fontSize={10}
+            textAlign="end"
+            maxWidth={102}
+            noWrap
+          >
+            {city}
+          </Typography>
+        </Box>
       </Box>
     </label>
   );

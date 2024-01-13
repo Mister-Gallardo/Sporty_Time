@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { MessageItem } from '../components/MessageItem';
 import { IonLoading, isPlatform, useIonToast } from '@ionic/react';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
+// import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import SendSharpIcon from '@mui/icons-material/SendSharp';
 import { SubmitHandler, useForm, Controller } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -59,7 +59,7 @@ export function SingleChatPage() {
         color: 'danger',
         message: 'Ошибка! Сообщение не отправлено, попробуйте ещё раз',
         mode: 'ios',
-       position: 'bottom',
+        position: 'bottom',
         duration: 2000,
       });
     },
@@ -184,9 +184,9 @@ export function SingleChatPage() {
             paddingBlock: isMobile ? 6 : 20,
           }}
         >
-          <IconButton disabled>
+          {/* <IconButton disabled>
             <AddRoundedIcon />
-          </IconButton>
+          </IconButton> */}
           <Controller
             name="message"
             control={control}
