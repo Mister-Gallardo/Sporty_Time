@@ -1,13 +1,6 @@
 import { useHistory } from 'react-router';
 import { SportsBaseballOutlined } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Link,
-  MenuItem,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import { useIsAuthorized, useUserInfo } from '../services/api/hooks';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -50,56 +43,18 @@ function DesktopHeader() {
         <Box
           sx={{
             display: 'flex',
-            gap: '2rem',
+            gap: 1,
             alignItems: 'center',
             justifyContent: 'center',
+            cursor: 'pointer',
           }}
+          onClick={() => history.push('/')}
         >
-          <Box
-            onClick={() => history.push('/')}
-            sx={{
-              display: 'flex',
-              gap: '16px',
-              alignItems: 'center',
-              justifyContent: 'center',
+          <SportsBaseballOutlined fontSize="large" sx={{ color: '#000' }} />
 
-              cursor: 'pointer',
-            }}
-          >
-            <SportsBaseballOutlined sx={{ color: '#000' }} />
-          </Box>
-          <TextField sx={{ width: '175px' }} label="Адрес, название клуба" />
-          <TextField
-            sx={{ width: '100px' }}
-            select
-            label="Игра"
-            defaultValue={'padel'}
-          >
-            <MenuItem value="padel">Padel</MenuItem>
-            <MenuItem value="tennis">Tennis</MenuItem>
-          </TextField>
-          <TextField sx={{ width: '80px' }} select label="Дата" />
-          <TextField
-            sx={{ width: '80px' }}
-            select
-            label="Время матча"
-            defaultValue={'13'}
-          >
-            <MenuItem value={13}>13:00</MenuItem>
-            <MenuItem value={14}>14:00</MenuItem>
-            <MenuItem value={15}>15:00</MenuItem>
-            <MenuItem value={16}>16:00</MenuItem>
-            <MenuItem value={17}>17:00</MenuItem>
-          </TextField>
-          <Button
-            variant="contained"
-            onClick={() => history.push('/book-court')}
-            sx={{
-              borderRadius: 20,
-            }}
-          >
-            Найти
-          </Button>
+          <Typography fontWeight={600} fontSize={20} letterSpacing={1.2}>
+            SPORTYTIME
+          </Typography>
         </Box>
 
         <Box
@@ -164,21 +119,6 @@ function DesktopHeader() {
                 </Typography>
               )}
             </Box>
-            {/* <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '48px',
-                height: '48px',
-                background: 'rgba(51,95,255,0.1)',
-                borderRadius: '50%',
-              }}
-            >
-              <IconButton sx={{ width: '100%', height: '100%' }}>
-                <PersonOutlineOutlined sx={{ color: '#000' }} />
-              </IconButton>
-            </Box> */}
           </Box>
         </Box>
       </Box>

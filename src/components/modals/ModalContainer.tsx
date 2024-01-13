@@ -61,6 +61,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
             width="100%"
             minWidth={450}
             maxWidth="50vw"
+            sx={{ outline: 'none' }}
           >
             <Box
               display="flex"

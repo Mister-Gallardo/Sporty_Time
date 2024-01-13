@@ -84,7 +84,7 @@ export function SingleMatchPage() {
         header: 'Поздравляем!',
         message: 'Вы присоединились к матчу',
         duration: 2000,
-        position: 'top',
+       position: 'bottom',
         color: 'success',
       });
       refetchMatch();
@@ -95,7 +95,7 @@ export function SingleMatchPage() {
         header: 'Ошибка!',
         message: 'Не удалось присоединиться к матчу',
         duration: 20000,
-        position: 'top',
+       position: 'bottom',
         color: 'danger',
       });
     },
@@ -123,7 +123,7 @@ export function SingleMatchPage() {
         color: 'success',
         message: `Ваше бронирование отменено`,
         mode: 'ios',
-        position: 'top',
+       position: 'bottom',
         duration: 2000,
       });
       refetchMatch();
@@ -133,7 +133,7 @@ export function SingleMatchPage() {
         color: 'danger',
         message: `Ошибка, попробуйте ещё раз`,
         mode: 'ios',
-        position: 'top',
+       position: 'bottom',
         duration: 2000,
       });
     },
@@ -148,7 +148,7 @@ export function SingleMatchPage() {
         color: 'success',
         message: `Игрок был удалён из матча`,
         mode: 'ios',
-        position: 'top',
+       position: 'bottom',
         duration: 2000,
       });
       refetchMatch();
@@ -159,7 +159,7 @@ export function SingleMatchPage() {
         color: 'danger',
         message: `Ошибка, попробуйте ещё раз`,
         mode: 'ios',
-        position: 'top',
+       position: 'bottom',
         duration: 2000,
       });
     },

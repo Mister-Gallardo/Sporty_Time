@@ -26,7 +26,7 @@ export function ResetPassword() {
         color: 'success',
         message: `Пароль был успешно изменён`,
         mode: 'ios',
-        position: 'top',
+        position: 'bottom',
         duration: 2000,
       });
       history.push('/');

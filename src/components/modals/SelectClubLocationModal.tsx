@@ -73,8 +73,10 @@ export const SelectClubLocationModal: React.FC<
       handleModal();
     } catch (error: any) {
       setIsUserLocationLoading(false);
-      if (error.message === 'User denied Geolocation')
-        console.log('Allow location first');
+      if (error.message === 'User denied Geolocation') {
+        // const permissionRequest = await Geolocation.requestPermissions();
+        // console.log('Allow location first');
+      }
     }
   };
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { isPlatform } from '@ionic/react';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { AdvancedFilterClubsModal } from '../../components/modals/AdvancedFilterClubsModal';
@@ -21,7 +21,6 @@ import { getSportName } from '../../helpers/getSportName';
 import { Sport } from '../../types';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 import { SelectClubLocationModal } from '../../components/modals/SelectClubLocationModal';
-import { Geolocation } from '@capacitor/geolocation';
 
 export interface FilterFormDate {
   sport: Sport;
@@ -51,10 +50,6 @@ const countDefaultTime = () => {
 
 export function BookCourt() {
   const isMobile = isPlatform('mobile');
-
-  useEffect(() => {
-    Geolocation.getCurrentPosition().then(console.log).catch(console.error);
-  }, []);
 
   const filtersFromLocalStorage = localStorage.getItem('clubsFilters');
   const [localFilters] = useState(
@@ -107,7 +102,7 @@ export function BookCourt() {
   };
 
   return (
-    <>
+    <Box width="100%" display="flex" flexDirection="column" alignItems="center">
       <Box
         position="fixed"
         zIndex={2}
@@ -278,6 +273,6 @@ export function BookCourt() {
           handleModal={setOpenClubLocation}
         />
       </FormProvider>
-    </>
+    </Box>
   );
 }

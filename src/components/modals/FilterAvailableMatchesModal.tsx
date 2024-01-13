@@ -142,6 +142,7 @@ export const FilterAvailableMatchesModal: React.FC<
 
   const setUserLocation = async () => {
     setIsUserLocationLoading(true);
+
     try {
       const { coords } = await Geolocation.getCurrentPosition();
       const { latitude, longitude } = coords;
@@ -153,8 +154,9 @@ export const FilterAvailableMatchesModal: React.FC<
       setValue('selectedLocation', 'Рядом со мной');
     } catch (error: any) {
       setIsUserLocationLoading(false);
-      if (error.message === 'User denied Geolocation')
-        console.log('Allow location first');
+      if (error.message === 'User denied Geolocation') {
+        setValue('selectedLocation', '');
+      }
     }
   };
 
@@ -246,13 +248,13 @@ export const FilterAvailableMatchesModal: React.FC<
                         setValue('long', long);
                         setValue('lat', lat);
 
-                        // setValue('selectedLocation', value.title);
+                        setValue('selectedLocation', value.title);
                       }
                     }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        placeholder="Рядом со мной"
+                        placeholder={watch('selectedLocation')}
                         value={searchTerm}
                         onChange={(e) => delayedQuery(e.target.value)}
                         InputProps={{
@@ -274,6 +276,7 @@ export const FilterAvailableMatchesModal: React.FC<
                             </>
                           ),
                           disableUnderline: true,
+                          fullWidth: true,
                           sx: {
                             bgcolor: '#f5f6f8',
                             borderRadius: 1.5,
@@ -546,6 +549,7 @@ export const FilterAvailableMatchesModal: React.FC<
       </Box>
       <Box
         position="absolute"
+        zIndex={1}
         bottom={0}
         right={0}
         left={0}
@@ -565,6 +569,9 @@ export const FilterAvailableMatchesModal: React.FC<
             py: 1,
             '&:disabled': {
               backgroundColor: '#ddd',
+            },
+            '&:hover': {
+              backgroundColor: '#123347',
             },
           }}
           fullWidth

@@ -14,6 +14,7 @@ import { useHistory } from 'react-router';
 
 export function MobileProfilePage() {
   const history = useHistory();
+
   return (
     <IonPage>
       <IonHeader>

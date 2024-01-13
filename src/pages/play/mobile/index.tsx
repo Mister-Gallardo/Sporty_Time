@@ -12,9 +12,15 @@ import {
   IonPage,
   IonToolbar,
 } from '@ionic/react';
+import { Geolocation } from '@capacitor/geolocation';
+import { useEffect } from 'react';
 
 function MobilePlayPage() {
   const history = useHistory();
+
+  useEffect(() => {
+    Geolocation.getCurrentPosition();
+  }, []);
 
   return (
     <IonPage>
@@ -68,10 +74,3 @@ function MobilePlayPage() {
 }
 
 export default MobilePlayPage;
-{
-  /* <IonHeader style={{ boxShadow: '0px 1px 4px #0000001a' }}>
-        <IonToolbar>
-      <MobileHeader /> 
-          </IonToolbar>
-        </IonHeader> */
-}

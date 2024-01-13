@@ -87,7 +87,7 @@ export function UploadResultModal({
         message:
           error || 'Пока матч не начался, загрузка результатов отключена',
         mode: 'ios',
-        position: 'top',
+        position: 'bottom',
         duration: 2000,
       });
       setMatchResultFields(new Array(6).fill(''));
