@@ -489,16 +489,7 @@ export const FilterAvailableMatchesModal: React.FC<
           </>
         )}
       </Box>
-      <Box
-        position="absolute"
-        zIndex={1}
-        bottom={0}
-        right={0}
-        left={0}
-        bgcolor="#fff"
-        p={2}
-        borderTop="1px solid #eee"
-      >
+      <Box p={2} borderTop="1px solid #eee">
         <Button
           disabled={
             !sport || !gamedates.length || !lat || !long || !clubsId.length
