@@ -46,7 +46,7 @@ export function ProfilePage() {
                 {fullname}
               </Typography>
             )}
-            <Typography
+            {/* <Typography
               sx={{
                 fontSize: 14,
                 fontWeight: 700,
@@ -56,7 +56,7 @@ export function ProfilePage() {
               }}
             >
               Add my location
-            </Typography>
+            </Typography> */}
             {/* <Button
               disabled
               variant="text"
@@ -139,7 +139,7 @@ export function ProfilePage() {
           >
             Изменить профиль
           </Button>
-          <Button
+          {/* <Button
             // disabled
             variant="contained"
             color="inherit"
@@ -157,7 +157,7 @@ export function ProfilePage() {
             fullWidth
           >
             Go Premium
-          </Button>
+          </Button> */}
         </Box>
       </Box>
 

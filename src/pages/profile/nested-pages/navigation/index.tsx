@@ -89,9 +89,9 @@ export const ProfileNavPage = () => {
         </Box>
       </Box>
       <Box mt={3}>
-        <Typography mb={1} fontWeight={600} fontSize={16}>
+        {/* <Typography mb={1} fontWeight={600} fontSize={16}>
           Поддержка
-        </Typography>
+        </Typography> */}
         {/* <Box bgcolor="#f7f7f7" borderRadius={3} p={1}>
           <NavButton
             primaryText="Помощь"
@@ -102,9 +102,9 @@ export const ProfileNavPage = () => {
         </Box> */}
       </Box>
       <Box mt={3}>
-        <Typography mb={1} fontWeight={600} fontSize={16}>
+        {/* <Typography mb={1} fontWeight={600} fontSize={16}>
           Правовая информация
-        </Typography>
+        </Typography> */}
         {/* <Box bgcolor="#f7f7f7" borderRadius={3} p={1}>
           <NavButton
             primaryText="Условия пользования"
