@@ -13,37 +13,28 @@ export const useIsAuthorized = () => {
 };
 
 export const useFullUserData = () => {
-  const isAuthorized = useIsAuthorized();
-
   const { data, ...rest } = useQuery({
     queryKey: ['user'],
     queryFn: getUserInfo,
     retry: false,
-    enabled: isAuthorized,
   });
   return [data?.data, rest] as const;
 };
 
 export const useUserInfo = () => {
-  const isAuthorized = useIsAuthorized();
-
   const { data, ...rest } = useQuery({
     queryKey: ['user'],
     queryFn: getUserInfo,
     retry: false,
-    enabled: isAuthorized,
   });
   return [data?.data?.user, rest] as const;
 };
 
 export const usePlayerProfile = () => {
-  const isAuthorized = useIsAuthorized();
-
   const { data, ...rest } = useQuery({
     queryKey: ['user'],
     queryFn: getUserInfo,
     retry: false,
-    enabled: isAuthorized,
   });
 
   const player = data?.data?.user.player;
