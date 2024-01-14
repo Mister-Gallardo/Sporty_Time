@@ -88,8 +88,8 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
         href="/assets/safari-pinned-tab.svg"
         color="#0E2433"
       />
-      <meta name="apple-mobile-web-app-title" content="Playtomic" />
-      <meta name="application-name" content="Playtomic" />
+      <meta name="apple-mobile-web-app-title" content="SportyTime" />
+      <meta name="application-name" content="SportyTime" />
       <meta name="msapplication-TileColor" content="#0E2433" />
       <meta
         name="msapplication-TileImage"
@@ -99,10 +99,10 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:site" content="@playtomic_app" />
       <meta property="og:url" content="https://playtomic.io" />
-      <meta property="og:title" content="Playtomic" />
+      <meta property="og:title" content="SportyTime" />
       <meta
         property="og:description"
-        content="Improve your racket game (Padel & Tennis) even if you have nowhere or with whom to play. Whether you’ve never played before, you are a beginner or an advanced player, Playtomic adapts to what you need and helps you find same level partners for your matches thanks to the player level estimation system.
+        content="Improve your racket game (Padel & Tennis) even if you have nowhere or with whom to play. Whether you’ve never played before, you are a beginner or an advanced player, SportyTime adapts to what you need and helps you find same level partners for your matches thanks to the player level estimation system.
 Don’t know where or with whom to play? Join the largest Padel & Tennis community in the world. Create or join public or private matches, find courts anywhere on the planet and compete in tournaments organised by clubs around the world."
       />
       <meta
@@ -124,12 +124,12 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
           <div className="cookies">
             <div>
               <div className="cookies__text">
-                At Playtomic, we collect the information needed to measure our
+                At SportyTime, we collect the information needed to measure our
                 audiences and use anonymous statistics to improve our
                 application's user experience. We also access your location in
                 order to show you nearby clubs.
                 <br />
-                To continue using Playtomic, you must accept the{' '}
+                To continue using SportyTime, you must accept the{' '}
                 <a
                   href="https://blog.playtomic.io/politica-de-privacidad/"
                   target="_blank"
@@ -2297,7 +2297,7 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
                   <img
                     className="apparel__seal"
                     src="https://res.cloudinary.com/playtomic/image/upload/v1653311732/playtomic/web/seal.svg"
-                    alt="Playtomic seal"
+                    alt="SportyTime seal"
                   />
                   <div className="apparel__collection apparel__collection--men">
                     <a
@@ -2324,7 +2324,7 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
             </div>
             <div className="home__steps" id="steps">
               <div className="steps__title">
-                Playtomic makes it easier for you
+                SportyTime makes it easier for you
               </div>
               <div className="steps__content">
                 <div className="step">
@@ -2333,7 +2333,7 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
                   </div>
                   <div className="step__divider" />
                   <div className="step__text">
-                    With Playtomic you have the possibility to create private
+                    With SportyTime you have the possibility to create private
                     matches with friends, make them public to find partners or
                     search for active matches to join.
                   </div>
@@ -2357,7 +2357,7 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
                   <div className="step__divider" />
                   <div className="step__text">
                     Whether with friends or strangers, play whenever you want
-                    and be part of Playtomic, the world's largest ever-growing
+                    and be part of SportyTime, the world's largest ever-growing
                     community of racket sports players.
                   </div>
                 </div>
@@ -2460,7 +2460,7 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
                     </svg>
                   </div>
                   <div className="rating__opinion">
-                    With Playtomic I have a great selection of courts and it's
+                    With SportyTime I have a great selection of courts and it's
                     super easy to book, it takes three steps and I can do it
                     anytime
                   </div>
@@ -2638,28 +2638,28 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
               <img
                 className="advantages__seal"
                 src="https://res.cloudinary.com/playtomic/image/upload/v1644320990/playtomic/web/seal_text.svg"
-                alt="Playtomic seal"
+                alt="SportyTime seal"
               />
             </div>
             <div className="home__description" id="description">
-              <div className="description__title">What is Playtomic?</div>
+              <div className="description__title">What is SportyTime?</div>
               <div className="description__block">
                 <div>
                   <p>
-                    Playtomic is the largest and fastest-growing community of
+                    SportyTime is the largest and fastest-growing community of
                     racket sport players in the world. It is made by and for you
                     because we want you to be part of it.
                   </p>
                   <p>
                     Every time you think about your favourite racket sport, you
                     will know that you only have to worry about playing the game
-                    as Playtomic will take care of everything else. What happens
+                    as SportyTime will take care of everything else. What happens
                     during your match is just as important as the before and
                     after, which is why we focus on helping you enjoy it from
                     the beginning until the end.
                   </p>
                   <p>
-                    Playtomic is the place where players, clubs, professionals,
+                    SportyTime is the place where players, clubs, professionals,
                     teachers, sponsors, in short, all racket fans get together
                     to enjoy our favourite sport, sharing the court,
                     experiences, learning and above all, community.
@@ -2695,14 +2695,14 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
                     </div>
                     <div className="news2__title">ABC</div>
                     <div className="news2__text">
-                      Playtomic, the Spanish app that is changing the rules of
+                      SportyTime, the Spanish app that is changing the rules of
                       game!
                     </div>
                   </div>
                 </a>
                 <a
                   className="news2"
-                  href="https://www.cuatro.com/noticias/economia/reservas-deportivas-Playtomic-alcanza-descargas_0_2497950685.html"
+                  href="https://www.cuatro.com/noticias/economia/reservas-deportivas-SportyTime-alcanza-descargas_0_2497950685.html"
                   rel="nofollow noreferrer noopener"
                   target="_blank"
                 >
@@ -2725,14 +2725,14 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
                     </div>
                     <div className="news2__title">Cuatro</div>
                     <div className="news2__text">
-                      Playtomic, the sports booking app, reaches 20,000
+                      SportyTime, the sports booking app, reaches 20,000
                       downloads and nearly 3000 bookings.
                     </div>
                   </div>
                 </a>
                 <a
                   className="news2"
-                  href="https://www.telecinco.es/informativos/economia/reservas-deportivas-Playtomic-alcanza-descargas_0_2497950683.html"
+                  href="https://www.telecinco.es/informativos/economia/reservas-deportivas-SportyTime-alcanza-descargas_0_2497950683.html"
                   rel="nofollow noreferrer noopener"
                   target="_blank"
                 >
@@ -2798,7 +2798,7 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
                     </div>
                     <div className="news2__title">Expansión</div>
                     <div className="news2__text">
-                      Playtomic, the new app to book your tennis or padel courts
+                      SportyTime, the new app to book your tennis or padel courts
                     </div>
                   </div>
                 </a>
@@ -3176,7 +3176,7 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
                   </li>
                   <li>
                     <div className="links">
-                      <h2 className="links__title">Playtomic</h2>
+                      <h2 className="links__title">SportyTime</h2>
                       <ul>
                         <li>
                           <a href="/legal-conditions">Legal conditions</a>
@@ -3202,7 +3202,7 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
                   </li>
                   <li>
                     <div className="links">
-                      <h2 className="links__title">Discover Playtomic</h2>
+                      <h2 className="links__title">Discover SportyTime</h2>
                       <ul>
                         <li>
                           <a href="/matches">Matches</a>
@@ -3219,7 +3219,7 @@ Don’t know where or with whom to play? Join the largest Padel & Tennis communi
                       <ul>
                         <li>
                           <a href="https://playtomic.com/?utm_source=playtomic.io&utm_medium=footerbutton">
-                            I want to appear on Playtomic!
+                            I want to appear on SportyTime!
                           </a>
                         </li>
                         <li>
