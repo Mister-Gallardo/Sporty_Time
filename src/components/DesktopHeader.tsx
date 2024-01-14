@@ -9,7 +9,7 @@ function DesktopHeader() {
 
   const isAuthorized = useIsAuthorized();
 
-  const [user] = useUserInfo();
+  const [user] = useUserInfo({ enabled: isAuthorized });
 
   const firstName = user?.firstname;
   const lastName = user?.lastname;

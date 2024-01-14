@@ -21,11 +21,17 @@ export const useFullUserData = () => {
   return [data?.data, rest] as const;
 };
 
-export const useUserInfo = () => {
+export interface IUserInfoOptions {
+  enabled?: boolean;
+}
+
+export const useUserInfo = (options: IUserInfoOptions = {}) => {
+  const { enabled = true } = options;
   const { data, ...rest } = useQuery({
     queryKey: ['user'],
     queryFn: getUserInfo,
     retry: false,
+    enabled,
   });
   return [data?.data?.user, rest] as const;
 };
