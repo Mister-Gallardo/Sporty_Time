@@ -92,7 +92,7 @@ export function ProfilePage() {
                     <CircularProgress size={20} />
                   ) : (
                     <Typography fontSize={23}>
-                      {/* {item === 'Matches' ? profile?.countMatches : 0} */}0
+                      {item === 'Matches' ? profile?.countMatches : 0}
                     </Typography>
                   )}
 
