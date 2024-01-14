@@ -74,3 +74,8 @@ ion-datetime {
   --ion-color-shade: var(--ion-color-success-shade, #28ba62) !important;
   --ion-color-tint: var(--ion-color-success-tint, #42d77d) !important;
 }
+
+html {
+  color: var(--color);
+  background: var(--ion-background-color, #fff);
+}
