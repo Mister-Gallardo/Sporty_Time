@@ -5,7 +5,7 @@ import MobilePlayPage from './pages/play/mobile';
 import { BookCourt } from './pages/book-court';
 import { SingleCourtPage } from './pages/book-court/[id]';
 import { MobileBookCourt } from './pages/book-court/index.mobile';
-import { DesktopHomePage } from './pages/play/desktop';
+// import { DesktopHomePage } from './pages/play/desktop';
 import { MobileAuthPage } from './pages/auth/index.mobile';
 import { AuthPage } from './pages/auth';
 import { MobileSingleCourtPage } from './pages/book-court/[id]/index.mobile';
@@ -34,10 +34,15 @@ const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
 setupIonicReact({ mode: 'ios' });
 
 const desktopRoutes = [
+  // {
+  //   path: '/',
+  //   exact: true,
+  //   component: DesktopHomePage,
+  // },
   {
     path: '/',
     exact: true,
-    component: DesktopHomePage,
+    component: MatchesPage,
   },
   {
     path: '/book-court',

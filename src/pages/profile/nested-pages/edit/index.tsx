@@ -107,16 +107,16 @@ export const EditProfilePage = () => {
       maxWidth={isMobile ? 'unset' : 500}
       mx={isMobile ? 'unset' : 'auto'}
     >
-      <Fade in={isSmthChanged}>
-        <Button
-          onClick={onSaveChanges}
-          sx={{ position: 'absolute', right: 0, top: -25 }}
-        >
-          Сохранить
-        </Button>
-      </Fade>
-
-      {!isMobile && <Button onClick={() => history.goBack()}>Назад</Button>}
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        {!isMobile ? (
+          <Button onClick={() => history.goBack()}>Назад</Button>
+        ) : (
+          <span />
+        )}
+        <Fade in={isSmthChanged}>
+          <Button onClick={onSaveChanges}>Сохранить</Button>
+        </Fade>
+      </Box>
 
       <Box display="flex" flexDirection="column" alignItems="center">
         <Avatar
