@@ -67,7 +67,11 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
           />
         }
         title={title}
-        titleTypographyProps={{ fontSize: 18, fontWeight: 700 }}
+        titleTypographyProps={{
+          fontSize: 18,
+          fontWeight: 700,
+          lineHeight: 1.3,
+        }}
         subheaderTypographyProps={{ fontSize: 16 }}
         // subheader="2km Barcelona"
         sx={{ borderBottom: '1px solid #eee' }}
