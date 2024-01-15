@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { isPlatform } from '@ionic/react';
-import { Box, Button, IconButton, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { AdvancedFilterClubsModal } from '../../components/modals/AdvancedFilterClubsModal';
 import SportsTennisOutlinedIcon from '@mui/icons-material/SportsTennisOutlined';
 import { FilterClubsModal } from '../../components/modals/FilterClubsModal';
@@ -63,8 +63,8 @@ export function BookCourt() {
       gamedates: localFilters?.gamedates || now,
       lat: localFilters?.lat || 0,
       long: localFilters?.long || 0,
-      timefrom: countDefaultTime(),
-      timeto: localFilters?.timeto || '',
+      timefrom: localFilters?.timefrom || countDefaultTime(),
+      timeto: localFilters?.timeto || addTime(countDefaultTime(), 5 * 60),
       selectedLocation: localFilters?.selectedLocation || 'Выбрать локацию',
     },
   });

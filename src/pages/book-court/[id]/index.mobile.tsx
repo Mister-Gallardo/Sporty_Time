@@ -33,17 +33,6 @@ export function MobileSingleCourtPage() {
           >
             <ArrowBackIosNewOutlined sx={{ color: '#fff' }} />
           </IonBackButton>
-
-          {/* <IconButton
-            sx={{
-              background: 'hsl(0deg 0% 89.8% / 34%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <ShareOutlined sx={{ color: '#fff' }} />
-          </IconButton> */}
         </Box>
         <SingleCourtPage />
       </IonContent>
