@@ -1,19 +1,7 @@
 import React, { useState } from 'react';
 import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  List,
-  ListItem,
-  ListItemText,
-  RadioGroup,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Divider, RadioGroup, Typography } from '@mui/material';
 import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
 import { RadioLabel } from '../molecules/RadioLabel';
 import { ERadioLabelType, ITag } from '../../types';
@@ -182,56 +170,6 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
             </Box>
             <Typography color="blue" whiteSpace="nowrap" fontSize={20}>
               {isPayingFullPrice ? price : total} RUB
-            </Typography>
-          </Box>
-          <Box border="1px solid #ddd" borderRadius={2} py={2.5} px={2}>
-            <Box display="flex" alignItems="center" gap={2} mb={2}>
-              <DescriptionOutlinedIcon />
-              <Box>
-                <Typography>Booking Cancellation Policy</Typography>
-                <Typography color="red">
-                  Valid up untill 24 hours before the booking*
-                </Typography>
-              </Box>
-            </Box>
-            <List>
-              {[1, 2, 3, 4].map((item) => {
-                return (
-                  <ListItem
-                    key={item}
-                    alignItems="flex-start"
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      padding: 0,
-                    }}
-                  >
-                    <ListItemText primary={item === 4 ? '-' : 'Title'} />
-                    <ListItemText secondary="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem deserunt id, doloribus tenetur" />
-                  </ListItem>
-                );
-              })}
-              <ListItem sx={{ padding: 0 }}>
-                <ListItemText secondary="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus nulla natus, aspernatur expedita voluptate iusto. At impedit ea illo amet quam quae nesciunt vitae, velit vero exercitationem. Ducimus, adipisci aut?" />
-              </ListItem>
-            </List>
-            <Button
-              variant="outlined"
-              sx={{ borderRadius: 10, paddingY: 0, fontSize: 12 }}
-            >
-              Read More
-            </Button>
-          </Box>
-          <Box>
-            <FormControlLabel
-              label="Marketing communications from your favourite Clubs"
-              control={<Checkbox />}
-            />
-            <Typography fontSize={12} color="gray" ml={4}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Error
-              corrupti maiores quidem saepe animi, iste vitae sequi illo sint
-              explicabo mollitia numquam deleniti at itaque ratione blanditiis
-              fugit amet et?
             </Typography>
           </Box>
         </Box>
