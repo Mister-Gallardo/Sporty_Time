@@ -38,6 +38,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
           // breakpoints={[0, 0.5, initialBreakpoint]}
           initialBreakpoint={0.9}
           breakpoints={[0, 0.9]}
+          className="overlay-hidden"
         >
           <IonHeader>
             <IonToolbar>
