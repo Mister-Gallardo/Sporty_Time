@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { SelectClubLocationModal } from '../SelectClubLocationModal';
 import { ModalContainer } from '../../ModalContainer';
@@ -7,8 +7,8 @@ import { PlayLocation } from './PlayLocationModal';
 import { Box, IconButton } from '@mui/material';
 import { SportType } from './SportTypeModal';
 import { PlayDate } from './PlayDateModal';
-import { usePlayerProfile } from '../../../../services/api/hooks';
 import { AskForLevel } from './AskForLevel';
+import useSearchParams from '../../../../hooks/useSearchParams';
 
 interface IFilterMatchesModalProps {
   openState: boolean;
@@ -23,23 +23,20 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
 }) => {
   const [openSelectLocation, setOpenSelectLocation] = useToggle();
 
-  const [activeModal, setActiveModal] = useState<number>(4);
-  const handleStep = (step: number) => setActiveModal((prev) => prev + step);
+  const [getIndex, setIndex] = useSearchParams();
+  const currentStep = getIndex('step') ? +getIndex('step')! : 1;
+
+  const handleStep = (step: number) =>
+    setIndex('step', `${currentStep + step}`);
 
   const modalTitle =
-    activeModal === 1
+    currentStep === 1
       ? 'Вид спорта'
-      : activeModal === 2
+      : currentStep === 2
       ? 'Какой у Вас уровень'
-      : activeModal === 3
+      : currentStep === 3
       ? 'Где Вы хотите играть?'
       : 'Когда Вы хотите играть?';
-
-  const user = usePlayerProfile();
-
-  useEffect(() => {
-    //check for some rating. If exist  - set sport as default
-  }, [user]);
 
   const handleSelectLocation = () => {
     handleModal();
@@ -67,18 +64,18 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
         openState={openState}
         handleModal={handleModal}
         headerTitle={modalTitle}
-        headerButton={activeModal > 1 ? backButton() : null}
+        headerButton={currentStep > 1 ? backButton() : null}
       >
         <Box height="100%" display="flex" flexDirection="column">
-          {activeModal === 1 && <SportType handleStep={handleStep} />}
-          {activeModal === 2 && <AskForLevel handleStep={handleStep} />}
-          {activeModal === 3 && (
+          {currentStep === 1 && <SportType handleStep={handleStep} />}
+          {currentStep === 2 && <AskForLevel handleStep={handleStep} />}
+          {currentStep === 3 && (
             <PlayLocation
               handleStep={handleStep}
               handleSelectLocation={handleSelectLocation}
             />
           )}
-          {activeModal === 4 && (
+          {currentStep === 4 && (
             <PlayDate handleStep={handleStep} onApply={onApply} />
           )}
         </Box>

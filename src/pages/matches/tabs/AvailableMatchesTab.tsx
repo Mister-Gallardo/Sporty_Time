@@ -17,6 +17,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import noResults from '../../../images/no-results.svg';
 import { FiltersRow } from './components/FiltersRow';
 import useToggle from '../../../hooks/useToggle';
+import useSearchParams from '../../../hooks/useSearchParams';
+import { usePlayerProfile } from '../../../services/api/hooks';
+import { Sport } from '../../../types';
 
 export interface FilterFormDate {
   sportLevel: string;
@@ -34,6 +37,7 @@ export interface FilterFormDate {
 const isMobile = isPlatform('mobile');
 
 export function AvailableMatchesTab() {
+  const [_, setIndex] = useSearchParams();
   const [openFilterModal, setOpenFilterModal] = useToggle();
 
   const filtersFromLocalStorage = localStorage.getItem(
@@ -42,11 +46,6 @@ export function AvailableMatchesTab() {
   const [localFilters] = useState(
     filtersFromLocalStorage ? JSON.parse(filtersFromLocalStorage) : null,
   );
-
-  useEffect(() => {
-    if (localFilters) return;
-    setOpenFilterModal(true);
-  }, []);
 
   const filterParams = useForm<FilterFormDate>({
     defaultValues: {
@@ -62,8 +61,29 @@ export function AvailableMatchesTab() {
       range: localFilters?.range || 1,
     },
   });
-  const { watch } = filterParams;
+  const { watch, setValue } = filterParams;
   const { sport, gamedates, clubsId, time } = watch();
+
+  const [user] = usePlayerProfile();
+
+  // If user already passed some sport test - set this sport as default and navigate him to the next filter-question
+  useEffect(() => {
+    if (!user) return;
+
+    const isRating =
+      user.ratingPadel || user.ratingTennis || user.ratingPickleball;
+    if (isRating) setIndex('step', '3');
+
+    if (user.ratingPadel) return setValue('sport', Sport.PADEL);
+    if (user.ratingTennis) return setValue('sport', Sport.TENNIS);
+    if (user.ratingPickleball) return setValue('sport', Sport.PICKLEBALL);
+  }, [user]);
+
+  // if filters history is emty - open filters modal
+  useEffect(() => {
+    if (localFilters) return;
+    setOpenFilterModal(true);
+  }, []);
 
   const gameDatesToString = gamedates
     .map((date) => new Date(date.value).toLocaleDateString('en-ca'))
