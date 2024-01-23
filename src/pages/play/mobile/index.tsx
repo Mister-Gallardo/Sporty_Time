@@ -64,7 +64,7 @@ function MobilePlayPage() {
           <Box>
             {/* <RememberSection /> */}
             <PerfectMatch />
-            <YourClubs />
+            {/* <YourClubs /> */}
             {/* <GetTheMost /> */}
           </Box>
         </Box>

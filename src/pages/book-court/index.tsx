@@ -60,7 +60,8 @@ export function BookCourt() {
   const filterParams = useForm<FilterFormDate>({
     defaultValues: {
       sport: localFilters?.sport || '',
-      gamedates: localFilters?.gamedates || now,
+      gamedates:
+        new Date(localFilters?.gamedates) < now ? now : localFilters?.gamedates,
       lat: localFilters?.lat || 0,
       long: localFilters?.long || 0,
       timefrom: localFilters?.timefrom || countDefaultTime(),
