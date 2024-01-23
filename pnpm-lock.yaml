@@ -63,8 +63,8 @@ dependencies:
     specifier: ^6.18.7
     version: 6.18.7(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.14.17)(@mui/system@5.14.17)(@types/react@18.2.36)(date-fns@2.30.0)(react-dom@18.2.0)(react@18.2.0)
   '@musaev/ionic-ui':
-    specifier: 0.0.1-3
-    version: 0.0.1-3(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.14.17)(@react-spring/web@9.7.3)(react-dom@18.2.0)(react@18.2.0)
+    specifier: 0.0.1-5
+    version: 0.0.1-5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@ionic/react@7.5.3)(@mui/material@5.14.17)(@react-spring/web@9.7.3)(react-dom@18.2.0)(react@18.2.0)
   '@react-spring/web':
     specifier: ^9.7.3
     version: 9.7.3(react-dom@18.2.0)(react@18.2.0)
@@ -2418,11 +2418,12 @@ packages:
       - '@types/react'
     dev: false
 
-  /@musaev/ionic-ui@0.0.1-3(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.14.17)(@react-spring/web@9.7.3)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-zlw0rL56TSGnTWz6XW/k25FSdFLrCzzI4TjBoU9y/7Dzs/jVAOdY6esD9dTvfjfh2CNu5jXL2ST3FSHtKdMwSw==}
+  /@musaev/ionic-ui@0.0.1-5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@ionic/react@7.5.3)(@mui/material@5.14.17)(@react-spring/web@9.7.3)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-hf4tWRV0J8TPf1wkXNKRd8ohpxr6vj9/qbZEGeRviwPP7V/jUhKYTzKE7WDh1lrPab2jDQH3ovWGTpPzUEVUFw==}
     peerDependencies:
       '@emotion/react': ^11.11.3
       '@emotion/styled': ^11.11.0
+      '@ionic/react': ^7.6.5
       '@mui/material': ^5.15.1
       '@react-spring/web': ^9.7.3
       react: ^18.2.0
@@ -2430,6 +2431,7 @@ packages:
     dependencies:
       '@emotion/react': 11.11.1(@types/react@18.2.36)(react@18.2.0)
       '@emotion/styled': 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.36)(react@18.2.0)
+      '@ionic/react': 7.5.3(react-dom@18.2.0)(react@18.2.0)
       '@mui/material': 5.14.17(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.36)(react-dom@18.2.0)(react@18.2.0)
       '@react-spring/web': 9.7.3(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0

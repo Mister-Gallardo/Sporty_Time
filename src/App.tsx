@@ -42,7 +42,7 @@ const desktopRoutes = [
   {
     path: '/',
     exact: true,
-    component: MatchesPage,
+    component: () => <Redirect to="/book-court" />,
   },
   {
     path: '/book-court',
