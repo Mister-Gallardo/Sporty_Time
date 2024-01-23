@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { ModalContainer } from './ModalContainer';
+import { ModalContainer } from '../ModalContainer';
 import {
   Box,
   Button,
@@ -15,22 +15,23 @@ import {
   TextField,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { getLocations } from '../../services/club/service';
+import { getLocations } from '../../../services/club/service';
 import { transliterate } from 'transliteration';
 import { debounce } from 'lodash-es';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import EastRoundedIcon from '@mui/icons-material/EastRounded';
 import { Geolocation } from '@capacitor/geolocation';
-import useToggle from '../../hooks/useToggle';
+import useToggle from '../../../hooks/useToggle';
 
 interface ISelectClubLocationModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
+  handleClose?: () => void;
 }
 
 export const SelectClubLocationModal: React.FC<
   ISelectClubLocationModalProps
-> = ({ openState, handleModal }) => {
+> = ({ openState, handleModal, handleClose }) => {
   const { setValue, getValues } = useFormContext();
 
   const [currentSearchTerm, setCurrentSearchTerm] = useState<string>('');
@@ -82,7 +83,10 @@ export const SelectClubLocationModal: React.FC<
   return (
     <ModalContainer
       openState={openState}
-      handleModal={handleModal}
+      handleModal={() => {
+        if (handleClose) return handleClose();
+        handleModal(false);
+      }}
       headerTitle="Где Вы хотите играть?"
     >
       <Box height="80vh">

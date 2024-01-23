@@ -7,6 +7,7 @@ export enum MatchTimeRange {
   MORNING = '6:00:00-12:00:00',
   AFTERNOON = '12:00:00-18:00:00',
   EVENING = '18:00:00-23:59:00',
+  SPECIFIC = 'SPECIFIC',
 }
 
 export interface IAvailableTime {

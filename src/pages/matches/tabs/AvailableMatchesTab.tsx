@@ -1,28 +1,25 @@
-import { Box, Button, IconButton, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box, Button, Typography } from '@mui/material';
 import { isPlatform } from '@ionic/react';
 import { useQuery } from '@tanstack/react-query';
 import {
   getAvailableMatches,
   getAvailableNoRatingMatches,
 } from '../../../services/matches/service';
-import { AdvancedFilterAvailableMatchesModal } from '../../../components/modals/AdvancedFilterAvailableMatchesModal';
-import { FilterAvailableMatchesModal } from '../../../components/modals/FilterAvailableMatchesModal';
+import { FilterMatchesModal } from '../../../components/modals/filters-modals/available-matches/FilterMatchesModal';
 import { AvailableMatchCard } from '../../../components/molecules/match-cards/AvailableMatchCard';
 import { ClubMultipleDatesCard } from '../../../components/molecules/ClubMultipleDatesCard';
-import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { Accordion } from '../../../components/molecules/Accordion';
-// import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
-import { getSportName } from '../../../helpers/getSportName';
+import { MatchTimeRange } from '../../../services/club/interface';
 import { getClubs } from '../../../services/club/service';
 import { FormProvider, useForm } from 'react-hook-form';
 import noResults from '../../../images/no-results.svg';
+import { FiltersRow } from './components/FiltersRow';
 import useToggle from '../../../hooks/useToggle';
-import { Sport } from '../../../types';
-import { useEffect, useState } from 'react';
-import { MatchTimeRange } from '../../../services/club/interface';
 
 export interface FilterFormDate {
+  sportLevel: string;
   sport: string;
   clubsId: { value: number }[];
   gamedates: { value: Date }[];
@@ -38,7 +35,6 @@ const isMobile = isPlatform('mobile');
 
 export function AvailableMatchesTab() {
   const [openFilterModal, setOpenFilterModal] = useToggle();
-  const [openAdvancedFilterModal, setOpenAdvancedFilterModal] = useToggle();
 
   const filtersFromLocalStorage = localStorage.getItem(
     'availableMatchesFilters',
@@ -54,6 +50,7 @@ export function AvailableMatchesTab() {
 
   const filterParams = useForm<FilterFormDate>({
     defaultValues: {
+      sportLevel: localFilters?.sportLevel || '',
       sport: localFilters?.sport || '',
       clubsId: localFilters?.clubsId || [],
       gamedates: localFilters?.gamedates || [],
@@ -61,11 +58,11 @@ export function AvailableMatchesTab() {
       long: localFilters?.long || 0,
       selectedLocation: localFilters?.selectedLocation || 'Выбрать локацию',
       time: localFilters?.time || MatchTimeRange.ALL,
+      times: localFilters?.times || [],
       range: localFilters?.range || 1,
     },
   });
-  const { watch, getValues } = filterParams;
-
+  const { watch } = filterParams;
   const { sport, gamedates, clubsId, time } = watch();
 
   const gameDatesToString = gamedates
@@ -123,112 +120,16 @@ export function AvailableMatchesTab() {
 
     localStorage.setItem('availableMatchesFilters', JSON.stringify(watch()));
     if (openFilterModal) setOpenFilterModal();
-    // if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
-  };
-
-  const onClearFilters = () => {
-    localStorage.removeItem('availableMatchesFilters');
-    window.location.reload();
   };
 
   const isMainFilters = !!sport && gamedates.length > 0;
 
   return (
     <Box position="relative">
-      <Box
-        position={isMobile ? 'fixed' : 'unset'}
-        zIndex={1}
-        width="100%"
-        display="flex"
-        alignItems="center"
-        gap={1}
-        bgcolor="#fff"
-        borderBottom="1px solid #eaeaea"
-        height={50}
-        px={1}
-      >
-        {/* {isMainFilters && (
-          <IconButton
-            onClick={() => setOpenAdvancedFilterModal()}
-            sx={{ padding: 0 }}
-            disabled
-          >
-            <TuneOutlinedIcon />
-          </IconButton>
-        )} */}
-        {isMainFilters ? (
-          <>
-            <Box
-              display="flex"
-              overflow="auto"
-              gap={1}
-              onClick={() => setOpenFilterModal()}
-              sx={{
-                cursor: 'pointer',
-                '&::-webkit-scrollbar': {
-                  display: 'none',
-                },
-                msOverflowStyle: 'none',
-              }}
-            >
-              <Typography
-                px={2}
-                py={0.5}
-                bgcolor="#0D2433"
-                color="#fff"
-                borderRadius={5}
-                fontSize={13}
-                lineHeight={1.2}
-                whiteSpace="nowrap"
-              >
-                {getSportName(sport as Sport)}
-              </Typography>
-              <Typography
-                px={2}
-                py={0.5}
-                bgcolor="#0D2433"
-                color="#fff"
-                borderRadius={5}
-                fontSize={13}
-                lineHeight={1.2}
-                whiteSpace="nowrap"
-                maxWidth={210}
-                noWrap
-              >
-                {gamedates
-                  .map((date) => getDayFormat(date.value, EType.MONTH_AND_DAY))
-                  .join(' | ')}
-              </Typography>
-            </Box>
-            <Button
-              onClick={onClearFilters}
-              variant="outlined"
-              sx={{
-                fontSize: 13,
-                borderRadius: 5,
-                py: 0,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              Сбросить все
-            </Button>
-          </>
-        ) : (
-          <Button
-            onClick={() => setOpenFilterModal()}
-            sx={{
-              fontSize: 13,
-              color: '#333',
-              border: '1px solid #eee',
-              borderRadius: 5,
-              padding: 0,
-              paddingX: 1,
-            }}
-          >
-            Спорт | Клубы | Даты и время
-          </Button>
-        )}
-      </Box>
+      <FormProvider {...filterParams}>
+        <FiltersRow handleModal={setOpenFilterModal} />
+      </FormProvider>
+
       <Box
         maxWidth={isMobile ? 'unset' : 1240}
         mb={isMobile ? '2.5rem' : 'unset'}
@@ -328,15 +229,9 @@ export function AvailableMatchesTab() {
       </Box>
 
       <FormProvider {...filterParams}>
-        <FilterAvailableMatchesModal
+        <FilterMatchesModal
           openState={openFilterModal}
           handleModal={setOpenFilterModal}
-          onApply={onFiltersApply}
-          localFilters={localFilters}
-        />
-        <AdvancedFilterAvailableMatchesModal
-          openState={openAdvancedFilterModal}
-          handleModal={setOpenAdvancedFilterModal}
           onApply={onFiltersApply}
         />
       </FormProvider>
