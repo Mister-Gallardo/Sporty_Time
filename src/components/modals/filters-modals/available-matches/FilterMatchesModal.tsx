@@ -1,14 +1,14 @@
 import React from 'react';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { SelectClubLocationModal } from '../SelectClubLocationModal';
+import useSearchParams from '../../../../hooks/useSearchParams';
 import { ModalContainer } from '../../ModalContainer';
 import useToggle from '../../../../hooks/useToggle';
-import { PlayLocation } from './PlayLocationModal';
 import { Box, IconButton } from '@mui/material';
-import { SportType } from './SportTypeModal';
-import { PlayDate } from './PlayDateModal';
+import { PlayLocation } from './PlayLocation';
 import { AskForLevel } from './AskForLevel';
-import useSearchParams from '../../../../hooks/useSearchParams';
+import { SportType } from './SportType';
+import { PlayDate } from './PlayDate';
 
 interface IFilterMatchesModalProps {
   openState: boolean;

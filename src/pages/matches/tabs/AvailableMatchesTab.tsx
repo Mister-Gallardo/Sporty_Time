@@ -66,7 +66,8 @@ export function AvailableMatchesTab() {
 
   const [user] = usePlayerProfile();
 
-  // If user already passed some sport test - set this sport as default and navigate him to the next filter-question
+  // If user already passed some sport test - set this sport as default
+  // and navigate him to the next filter-question
   useEffect(() => {
     if (!user) return;
 

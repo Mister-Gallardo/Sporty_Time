@@ -8,6 +8,7 @@ import { ERadioLabelType, Sport } from '../../../types';
 import { isPlatform } from '@ionic/react';
 import { useMutation } from '@tanstack/react-query';
 import { createSportRating } from '../../../services/rating';
+import { QuestionsContainer } from '../components/QuestionsContainer';
 
 // leave just for now
 const getSportAndLevel = (sport: string, level: string) => {
@@ -139,7 +140,7 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
   }
 
   return (
-    <Box mt={1}>
+    <QuestionsContainer>
       <Box
         display="flex"
         flexDirection="column"
@@ -218,6 +219,6 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
           Подтвердить
         </Button>
       </Box>
-    </Box>
+    </QuestionsContainer>
   );
 }

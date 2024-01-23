@@ -60,7 +60,7 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({
   useEffect(() => {
     checkLocationPermission();
   }, []);
-  console.log(watch());
+
   return (
     <>
       <Box mb={6} height="100%">

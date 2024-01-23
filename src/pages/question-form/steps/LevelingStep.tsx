@@ -5,17 +5,21 @@ import { QuestionTitle } from '../components/QuestionTitle';
 import { InfoRounded } from '@mui/icons-material';
 import { ERadioLabelType } from '../../../types';
 import { leveling } from '../questions';
+import { QuestionsContainer } from '../components/QuestionsContainer';
+import { isPlatform } from '@ionic/react';
 
 interface LevelingStepProps {
   handleStep: (stap: number) => void;
 }
+
+const isMobile = isPlatform('mobile');
 
 export function LevelingStep({ handleStep }: LevelingStepProps) {
   const sport = localStorage.getItem('sport')?.toLowerCase() || '';
   const [level, setLevel] = useState<string>('');
 
   return (
-    <Box mt={1}>
+    <QuestionsContainer>
       <Box>
         <QuestionTitle title="Как думаете, на каком уровне Вы находитесь?" />
         <Box
@@ -57,25 +61,29 @@ export function LevelingStep({ handleStep }: LevelingStepProps) {
         </RadioGroup>
       </Box>
 
-      <Button
-        variant="contained"
-        onClick={() => {
-          handleStep(1);
-          localStorage.setItem('userSelectedLevel', level);
-        }}
-        sx={{
-          position: 'fixed',
-          left: 16,
-          right: 16,
-          width: 'auto',
-          bottom: 10,
-          fontSize: 18,
-          borderRadius: 20,
-        }}
-        disabled={!level}
+      <Box
+        position="fixed"
+        bottom={0}
+        display="flex"
+        justifyContent="center"
+        left={16}
+        right={16}
+        bgcolor="white"
+        paddingY={1.25}
       >
-        Подтвердить
-      </Button>
-    </Box>
+        <Button
+          onClick={() => {
+            handleStep(1);
+            localStorage.setItem('userSelectedLevel', level);
+          }}
+          variant="contained"
+          sx={{ fontSize: 18, borderRadius: 20, px: isMobile ? 'unset' : 10 }}
+          disabled={!level}
+          fullWidth={isMobile}
+        >
+          Подтвердить
+        </Button>
+      </Box>
+    </QuestionsContainer>
   );
 }
