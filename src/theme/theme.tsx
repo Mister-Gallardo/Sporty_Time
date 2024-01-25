@@ -2,9 +2,10 @@ import { createTheme } from '@mui/material';
 
 export const theme = createTheme({
   palette: {
-    primary: { main: '#3462f1' },
-    secondary: { main: '#0f2333' },
+    primary: { main: '#262d58' },
+    secondary: { main: '#333' },
     error: { main: '#ef5350' },
+    success: { main: '#6cbf6c' },
   },
   typography: {
     fontFamily: 'Raleway',

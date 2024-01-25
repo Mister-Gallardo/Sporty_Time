@@ -9,6 +9,7 @@ import { isPlatform } from '@ionic/react';
 import { useMutation } from '@tanstack/react-query';
 import { createSportRating } from '../../../services/rating';
 import { QuestionsContainer } from '../components/QuestionsContainer';
+import useSearchParams from '../../../hooks/useSearchParams';
 
 // leave just for now
 const getSportAndLevel = (sport: string, level: string) => {
@@ -29,13 +30,22 @@ const getSportAndLevel = (sport: string, level: string) => {
 };
 
 interface QuestionsStepStepProps {
-  handleStep: (stap: number) => void;
+  handleStep: (step: number) => void;
 }
 
 export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
   const isMobile = isPlatform('mobile');
 
-  const allQuestions = useMemo(() => getQuestionsByLvlAndSport(), []);
+  const [getParam] = useSearchParams();
+  const searchSport =
+    typeof getParam('sport') === 'string'
+      ? getParam('sport')!.toLocaleLowerCase()
+      : '';
+
+  const allQuestions = useMemo(
+    () => getQuestionsByLvlAndSport(searchSport),
+    [],
+  );
 
   const [currentQuestions, setCurrentQuestions] = useState<IQuestion[]>([]);
   const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);

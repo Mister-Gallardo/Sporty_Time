@@ -4,14 +4,22 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { RadioLabel } from '../../../molecules/RadioLabel';
 import { ERadioLabelType, SportLevel } from '../../../../types';
 import { FilterButton } from '../FilterButton';
+import { useHistory } from 'react-router';
 
 interface IAskForLevelProps {
+  handleModal: (val?: boolean) => void;
   handleStep: (step: number) => void;
 }
 
-export const AskForLevel: React.FC<IAskForLevelProps> = ({ handleStep }) => {
+export const AskForLevel: React.FC<IAskForLevelProps> = ({
+  handleModal,
+  handleStep,
+}) => {
+  const history = useHistory();
+
   const { control, watch } = useFormContext();
-  const { sportLevel } = watch();
+  const { sport, sportLevel } = watch();
+
   return (
     <>
       <Box height="100%" mb={6}>
@@ -54,7 +62,13 @@ export const AskForLevel: React.FC<IAskForLevelProps> = ({ handleStep }) => {
           )}
         />
 
-        <Button sx={{ mt: 2, fontSize: 13 }}>
+        <Button
+          sx={{ mt: 2, fontSize: 13 }}
+          onClick={() => {
+            handleModal(false);
+            history.push(`/question-form?sport=${sport}&step=2`);
+          }}
+        >
           Хотите пройти тестирование?
         </Button>
       </Box>

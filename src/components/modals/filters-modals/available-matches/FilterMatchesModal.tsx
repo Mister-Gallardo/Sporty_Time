@@ -24,10 +24,9 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
   const [openSelectLocation, setOpenSelectLocation] = useToggle();
 
   const [getIndex, setIndex] = useSearchParams();
-  const currentStep = getIndex('step') ? +getIndex('step')! : 1;
+  const currentStep = getIndex('q') ? +getIndex('q')! : 1;
 
-  const handleStep = (step: number) =>
-    setIndex('step', `${currentStep + step}`);
+  const handleStep = (step: number) => setIndex('q', `${currentStep + step}`);
 
   const modalTitle =
     currentStep === 1
@@ -68,7 +67,9 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
       >
         <Box height="100%" display="flex" flexDirection="column">
           {currentStep === 1 && <SportType handleStep={handleStep} />}
-          {currentStep === 2 && <AskForLevel handleStep={handleStep} />}
+          {currentStep === 2 && (
+            <AskForLevel handleStep={handleStep} handleModal={handleModal} />
+          )}
           {currentStep === 3 && (
             <PlayLocation
               handleStep={handleStep}

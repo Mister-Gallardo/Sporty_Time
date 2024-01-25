@@ -73,7 +73,7 @@ export function AvailableMatchesTab() {
 
     const isRating =
       user.ratingPadel || user.ratingTennis || user.ratingPickleball;
-    if (isRating) setIndex('step', '3');
+    if (isRating) setIndex('q', '3');
 
     if (user.ratingPadel) return setValue('sport', Sport.PADEL);
     if (user.ratingTennis) return setValue('sport', Sport.TENNIS);

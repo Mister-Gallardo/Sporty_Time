@@ -1,25 +1,27 @@
 import { useHistory } from 'react-router';
 import { Avatar, Box, Button, Fade, Typography } from '@mui/material';
-import { usePlayerProfile, useUserInfo } from '../../../services/api/hooks';
+import { usePlayerProfile } from '../../../services/api/hooks';
 import { SportsBaseballOutlined } from '@mui/icons-material';
 import { BgContainer } from '../components/BgContainer';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { isPlatform } from '@ionic/react';
+import useSearchParams from '../../../hooks/useSearchParams';
+
+const isMobile = isPlatform('mobile');
 
 export function ResultsStep() {
-  const isMobile = isPlatform('mobile');
   const history = useHistory();
 
   const [profile] = usePlayerProfile();
 
-  const sport = localStorage.getItem('sport') || '';
+  const [getParam] = useSearchParams();
+  const sport = getParam('sport') || '';
   const rating = profile ? getSportRating(profile, sport) : 0;
 
-  const [user] = useUserInfo();
-  const firstName = user?.firstname || '';
-  const lastName = user?.lastname || '';
+  const firstName = profile?.user?.firstname || '';
+  const lastName = profile?.user?.lastname || '';
 
-  const initials = firstName && lastName && `${firstName[0]} ${lastName[0]}`;
+  const initials = firstName && lastName && `${firstName[0]}${lastName[0]}`;
 
   return (
     <>

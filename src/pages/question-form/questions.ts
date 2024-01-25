@@ -775,10 +775,10 @@ const pickleballCompet = {
   },
 };
 
-export const getQuestionsByLvlAndSport = () => {
+export const getQuestionsByLvlAndSport = (urlSport: string) => {
   const sport = localStorage.getItem('sport');
   const level = localStorage.getItem('userSelectedLevel');
-  const currentSport = sport ? sport.toLocaleLowerCase() : '';
+  const currentSport = sport ? sport.toLocaleLowerCase() : urlSport;
   const currentLevel = level ? level.toLocaleLowerCase() : '';
 
   const selectedLevel = leveling.find((item) => item.id === currentLevel);
