@@ -1,15 +1,16 @@
 import { Box, Typography } from '@mui/material';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import SportsBaseballOutlinedIcon from '@mui/icons-material/SportsBaseballOutlined';
-import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
-import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import { MatchBlock } from '../../../../components/molecules/MatchBlock';
 import booking from '../../../../images/home/booking-bg.png';
 import matchbg from '../../../../images/home/match-bg.png';
 function PerfectMatch() {
   return (
     <Box>
-      <Typography variant="h2">Найдите свою идеальную пару</Typography>
+      <Typography variant="h2">
+        Находите открытые матчи по теннису, падел и пиклбол в вашем городе,
+        подключайтесь к ним и играйте в дружеские и соревновательные матчи!
+      </Typography>
       <Box
         sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}
       >
@@ -34,7 +35,7 @@ function PerfectMatch() {
             />
           }
         />
-        <MatchBlock
+        {/* <MatchBlock
           disabled
           title="Занятия"
           icon={
@@ -47,7 +48,7 @@ function PerfectMatch() {
           icon={
             <ShieldOutlinedIcon sx={{ fontSize: '1.5rem', color: '#fff' }} />
           }
-        />
+        /> */}
       </Box>
     </Box>
   );
