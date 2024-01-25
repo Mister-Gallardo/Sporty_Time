@@ -22,7 +22,7 @@ function RememberSection() {
             justifyContent: 'center',
             width: '40px',
             aspectRatio: '1/1',
-            background: '#fbfbfb',
+            background: '#fff',
             borderRadius: '5px',
           }}
         >

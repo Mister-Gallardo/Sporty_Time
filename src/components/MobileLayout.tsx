@@ -53,7 +53,7 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
               borderTop: '1px solid #cdcccc',
             }}
           >
-            <IonTabButton ref={() => defaultRef} tab="play" href="/">
+            <IonTabButton ref={() => defaultRef} tab="play" href="/play">
               <IonIcon size="medium" icon={tennisball} />
               <Typography variant="body2">Играть</Typography>
             </IonTabButton>

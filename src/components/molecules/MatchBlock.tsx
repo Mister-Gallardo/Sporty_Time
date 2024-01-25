@@ -42,7 +42,7 @@ export const MatchBlock = (props: IMatchBlockProps) => {
         />
       )}
 
-      <Box
+      {/* <Box
         sx={{
           position: 'relative',
           display: 'flex',
@@ -55,9 +55,9 @@ export const MatchBlock = (props: IMatchBlockProps) => {
         }}
       >
         {props?.icon}
-      </Box>
+      </Box> */}
       <Typography
-        sx={{ padding: '8px 0 5px 0', fontWeight: '600' }}
+        sx={{ padding: '8px 0 5px 0', mt: 4, fontWeight: '600' }}
         variant="body1"
       >
         {props?.title}

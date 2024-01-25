@@ -116,7 +116,7 @@ export function BookTab() {
       <Box
         sx={{
           padding: '10px 17px',
-          background: '#fbfbfb',
+          background: '#fff',
           paddingBlock: '1.25rem',
           minHeight: '100vh',
         }}

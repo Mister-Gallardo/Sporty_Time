@@ -8,7 +8,7 @@ export const theme = createTheme({
     success: { main: '#6cbf6c' },
   },
   typography: {
-    fontFamily: 'Raleway',
+    fontFamily: 'Montserrat',
     fontSize: 14.75,
     h2: {
       fontWeight: 600,

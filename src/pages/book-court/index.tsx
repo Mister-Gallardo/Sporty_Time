@@ -20,8 +20,8 @@ import { SelectSportModal } from '../../components/modals/SelectSportModal';
 import { getSportName } from '../../helpers/getSportName';
 import { Sport } from '../../types';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
-import { SelectClubLocationModal } from '../../components/modals/filters-modals/SelectClubLocationModal';
 import { isBefore, isToday, parse } from 'date-fns';
+import { SelectClubLocationModal } from '../../components/modals/filters-modals/SelectClubLocationModal';
 
 export interface FilterFormDate {
   sport: Sport;
@@ -57,11 +57,13 @@ export function BookCourt() {
     filtersFromLocalStorage ? JSON.parse(filtersFromLocalStorage) : null,
   );
 
+  const gameDate = Date.parse(localFilters?.gamedates)
+    ? new Date(localFilters?.gamedates)
+    : now;
   const filterParams = useForm<FilterFormDate>({
     defaultValues: {
       sport: localFilters?.sport || '',
-      gamedates:
-        new Date(localFilters?.gamedates) < now ? now : localFilters?.gamedates,
+      gamedates: gameDate < now ? now : gameDate,
       lat: localFilters?.lat || 0,
       long: localFilters?.long || 0,
       timefrom: localFilters?.timefrom || countDefaultTime(),

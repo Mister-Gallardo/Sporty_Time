@@ -100,6 +100,11 @@ const mobileRoutes = [
   {
     path: '/',
     exact: true,
+    component: () => <Redirect to="/play" />,
+  },
+  {
+    path: '/play',
+    exact: true,
     component: MobilePlayPage,
   },
   {
