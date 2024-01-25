@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import { Avatar, Box, Button, Fade, Typography } from '@mui/material';
 import {
   SportsBaseballOutlined,
   SportsBasketballOutlined,
@@ -18,14 +18,10 @@ import { useIonToast } from '@ionic/react';
 import useSearchParams from '../../../hooks/useSearchParams';
 
 interface ChooseYourSportProps {
-  firstName: string;
   handleStep: (step: number) => void;
 }
 
-export function ChooseYourSport({
-  handleStep,
-  firstName,
-}: ChooseYourSportProps) {
+export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
   const history = useHistory();
   const [getParam, setParam] = useSearchParams();
 
@@ -86,110 +82,116 @@ export function ChooseYourSport({
   };
 
   return (
-    <BgContainer>
-      <Box color="#fff">
-        <Typography fontSize={22} fontWeight={600} textAlign="center">
-          Привет {firstName}!
-        </Typography>
-        <Typography textAlign="center">
-          Заполните свой профиль, чтобы максимально использовать возможности
-          Sportytime
-        </Typography>
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          mt={2}
-          mb={3}
-        >
-          <Avatar
-            src={`https://playpadel.lakileki.ru${player?.user?.avatar}`}
-            sx={{
-              width: '75px',
-              height: '75px',
-              border: '2px solid #fff',
-            }}
-          />
-          <Button onClick={takePhoto} sx={{ color: '#fff' }}>
-            Изменить фото
-          </Button>
-        </Box>
-      </Box>
-      <Box mb={5} color="#fff">
-        <Typography textAlign="center" mb={4}>
-          Для какого вида спорта Вы хотите узнать уровень?
-        </Typography>
+    <>
+      <Fade in>
         <Box>
-          <SportTypeRow
-            type={Sport.PADEL}
-            icon={<SportsBaseballOutlined />}
-            level={player?.ratingPadel}
-            isActive={selectedSport === Sport.PADEL}
-            onClick={() => {
-              setParam('sport', Sport.PADEL);
-              setSelectedSport(Sport.PADEL);
-            }}
-          />
-          <SportTypeRow
-            type={Sport.TENNIS}
-            icon={<SportsBasketballOutlined />}
-            level={player?.ratingTennis}
-            isActive={selectedSport === Sport.TENNIS}
-            onClick={() => {
-              setParam('sport', Sport.TENNIS);
-              setSelectedSport(Sport.TENNIS);
-            }}
-          />
-          <SportTypeRow
-            type={Sport.PICKLEBALL}
-            icon={<SportsTennisOutlined />}
-            level={player?.ratingPickleball}
-            isActive={selectedSport === Sport.PICKLEBALL}
-            onClick={() => {
-              setParam('sport', Sport.PICKLEBALL);
-              setSelectedSport(Sport.PICKLEBALL);
-            }}
-          />
+          <BgContainer>
+            <Box color="#fff">
+              <Typography fontSize={22} fontWeight={600} textAlign="center">
+                Привет {player?.user?.firstname}!
+              </Typography>
+              <Typography textAlign="center">
+                Заполните свой профиль, чтобы максимально использовать
+                возможности Sportytime
+              </Typography>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                mt={2}
+                mb={3}
+              >
+                <Avatar
+                  src={`https://playpadel.lakileki.ru${player?.user?.avatar}`}
+                  sx={{
+                    width: '75px',
+                    height: '75px',
+                    border: '2px solid #fff',
+                  }}
+                />
+                <Button onClick={takePhoto} sx={{ color: '#fff' }}>
+                  Изменить фото
+                </Button>
+              </Box>
+            </Box>
+            <Box mb={5} color="#fff">
+              <Typography textAlign="center" mb={4}>
+                Для какого вида спорта Вы хотите узнать уровень?
+              </Typography>
+              <Box>
+                <SportTypeRow
+                  type={Sport.PADEL}
+                  icon={<SportsBaseballOutlined />}
+                  level={player?.ratingPadel}
+                  isActive={selectedSport === Sport.PADEL}
+                  onClick={() => {
+                    setParam('sport', Sport.PADEL);
+                    setSelectedSport(Sport.PADEL);
+                  }}
+                />
+                <SportTypeRow
+                  type={Sport.TENNIS}
+                  icon={<SportsBasketballOutlined />}
+                  level={player?.ratingTennis}
+                  isActive={selectedSport === Sport.TENNIS}
+                  onClick={() => {
+                    setParam('sport', Sport.TENNIS);
+                    setSelectedSport(Sport.TENNIS);
+                  }}
+                />
+                <SportTypeRow
+                  type={Sport.PICKLEBALL}
+                  icon={<SportsTennisOutlined />}
+                  level={player?.ratingPickleball}
+                  isActive={selectedSport === Sport.PICKLEBALL}
+                  onClick={() => {
+                    setParam('sport', Sport.PICKLEBALL);
+                    setSelectedSport(Sport.PICKLEBALL);
+                  }}
+                />
+              </Box>
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="flex-end"
+              gap={1}
+              width="100%"
+              height={90}
+            >
+              {currentSportRate ? (
+                <Button
+                  onClick={() => history.push('/')}
+                  variant="contained"
+                  sx={{ borderRadius: 20 }}
+                >
+                  Продолжить
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => {
+                      handleStep(1);
+                      localStorage.setItem('sport', selectedSport);
+                    }}
+                    variant="contained"
+                    sx={{ borderRadius: 20 }}
+                  >
+                    Начать
+                  </Button>
+                  <Button
+                    onClick={() => history.push('/')}
+                    variant="text"
+                    sx={{ borderRadius: 20 }}
+                  >
+                    Не сейчас
+                  </Button>
+                </>
+              )}
+            </Box>
+          </BgContainer>
         </Box>
-      </Box>
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="flex-end"
-        gap={1}
-        width="100%"
-        height={90}
-      >
-        {currentSportRate ? (
-          <Button
-            onClick={() => history.push('/')}
-            variant="contained"
-            sx={{ borderRadius: 20 }}
-          >
-            Продолжить
-          </Button>
-        ) : (
-          <>
-            <Button
-              onClick={() => {
-                handleStep(1);
-                localStorage.setItem('sport', selectedSport);
-              }}
-              variant="contained"
-              sx={{ borderRadius: 20 }}
-            >
-              Начать
-            </Button>
-            <Button
-              onClick={() => history.push('/')}
-              variant="text"
-              sx={{ borderRadius: 20 }}
-            >
-              Не сейчас
-            </Button>
-          </>
-        )}
-      </Box>
-    </BgContainer>
+      </Fade>
+    </>
   );
 }

@@ -36,6 +36,7 @@ export const MatchBlock = (props: IMatchBlockProps) => {
             borderRadius: '8px 8px 0 0',
             width: '100%',
             aspectRatio: '16 / 9',
+            objectFit: 'cover',
           }}
           src={props.img}
         />

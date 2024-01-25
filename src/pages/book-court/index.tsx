@@ -20,7 +20,7 @@ import { SelectSportModal } from '../../components/modals/SelectSportModal';
 import { getSportName } from '../../helpers/getSportName';
 import { Sport } from '../../types';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
-import { SelectClubLocationModal } from '../../components/modals/SelectClubLocationModal';
+import { SelectClubLocationModal } from '../../components/modals/filters-modals/SelectClubLocationModal';
 import { isBefore, isToday, parse } from 'date-fns';
 
 export interface FilterFormDate {

@@ -17,10 +17,19 @@ export const BgContainer = ({ children }: { children: JSX.Element[] }) => {
             minHeight: '100dvh',
             backgroundImage: `url(${mobile_bg})`,
             backgroundSize: 'cover',
+
             paddingX: 2,
           }}
         >
-          {children}
+          <Box
+            position="absolute"
+            top={0}
+            right={0}
+            left={0}
+            bottom={0}
+            bgcolor="#1f1f1fb0"
+          />
+          <Box zIndex={1}>{children}</Box>
         </Box>
       ) : (
         <>
@@ -34,6 +43,14 @@ export const BgContainer = ({ children }: { children: JSX.Element[] }) => {
               backgroundImage: `url(${desktop_bg})`,
               backgroundSize: 'cover',
             }}
+          />
+          <Box
+            position="absolute"
+            top={0}
+            right={0}
+            left={0}
+            bottom={0}
+            bgcolor="#1f1f1fb0"
           />
           <Box display="flex" justifyContent="center">
             <Box

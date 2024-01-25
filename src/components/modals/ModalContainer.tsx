@@ -1,10 +1,9 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 import {
   IonButton,
   IonButtons,
   IonHeader,
   IonModal,
-  IonTitle,
   IonToolbar,
   isPlatform,
 } from '@ionic/react';
@@ -17,6 +16,7 @@ interface IModalContainer extends PropsWithChildren<{}> {
   handleModal: (val?: boolean) => void;
   headerTitle: string;
   initialBreakpoint?: number;
+  headerButton?: ReactNode | null;
 }
 
 export const ModalContainer: React.FC<IModalContainer> = ({
@@ -25,6 +25,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
   handleModal,
   headerTitle,
   // initialBreakpoint = 1,
+  headerButton,
 }) => {
   const isMobile = isPlatform('mobile');
 
@@ -42,7 +43,12 @@ export const ModalContainer: React.FC<IModalContainer> = ({
         >
           <IonHeader>
             <IonToolbar>
-              <IonTitle className="ion-padding">{headerTitle}</IonTitle>
+              <IonButtons slot="start" style={{ width: 40 }}>
+                {headerButton}
+              </IonButtons>
+              <Typography textAlign="center" fontWeight={600} fontSize={16}>
+                {headerTitle}
+              </Typography>
               <IonButtons slot="end">
                 <IonButton onClick={() => handleModal()}>
                   <CloseRoundedIcon sx={{ color: '#000' }} />
@@ -55,7 +61,7 @@ export const ModalContainer: React.FC<IModalContainer> = ({
           </IonScrollableModalContent>
         </IonModal>
       ) : (
-        <Modal open={openState} onClose={() => handleModal()}>
+        <Modal open={openState} onClose={() => handleModal()} disableAutoFocus>
           <Box
             position="relative"
             borderRadius={3}
@@ -63,7 +69,6 @@ export const ModalContainer: React.FC<IModalContainer> = ({
             width="100%"
             minWidth={450}
             maxWidth="50vw"
-            sx={{ outline: 'none' }}
           >
             <Box
               display="flex"
@@ -71,11 +76,12 @@ export const ModalContainer: React.FC<IModalContainer> = ({
               justifyContent="space-between"
               bgcolor="#fff"
             >
+              {headerButton}
               <Typography
+                fontSize={16}
                 textAlign="center"
                 flexGrow={1}
                 variant="h2"
-                fontSize={18}
                 pt={2}
               >
                 {headerTitle}

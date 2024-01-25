@@ -31,27 +31,6 @@ import useToggle from '../../hooks/useToggle';
 import { Geolocation } from '@capacitor/geolocation';
 import { MatchTimeRange } from '../../services/club/interface';
 
-// const times = [
-//   '6:00',
-//   '7:00',
-//   '8:00',
-//   '9:00',
-//   '10:00',
-//   '11:00',
-//   '12:00',
-//   '13:00',
-//   '14:00',
-//   '15:00',
-//   '16:00',
-//   '17:00',
-//   '18:00',
-//   '19:00',
-//   '20:00',
-//   '21:00',
-//   '22:00',
-//   '23:00',
-// ];
-
 interface IFilterAvailableMatchesModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
@@ -87,16 +66,6 @@ export const FilterAvailableMatchesModal: React.FC<
     control,
     name: 'clubsId',
   });
-
-  // const {
-  //   fields: timeFields,
-  //   append: timeAppend,
-  //   remove: timeRemove,
-  // } = useFieldArray({
-  //   control,
-  //   name: 'times',
-  //   rules: { maxLength: 6 },
-  // });
 
   const { data: clubs, isLoading: isLoadingClubs } = useQuery({
     queryKey: ['clubs/all', lat, long, sport],
