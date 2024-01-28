@@ -2,8 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Разрешите приложению доступ к вашей библиотеке фотографий.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Разрешите приложению использовать камеру.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Разрешите приложению использовать данные о местоположении.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>For location</string>
+	<string>Разрешите приложению использовать данные о местоположении.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
