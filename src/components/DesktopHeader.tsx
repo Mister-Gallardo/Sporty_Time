@@ -70,6 +70,16 @@ function DesktopHeader() {
               {isAuthorized && (
                 <>
                   <Typography
+                    onClick={() => history.push('/about')}
+                    sx={{
+                      opacity: '0.6',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    О компании
+                  </Typography>
+                  <Typography
                     onClick={() => history.push('/matches')}
                     sx={{
                       opacity: '0.6',

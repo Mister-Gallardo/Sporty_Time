@@ -27,6 +27,7 @@ import { EditProfilePage } from './pages/profile/nested-pages/edit';
 import { MobileEditProfilePage } from './pages/profile/nested-pages/edit/index.mobile';
 import { MobileProfileNavPage } from './pages/profile/nested-pages/navigation/index.mobile';
 import { ProfileNavPage } from './pages/profile/nested-pages/navigation';
+import { AboutPage } from './pages/about';
 
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const DesktopLayout = React.lazy(() => import('./components/DesktopLayout'));
@@ -93,6 +94,11 @@ const desktopRoutes = [
     path: '/profile/navigation',
     exact: true,
     component: ProfileNavPage,
+  },
+  {
+    path: '/about',
+    exact: true,
+    component: AboutPage,
   },
 ] as React.ComponentProps<typeof Route>[];
 
