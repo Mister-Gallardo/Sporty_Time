@@ -1,4 +1,5 @@
 import { CapacitorConfig } from '@capacitor/cli';
+import { version } from './package.json';
 
 const config: CapacitorConfig = {
   appId: 'ru.sportytime',
@@ -9,7 +10,8 @@ const config: CapacitorConfig = {
   },
   plugins: {
     CapacitorUpdater: {
-      updateUrl: "https://playpadel.lakileki.ru/api/versions/latest",
+      updateUrl: "https://sportytime.ru/api/versions/latest",
+      version
     }
   }
 };

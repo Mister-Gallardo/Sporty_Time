@@ -2,6 +2,9 @@ import legacy from '@vitejs/plugin-legacy'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from "url";
+import generateFile from 'vite-plugin-generate-file'
+// @ts-ignore
+import { version } from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,7 +15,15 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    legacy()
+    legacy(),
+    generateFile([{
+      type: 'json',
+      output: './builds/latest.json',
+      data: {
+        version,
+        url: "https://sportytime.ru/builds/latest.zip"
+      }
+    }])
   ],
   assetsInclude: ['**/*.md'],
   server: {

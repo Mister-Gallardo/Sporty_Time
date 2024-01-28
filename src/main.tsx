@@ -6,6 +6,9 @@ import { ThemeProvider } from '@emotion/react';
 import { theme } from './theme/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './theme/variables.css';
+import { isPlatform } from '@ionic/react';
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
+import { Dialog } from '@capacitor/dialog';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
@@ -21,19 +24,17 @@ root.render(
   </React.StrictMode>,
 );
 
-// if (isPlatform('ios') || isPlatform('android')) {
-//   CapacitorUpdater.addListener('updateAvailable', async (res) => {
-//     try {
-//       const { value } = await Dialog.confirm({
-//         title: 'Доступно обновление!',
-//         message: `Версия ${res.bundle.version} готова к загрузке. Начать загрузку сейчас?`,
-//       });
-
-//       if (value) CapacitorUpdater.set(res.bundle);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   });
-
-//   CapacitorUpdater.notifyAppReady();
-// }
+if (isPlatform('ios') || isPlatform('android')) {
+  CapacitorUpdater.notifyAppReady();
+  CapacitorUpdater.addListener('updateAvailable', async (res) => {
+    try {
+      const { value } = await Dialog.confirm({
+        title: 'Доступно обновление!',
+        message: `Версия ${res.bundle.version} готова к установке. Перезагруть приложение сейчас?`,
+      });
+      if (value) CapacitorUpdater.set(res.bundle);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+}
