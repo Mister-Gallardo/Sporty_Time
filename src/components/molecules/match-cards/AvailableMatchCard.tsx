@@ -33,10 +33,11 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
       ? 'Дружеский'
       : '';
 
+  const startsAt = new Date(matchData.booking.startsAt);
   const matchTime = getDayFormat(
-    matchData.gameDate,
+    startsAt,
     EType.MONTH_AND_DAY,
-    matchData?.slot?.time,
+    startsAt.toLocaleTimeString('ru'),
   );
 
   return (
@@ -64,9 +65,9 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
             }}
           >
             <Typography fontSize={13}>
-              {matchData.slot ? 'Забронирован' : 'Нет брони'}
+              {matchData.booking ? 'Забронирован' : 'Нет брони'}
             </Typography>
-            <Typography>{matchData.slot ? '✅' : '🔴'}</Typography>
+            <Typography>{matchData.booking ? '✅' : '🔴'}</Typography>
           </Box>
         </Box>
 

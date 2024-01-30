@@ -2,18 +2,12 @@ import { useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { isPlatform } from '@ionic/react';
 import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
-import { CourtSlot } from '../../services/club/interface';
 import useToggle from '../../hooks/useToggle';
 import { DateBox } from './DateBox';
 import noImage from '../../images/no-image.jpg';
+import { IAvailableTime } from '../../services/club/interface';
 
-interface Slot {
-  time: string;
-  slotId: number;
-  playTime: number;
-}
-
-type AvailableTimeItem = [string, Slot[]];
+type AvailableTimeItem = [string, IAvailableTime[]];
 
 interface IClubMultipleDatesCard {
   title: string;
@@ -107,9 +101,9 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
                   }}
                 >
                   {item[1].length > 0 ? (
-                    item[1].map((slot: CourtSlot) => (
+                    item[1].map((slot) => (
                       <DateBox
-                        key={slot.slotId}
+                        key={slot.time}
                         startTime={slot.time}
                         gameDuration={slot.playTime}
                         onClick={(e: Event) => {

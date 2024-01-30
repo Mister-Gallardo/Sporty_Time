@@ -40,7 +40,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
   } = props;
   if (!court) return;
 
-  const { price, tags } = court;
+  const { price, tags = [] } = court;
   const [payFor, setPayFor] = useState('0');
   const matchDate = getDayFormat(
     date,

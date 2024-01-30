@@ -8,12 +8,12 @@ export enum EMatchType {
 
 export type matchResults = Array<number[]> | null;
 
-export interface IMatchSlot {
-  id: number;
-  time: string;
-  updatedAt: string;
-  createdAt: string;
+export interface Booking {
+  startsAt: Date;
+  endsAt: Date;
   court: Court;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface MatchMember {
@@ -33,9 +33,9 @@ export interface MatchMemberShort {
 }
 
 export interface MatchData {
+  booking: Booking;
   paid: boolean;
   id: number;
-  gameDate: string;
   minutes: number;
   price: number;
   isPrivate: boolean;
@@ -45,7 +45,6 @@ export interface MatchData {
   confirmMatchResults: boolean;
   winningTeam: string | null;
   matchBookings: MatchMember[];
-  slot: IMatchSlot;
   owner: Player;
   ratingFrom: number;
   ratingTo: number;

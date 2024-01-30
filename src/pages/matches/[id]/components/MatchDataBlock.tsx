@@ -7,21 +7,21 @@ import { Box, Divider, Typography } from '@mui/material';
 
 export const MatchDataBlock: React.FC<MatchData> = ({
   minutes,
-  slot,
   sport,
   ratingFrom,
   ratingTo,
-  gameDate,
   price,
   paid,
+  booking,
   // gender,
 }) => {
   const isPremium = true;
 
+  const startsAt = new Date(booking.startsAt);
   const matchDate = getDayFormat(
-    gameDate,
+    startsAt,
     EType.WEEK_DAY_MONTH,
-    slot.time,
+    startsAt.toLocaleTimeString('ru'),
     minutes,
   );
 

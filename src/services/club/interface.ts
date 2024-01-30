@@ -1,5 +1,4 @@
 import { Sport } from '../../types';
-import { MatchData } from '../matches/interface';
 import { User } from '../user/interface';
 
 export enum MatchTimeRange {
@@ -11,9 +10,13 @@ export enum MatchTimeRange {
 }
 
 export interface IAvailableTime {
-  slotId: number;
-  playtime: number;
+  playTime: number;
   time: string;
+}
+
+export interface IAvailableSlot {
+  playTime: number;
+  price: number;
 }
 
 export interface Club {
@@ -28,8 +31,8 @@ export interface Club {
   availableSlots?: Record<
     string,
     {
-      available: Omit<Court, 'slots'>[];
-      booked: Omit<Court, 'slots'>[];
+      available: Court[];
+      booked: Court[];
     }
   >;
   availableTimes?: string[] | IAvailableTime[];
@@ -46,8 +49,7 @@ export interface Court {
   location: string;
   price: number;
   club: Club;
-  options: { playTime: number; price: number }[];
-  slotId: number;
+  options: IAvailableSlot[];
   tags: Tag[];
   createdAt: Date;
   updatedAt: Date;
@@ -59,21 +61,6 @@ export interface Tag {
   courts: Court[];
   createdAt: Date;
   updatedAt: Date;
-}
-
-export interface Slot {
-  id: number;
-  court: Court;
-  matches: MatchData[];
-  time: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface CourtSlot {
-  playTime: number;
-  slotId: number;
-  time: string;
 }
 
 export interface SingleLocationData {

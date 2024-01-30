@@ -8,10 +8,12 @@ import {
 } from './interface';
 import { api } from '../api/service';
 
-export function getMyMatches(cancel?: boolean) {
-  const res = api.get<MatchData[]>(
-    `/matches/my${cancel ? '?cancel=' + cancel : ''}`,
-  );
+export function getMyMatches(cancelled?: boolean) {
+  const res = api.get<MatchData[]>(`/matches/my`, {
+    params: {
+      cancelled: !!cancelled,
+    },
+  });
   return res;
 }
 

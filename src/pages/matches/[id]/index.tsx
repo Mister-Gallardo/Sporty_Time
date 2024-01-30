@@ -28,7 +28,6 @@ import { usePlayerProfile } from '../../../services/api/hooks';
 import { MatchInfoBlock } from './components/MatchInfoBlock';
 import { ClubInfoBlock } from './components/ClubInfoBlock';
 import { MatchPlayer } from '../../../services/user/interface';
-import { gameDateToDate } from '../../../services/helper';
 import { Prompt } from './components/Prompt';
 import { PrivacyType } from './components/PrivacyType';
 import { MatchType } from './components/MatchType';
@@ -40,21 +39,18 @@ import { EditPayment } from './components/EditPayment';
 import { CheckoutModal } from '../../../components/modals/CheckoutModal';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { ResultsTable } from './components/ResultsTable';
+import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
   const history = useHistory();
 
   const { matchId } = useParams<{ matchId: string }>();
-
   const [showToast] = useIonToast();
   const [myPlayer] = usePlayerProfile();
-
   const [error, setError] = useState<string | undefined>();
-
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [openToast, setOpenToast] = useState<boolean>(false);
-
   const [openEditModal, setOpenEditModal] = useToggle();
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   const [openCancelDialogModal, setOpenCancelDialogModal] = useToggle();
@@ -234,11 +230,6 @@ export function SingleMatchPage() {
     return <NotFoundPage />;
   }
 
-  const gameDate = gameDateToDate(
-    singleMatchData.gameDate,
-    singleMatchData?.slot.time,
-  );
-
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
       <Box
@@ -289,15 +280,9 @@ export function SingleMatchPage() {
     }
   };
 
-  const courtData = {
-    price: singleMatchData.price,
-    tags: [],
-    date: singleMatchData.gameDate,
-    startTime: singleMatchData.slot.time,
-    playtime: singleMatchData.minutes,
-    sport: singleMatchData.sport,
-    courtName: singleMatchData.slot.court.title,
-  };
+  const booking = singleMatchData.booking;
+  if (!booking) return <LoadingCircle />;
+  const startsAt = new Date(singleMatchData.booking.startsAt);
 
   return (
     <>
@@ -349,7 +334,7 @@ export function SingleMatchPage() {
 
               <ResultsTable matchResults={singleMatchData?.matchResults} />
 
-              {Date.now() > gameDate && (
+              {Date.now() > startsAt.getTime() && (
                 <Box
                   sx={{
                     maxWidth: '400px',
@@ -466,7 +451,11 @@ export function SingleMatchPage() {
       <CheckoutModal
         isJoin
         isPaid={!!singleMatchData.paid}
-        courtData={courtData}
+        court={singleMatchData.booking.court}
+        date={startsAt}
+        playtime={singleMatchData.minutes}
+        startTime={startsAt.toLocaleTimeString('ru')}
+        timezone={singleMatchData.booking.court.club.timezone}
         openState={openCheckoutModal}
         handleModal={setOpenCheckoutModal}
         handleCheckout={onBookSpot}

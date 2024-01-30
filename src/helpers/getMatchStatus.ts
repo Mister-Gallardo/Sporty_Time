@@ -17,7 +17,7 @@ export const currentTimeInCLubTimezone = (timeZone: string) => {
 export const getMatchStatus = (match: MatchData) => {
   const currentTime = Date.now();
   const expiresTime = new Date(match.timeExpires).getTime();
-  const matchTime = match.booking.startsAt;
+  const matchTime = new Date(match.booking.startsAt).getTime();
   const matchEndTime = matchTime + match.minutes * 60000;
 
   // is Cancelled

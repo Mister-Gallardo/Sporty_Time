@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import { MatchData } from '../../../../services/matches/interface';
-import { getMatchStatus, parseDate } from '../../../../helpers/getMatchStatus';
+import { getMatchStatus } from '../../../../helpers/getMatchStatus';
 import { EType, getDayFormat } from '../../../../helpers/getTimeDateString';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { extraMatchPayment } from '../../../../services/matches/service';
@@ -20,7 +20,7 @@ export const EditPayment: React.FC<IEditPaymentProps> = ({
   isUserOwner,
   refetchMatch,
 }) => {
-  const { paid, matchBookings, price, gameDate, slot } = matchData;
+  const { paid, matchBookings, price, booking } = matchData;
   const matchStatus = getMatchStatus(matchData);
 
   if (paid || !isUserOwner || matchStatus === Status.CANCELED) return;
@@ -32,8 +32,7 @@ export const EditPayment: React.FC<IEditPaymentProps> = ({
     0,
   );
 
-  const matchStartTime = parseDate(gameDate, slot.time.slice(0, 8), '');
-
+  const matchStartTime = new Date(booking.startsAt).getTime();
   const mustBePaidDate = new Date(matchStartTime - 12 * 3600 * 1000);
 
   const formatMustBePaidDate = getDayFormat(

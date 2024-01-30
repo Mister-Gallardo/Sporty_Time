@@ -13,7 +13,7 @@ export const ClubInfoBlock: React.FC<IClubInfoBlock> = ({ data }) => {
   return (
     <Block
       component={RouterLink}
-      to={`/book-court/${data?.slot.court.club.id}`}
+      to={`/book-court/${data?.booking.court.club.id}`}
       sx={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -23,7 +23,7 @@ export const ClubInfoBlock: React.FC<IClubInfoBlock> = ({ data }) => {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <Box
           component="img"
-          src={data?.slot.court.club.img}
+          src={data?.booking.court.club.img}
           sx={{
             width: '64px',
             height: '64px',
@@ -34,11 +34,11 @@ export const ClubInfoBlock: React.FC<IClubInfoBlock> = ({ data }) => {
         />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
           <Typography sx={{ fontWeight: '700' }}>
-            {data?.slot.court.club.title}
+            {data?.booking.court.club.title}
           </Typography>
           <Box sx={{ opacity: '.6' }}>
             <Typography sx={{ fontSize: '12px' }}>
-              {data?.slot.court.address}
+              {data?.booking.court.address}
             </Typography>
           </Box>
           <Box>

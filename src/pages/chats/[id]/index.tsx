@@ -90,6 +90,9 @@ export function SingleChatPage() {
 
   if (isLoading) return <IonLoading isOpen />;
   if (!data) return <NotFoundPage />;
+  if (!match) return <NotFoundPage />;
+
+  const matchStartsAt = new Date(match.booking.startsAt);
 
   return (
     <Container maxWidth="md">
@@ -112,14 +115,12 @@ export function SingleChatPage() {
           {isMatchLoading ? (
             <LoadingCircle />
           ) : (
-            <Typography>{`${
-              match?.slot.court.club.title
-            } ${match?.slot.time.slice(0, 5)}, ${
-              match?.slot.court.title
-            }`}</Typography>
+            <Typography>{`${match?.booking.court.club.title} ${matchStartsAt
+              .toLocaleTimeString('ru')
+              .slice(0, 5)}, ${match?.booking.court.title}`}</Typography>
           )}
           <Typography color="gray">
-            {match && getDayFormat(match.gameDate, EType.MONTH_AND_DAY)}
+            {match && getDayFormat(matchStartsAt, EType.MONTH_AND_DAY)}
           </Typography>
         </Box>
         <Button

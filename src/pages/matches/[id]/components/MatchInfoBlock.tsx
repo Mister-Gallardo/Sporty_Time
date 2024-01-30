@@ -27,7 +27,7 @@ export const MatchInfoBlock: React.FC<IMatchInfoBlock> = ({ data }) => {
           <InfoOutlined />
           <Box>
             <Typography>Название корта</Typography>
-            <Typography>{data?.slot.court.club.title}</Typography>
+            <Typography>{data?.booking.court.club.title}</Typography>
           </Box>
         </Box>
 

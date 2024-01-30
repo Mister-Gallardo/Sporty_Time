@@ -17,19 +17,19 @@ interface IMyMatchCardProps extends MatchData {
 export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
   const {
     id,
-    gameDate,
+    booking,
     matchBookings,
     matchResults,
     winningTeam,
     uploadResults,
-    slot,
     minutes,
   } = props;
 
+  const startsAt = new Date(booking.startsAt);
   const matchDate = getDayFormat(
-    gameDate,
+    startsAt,
     EType.MONTH_AND_DAY,
-    slot.time,
+    startsAt.toLocaleTimeString('ru'),
     minutes,
   );
 
@@ -149,8 +149,8 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
           <WithoutResultsCardSection
             matchId={id}
             date={matchDate}
-            clubName={slot.court.club.title}
-            courtName={slot.court.title}
+            clubName={booking.court.club.title}
+            courtName={booking.court.title}
             status={status}
             uploadResults={
               status === Status.WAITING_FOR_RESULTS
