@@ -10,15 +10,13 @@ import { Court } from '../../services/club/interface';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export interface ICourtAccordionProps {
-  court: Omit<Court, 'slots'>;
+  court: Court;
   disabled?: boolean;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
-  getOptionTime?: (optionIndex: number) => void;
-  handleSelectCourt?: any;
+  handleSelect?: (playTime: number) => void;
 }
 
 export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
-  const { court, onClick, disabled, getOptionTime, handleSelectCourt } = props;
+  const { court, disabled, handleSelect } = props;
 
   return (
     <Accordion
@@ -58,18 +56,8 @@ export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
             return (
               <Box
                 key={i}
-                onClick={(e) => {
-                  handleSelectCourt((prev: any) => ({
-                    ...prev,
-                    ...option,
-                    sport: court.sport,
-                    tags: court.tags,
-                    courtName: court.sport + ' ' + i,
-                  }));
-
-                  onClick(e);
-                  if (!getOptionTime) return;
-                  getOptionTime(i);
+                onClick={() => {
+                  handleSelect?.(option.playTime);
                 }}
                 borderRadius={2}
                 color="white"
@@ -83,7 +71,7 @@ export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
                 <Typography fontSize={20} fontWeight={700} whiteSpace="nowrap">
                   {option.price} RUB
                 </Typography>
-                <Typography>{option.playtime} мин</Typography>
+                <Typography>{option.playTime} мин</Typography>
               </Box>
             );
           })}

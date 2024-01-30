@@ -46,7 +46,7 @@ export interface Court {
   location: string;
   price: number;
   club: Club;
-  options: { playtime: number; price: number }[];
+  options: { playTime: number; price: number }[];
   slotId: number;
   tags: Tag[];
   createdAt: Date;

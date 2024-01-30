@@ -15,6 +15,8 @@ import { IConfigMatchModalData } from '../../../../types';
 import useToggle from '../../../../hooks/useToggle';
 import { useForm } from 'react-hook-form';
 import { getDatesList } from '../../../../helpers/getDatesList';
+import { parseDate } from '../../../../helpers/getMatchStatus';
+import { Court } from '../../../../services/club/interface';
 
 const isValidDate = (date: string) => !isNaN(Number(new Date(date)));
 
@@ -32,21 +34,19 @@ export function BookTab() {
       : dates[0];
 
   const timeSearchParam = searchParam('time');
-  const selectedTime = timeSearchParam ? timeSearchParam : '';
+  const initialSelectedTime = timeSearchParam ? timeSearchParam : '';
 
   const [openConfigMatchModal, setOpenConfigMatchModal] = useToggle();
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   const [openSuccessBookToast, setOpenSuccessBookToast] = useToggle();
 
-  const [gameDate, setGameDate] = useState<Date>(selectedDay);
-  const [selectedSlot, setSelectedSlot] = useState<string>(selectedTime);
-  const [selectedMinutes, setSelectedMinutes] = useState<number>(0);
+  const [selectedDate, setSelectedDate] = useState<Date>(selectedDay);
+  const [selectedTime, setSelectedTime] = useState<string>(initialSelectedTime);
+  const [selectedCourt, setSelectedCourt] = useState<Court>();
+  const [selectedPlayTime, setSelectedPlayTime] = useState<number>(0);
   const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(true);
   const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(true);
-  const [slotId, setSlotId] = useState<number>(0);
   const [sport, setSport] = useState<string>('');
-
-  const [selectedCourt, setSelectedCourt] = useState<any>(null);
 
   const { getValues, reset } = useForm({
     defaultValues: {
@@ -63,21 +63,20 @@ export function BookTab() {
     isLoading,
     refetch: refetchClubs,
   } = useQuery({
-    queryKey: ['club', gameDate, clubId],
+    queryKey: ['club', selectedDate, clubId],
     queryFn: () =>
       getClub(Number(clubId), {
-        gamedate: gameDate.toLocaleDateString('en-ca'),
+        gamedate: selectedDate.toLocaleDateString('en-ca'),
       }),
   });
 
-  const selectedSlotAvailableCourts =
-    data?.availableSlots?.[selectedSlot]?.available || [];
+  const selectedTimeAvailableCourts =
+    data?.availableSlots?.[selectedTime]?.available || [];
 
-  const selectedSlotBookedCourts =
-    data?.availableSlots?.[selectedSlot]?.booked || [];
+  const selectedTimeBookedCourts =
+    data?.availableSlots?.[selectedTime]?.booked || [];
 
   const times = data?.availableSlots && Object.keys(data.availableSlots);
-
   const filteredTimes = onlyAvailableSlots
     ? times?.filter((time) => !!data?.availableSlots?.[time]?.available?.length)
     : times;
@@ -97,10 +96,15 @@ export function BookTab() {
   const { gender, isPrivate, matchType, ratingFrom, ratingTo } = getValues();
 
   const onCheckout = (money: number) => {
+    const gameDate = new Date(
+      parseDate(selectedDate.toLocaleDateString('en-ca'), selectedTime),
+    );
+    if (!selectedCourt) return;
+
     createMatchMutation.mutate({
-      slotId,
+      courtId: selectedCourt.id,
       gameDate,
-      playTime: selectedMinutes,
+      playTime: selectedPlayTime,
       gender: gender.toUpperCase(),
       isPrivate,
       type: matchType.toUpperCase(),
@@ -147,10 +151,10 @@ export function BookTab() {
                     key={i}
                     onSelect={() => {
                       setSearchParam('day', date.toLocaleDateString('en-ca'));
-                      setGameDate(date);
+                      setSelectedDate(date);
                     }}
                     date={date}
-                    selected={gameDate.toISOString() === date.toISOString()}
+                    selected={selectedDate.toISOString() === date.toISOString()}
                   />
                 );
               })}
@@ -189,20 +193,20 @@ export function BookTab() {
           ) : (
             <>
               <Box display="flex" gap={1.5} flexWrap="wrap" mt={2}>
-                {filteredTimes?.map((slot, i) => {
+                {filteredTimes?.map((time, i) => {
                   return (
                     <Box
                       key={i}
                       onClick={() => {
-                        setSearchParam('time', slot);
-                        setSelectedSlot(slot);
+                        setSearchParam('time', time);
+                        setSelectedTime(time);
                       }}
                       sx={{
                         cursor: 'pointer',
-                        opacity: data?.availableSlots?.[slot]?.available?.length
+                        opacity: data?.availableSlots?.[time]?.available?.length
                           ? 1
                           : 0.5,
-                        background: selectedSlot === slot ? '#0D2433' : '',
+                        background: selectedTime === time ? '#0D2433' : '',
                         padding: '12px 7px',
                         display: 'flex',
                         alignItems: 'center',
@@ -210,10 +214,10 @@ export function BookTab() {
                         width: '55px',
                         border: '1px solid #0D2433',
                         borderRadius: '5px',
-                        color: slot === selectedSlot ? 'white' : 'black',
+                        color: time === selectedTime ? 'white' : 'black',
                       }}
                     >
-                      {slot}
+                      {time}
                     </Box>
                   );
                 })}
@@ -262,39 +266,28 @@ export function BookTab() {
                 />
               </Box>
               <Box mt={2}>
-                {selectedSlotAvailableCourts?.map((court, i) => {
-                  function getOptionTime(optionIndex: number) {
-                    setSelectedMinutes(court.options[optionIndex].playtime);
-                  }
-
-                  return (
-                    <React.Fragment key={i}>
-                      <CourtAccordion
-                        court={court}
-                        getOptionTime={getOptionTime}
-                        onClick={() => {
-                          setSport(court.sport);
-                          setOpenConfigMatchModal();
-                          setSlotId(court.slotId);
-                        }}
-                        handleSelectCourt={setSelectedCourt}
-                      />
-                      {selectedSlotAvailableCourts?.length !== i + 1 && (
-                        <Divider />
-                      )}
-                    </React.Fragment>
-                  );
-                })}
+                {selectedTimeAvailableCourts?.map((court, i) => (
+                  <React.Fragment key={i}>
+                    <CourtAccordion
+                      court={court}
+                      handleSelect={(playTime) => {
+                        setSport(court.sport);
+                        setOpenConfigMatchModal();
+                        setSelectedCourt(court);
+                        setSelectedPlayTime(playTime);
+                      }}
+                    />
+                    {selectedTimeAvailableCourts?.length !== i + 1 && (
+                      <Divider />
+                    )}
+                  </React.Fragment>
+                ))}
 
                 {!onlyAvailableCourts &&
-                  selectedSlotBookedCourts?.map((court, i) => (
+                  selectedTimeBookedCourts?.map((court, i) => (
                     <React.Fragment key={i}>
-                      <CourtAccordion
-                        court={court}
-                        onClick={() => setSlotId(0)}
-                        disabled
-                      />
-                      {selectedSlotBookedCourts?.length !== i + 1 && (
+                      <CourtAccordion court={court} disabled />
+                      {selectedTimeBookedCourts?.length !== i + 1 && (
                         <Divider />
                       )}
                     </React.Fragment>
@@ -323,14 +316,13 @@ export function BookTab() {
         }}
       />
 
-      {selectedCourt && (
+      {selectedCourt && data?.timezone && (
         <CheckoutModal
-          courtData={{
-            date: gameDate,
-            startTime: selectedSlot,
-            timezone: data?.timezone,
-            ...selectedCourt,
-          }}
+          court={selectedCourt}
+          date={selectedDate}
+          playtime={selectedPlayTime}
+          startTime={selectedTime}
+          timezone={data?.timezone}
           openState={openCheckoutModal}
           handleModal={setOpenCheckoutModal}
           handleCheckout={onCheckout}

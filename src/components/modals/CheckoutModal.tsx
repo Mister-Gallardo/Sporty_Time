@@ -4,48 +4,44 @@ import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
 import { Box, Button, Divider, RadioGroup, Typography } from '@mui/material';
 import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
 import { RadioLabel } from '../molecules/RadioLabel';
-import { ERadioLabelType, ITag } from '../../types';
+import { ERadioLabelType } from '../../types';
 import { ModalContainer } from './ModalContainer';
 import {
   currentTimeInCLubTimezone,
   parseDate,
 } from '../../helpers/getMatchStatus';
-
-interface MainCourtInfo {
-  price: number;
-  tags: ITag[] | [];
-  date: string;
-  startTime: string;
-  playtime: number;
-  sport: string;
-  courtName: string;
-  timezone?: string;
-}
+import { Court } from '../../services/club/interface';
 
 interface ICheckoutModal {
   isPaid?: boolean;
   isJoin?: boolean;
-  courtData?: MainCourtInfo;
+  court: Court;
+  date: Date;
+  startTime: string;
+  playtime: number;
+  timezone: string;
   openState: boolean;
   handleModal: (val?: boolean) => void;
   handleCheckout: (payPrice: number) => void;
 }
 
-export const CheckoutModal: React.FC<ICheckoutModal> = ({
-  isPaid,
-  isJoin,
-  courtData,
-  openState,
-  handleModal,
-  handleCheckout,
-}) => {
-  if (!courtData) return;
+export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
+  const {
+    isPaid,
+    isJoin,
+    court,
+    openState,
+    date,
+    startTime,
+    playtime,
+    timezone,
+    handleModal,
+    handleCheckout,
+  } = props;
+  if (!court) return;
 
-  const { price, tags, date, startTime, playtime, courtName, timezone } =
-    courtData;
-
+  const { price, tags } = court;
   const [payFor, setPayFor] = useState('0');
-
   const matchDate = getDayFormat(
     date,
     EType.WEEK_DAY_MONTH,
@@ -76,7 +72,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
     >
       <>
         <Box display="flex" flexDirection="column" gap={4} mb={4}>
-          {courtData && (
+          {court && (
             <Box border="1px solid #ddd" borderRadius={2} py={1} px={2}>
               <Box display="flex" justifyContent="space-between" py={1}>
                 <Box flexGrow={1} pr={1}>
@@ -85,9 +81,9 @@ export const CheckoutModal: React.FC<ICheckoutModal> = ({
                   </Typography>
                   <Box display="flex" gap={0.5}>
                     <Typography textTransform="lowercase">
-                      {courtData?.sport},
+                      {court?.sport},
                     </Typography>
-                    <Typography>{courtName}</Typography>
+                    <Typography>{court.sport}</Typography>
                   </Box>
                   <Typography color="gray" fontSize={12}>
                     {courtTags?.join(' | ')}

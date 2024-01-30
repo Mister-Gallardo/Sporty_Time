@@ -57,7 +57,7 @@ export interface MatchData {
 [];
 
 export interface CreateMatchDTO {
-  slotId: number;
+  courtId: number;
   money: number;
   gameDate: Date | string;
   type: string;
