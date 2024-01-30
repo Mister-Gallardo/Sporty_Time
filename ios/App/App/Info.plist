@@ -4,6 +4,8 @@
 <dict>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Необходимо для загрузки нового фото профиля</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Необходимо для загрузки нового фото профиля</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Необходимо для создания нового фото профиля</string>
 	<key>NSLocationAlwaysUsageDescription</key>
