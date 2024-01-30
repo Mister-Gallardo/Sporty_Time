@@ -16,7 +16,7 @@ import useToggle from '../../../../hooks/useToggle';
 import { useForm } from 'react-hook-form';
 import { getDatesList } from '../../../../helpers/getDatesList';
 import { parseDate } from '../../../../helpers/getMatchStatus';
-import { Court } from '../../../../services/club/interface';
+import { Court, IAvailableSlot } from '../../../../services/club/interface';
 
 const isValidDate = (date: string) => !isNaN(Number(new Date(date)));
 
@@ -42,11 +42,11 @@ export function BookTab() {
 
   const [selectedDate, setSelectedDate] = useState<Date>(selectedDay);
   const [selectedTime, setSelectedTime] = useState<string>(initialSelectedTime);
-  const [selectedCourt, setSelectedCourt] = useState<Court>();
-  const [selectedPlayTime, setSelectedPlayTime] = useState<number>(0);
+  const [selectedOption, setSelectedOption] = useState<
+    IAvailableSlot & { court: Court }
+  >();
   const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(true);
   const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(true);
-  const [sport, setSport] = useState<string>('');
 
   const { getValues, reset } = useForm({
     defaultValues: {
@@ -99,12 +99,12 @@ export function BookTab() {
     const gameDate = new Date(
       parseDate(selectedDate.toLocaleDateString('en-ca'), selectedTime),
     );
-    if (!selectedCourt) return;
+    if (!selectedOption) return;
 
     createMatchMutation.mutate({
-      courtId: selectedCourt.id,
+      courtId: selectedOption.court.id,
       gameDate,
-      playTime: selectedPlayTime,
+      playTime: selectedOption?.playTime,
       gender: gender.toUpperCase(),
       isPrivate,
       type: matchType.toUpperCase(),
@@ -270,11 +270,13 @@ export function BookTab() {
                   <React.Fragment key={i}>
                     <CourtAccordion
                       court={court}
-                      handleSelect={(playTime) => {
-                        setSport(court.sport);
+                      handleSelect={(option) => {
                         setOpenConfigMatchModal();
-                        setSelectedCourt(court);
-                        setSelectedPlayTime(playTime);
+                        setSelectedOption({
+                          court,
+                          playTime: option.playTime,
+                          price: option.price,
+                        });
                       }}
                     />
                     {selectedTimeAvailableCourts?.length !== i + 1 && (
@@ -305,22 +307,24 @@ export function BookTab() {
         ></IonToast>
       </Box>
 
-      <ConfigMatchModal
-        sport={sport}
-        openState={openConfigMatchModal}
-        handleModal={setOpenConfigMatchModal}
-        getData={(data: IConfigMatchModalData) => {
-          reset(data);
-          setOpenConfigMatchModal();
-          setOpenCheckoutModal();
-        }}
-      />
-
-      {selectedCourt && data?.timezone && (
+      {selectedOption?.court && (
+        <ConfigMatchModal
+          sport={selectedOption.court.sport}
+          openState={openConfigMatchModal}
+          handleModal={setOpenConfigMatchModal}
+          getData={(data: IConfigMatchModalData) => {
+            reset(data);
+            setOpenConfigMatchModal();
+            setOpenCheckoutModal();
+          }}
+        />
+      )}
+      {selectedOption && data?.timezone && (
         <CheckoutModal
-          court={selectedCourt}
+          price={selectedOption?.price}
+          court={selectedOption.court}
           date={selectedDate}
-          playtime={selectedPlayTime}
+          playtime={selectedOption.playTime}
           startTime={selectedTime}
           timezone={data?.timezone}
           openState={openCheckoutModal}

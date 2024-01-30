@@ -6,13 +6,13 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
-import { Court } from '../../services/club/interface';
+import { Court, IAvailableSlot } from '../../services/club/interface';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export interface ICourtAccordionProps {
   court: Court;
   disabled?: boolean;
-  handleSelect?: (playTime: number) => void;
+  handleSelect?: (playTime: IAvailableSlot) => void;
 }
 
 export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
@@ -57,7 +57,7 @@ export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
               <Box
                 key={i}
                 onClick={() => {
-                  handleSelect?.(option.playTime);
+                  handleSelect?.(option);
                 }}
                 borderRadius={2}
                 color="white"

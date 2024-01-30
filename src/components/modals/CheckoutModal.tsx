@@ -13,6 +13,7 @@ import {
 import { Court } from '../../services/club/interface';
 
 interface ICheckoutModal {
+  price: number;
   isPaid?: boolean;
   isJoin?: boolean;
   court: Court;
@@ -27,6 +28,7 @@ interface ICheckoutModal {
 
 export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
   const {
+    price,
     isPaid,
     isJoin,
     court,
@@ -40,7 +42,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
   } = props;
   if (!court) return;
 
-  const { price, tags = [] } = court;
+  const { tags = [] } = court;
   const [payFor, setPayFor] = useState('0');
   const matchDate = getDayFormat(
     date,
