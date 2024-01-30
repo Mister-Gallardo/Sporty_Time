@@ -1,6 +1,8 @@
 import { Box } from '@mui/material';
 import DesktopHeader from './DesktopHeader';
 import '../desktop.css';
+import { Router } from 'react-router';
+import { history } from '../services/history/service';
 
 export interface IDesktopLayoutProps {
   children: React.ReactNode;
@@ -10,7 +12,7 @@ export const DesktopLayout: React.FC<IDesktopLayoutProps> = (props) => {
   const { children } = props;
 
   return (
-    <>
+    <Router history={history}>
       <Box
         sx={{
           width: '100%',
@@ -31,7 +33,7 @@ export const DesktopLayout: React.FC<IDesktopLayoutProps> = (props) => {
       >
         {children}
       </Box>
-    </>
+    </Router>
   );
 };
 

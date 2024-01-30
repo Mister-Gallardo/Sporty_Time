@@ -9,7 +9,7 @@ import {
 import { IonReactRouter } from '@ionic/react-router';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
-import { book, home, person, tennisball } from 'ionicons/icons';
+import { person, tennisball } from 'ionicons/icons';
 
 /* Basic CSS for apps built with Ionic */
 import '@ionic/react/css/normalize.css';
@@ -25,8 +25,10 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 import '../mobile.css';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import { useRef } from 'react';
 import { Typography } from '@mui/material';
+import { history } from '../services/history/service';
+import { RouteExtraProps, mobileRoutes } from '../routes';
+import { useCurrentRoute } from '../hooks/useCurrentRoute';
 
 export interface IMobileLayoutProps {
   children: React.ReactNode;
@@ -34,11 +36,12 @@ export interface IMobileLayoutProps {
 
 export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
   const { children } = props;
-  const defaultRef = useRef<HTMLIonIconElement>(null);
+  const route = useCurrentRoute<RouteExtraProps>({ routes: mobileRoutes });
+  const { showTabBar } = route || {};
 
   return (
     <IonApp style={{ minHeight: '100dvh' }}>
-      <IonReactRouter>
+      <IonReactRouter history={history}>
         <IonTabs
           onIonTabsWillChange={() =>
             Haptics.impact({ style: ImpactStyle.Light })
@@ -46,14 +49,14 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
         >
           <IonRouterOutlet>{children}</IonRouterOutlet>
           <IonTabBar
-            slot="bottom"
+            slot={showTabBar ? 'bottom' : undefined}
             style={{
               paddingBlock: '.50rem',
               borderRadius: '0',
               borderTop: '1px solid #cdcccc',
             }}
           >
-            <IonTabButton ref={() => defaultRef} tab="play" href="/play">
+            <IonTabButton tab="play" href="/play">
               <IonIcon size="medium" icon={tennisball} />
               <Typography variant="body2">Играть</Typography>
             </IonTabButton>

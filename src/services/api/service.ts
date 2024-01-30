@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { isAuthorized } from '../auth/service';
+import { history } from '../history/service';
 
 export const api = axios.create({
   baseURL: 'https://sportytime.ru/api',
@@ -28,7 +29,7 @@ api.interceptors.response.use(
         localStorage.removeItem('jwtToken');
       }
       if (!isAuthorized() && !window.location.href.includes('/auth')) {
-        window.open('/auth', '_self');
+        history.replace('/auth');
       }
     } else if (errorMessage) {
       console.log(errorMessage, {

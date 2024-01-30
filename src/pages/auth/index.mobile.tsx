@@ -3,7 +3,7 @@ import { AuthPage } from '.';
 
 export function MobileAuthPage() {
   return (
-    <IonPage className="notabs">
+    <IonPage>
       <IonContent>
         <AuthPage />
       </IonContent>

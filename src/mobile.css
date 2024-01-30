@@ -46,14 +46,14 @@ ion-toolbar {
     --border-width: 0 !important
 }
 
-ion-tabs:has(.ion-page.notabs:not(.ion-page-hidden)) > ion-tab-bar {
-    display: none !important;
-}
-
 .ion-page {
     justify-content: flex-start;
 }
 
 ion-modal.overlay-hidden {
     display: unset;
-} 
+}
+
+ion-modal::part(content) {
+    width: 100%;
+}
