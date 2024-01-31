@@ -9,8 +9,8 @@ export enum EMatchType {
 export type matchResults = Array<number[]> | null;
 
 export interface Booking {
-  startsAt: Date;
-  endsAt: Date;
+  startsAt: string;
+  endsAt: string;
   court: Court;
   createdAt: Date;
   updatedAt: Date;

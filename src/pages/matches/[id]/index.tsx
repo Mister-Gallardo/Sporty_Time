@@ -449,6 +449,7 @@ export function SingleMatchPage() {
         </>
       </SwipeablePage>
       <CheckoutModal
+        price={singleMatchData.price}
         isJoin
         isPaid={!!singleMatchData.paid}
         court={singleMatchData.booking.court}

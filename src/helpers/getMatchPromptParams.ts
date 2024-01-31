@@ -19,7 +19,7 @@ export const getPromptParams = (
   playerAlreadyInSomeTeam: boolean,
 ) => {
   const status = getMatchStatus(matchData);
-  const matchDate = new Date(matchData.gameDate);
+  const matchDate = new Date(matchData.booking.startsAt);
 
   if (status === Status.CANCELED) {
     return {
