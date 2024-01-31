@@ -97,7 +97,7 @@ export function BookTab() {
 
   const onCheckout = (money: number) => {
     const gameDate = new Date(
-      parseDate(selectedDate.toLocaleDateString('en-ca'), selectedTime),
+      parseDate(selectedDate.toLocaleDateString('en-ca'), selectedTime, 'Z'),
     );
     if (!selectedOption) return;
 
