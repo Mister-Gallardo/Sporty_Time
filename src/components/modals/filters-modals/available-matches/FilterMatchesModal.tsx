@@ -1,7 +1,7 @@
 import React from 'react';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { SelectClubLocationModal } from '../SelectClubLocationModal';
-import useSearchParams from '../../../../hooks/useSearchParams';
+import { useSearchParam } from '../../../../hooks/useSearchParams';
 import { ModalContainer } from '../../ModalContainer';
 import useToggle from '../../../../hooks/useToggle';
 import { Box, IconButton } from '@mui/material';
@@ -23,10 +23,9 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
 }) => {
   const [openSelectLocation, setOpenSelectLocation] = useToggle();
 
-  const [getIndex, setIndex] = useSearchParams();
-  const currentStep = getIndex('q') ? +getIndex('q')! : 1;
-
-  const handleStep = (step: number) => setIndex('q', `${currentStep + step}`);
+  const [q, setQ] = useSearchParam('q');
+  const currentStep = Number(q) || 1;
+  const handleStep = (step: number) => setQ(String(currentStep + step));
 
   const modalTitle =
     currentStep === 1

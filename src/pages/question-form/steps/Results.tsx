@@ -5,7 +5,8 @@ import { SportsBaseballOutlined } from '@mui/icons-material';
 import { BgContainer } from '../components/BgContainer';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { isPlatform } from '@ionic/react';
-import useSearchParams from '../../../hooks/useSearchParams';
+import { useSearchParam } from '../../../hooks/useSearchParams';
+import { Sport } from '../../../types';
 
 const isMobile = isPlatform('mobile');
 
@@ -14,8 +15,7 @@ export function ResultsStep() {
 
   const [profile] = usePlayerProfile();
 
-  const [getParam] = useSearchParams();
-  const sport = getParam('sport') || '';
+  const [sport] = useSearchParam('sport', Sport.PADEL);
   const rating = profile ? getSportRating(profile, sport) : 0;
 
   const firstName = profile?.user?.firstname || '';

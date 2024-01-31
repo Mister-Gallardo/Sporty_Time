@@ -11,12 +11,9 @@ export enum MatchTimeRange {
 
 export interface IAvailableTime {
   playTime: number;
-  time: string;
-}
-
-export interface IAvailableSlot {
-  playTime: number;
-  price: number;
+  time?: string;
+  price?: number;
+  gameDate?: string;
 }
 
 export interface Club {
@@ -35,7 +32,7 @@ export interface Club {
       booked: Court[];
     }
   >;
-  availableTimes?: string[] | IAvailableTime[];
+  availableTimes?: Record<string, IAvailableTime[]>;
   minPrice: number;
   timezone: string;
   range?: number;
@@ -49,7 +46,7 @@ export interface Court {
   location: string;
   price: number;
   club: Club;
-  options: IAvailableSlot[];
+  options: IAvailableTime[];
   tags: Tag[];
   createdAt: Date;
   updatedAt: Date;

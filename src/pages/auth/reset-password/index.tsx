@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import useSearchParams from '../../../hooks/useSearchParams';
+import { useSearchParam } from '../../../hooks/useSearchParams';
 import { changePassword } from '../../../services/auth/service';
 import { useMutation } from '@tanstack/react-query';
 import { useHistory } from 'react-router';
@@ -10,7 +10,8 @@ export function ResetPassword() {
   const isMobile = isPlatform('mobile');
 
   const history = useHistory();
-  const [getParams] = useSearchParams();
+  const [email] = useSearchParam('email');
+  const [otp] = useSearchParam('otp');
 
   const [showToast] = useIonToast();
 
@@ -53,12 +54,7 @@ export function ResetPassword() {
   const onChangePassord = () => {
     if (password !== confirmPassword)
       return setErrorMsg('Пароли должны совпадать');
-
-    changePswrdMutation.mutate({
-      email: getParams('email'),
-      otp: getParams('otp'),
-      password,
-    });
+    changePswrdMutation.mutate({ email, otp, password });
   };
 
   return (

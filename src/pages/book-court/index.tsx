@@ -25,7 +25,7 @@ import { SelectClubLocationModal } from '../../components/modals/filters-modals/
 
 export interface FilterFormDate {
   sport: Sport;
-  gamedates: Date;
+  gamedate: Date;
   lat: number;
   long: number;
   timefrom: string;
@@ -63,7 +63,7 @@ export function BookCourt() {
   const filterParams = useForm<FilterFormDate>({
     defaultValues: {
       sport: localFilters?.sport || '',
-      gamedates: gameDate < now ? now : gameDate,
+      gamedate: gameDate < now ? now : gameDate,
       lat: localFilters?.lat || 0,
       long: localFilters?.long || 0,
       timefrom: localFilters?.timefrom || countDefaultTime(),
@@ -73,7 +73,7 @@ export function BookCourt() {
   });
 
   const { watch, getValues, setValue } = filterParams;
-  const { sport, gamedates, lat, long, timefrom, timeto, selectedLocation } =
+  const { sport, gamedate, lat, long, timefrom, timeto, selectedLocation } =
     watch();
 
   // If the date selected by the user in the past has gone, set current date
@@ -86,16 +86,16 @@ export function BookCourt() {
 
   useEffect(() => {
     if (isBefore(parsedTargetDate, new Date()) && !isSelectedDateToday) {
-      setValue('gamedates', now);
+      setValue('gamedate', now);
     }
   }, []);
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['clubs', gamedates, sport, lat, long],
+    queryKey: ['clubs', gamedate, sport, lat, long],
     queryFn: () =>
       getClubs({
         sport,
-        gamedates: new Date(gamedates).toLocaleDateString('en-ca'),
+        gamedates: new Date(gamedate).toLocaleDateString('en-ca'),
         lat,
         long,
         timefrom: timefrom,
@@ -112,9 +112,7 @@ export function BookCourt() {
 
   const onFilterApply = () => {
     refetch();
-
     localStorage.setItem('clubsFilters', JSON.stringify(getValues()));
-
     if (openFilterModal) setOpenFilterModal();
     // if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
   };
@@ -126,16 +124,21 @@ export function BookCourt() {
   }, []);
 
   return (
-    <Box width="100%" display="flex" flexDirection="column" alignItems="center">
+    <Box
+      width="100%"
+      maxWidth={1240}
+      mx="auto"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+    >
       <Box
+        top={70}
         position="fixed"
         zIndex={2}
         bgcolor="#fff"
         width="100%"
-        maxWidth={isMobile ? 'unset' : 1240}
-        mx="auto"
-        px={2}
-        pb={2}
+        p={2}
         boxShadow="0 7px 8px -2px #0000000f"
       >
         <Box display="flex" gap={1} mb={1}>
@@ -230,7 +233,7 @@ export function BookCourt() {
               },
             }}
           >
-            {getDayFormat(gamedates, EType.MONTH_AND_DAY)} | {timefrom}
+            {getDayFormat(gamedate, EType.MONTH_AND_DAY)} | {timefrom}
             {timeto ? ` - ${timeto}` : ''}
           </Button>
         </Box>

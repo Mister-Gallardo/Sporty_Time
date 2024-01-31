@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { IonSpinner, IonToast, IonToggle, isPlatform } from '@ionic/react';
 import { Box, Typography, Divider, Stack } from '@mui/material';
@@ -10,43 +10,34 @@ import { CourtAccordion } from '../../../../components/molecules/CourtAccordion'
 import { ConfigMatchModal } from '../../../../components/modals/ConfigMatchModal';
 import { CheckoutModal } from '../../../../components/modals/CheckoutModal';
 import { createMatch } from '../../../../services/matches/service';
-import useSearchParams from '../../../../hooks/useSearchParams';
+import { useSearchParam } from '../../../../hooks/useSearchParams';
 import { IConfigMatchModalData } from '../../../../types';
 import useToggle from '../../../../hooks/useToggle';
 import { useForm } from 'react-hook-form';
 import { getDatesList } from '../../../../helpers/getDatesList';
 import { parseDate } from '../../../../helpers/getMatchStatus';
-import { Court, IAvailableSlot } from '../../../../services/club/interface';
-
-const isValidDate = (date: string) => !isNaN(Number(new Date(date)));
+import { Court, IAvailableTime } from '../../../../services/club/interface';
 
 export function BookTab() {
   const dates = getDatesList(100);
 
   const { clubId } = useParams<{ clubId: string }>();
   const history = useHistory();
-  const [searchParam, setSearchParam] = useSearchParams();
-
-  const daySearchParam = searchParam('day');
-  const selectedDay =
-    daySearchParam && isValidDate(daySearchParam)
-      ? new Date(daySearchParam)
-      : dates[0];
-
-  const timeSearchParam = searchParam('time');
-  const initialSelectedTime = timeSearchParam ? timeSearchParam : '';
 
   const [openConfigMatchModal, setOpenConfigMatchModal] = useToggle();
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   const [openSuccessBookToast, setOpenSuccessBookToast] = useToggle();
-
-  const [selectedDate, setSelectedDate] = useState<Date>(selectedDay);
-  const [selectedTime, setSelectedTime] = useState<string>(initialSelectedTime);
+  const [date, setSelectedDate] = useSearchParam(
+    'day',
+    new Date().toLocaleDateString('en-ca'),
+  );
+  const selectedDate = new Date(date);
+  const [selectedTime = '', setSelectedTime] = useSearchParam('time');
   const [selectedOption, setSelectedOption] = useState<
-    IAvailableSlot & { court: Court }
+    IAvailableTime & { court: Court }
   >();
-  const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(true);
-  const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(true);
+  const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(false);
+  const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(false);
 
   const { getValues, reset } = useForm({
     defaultValues: {
@@ -76,10 +67,14 @@ export function BookTab() {
   const selectedTimeBookedCourts =
     data?.availableSlots?.[selectedTime]?.booked || [];
 
-  const times = data?.availableSlots && Object.keys(data.availableSlots);
-  const filteredTimes = onlyAvailableSlots
-    ? times?.filter((time) => !!data?.availableSlots?.[time]?.available?.length)
-    : times;
+  const filteredTimes = useMemo(() => {
+    const times = data?.availableSlots && Object.keys(data.availableSlots);
+    return onlyAvailableSlots
+      ? times?.filter(
+          (time) => !!data?.availableSlots?.[time]?.available?.length,
+        )
+      : times;
+  }, [data]);
 
   const createMatchMutation = useMutation({
     mutationFn: createMatch,
@@ -94,6 +89,10 @@ export function BookTab() {
   });
 
   const { gender, isPrivate, matchType, ratingFrom, ratingTo } = getValues();
+
+  useEffect(() => {
+    setSelectedTime(filteredTimes?.[0] || '');
+  }, [filteredTimes]);
 
   const onCheckout = (money: number) => {
     const gameDate = new Date(
@@ -150,8 +149,7 @@ export function BookTab() {
                   <CalendarDay
                     key={i}
                     onSelect={() => {
-                      setSearchParam('day', date.toLocaleDateString('en-ca'));
-                      setSelectedDate(date);
+                      setSelectedDate(date.toLocaleDateString('en-ca'));
                     }}
                     date={date}
                     selected={selectedDate.toISOString() === date.toISOString()}
@@ -198,7 +196,6 @@ export function BookTab() {
                     <Box
                       key={i}
                       onClick={() => {
-                        setSearchParam('time', time);
                         setSelectedTime(time);
                       }}
                       sx={{
@@ -321,7 +318,7 @@ export function BookTab() {
       )}
       {selectedOption && data?.timezone && (
         <CheckoutModal
-          price={selectedOption?.price}
+          price={selectedOption.price!}
           court={selectedOption.court}
           date={selectedDate}
           playtime={selectedOption.playTime}

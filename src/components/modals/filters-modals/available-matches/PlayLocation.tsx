@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { Box, Fade, Typography } from '@mui/material';
 import { DistanceSlider } from '../../../molecules/DistanceSlider';
 import { FilterButton } from '../FilterButton';
@@ -26,18 +26,8 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({
 }) => {
   const [isLocationGranted, setIsLocationGranted] = useToggle();
 
-  const { watch, setValue, control } = useFormContext();
+  const { watch, setValue } = useFormContext();
   const { lat, long, sport, selectedLocation, clubsId, range } = watch();
-
-  const {
-    fields: clubsIdFields,
-    append: clubsIdAppend,
-    remove: clubsIdRemove,
-  } = useFieldArray({
-    control,
-    name: 'clubsId',
-  });
-
   const { data, isLoading, isError } = useQuery({
     queryKey: ['clubs/all', lat, long, sport],
     queryFn: () => getClubsByLocation({ lat, long, sport }),
@@ -56,6 +46,14 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const clubs: number[] = [];
+    data?.forEach((club) => {
+      if (club.range && club.range <= range) clubs.push(club.id);
+    });
+    setValue('clubsId', clubs);
+  }, [range, data]);
 
   useEffect(() => {
     checkLocationPermission();
@@ -126,23 +124,20 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({
                 />
               ) : data && data.length > 0 ? (
                 data.map((club) => {
-                  const selectedIndx = clubsId.findIndex(
-                    (item: { value: number }) => item.value == club.id,
-                  );
-                  const isSelected = selectedIndx !== -1;
-
+                  const isSelected = clubsId.find((id: any) => id === club.id);
                   return (
                     <SelectClubBlock
                       key={club.id}
                       {...club}
                       isChecked={isSelected}
                       onCheck={() => {
-                        if (isSelected) return clubsIdRemove(selectedIndx);
-                        if (clubsIdFields.length < 7) {
-                          clubsIdAppend({ value: club.id });
+                        if (isSelected) {
+                          setValue(
+                            'clubsId',
+                            clubsId.filter((id: any) => id !== club.id),
+                          );
                         } else {
-                          clubsIdRemove(0);
-                          clubsIdAppend({ value: club.id });
+                          setValue('clubsId', [...clubsId, club.id]);
                         }
                       }}
                     />

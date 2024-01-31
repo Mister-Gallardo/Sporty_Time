@@ -1,15 +1,13 @@
-import useSearchParams from '../../hooks/useSearchParams';
+import { useSearchParam } from '../../hooks/useSearchParams';
 import { QuestionsStepStep } from './steps/QuestionsStep';
 import { ChooseYourSport } from './steps/ChooseYourSport';
 import { LevelingStep } from './steps/LevelingStep';
 import { ResultsStep } from './steps/Results';
 
 export function QuestionFormPage() {
-  const [getIndex, setIndex] = useSearchParams();
-  const currentStep = getIndex('step') ? +getIndex('step')! : 1;
-
-  const handleStep = (step: number) =>
-    setIndex('step', `${currentStep + step}`);
+  const [step, setStep] = useSearchParam('step');
+  const currentStep = Number(step) || 1;
+  const handleStep = (step: number) => setStep(`${currentStep + step}`);
 
   return (
     <>

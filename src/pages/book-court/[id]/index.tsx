@@ -11,15 +11,15 @@ import { SwipeablePage } from '../../../components/SwipeablePage';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getClubById } from '../../../services/club/service';
-import useSearchParams from '../../../hooks/useSearchParams';
+import { useSearchParam } from '../../../hooks/useSearchParams';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 export function SingleCourtPage() {
   const { clubId } = useParams<{ clubId: string }>();
 
-  const [passedTabIndex, setTabIndex] = useSearchParams();
-  const tabIndex = passedTabIndex('tab') ? passedTabIndex('tab') : '2';
+  const [tab] = useSearchParam('tab');
+  const tabIndex = tab || '2';
 
   const { data, isLoading } = useQuery({
     queryKey: ['club', clubId],

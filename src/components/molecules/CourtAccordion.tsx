@@ -6,13 +6,13 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
-import { Court, IAvailableSlot } from '../../services/club/interface';
+import { Court, IAvailableTime } from '../../services/club/interface';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export interface ICourtAccordionProps {
   court: Court;
   disabled?: boolean;
-  handleSelect?: (playTime: IAvailableSlot) => void;
+  handleSelect?: (playTime: IAvailableTime) => void;
 }
 
 export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {

@@ -7,18 +7,11 @@ import { isPlatform } from '@ionic/react';
 
 interface IClubCard extends Club {}
 
-export const ClubCard: React.FC<IClubCard> = ({
-  id,
-  img,
-  title,
-  city,
-  minPrice,
-  availableTimes,
-}) => {
+export const ClubCard: React.FC<IClubCard> = (props) => {
+  const { id, img, title, city, minPrice, availableTimes } = props;
   const isMobile = isPlatform('mobile');
   const history = useHistory();
-
-  const timeArray: any = availableTimes && Object.values(availableTimes);
+  const [gameDate, times] = Object.entries(availableTimes || {})[0];
 
   return (
     <Box
@@ -82,7 +75,7 @@ export const ClubCard: React.FC<IClubCard> = ({
           {city}
         </Typography>
         <Box display="flex" gap={1} pb={2} sx={{ overflowX: 'auto' }}>
-          {timeArray[0].length === 0 ? (
+          {times.length === 0 ? (
             <Typography
               color="gray"
               width="100%"
@@ -92,13 +85,15 @@ export const ClubCard: React.FC<IClubCard> = ({
               По заданным параметрам нет свободных кортов
             </Typography>
           ) : (
-            timeArray[0]?.map((elem: IAvailableTime, i: number) => (
+            times?.map((elem: IAvailableTime, i: number) => (
               <DateBox
                 key={i}
-                startTime={elem.time}
+                startTime={elem.time!}
                 onClick={(e: Event) => {
                   e.stopPropagation();
-                  history.push(`/book-court/${id}?tab=2&time=${elem.time}`);
+                  history.push(
+                    `/book-court/${id}?tab=2&time=${elem.time}&day=${gameDate}`,
+                  );
                 }}
               />
             ))

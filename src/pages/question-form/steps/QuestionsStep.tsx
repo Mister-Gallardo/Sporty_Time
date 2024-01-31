@@ -9,7 +9,7 @@ import { isPlatform } from '@ionic/react';
 import { useMutation } from '@tanstack/react-query';
 import { createSportRating } from '../../../services/rating';
 import { QuestionsContainer } from '../components/QuestionsContainer';
-import useSearchParams from '../../../hooks/useSearchParams';
+import { useSearchParam } from '../../../hooks/useSearchParams';
 
 // leave just for now
 const getSportAndLevel = (sport: string, level: string) => {
@@ -36,11 +36,8 @@ interface QuestionsStepStepProps {
 export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
   const isMobile = isPlatform('mobile');
 
-  const [getParam] = useSearchParams();
-  const searchSport =
-    typeof getParam('sport') === 'string'
-      ? getParam('sport')!.toLocaleLowerCase()
-      : '';
+  const [sportParam] = useSearchParam('sport', Sport.PADEL);
+  const searchSport = sportParam?.toLocaleLowerCase();
 
   const allQuestions = useMemo(
     () => getQuestionsByLvlAndSport(searchSport),

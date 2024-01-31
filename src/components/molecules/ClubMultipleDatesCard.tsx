@@ -104,7 +104,7 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
                     item[1].map((slot) => (
                       <DateBox
                         key={slot.time}
-                        startTime={slot.time}
+                        startTime={slot.time!}
                         gameDuration={slot.playTime}
                         onClick={(e: Event) => {
                           e.stopPropagation();

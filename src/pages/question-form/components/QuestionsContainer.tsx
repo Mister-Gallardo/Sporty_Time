@@ -3,7 +3,7 @@ import KeyboardBackspaceRoundedIcon from '@mui/icons-material/KeyboardBackspaceR
 import { IonHeader, IonTitle, IonToolbar, isPlatform } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 import { Box, Button, Fade } from '@mui/material';
-import useSearchParams from '../../../hooks/useSearchParams';
+import { useSearchParam } from '../../../hooks/useSearchParams';
 
 interface IQuestionsContainerProps extends PropsWithChildren {}
 
@@ -12,11 +12,9 @@ const isMobile = isPlatform('mobile');
 export const QuestionsContainer: React.FC<IQuestionsContainerProps> = ({
   children,
 }) => {
-  const [getIndex, setIndex] = useSearchParams();
-  const currentStep = getIndex('step') ? +getIndex('step')! : 1;
-
-  const handleStep = (step: number) =>
-    setIndex('step', `${currentStep + step}`);
+  const [step, setStep] = useSearchParam('step');
+  const currentStep = Number(step) || 1;
+  const handleStep = (step: number) => setStep(`${currentStep + step}`);
 
   return (
     <>

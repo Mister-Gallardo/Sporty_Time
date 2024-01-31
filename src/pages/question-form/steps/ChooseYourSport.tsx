@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Avatar, Box, Button, Fade, Typography } from '@mui/material';
 import {
   SportsBaseballOutlined,
@@ -15,7 +14,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { useMutation } from '@tanstack/react-query';
 import { editUserProfile } from '../../../services/user/service';
 import { useIonToast } from '@ionic/react';
-import useSearchParams from '../../../hooks/useSearchParams';
+import { useSearchParam } from '../../../hooks/useSearchParams';
 
 interface ChooseYourSportProps {
   handleStep: (step: number) => void;
@@ -23,11 +22,9 @@ interface ChooseYourSportProps {
 
 export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
   const history = useHistory();
-  const [getParam, setParam] = useSearchParams();
-
-  const searchSport = getParam('sport');
-  const [selectedSport, setSelectedSport] = useState<Sport | string>(
-    searchSport ? searchSport : Sport.PADEL,
+  const [selectedSport, setSelectedSport] = useSearchParam(
+    'sport',
+    Sport.PADEL,
   );
 
   const [player, query] = usePlayerProfile();
@@ -124,30 +121,21 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
                   icon={<SportsBaseballOutlined />}
                   level={player?.ratingPadel}
                   isActive={selectedSport === Sport.PADEL}
-                  onClick={() => {
-                    setParam('sport', Sport.PADEL);
-                    setSelectedSport(Sport.PADEL);
-                  }}
+                  onClick={() => setSelectedSport(Sport.PADEL)}
                 />
                 <SportTypeRow
                   type={Sport.TENNIS}
                   icon={<SportsBasketballOutlined />}
                   level={player?.ratingTennis}
                   isActive={selectedSport === Sport.TENNIS}
-                  onClick={() => {
-                    setParam('sport', Sport.TENNIS);
-                    setSelectedSport(Sport.TENNIS);
-                  }}
+                  onClick={() => setSelectedSport(Sport.TENNIS)}
                 />
                 <SportTypeRow
                   type={Sport.PICKLEBALL}
                   icon={<SportsTennisOutlined />}
                   level={player?.ratingPickleball}
                   isActive={selectedSport === Sport.PICKLEBALL}
-                  onClick={() => {
-                    setParam('sport', Sport.PICKLEBALL);
-                    setSelectedSport(Sport.PICKLEBALL);
-                  }}
+                  onClick={() => setSelectedSport(Sport.PICKLEBALL)}
                 />
               </Box>
             </Box>

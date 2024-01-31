@@ -1,29 +1,41 @@
-import { useLocation, useHistory } from 'react-router-dom';
-import { useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
-export default function useSearchParams() {
-  const location = useLocation();
+export function useSearchParam<T extends string | undefined = undefined>(
+  name: string,
+  defaultValue?: T,
+) {
   const history = useHistory();
-
-  const searchParams = useMemo(() => {
-    return new URLSearchParams(location.search);
-  }, [location.search]);
-
-  const getSearchParam = (name: string): string | null => {
-    return searchParams.get(name);
-  };
-
-  const setSearchParam = (name: string, value?: string) => {
-    if (value) {
-      searchParams.set(name, value);
-    } else {
-      searchParams.delete(name);
+  const [paramValue, setParamValue] = useState<string | T>(() => {
+    const urlSearchParams = new URLSearchParams(history.location.search);
+    if (urlSearchParams.get(name) === null && defaultValue) {
+      urlSearchParams.set(name, defaultValue);
+      history.replace({ search: urlSearchParams.toString() });
     }
+    return urlSearchParams.get(name) || (defaultValue as T);
+  });
 
-    history.replace({
-      search: searchParams.toString(),
-    });
+  useEffect(() => {
+    const handleChange = () => {
+      const urlSearchParams = new URLSearchParams(history.location.search);
+      setParamValue(urlSearchParams.get(name) || '');
+    };
+
+    const unlisten = history.listen(handleChange);
+    return unlisten;
+  }, [name, history]);
+
+  const setQueryParam = (value: string | T) => {
+    if (value === paramValue) return;
+    const urlSearchParams = new URLSearchParams(history.location.search);
+    if (value) {
+      urlSearchParams.set(name, value);
+    } else {
+      urlSearchParams.delete(name);
+    }
+    history.replace({ search: urlSearchParams.toString() });
+    setParamValue(value);
   };
 
-  return [getSearchParam, setSearchParam] as const;
+  return [paramValue, setQueryParam] as const;
 }

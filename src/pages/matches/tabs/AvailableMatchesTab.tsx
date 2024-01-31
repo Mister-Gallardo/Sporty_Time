@@ -17,14 +17,14 @@ import { FormProvider, useForm } from 'react-hook-form';
 import noResults from '../../../images/no-results.svg';
 import { FiltersRow } from './components/FiltersRow';
 import useToggle from '../../../hooks/useToggle';
-import useSearchParams from '../../../hooks/useSearchParams';
+import { useSearchParam } from '../../../hooks/useSearchParams';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { Sport } from '../../../types';
 
 export interface FilterFormDate {
   sportLevel: string;
   sport: string;
-  clubsId: { value: number }[];
+  clubsId: number[];
   gamedates: { value: Date }[];
   lat: number;
   long: number;
@@ -37,7 +37,7 @@ export interface FilterFormDate {
 const isMobile = isPlatform('mobile');
 
 export function AvailableMatchesTab() {
-  const [_, setIndex] = useSearchParams();
+  const [, setQ] = useSearchParam('q');
   const [openFilterModal, setOpenFilterModal] = useToggle();
 
   const filtersFromLocalStorage = localStorage.getItem(
@@ -58,7 +58,7 @@ export function AvailableMatchesTab() {
       selectedLocation: localFilters?.selectedLocation || 'Выбрать локацию',
       time: localFilters?.time || MatchTimeRange.ALL,
       times: localFilters?.times || [],
-      range: localFilters?.range || 1,
+      range: localFilters?.range || 50,
     },
   });
   const { watch, setValue } = filterParams;
@@ -73,7 +73,7 @@ export function AvailableMatchesTab() {
 
     const isRating =
       user.ratingPadel || user.ratingTennis || user.ratingPickleball;
-    if (isRating) setIndex('q', '3');
+    if (isRating) setQ('3');
 
     if (user.ratingPadel) return setValue('sport', Sport.PADEL);
     if (user.ratingTennis) return setValue('sport', Sport.TENNIS);
@@ -89,7 +89,7 @@ export function AvailableMatchesTab() {
   const gameDatesToString = gamedates
     .map((date) => new Date(date.value).toLocaleDateString('en-ca'))
     .join(',');
-  const clubsIdToString = clubsId.map((clubVal) => clubVal.value).join(',');
+  const clubsIdToString = clubsId.map((clubVal) => clubVal).join(',');
 
   // Get Available matches
   const availableMatches = useQuery({
