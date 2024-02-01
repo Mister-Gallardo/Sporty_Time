@@ -17,10 +17,10 @@ import { SelectSportModal } from '../../components/modals/SelectSportModal';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 import { useCheckUserSport } from '../../hooks/useCheckUserSport';
 import { getSportName } from '../../helpers/getSportName';
-import { Geolocation } from '@capacitor/geolocation';
 import { isBefore, isToday, parse } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
 import { Sport } from '../../types';
+import { getUserLocation } from '../../helpers/getUserLocation';
 
 export interface FilterFormDate {
   sport: Sport;
@@ -69,34 +69,10 @@ export function BookCourt() {
   const { sport, gamedate, lat, long, timefrom, timeto, selectedLocation } =
     watch();
 
-  const [isLoadingLocation, setIsLoadingLosaiton] = useToggle();
-
-  const checkLocationPermission = async () => {
-    setIsLoadingLosaiton(true);
-    try {
-      const { location } = await Geolocation.checkPermissions();
-
-      const { latitude, longitude } = (await Geolocation.getCurrentPosition())
-        .coords;
-      if (location === 'granted') {
-        setValue('lat', latitude);
-        setValue('long', longitude);
-        setValue('selectedLocation', 'Рядом со мной');
-      }
-
-      if (location === 'denied') {
-        setValue('selectedLocation', 'Выбрать локацию');
-      }
-
-      setIsLoadingLosaiton(false);
-    } catch (error) {
-      console.log(error);
-      setIsLoadingLosaiton(false);
-    }
-  };
+  const [isLoadingLocation, setIsLoadingLocaiton] = useToggle();
 
   useEffect(() => {
-    if (!lat && !long) checkLocationPermission();
+    if (!lat && !long) getUserLocation(setIsLoadingLocaiton, setValue);
   }, []);
 
   // If the date selected by the user in the past has gone, set current date

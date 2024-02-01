@@ -10,8 +10,8 @@ import { MatchTimeRange } from '../../../../services/club/interface';
 import { ERadioLabelType } from '../../../../types';
 
 interface IPlayDateProps {
-  handleStep: (step: number) => void;
-  onApply: () => void;
+  handleModal: (val?: boolean) => void;
+  handleStep: () => void;
 }
 
 const timeList = [
@@ -35,7 +35,10 @@ const timeList = [
   '23:00',
 ];
 
-export const PlayDate: React.FC<IPlayDateProps> = ({ handleStep, onApply }) => {
+export const PlayDate: React.FC<IPlayDateProps> = ({
+  handleModal,
+  handleStep,
+}) => {
   const dates = getDatesList(14);
 
   const { watch, control } = useFormContext();
@@ -188,8 +191,11 @@ export const PlayDate: React.FC<IPlayDateProps> = ({ handleStep, onApply }) => {
           </Fade>
         )}
       </Box>
-      <FilterButton handleClick={onApply} disabled={isDisabled}>
-        Применить
+      <FilterButton
+        handleClick={() => handleModal(false)}
+        disabled={isDisabled}
+      >
+        Посмотреть результаты
       </FilterButton>
     </>
   );

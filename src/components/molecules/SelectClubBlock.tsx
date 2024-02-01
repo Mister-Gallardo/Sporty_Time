@@ -1,8 +1,8 @@
-import { Box, Checkbox, Typography } from '@mui/material';
 import React from 'react';
+import { Box, Checkbox, Typography } from '@mui/material';
 import noImage from '../../images/no-image.jpg';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Club } from '../../services/club/interface';
 
 interface ISelectClubBlockProps extends Club {
@@ -30,17 +30,12 @@ export const SelectClubBlock: React.FC<ISelectClubBlockProps> = ({
           checked={!!isChecked || false}
           onChange={onCheck}
           icon={
-            <RadioButtonUncheckedIcon
-              color="primary"
-              sx={{ borderRadius: 5, backgroundColor: '#fff' }}
+            <CheckBoxOutlineBlankOutlinedIcon
+              sx={{ backgroundColor: '#fff' }}
             />
           }
-          checkedIcon={
-            <CheckCircleIcon
-              sx={{ borderRadius: 5, backgroundColor: '#fff' }}
-            />
-          }
-          sx={{ padding: 0, backgroundColor: '#fff' }}
+          checkedIcon={<CheckBoxIcon sx={{ backgroundColor: '#fff' }} />}
+          sx={{ padding: 0 }}
         />
       </Box>
       <Box

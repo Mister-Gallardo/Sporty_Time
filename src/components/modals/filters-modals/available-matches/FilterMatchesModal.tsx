@@ -1,9 +1,7 @@
 import React from 'react';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import { SelectClubLocationModal } from '../SelectClubLocationModal';
 import { useSearchParam } from '../../../../hooks/useSearchParams';
 import { ModalContainer } from '../../ModalContainer';
-import useToggle from '../../../../hooks/useToggle';
 import { Box, IconButton } from '@mui/material';
 import { PlayLocation } from './PlayLocation';
 import { AskForLevel } from './AskForLevel';
@@ -13,19 +11,19 @@ import { PlayDate } from './PlayDate';
 interface IFilterMatchesModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  onApply: () => void;
 }
 
 export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
   openState,
   handleModal,
-  onApply,
 }) => {
-  const [openSelectLocation, setOpenSelectLocation] = useToggle();
-
   const [q, setQ] = useSearchParam('q');
   const currentStep = Number(q) || 1;
-  const handleStep = (step: number) => setQ(String(currentStep + step));
+
+  const handleStep = (step?: number) => {
+    // if (currentStep === 4) return handleModal(false);
+    if (step) setQ(String(currentStep + step));
+  };
 
   const modalTitle =
     currentStep === 1
@@ -36,11 +34,6 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
       ? 'Где Вы хотите играть?'
       : 'Когда Вы хотите играть?';
 
-  const handleSelectLocation = () => {
-    handleModal();
-    setOpenSelectLocation();
-  };
-
   const backButton = () => (
     <IconButton onClick={() => handleStep(-1)}>
       <ArrowBackRoundedIcon />
@@ -48,38 +41,22 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
   );
 
   return (
-    <>
-      <SelectClubLocationModal
-        openState={openSelectLocation}
-        handleModal={handleSelectLocation}
-        handleClose={() => {
-          handleModal(true);
-          setOpenSelectLocation(false);
-        }}
-      />
-
-      <ModalContainer
-        openState={openState}
-        handleModal={handleModal}
-        headerTitle={modalTitle}
-        headerButton={currentStep > 1 ? backButton() : null}
-      >
-        <Box height="100%" display="flex" flexDirection="column">
-          {currentStep === 1 && <SportType handleStep={handleStep} />}
-          {currentStep === 2 && (
-            <AskForLevel handleStep={handleStep} handleModal={handleModal} />
-          )}
-          {currentStep === 3 && (
-            <PlayLocation
-              handleStep={handleStep}
-              handleSelectLocation={handleSelectLocation}
-            />
-          )}
-          {currentStep === 4 && (
-            <PlayDate handleStep={handleStep} onApply={onApply} />
-          )}
-        </Box>
-      </ModalContainer>
-    </>
+    <ModalContainer
+      openState={openState}
+      handleModal={handleModal}
+      headerTitle={modalTitle}
+      headerButton={currentStep > 1 ? backButton() : null}
+    >
+      <Box height="100%" display="flex" flexDirection="column">
+        {currentStep === 1 && <SportType handleStep={handleStep} />}
+        {currentStep === 2 && (
+          <AskForLevel handleStep={handleStep} handleModal={handleModal} />
+        )}
+        {currentStep === 3 && <PlayLocation handleStep={handleStep} />}
+        {currentStep === 4 && (
+          <PlayDate handleStep={handleStep} handleModal={handleModal} />
+        )}
+      </Box>
+    </ModalContainer>
   );
 };

@@ -20,8 +20,8 @@ import { transliterate } from 'transliteration';
 import { debounce } from 'lodash-es';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import EastRoundedIcon from '@mui/icons-material/EastRounded';
-import { Geolocation } from '@capacitor/geolocation';
 import useToggle from '../../../hooks/useToggle';
+import { getUserLocation } from '../../../helpers/getUserLocation';
 
 interface ISelectClubLocationModalProps {
   openState: boolean;
@@ -59,27 +59,6 @@ export const SelectClubLocationModal: React.FC<
 
   const [isUserLocationLoading, setIsUserLocationLoading] = useToggle();
 
-  const setUserLocation = async () => {
-    setIsUserLocationLoading(true);
-    try {
-      const { coords } = await Geolocation.getCurrentPosition();
-      const { latitude, longitude } = coords;
-      setIsUserLocationLoading(false);
-
-      setValue('long', longitude);
-      setValue('lat', latitude);
-
-      setValue('selectedLocation', 'Рядом со мной');
-
-      handleModal();
-    } catch (error: any) {
-      setIsUserLocationLoading(false);
-      if (error.message === 'User denied Geolocation') {
-        setValue('selectedLocation', 'Выбрать локацию');
-      }
-    }
-  };
-
   return (
     <ModalContainer
       openState={openState}
@@ -92,7 +71,7 @@ export const SelectClubLocationModal: React.FC<
       <Box height="80vh">
         <Button
           disabled={isUserLocationLoading}
-          onClick={setUserLocation}
+          onClick={() => getUserLocation(setIsUserLocationLoading, setValue)}
           variant="contained"
           sx={{ borderRadius: 5, fontSize: 14, fontWeight: 600, mb: 5 }}
           endIcon={
