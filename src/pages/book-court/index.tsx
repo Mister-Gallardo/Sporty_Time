@@ -21,6 +21,7 @@ import { isBefore, isToday, parse } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
 import { Sport } from '../../types';
 import { getUserLocation } from '../../helpers/getUserLocation';
+import { SelectedFilterButton } from '../../components/modals/filters-modals/SelectedFilterButton';
 
 export interface FilterFormDate {
   sport: Sport;
@@ -182,24 +183,11 @@ export function BookCourt() {
           </Button>
         </Box>
 
-        <Box mt={2} display="flex" gap={1.5} alignItems="center">
-          <Button
-            onClick={() => setOpenFilterModal()}
-            sx={{
-              backgroundColor: '#0D2433',
-              color: '#fff',
-              padding: 0,
-              paddingX: 1.5,
-              borderRadius: 5,
-              fontSize: 13,
-              '&:hover': {
-                backgroundColor: '#0d2433de',
-              },
-            }}
-          >
+        <Box mt={2}>
+          <SelectedFilterButton handleClick={setOpenFilterModal}>
             {getDayFormat(gamedate, EType.MONTH_AND_DAY)} | {timefrom}
             {timeto ? ` - ${timeto}` : ''}
-          </Button>
+          </SelectedFilterButton>
         </Box>
       </Box>
 

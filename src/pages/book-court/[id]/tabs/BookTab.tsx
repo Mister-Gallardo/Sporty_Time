@@ -145,6 +145,8 @@ export function BookTab() {
             </Box>
             <Box display="flex" gap={2} overflow="auto">
               {dates.map((date, i) => {
+                if (selectedDate.toString() === 'Invalid Date') return;
+
                 return (
                   <CalendarDay
                     key={i}

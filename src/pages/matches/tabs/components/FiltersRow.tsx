@@ -1,10 +1,13 @@
 import React from 'react';
 import { isPlatform } from '@ionic/react';
 import { useFormContext } from 'react-hook-form';
+import { SelectedFilterButton } from '../../../../components/modals/filters-modals/SelectedFilterButton';
 import { EType, getDayFormat } from '../../../../helpers/getTimeDateString';
 import { getSportName } from '../../../../helpers/getSportName';
 import { Box, Button, Typography } from '@mui/material';
+import { useLocalStorage } from 'usehooks-ts';
 import { Sport } from '../../../../types';
+import { useSearchParam } from '../../../../hooks/useSearchParams';
 
 interface IFiltersRowProps {
   handleModal: () => void;
@@ -13,14 +16,16 @@ interface IFiltersRowProps {
 const isMobile = isPlatform('mobile');
 
 export const FiltersRow: React.FC<IFiltersRowProps> = ({ handleModal }) => {
-  const { watch } = useFormContext();
-  const { sport, gamedates } = watch();
+  const [, setQ] = useSearchParam('q');
 
-  const isMainFilters = !!sport && gamedates.length > 0;
+  const { watch } = useFormContext();
+  const { sport, gamedates, clubsId } = watch();
+
+  const [localFilters, setLocalFilters] = useLocalStorage('matchesFilter', {});
+  const isSomeFilter = Object.keys(localFilters).length !== 0;
 
   const onClearFilters = () => {
-    localStorage.removeItem('availableMatchesFilters');
-    window.location.reload();
+    setLocalFilters({});
   };
 
   return (
@@ -36,9 +41,10 @@ export const FiltersRow: React.FC<IFiltersRowProps> = ({ handleModal }) => {
       height={50}
       px={1}
     >
-      {isMainFilters ? (
+      {isSomeFilter ? (
         <>
           <Box
+            width="100%"
             display="flex"
             overflow="auto"
             gap={1}
@@ -49,43 +55,42 @@ export const FiltersRow: React.FC<IFiltersRowProps> = ({ handleModal }) => {
               msOverflowStyle: 'none',
             }}
           >
-            <Typography
-              px={2}
-              py={0.5}
-              bgcolor="#0D2433"
-              color="#fff"
-              borderRadius={5}
-              fontSize={13}
-              lineHeight={1.2}
-              whiteSpace="nowrap"
+            <SelectedFilterButton
+              handleClick={() => {
+                setQ('1');
+                handleModal();
+              }}
             >
               {getSportName(sport as Sport)}
-            </Typography>
-            <Typography
-              px={2}
-              py={0.5}
-              bgcolor="#0D2433"
-              color="#fff"
-              borderRadius={5}
-              fontSize={13}
-              lineHeight={1.2}
-              whiteSpace="nowrap"
-              maxWidth={210}
-              noWrap
+            </SelectedFilterButton>
+            <SelectedFilterButton
+              handleClick={() => {
+                setQ('3');
+                handleModal();
+              }}
             >
-              {gamedates
-                .map((date: { value: Date }) =>
-                  getDayFormat(date.value, EType.MONTH_AND_DAY),
-                )
-                .join(' | ')}
-            </Typography>
+              <Typography maxWidth={200} noWrap>
+                {gamedates
+                  .map((date: { value: Date }) =>
+                    getDayFormat(date.value, EType.MONTH_AND_DAY),
+                  )
+                  .join(' | ')}
+              </Typography>
+            </SelectedFilterButton>
+            <SelectedFilterButton
+              handleClick={() => {
+                setQ('3');
+                handleModal();
+              }}
+            >
+              Клубы | {clubsId.length}
+            </SelectedFilterButton>
           </Box>
           <Button
             onClick={onClearFilters}
             variant="outlined"
             sx={{
               fontSize: 13,
-              borderRadius: 5,
               py: 0,
               whiteSpace: 'nowrap',
             }}

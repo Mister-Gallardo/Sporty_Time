@@ -56,7 +56,7 @@ export const SelectClubsList = () => {
         msOverflowStyle: 'none',
       }}
     >
-      {isLocationGranted || (
+      {!isLocationGranted && (
         <LocationBlock
           icon={<NotListedLocationOutlinedIcon color="disabled" />}
           title="Где Вы находитесь?"

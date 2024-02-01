@@ -66,6 +66,11 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
 
   const [isLoadingUserLocation, setIsLoadingLocaiton] = useToggle();
 
+  // set user location as default
+  useEffect(() => {
+    if (!lat && !long) getUserLocation(setIsLoadingLocaiton, setValue);
+  }, []);
+
   useEffect(() => {
     const clubs: number[] = [];
     data?.forEach((club) => {

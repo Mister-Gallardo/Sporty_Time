@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { isPlatform } from '@ionic/react';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -12,12 +12,12 @@ import { ClubMultipleDatesCard } from '../../../components/molecules/ClubMultipl
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { useCheckUserSport } from '../../../hooks/useCheckUserSport';
 import { Accordion } from '../../../components/molecules/Accordion';
-import { getUserLocation } from '../../../helpers/getUserLocation';
 import { MatchTimeRange } from '../../../services/club/interface';
 import { useSearchParam } from '../../../hooks/useSearchParams';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { getClubs } from '../../../services/club/service';
 import { FormProvider, useForm } from 'react-hook-form';
+import noResults from '../../../images/no-results.svg';
 import { FiltersRow } from './components/FiltersRow';
 import useToggle from '../../../hooks/useToggle';
 import { useLocalStorage } from 'usehooks-ts';
@@ -51,17 +51,14 @@ export function AvailableMatchesTab() {
 
   const defaultSport = useCheckUserSport();
 
-  const [localFilters, setLocalFilters] = useLocalStorage(
-    'availableMatchesFilters',
-    {
-      sport: defaultSport,
-      time: MatchTimeRange.ALL,
-      gamedates: dates,
-      clubsId: [],
-      selectedLocation: 'Выбрать локацию',
-      range: 50,
-    },
-  );
+  const [localFilters, setLocalFilters] = useLocalStorage('matchesFilter', {
+    sport: defaultSport,
+    time: MatchTimeRange.ALL,
+    gamedates: dates,
+    clubsId: [],
+    selectedLocation: 'Выбрать локацию',
+    range: 50,
+  });
 
   const filterParams = useForm<FilterFormDate>({
     defaultValues: localFilters,
@@ -70,12 +67,6 @@ export function AvailableMatchesTab() {
   const { watch, setValue } = filterParams;
   const { sport, lat, long, gamedates, clubsId, time, selectedLocation } =
     watch();
-
-  const [isLoadingLocation, setIsLoadingLocaiton] = useToggle();
-
-  useEffect(() => {
-    if (!lat && !long) getUserLocation(setIsLoadingLocaiton, setValue);
-  }, []);
 
   const [user] = usePlayerProfile();
 
@@ -88,12 +79,6 @@ export function AvailableMatchesTab() {
       user.ratingPadel || user.ratingTennis || user.ratingPickleball;
     if (isRating) setQ('3');
   }, [user]);
-
-  // if filters history is emty - open filters modal
-  useEffect(() => {
-    // if (localFilters) return;
-    setOpenFilterModal(true);
-  }, []);
 
   const gameDatesToString = gamedates
     .map((date) => new Date(date.value).toLocaleDateString('en-ca'))
@@ -156,6 +141,13 @@ export function AvailableMatchesTab() {
     clubsId,
   ]);
 
+  const isSomeFilter = Object.keys(localFilters).length !== 0;
+
+  // if filters history is emty - open filters modal
+  useEffect(() => {
+    if (isSomeFilter) setOpenFilterModal(true);
+  }, []);
+
   return (
     <Box position="relative">
       <FormProvider {...filterParams}>
@@ -169,67 +161,98 @@ export function AvailableMatchesTab() {
         pt={6}
         pb="1.25rem"
       >
-        <Accordion
-          title="Для вашего уровня"
-          description="Эти матчи полностью соответствуют вашему запросу и текущему уровню"
-        >
-          <Box display="flex" gap={1.5} overflow="auto" pb={1}>
-            {availableMatches.isLoading ? (
-              <LoadingCircle />
-            ) : !availableArray || availableArray.length === 0 ? (
-              <Typography textAlign="center" width="100%" mt={3} color="gray">
-                На данный момент нет доступных матчей для вашего уровня по
-                текущему запросу
-              </Typography>
-            ) : (
-              availableArray.map((card, index) => {
-                return <AvailableMatchCard key={index} matchData={card} />;
-              })
-            )}
+        {isSomeFilter ? (
+          <>
+            <Accordion
+              title="Для вашего уровня"
+              description="Эти матчи полностью соответствуют вашему запросу и текущему уровню"
+            >
+              <Box display="flex" gap={1.5} overflow="auto" pb={1}>
+                {availableMatches.isLoading ? (
+                  <LoadingCircle />
+                ) : !availableArray || availableArray.length === 0 ? (
+                  <Typography
+                    textAlign="center"
+                    width="100%"
+                    mt={3}
+                    color="gray"
+                  >
+                    На данный момент нет доступных матчей для вашего уровня по
+                    текущему запросу
+                  </Typography>
+                ) : (
+                  availableArray.map((card, index) => {
+                    return <AvailableMatchCard key={index} matchData={card} />;
+                  })
+                )}
+              </Box>
+            </Accordion>
+            <Accordion
+              title="Запросить место"
+              description="Эти матчи не соответствуют вашему текущему уровню. Вам необходимо сделать запрос на присоединение"
+            >
+              <Box display="flex" gap={1.5} overflow="auto" pb={1}>
+                {noRatingMatches.isLoading ? (
+                  <LoadingCircle />
+                ) : !noRatingArray || noRatingArray.length === 0 ? (
+                  <Typography
+                    textAlign="center"
+                    width="100%"
+                    mt={3}
+                    color="gray"
+                  >
+                    На данный момент нет доступных матчей по текущему запросу
+                  </Typography>
+                ) : (
+                  noRatingArray.map((card, index) => {
+                    return <AvailableMatchCard key={index} matchData={card} />;
+                  })
+                )}
+              </Box>
+            </Accordion>
+            <Accordion
+              title="Стать первым игроком!"
+              description="Создайте новый матч, выбрав подходящее время"
+            >
+              <Box
+                display="flex"
+                flexDirection={isMobile ? 'column' : 'row'}
+                gap={2}
+                width="100%"
+                overflow="auto"
+                py={2}
+                px={0.1}
+              >
+                {!clubsArray || clubsArray.length === 0 ? (
+                  <Typography
+                    textAlign="center"
+                    width="100%"
+                    mt={3}
+                    color="gray"
+                  >
+                    На данный момент нет доступных матчей
+                  </Typography>
+                ) : (
+                  clubsArray.map((club, index) => {
+                    return <ClubMultipleDatesCard key={index} {...club} />;
+                  })
+                )}
+              </Box>
+            </Accordion>
+          </>
+        ) : (
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <Box
+              component="img"
+              src={noResults}
+              width="100%"
+              maxWidth={isMobile ? 250 : 500}
+            />
+            <Button onClick={() => setOpenFilterModal()} sx={{ fontSize: 14 }}>
+              Настройте фильтры, что бы увидеть доступные матчи
+            </Button>
           </Box>
-        </Accordion>
-        <Accordion
-          title="Запросить место"
-          description="Эти матчи не соответствуют вашему текущему уровню. Вам необходимо сделать запрос на присоединение"
-        >
-          <Box display="flex" gap={1.5} overflow="auto" pb={1}>
-            {noRatingMatches.isLoading ? (
-              <LoadingCircle />
-            ) : !noRatingArray || noRatingArray.length === 0 ? (
-              <Typography textAlign="center" width="100%" mt={3} color="gray">
-                На данный момент нет доступных матчей по текущему запросу
-              </Typography>
-            ) : (
-              noRatingArray.map((card, index) => {
-                return <AvailableMatchCard key={index} matchData={card} />;
-              })
-            )}
-          </Box>
-        </Accordion>
-        <Accordion
-          title="Стать первым игроком!"
-          description="Создайте новый матч, выбрав подходящее время"
-        >
-          <Box
-            display="flex"
-            flexDirection={isMobile ? 'column' : 'row'}
-            gap={2}
-            width="100%"
-            overflow="auto"
-            py={2}
-            px={0.1}
-          >
-            {!clubsArray || clubsArray.length === 0 ? (
-              <Typography textAlign="center" width="100%" mt={3} color="gray">
-                На данный момент нет доступных матчей
-              </Typography>
-            ) : (
-              clubsArray.map((club, index) => {
-                return <ClubMultipleDatesCard key={index} {...club} />;
-              })
-            )}
-          </Box>
-        </Accordion>
+        )}
       </Box>
 
       <FormProvider {...filterParams}>
