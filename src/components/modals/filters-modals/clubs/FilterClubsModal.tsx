@@ -1,28 +1,30 @@
 import React from 'react';
-import { ModalContainer } from './ModalContainer';
+import { ModalContainer } from '../../ModalContainer';
 import { IonDatetime } from '@ionic/react';
 import { Box, Button, Divider, Typography } from '@mui/material';
-import { ModalContentContainer } from '../atoms/ModalContentContainer';
-import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
-import { CalendarDay } from '../molecules/CalendarDay';
+import { ModalContentContainer } from '../../../atoms/ModalContentContainer';
+import { CalendarDay } from '../../../molecules/CalendarDay';
 import { useFormContext } from 'react-hook-form';
-import { getDatesList } from '../../helpers/getDatesList';
+import { getDatesList } from '../../../../helpers/getDatesList';
+import {
+  EType,
+  addTime,
+  getDayFormat,
+} from '../../../../helpers/getTimeDateString';
 
 interface IFilterClubsModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  onApply: () => void;
 }
 
 export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
   openState,
   handleModal,
-  onApply,
 }) => {
   const dates = getDatesList(14);
 
   const { setValue, watch } = useFormContext();
-  const { gamedates, timefrom, timeto } = watch();
+  const { gamedate, timefrom, timeto } = watch();
 
   const handleDatetimeChange = (event: any) => {
     const time = event.detail.value.slice(-8, -3);
@@ -46,9 +48,9 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
                 key={i}
                 date={dateItem}
                 selected={
-                  new Date(gamedates).toDateString() === dateItem.toDateString()
+                  new Date(gamedate).toDateString() === dateItem.toDateString()
                 }
-                onSelect={() => setValue('gamedates', dateItem)}
+                onSelect={() => setValue('gamedate', dateItem)}
               />
             );
           })}
@@ -84,7 +86,7 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
             borderBottom="1px solid #7b96ff"
             py={1}
           >
-            {getDayFormat(gamedates, EType.MONTH_AND_DAY)} | {timefrom} -{' '}
+            {getDayFormat(gamedate, EType.MONTH_AND_DAY)} | {timefrom} -{' '}
             {timeto}
           </Typography>
 
@@ -110,7 +112,7 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
           borderTop="1px solid #eee"
         >
           <Button
-            onClick={onApply}
+            onClick={() => handleModal(false)}
             sx={{
               backgroundColor: '#0e2432',
               color: '#fff',
@@ -122,7 +124,7 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
             }}
             fullWidth
           >
-            Сохранить
+            Посмотреть результаты
           </Button>
         </Box>
       </Box>

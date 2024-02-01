@@ -1,31 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { isPlatform } from '@ionic/react';
-import { Box, Button, Typography } from '@mui/material';
-import { AdvancedFilterClubsModal } from '../../components/modals/AdvancedFilterClubsModal';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import SportsTennisOutlinedIcon from '@mui/icons-material/SportsTennisOutlined';
-import { FilterClubsModal } from '../../components/modals/FilterClubsModal';
+import { FilterClubsModal } from '../../components/modals/filters-modals/clubs/FilterClubsModal';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
-// import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-// import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import { ClubCard } from '../../components/molecules/ClubCard';
-// import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import NearMeSharpIcon from '@mui/icons-material/NearMeSharp';
 import { FormProvider, useForm } from 'react-hook-form';
 import { getClubs } from '../../services/club/service';
 import noResults from '../../images/no-results.svg';
 import { useQuery } from '@tanstack/react-query';
 import useToggle from '../../hooks/useToggle';
-import { SelectSportModal } from '../../components/modals/SelectSportModal';
-import { getSportName } from '../../helpers/getSportName';
-import { Sport } from '../../types';
-import { LoadingCircle } from '../../components/atoms/LoadingCircle';
-import { isBefore, isToday, parse } from 'date-fns';
 import { SelectClubLocationModal } from '../../components/modals/filters-modals/SelectClubLocationModal';
+import { SelectSportModal } from '../../components/modals/SelectSportModal';
+import { LoadingCircle } from '../../components/atoms/LoadingCircle';
+import { useCheckUserSport } from '../../hooks/useCheckUserSport';
+import { getSportName } from '../../helpers/getSportName';
+import { Geolocation } from '@capacitor/geolocation';
+import { isBefore, isToday, parse } from 'date-fns';
+import { useLocalStorage } from 'usehooks-ts';
+import { Sport } from '../../types';
 
 export interface FilterFormDate {
   sport: Sport;
-  gamedate: Date;
+  gamedate: string;
   lat: number;
   long: number;
   timefrom: string;
@@ -49,57 +48,81 @@ const countDefaultTime = () => {
   return defaultTime;
 };
 
+const isMobile = isPlatform('mobile');
+
 export function BookCourt() {
-  const isMobile = isPlatform('mobile');
+  const defaultSport = useCheckUserSport();
 
-  const filtersFromLocalStorage = localStorage.getItem('clubsFilters');
-  const [localFilters] = useState(
-    filtersFromLocalStorage ? JSON.parse(filtersFromLocalStorage) : null,
-  );
-
-  const gameDate = Date.parse(localFilters?.gamedates)
-    ? new Date(localFilters?.gamedates)
-    : now;
-  const filterParams = useForm<FilterFormDate>({
-    defaultValues: {
-      sport: localFilters?.sport || '',
-      gamedate: gameDate < now ? now : gameDate,
-      lat: localFilters?.lat || 0,
-      long: localFilters?.long || 0,
-      timefrom: localFilters?.timefrom || countDefaultTime(),
-      timeto: localFilters?.timeto || addTime(countDefaultTime(), 5 * 60),
-      selectedLocation: localFilters?.selectedLocation || 'Выбрать локацию',
-    },
+  const [localFilters, setLocalFilters] = useLocalStorage('clubsFilter', {
+    sport: defaultSport,
+    gamedate: now.toString(),
+    timefrom: countDefaultTime(),
+    timeto: addTime(countDefaultTime(), 5 * 60),
+    selectedLocation: 'Выбрать локацию',
   });
 
-  const { watch, getValues, setValue } = filterParams;
+  const filterParams = useForm<FilterFormDate>({
+    defaultValues: localFilters,
+  });
+
+  const { watch, setValue } = filterParams;
   const { sport, gamedate, lat, long, timefrom, timeto, selectedLocation } =
     watch();
 
+  const [isLoadingLocation, setIsLoadingLosaiton] = useToggle();
+
+  const checkLocationPermission = async () => {
+    setIsLoadingLosaiton(true);
+    try {
+      const { location } = await Geolocation.checkPermissions();
+
+      const { latitude, longitude } = (await Geolocation.getCurrentPosition())
+        .coords;
+      if (location === 'granted') {
+        setValue('lat', latitude);
+        setValue('long', longitude);
+        setValue('selectedLocation', 'Рядом со мной');
+      }
+
+      if (location === 'denied') {
+        setValue('selectedLocation', 'Выбрать локацию');
+      }
+
+      setIsLoadingLosaiton(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoadingLosaiton(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!lat && !long) checkLocationPermission();
+  }, []);
+
   // If the date selected by the user in the past has gone, set current date
-  const isSelectedDateToday = isToday(new Date(localFilters?.gamedates));
+  const isSelectedDateToday = isToday(new Date(localFilters?.gamedate));
   const parsedTargetDate = parse(
-    localFilters?.gamedates,
+    localFilters?.gamedate,
     'yyyy-MM-dd',
     new Date(),
   );
 
   useEffect(() => {
     if (isBefore(parsedTargetDate, new Date()) && !isSelectedDateToday) {
-      setValue('gamedate', now);
+      setValue('gamedate', now.toString());
     }
   }, []);
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['clubs', gamedate, sport, lat, long],
     queryFn: () =>
       getClubs({
         sport,
-        gamedates: new Date(gamedate).toLocaleDateString('en-ca'),
+        gamedates: gamedate,
         lat,
         long,
-        timefrom: timefrom,
-        timeto: timeto,
+        timefrom,
+        timeto,
       }),
   });
 
@@ -108,20 +131,16 @@ export function BookCourt() {
   const [openSelectSport, setOpenSelectSport] = useToggle();
   const [openClubLocation, setOpenClubLocation] = useToggle();
   const [openFilterModal, setOpenFilterModal] = useToggle();
-  const [openAdvancedFilterModal, setOpenAdvancedFilterModal] = useToggle();
-
-  const onFilterApply = () => {
-    refetch();
-    localStorage.setItem('clubsFilters', JSON.stringify(getValues()));
-    if (openFilterModal) setOpenFilterModal();
-    // if (openAdvancedFilterModal) setOpenAdvancedFilterModal();
-  };
 
   useEffect(() => {
     if (!timeto) {
       setValue('timeto', addTime(timefrom, 5 * 60));
     }
   }, []);
+
+  useEffect(() => {
+    setLocalFilters(watch());
+  }, [sport, gamedate, lat, long, timefrom, timeto, selectedLocation]);
 
   return (
     <Box
@@ -159,20 +178,6 @@ export function BookCourt() {
             />
             <Typography>{getSportName(sport) || 'Вид спорта'}</Typography>
           </Button>
-
-          {/* <IconButton
-            disabled
-            sx={{
-              backgroundColor: '#f5f6f8',
-              borderRadius: 1.5,
-              minWidth: '45px',
-              '&:disabled': {
-                backgroundColor: '#f5f6f8',
-              },
-            }}
-          >
-            <FavoriteBorderIcon fontSize="small" />
-          </IconButton> */}
         </Box>
 
         <Box display="flex" gap={1}>
@@ -191,34 +196,17 @@ export function BookCourt() {
                 fontSize="small"
                 sx={{ justifySelf: 'end' }}
               />
-              <Typography>{selectedLocation}</Typography>
+              {isLoadingLocation ? (
+                <CircularProgress size={25} />
+              ) : (
+                <Typography>{selectedLocation}</Typography>
+              )}
             </Box>
             <NearMeSharpIcon fontSize="small" sx={{ justifySelf: 'end' }} />
           </Button>
-
-          {/* <IconButton
-            disabled
-            sx={{
-              backgroundColor: '#f5f6f8',
-              borderRadius: 1.5,
-              minWidth: '45px',
-              '&:disabled': {
-                backgroundColor: '#f5f6f8',
-              },
-            }}
-          >
-            <MapOutlinedIcon fontSize="small" />
-          </IconButton> */}
         </Box>
 
         <Box mt={2} display="flex" gap={1.5} alignItems="center">
-          {/* <IconButton
-            sx={{ padding: 0 }}
-            onClick={() => setOpenAdvancedFilterModal()}
-            disabled
-          >
-            <TuneOutlinedIcon fontSize="small" />
-          </IconButton> */}
           <Button
             onClick={() => setOpenFilterModal()}
             sx={{
@@ -284,12 +272,6 @@ export function BookCourt() {
         <FilterClubsModal
           openState={openFilterModal}
           handleModal={setOpenFilterModal}
-          onApply={onFilterApply}
-        />
-        <AdvancedFilterClubsModal
-          openState={openAdvancedFilterModal}
-          handleModal={setOpenAdvancedFilterModal}
-          onApply={onFilterApply}
         />
         <SelectSportModal
           openState={openSelectSport}

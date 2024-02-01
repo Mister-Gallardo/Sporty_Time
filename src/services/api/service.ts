@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { isAuthorized } from '../auth/service';
 import { history } from '../history/service';
-import { isPlatform } from '@ionic/react';
+// import { isPlatform } from '@ionic/react';
 
 export const api = axios.create({
-  baseURL: isPlatform('mobile') ? 'https://sportytime.ru/api' : '/api',
+  // baseURL: isPlatform('mobile') ? 'https://sportytime.ru/api' : '/api',
+  baseURL: 'https://dev.sportytime.ru/api',
   // baseURL: '/api',
 });
 

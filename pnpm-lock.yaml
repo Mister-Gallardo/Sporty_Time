@@ -131,6 +131,9 @@ dependencies:
   transliteration:
     specifier: ^2.3.5
     version: 2.3.5
+  usehooks-ts:
+    specifier: ^2.11.0
+    version: 2.11.0(react@18.2.0)
   uuid:
     specifier: ^9.0.1
     version: 9.0.1
@@ -7760,6 +7763,19 @@ packages:
       querystringify: 2.2.0
       requires-port: 1.0.0
     dev: true
+
+  /usehooks-ts@2.11.0(react@18.2.0):
+    resolution: {integrity: sha512-JRRTyS7QXR4Qv9laNQE3BOMWsvPlrOolu1nfIGXQLCOGJhbim/STBFopKOoi0ktK6PDFAEx+Xa0Yn0PKIQVgzQ==}
+    engines: {node: '>=16.15.0'}
+    peerDependencies:
+      lodash.debounce: ^4
+      react: ^16.8.0  || ^17 || ^18
+    peerDependenciesMeta:
+      lodash.debounce:
+        optional: true
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
-import { ModalContainer } from './ModalContainer';
+import { ModalContainer } from '../../ModalContainer';
 import {
   Box,
   Button,
@@ -10,7 +10,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { ModalContentContainer } from '../atoms/ModalContentContainer';
+import { ModalContentContainer } from '../../../atoms/ModalContentContainer';
 // import { DistanceSlider } from '../molecules/DistanceSlider';
 
 interface IAdvancedFilterClubsModalProps {
