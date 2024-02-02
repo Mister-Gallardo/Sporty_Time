@@ -15,6 +15,7 @@ import { useMutation } from '@tanstack/react-query';
 import { editUserProfile } from '../../../services/user/service';
 import { useIonToast } from '@ionic/react';
 import { useSearchParam } from '../../../hooks/useSearchParams';
+import { BASE_URL } from '../../../services/api/service';
 
 interface ChooseYourSportProps {
   handleStep: (step: number) => void;
@@ -99,7 +100,7 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
                 mb={3}
               >
                 <Avatar
-                  src={`https://playpadel.lakileki.ru${player?.user?.avatar}`}
+                  src={`${BASE_URL}${player?.user?.avatar}`}
                   sx={{
                     width: '75px',
                     height: '75px',

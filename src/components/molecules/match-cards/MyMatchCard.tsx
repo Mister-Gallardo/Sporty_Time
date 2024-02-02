@@ -9,6 +9,7 @@ import { getMatchStatus } from '../../../helpers/getMatchStatus';
 import { Status } from '../../../types';
 import { WithoutResultsCardSection } from './WithoutResultsCardSection';
 import { ResultsCardSection } from './ResultsCardSection';
+import { BASE_URL } from '../../../services/api/service';
 
 interface IMyMatchCardProps extends MatchData {
   uploadResults: (id: number) => void;
@@ -106,7 +107,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
                       >
                         {member ? (
                           <Avatar
-                            src={`https://playpadel.lakileki.ru${member?.player.user?.avatar}`}
+                            src={`${BASE_URL}${member?.player.user?.avatar}`}
                             sx={{ width: 40, height: 40 }}
                           />
                         ) : (

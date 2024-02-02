@@ -3,6 +3,8 @@ import { isAuthorized } from '../auth/service';
 import { history } from '../history/service';
 // import { isPlatform } from '@ionic/react';
 
+export const BASE_URL = '';
+
 export const api = axios.create({
   // baseURL: isPlatform('mobile')
   //   ? 'https://sportytime.ru/api'

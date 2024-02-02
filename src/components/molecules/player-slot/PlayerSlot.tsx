@@ -4,6 +4,7 @@ import { Avatar, Box, Typography } from '@mui/material';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { Status } from '../../../types';
+import { BASE_URL } from '../../../services/api/service';
 
 interface IPlayerSlotProps {
   player: MatchPlayer;
@@ -40,7 +41,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           sx={{ opacity: player?.mark ? 0.5 : 1 }}
         >
           <Avatar
-            src={`https://playpadel.lakileki.ru${player.user?.avatar}`}
+            src={`${BASE_URL}${player.user?.avatar}`}
             sx={{
               width: '50px',
               height: '50px',
