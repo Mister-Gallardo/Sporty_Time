@@ -52,6 +52,7 @@ export function BookTab() {
   const {
     data,
     isLoading,
+    isError,
     refetch: refetchClubs,
   } = useQuery({
     queryKey: ['club', selectedDate, clubId],
@@ -68,13 +69,16 @@ export function BookTab() {
     data?.availableSlots?.[selectedTime]?.booked || [];
 
   const filteredTimes = useMemo(() => {
-    const times = data?.availableSlots && Object.keys(data.availableSlots);
+    if (!data) return;
+
+    const times = data.availableSlots && Object.keys(data.availableSlots);
+
     return onlyAvailableSlots
       ? times?.filter(
           (time) => !!data?.availableSlots?.[time]?.available?.length,
         )
       : times;
-  }, [data]);
+  }, [data, onlyAvailableSlots]);
 
   const createMatchMutation = useMutation({
     mutationFn: createMatch,
@@ -114,6 +118,8 @@ export function BookTab() {
     setOpenCheckoutModal();
   };
 
+  if (isError) history.push('/book-court');
+
   return (
     <>
       <Box
@@ -145,6 +151,7 @@ export function BookTab() {
             </Box>
             <Box display="flex" gap={2} overflow="auto">
               {dates.map((date, i) => {
+                //find bug to solve this problem
                 if (selectedDate.toString() === 'Invalid Date') return;
 
                 return (
@@ -221,20 +228,6 @@ export function BookTab() {
                   );
                 })}
               </Box>
-
-              {/* hidden before we get know when to show it */}
-              {/* <Accordion
-                title="Забронировать место в матче"
-                description="Lorem ipsum dolor sit amet consectetur sali adipisicingelit."
-              >
-                <Box display="flex" justifyContent="center">
-                  <BookFirstSpot
-                    price={17}
-                    playTime={90}
-                    handleBook={() => setOpenConfigMatchModal()}
-                  />
-                </Box>
-              </Accordion> */}
 
               <Box mt="1rem" width="100%">
                 <Typography fontSize="1.15rem" fontWeight={700}>

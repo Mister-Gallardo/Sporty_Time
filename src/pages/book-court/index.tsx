@@ -129,65 +129,65 @@ export function BookCourt() {
       alignItems="center"
     >
       <Box
-        top={70}
+        top={isMobile ? 'unset' : 70}
+        bgcolor="#fff"
         position="fixed"
         zIndex={2}
-        bgcolor="#fff"
         width="100%"
         p={2}
         boxShadow="0 7px 8px -2px #0000000f"
       >
-        <Box display="flex" gap={1} mb={1}>
-          <Button
-            onClick={() => setOpenSelectSport()}
-            sx={{
-              flexGrow: 1,
-              display: 'flex',
-              gap: 2,
-              justifyContent: 'start',
-              backgroundColor: '#f5f6f8',
-              color: '#676767',
-            }}
-          >
-            <SportsTennisOutlinedIcon
-              fontSize="small"
-              sx={{ justifySelf: 'end' }}
-            />
-            <Typography>{getSportName(sport) || 'Вид спорта'}</Typography>
-          </Button>
-        </Box>
-
-        <Box display="flex" gap={1}>
-          <Button
-            onClick={() => setOpenClubLocation()}
-            sx={{
-              flexGrow: 1,
-              display: 'flex',
-              justifyContent: 'space-between',
-              backgroundColor: '#f5f6f8',
-              color: '#676767',
-            }}
-          >
-            <Box display="flex" gap={2}>
-              <FmdGoodOutlinedIcon
+        <Box width="100%" mx="auto" maxWidth={1036}>
+          <Box display="flex" gap={1} mb={1}>
+            <Button
+              onClick={() => setOpenSelectSport()}
+              sx={{
+                flexGrow: 1,
+                display: 'flex',
+                gap: 2,
+                justifyContent: 'start',
+                backgroundColor: '#f5f6f8',
+                color: '#676767',
+              }}
+            >
+              <SportsTennisOutlinedIcon
                 fontSize="small"
                 sx={{ justifySelf: 'end' }}
               />
-              {isLoadingLocation ? (
-                <CircularProgress size={25} />
-              ) : (
-                <Typography>{selectedLocation}</Typography>
-              )}
-            </Box>
-            <NearMeSharpIcon fontSize="small" sx={{ justifySelf: 'end' }} />
-          </Button>
-        </Box>
-
-        <Box mt={2}>
-          <SelectedFilterButton handleClick={setOpenFilterModal}>
-            {getDayFormat(gamedate, EType.MONTH_AND_DAY)} | {timefrom}
-            {timeto ? ` - ${timeto}` : ''}
-          </SelectedFilterButton>
+              <Typography>{getSportName(sport) || 'Вид спорта'}</Typography>
+            </Button>
+          </Box>
+          <Box display="flex" gap={1}>
+            <Button
+              onClick={() => setOpenClubLocation()}
+              sx={{
+                flexGrow: 1,
+                display: 'flex',
+                justifyContent: 'space-between',
+                backgroundColor: '#f5f6f8',
+                color: '#676767',
+              }}
+            >
+              <Box display="flex" gap={2}>
+                <FmdGoodOutlinedIcon
+                  fontSize="small"
+                  sx={{ justifySelf: 'end' }}
+                />
+                {isLoadingLocation ? (
+                  <CircularProgress size={25} />
+                ) : (
+                  <Typography>{selectedLocation}</Typography>
+                )}
+              </Box>
+              <NearMeSharpIcon fontSize="small" sx={{ justifySelf: 'end' }} />
+            </Button>
+          </Box>
+          <Box mt={2}>
+            <SelectedFilterButton handleClick={setOpenFilterModal}>
+              {getDayFormat(gamedate, EType.MONTH_AND_DAY)} | {timefrom}
+              {timeto ? ` - ${timeto}` : ''}
+            </SelectedFilterButton>
+          </Box>
         </Box>
       </Box>
 
