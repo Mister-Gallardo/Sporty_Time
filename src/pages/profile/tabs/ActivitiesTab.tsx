@@ -4,27 +4,35 @@ import { getSportRating } from '../../../helpers/getSportRating';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { Box, Button, Typography } from '@mui/material';
 import dummy from '../../../images/home/booking-bg.png';
-import { InfoRounded } from '@mui/icons-material';
 import { isPlatform } from '@ionic/react';
 import { useHistory } from 'react-router';
 import { Sport } from '../../../types';
 import { RatingChart } from '../../../components/molecules/RatingChart';
+
+const sports = [
+  {
+    id: Sport.PADEL,
+    title: 'Падел',
+  },
+  {
+    id: Sport.TENNIS,
+    title: 'Теннис',
+  },
+  {
+    id: Sport.PICKLEBALL,
+    title: 'Пиклбол',
+  },
+];
 
 export default function ActivitiesTab() {
   const isMobile = isPlatform('mobile');
 
   const history = useHistory();
 
-  const [activeSport, setActiveSport] = useState<string>('Padel');
-  const sport =
-    activeSport === 'Padel'
-      ? Sport.PADEL
-      : activeSport === 'Tennis'
-      ? Sport.TENNIS
-      : Sport.PICKLEBALL;
+  const [activeSport, setActiveSport] = useState<Sport>(Sport.PADEL);
 
   const [player] = usePlayerProfile();
-  const sportLevel = player && getSportRating(player, sport);
+  const sportLevel = player && getSportRating(player, activeSport);
 
   return (
     <Box
@@ -35,15 +43,15 @@ export default function ActivitiesTab() {
       gap={4}
     >
       <Box display="flex" gap={1}>
-        {['Padel', 'Tennis', 'Pickleball'].map((item: string) => (
+        {sports.map((item) => (
           <ToggleButton
-            key={item}
-            value={item}
-            aria-label={item}
-            onClick={() => setActiveSport(item)}
-            selected={activeSport === item}
+            key={item.id}
+            value={item.id}
+            aria-label={item.title}
+            onClick={() => setActiveSport(item.id)}
+            selected={activeSport === item.id}
           >
-            {item}
+            {item.title}
           </ToggleButton>
         ))}
       </Box>
@@ -64,10 +72,9 @@ export default function ActivitiesTab() {
             </Box>
             <Box>
               <Box display="flex" alignItems="center">
-                <Typography color="GrayText">Level reliability: 15%</Typography>
-                {/* <Button>
-                  <InfoRounded color="disabled" />
-                </Button> */}
+                <Typography color="GrayText">
+                  Уровень подтверждён на: 15%
+                </Typography>
               </Box>
               <Typography
                 color="white"
@@ -78,7 +85,7 @@ export default function ActivitiesTab() {
                 px={1}
                 borderRadius={3}
               >
-                LOW
+                НИЗКИЙ
               </Typography>
             </Box>
           </Box>
@@ -100,7 +107,7 @@ export default function ActivitiesTab() {
           </Typography>
           <Button
             variant="contained"
-            onClick={() => history.push(`/question-form?sport=${sport}`)}
+            onClick={() => history.push(`/question-form?sport=${activeSport}`)}
             sx={{ borderRadius: 10 }}
           >
             Начать тестирование

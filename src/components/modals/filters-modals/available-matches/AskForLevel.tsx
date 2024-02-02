@@ -66,7 +66,7 @@ export const AskForLevel: React.FC<IAskForLevelProps> = ({
           sx={{ mt: 2, fontSize: 13 }}
           onClick={() => {
             handleModal(false);
-            history.push(`/question-form?sport=${sport}&step=2`);
+            history.push(`/question-form?sport=${sport}&step=2&prev=filter`);
           }}
         >
           Хотите пройти тестирование?

@@ -4,6 +4,7 @@ import { IonHeader, IonTitle, IonToolbar, isPlatform } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 import { Box, Button, Fade } from '@mui/material';
 import { useSearchParam } from '../../../hooks/useSearchParams';
+import { useHistory } from 'react-router';
 
 interface IQuestionsContainerProps extends PropsWithChildren {}
 
@@ -12,6 +13,9 @@ const isMobile = isPlatform('mobile');
 export const QuestionsContainer: React.FC<IQuestionsContainerProps> = ({
   children,
 }) => {
+  const [isPrev] = useSearchParam('prev');
+  const history = useHistory();
+
   const [step, setStep] = useSearchParam('step');
   const currentStep = Number(step) || 1;
   const handleStep = (step: number) => setStep(`${currentStep + step}`);
@@ -43,7 +47,13 @@ export const QuestionsContainer: React.FC<IQuestionsContainerProps> = ({
         <Box display="flex" justifyContent="center">
           <Box width="100%" maxWidth={550}>
             <Button
-              onClick={() => handleStep(-1)}
+              onClick={() => {
+                if (isPrev === 'filter' && currentStep === 2)
+                  return history.push('/matches?q=2');
+                if (isPrev === 'match' && currentStep === 2)
+                  return history.goBack();
+                handleStep(-1);
+              }}
               startIcon={<KeyboardBackspaceRoundedIcon />}
             >
               Назад

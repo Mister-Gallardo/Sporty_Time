@@ -19,7 +19,7 @@ export function ProfilePage() {
   const isMobile = isPlatform('mobile');
   const history = useHistory();
 
-  const [tabIndex, setTabIndex] = useState<string>('1');
+  const [tabIndex] = useState<string>('1');
 
   const [profile, rest] = useFullUserData();
 
@@ -46,8 +46,10 @@ export function ProfilePage() {
         </Box>
 
         <Box
+          mt={1}
           display="flex"
           justifyContent={isMobile ? 'space-evenly' : 'center'}
+          gap={isMobile ? 'unset' : 2}
           alignItems="center"
         >
           {['Matches', 'Followers', 'Following'].map((item) => {
@@ -112,25 +114,6 @@ export function ProfilePage() {
           >
             Изменить профиль
           </Button>
-          {/* <Button
-            // disabled
-            variant="contained"
-            color="inherit"
-            sx={{
-              // backgroundColor: '#0d2432',
-              // color: 'gold',
-              fontSize: 15,
-              paddingY: 0.25,
-              borderRadius: 10,
-              whiteSpace: 'nowrap',
-              '&:hover': {
-                // backgroundColor: '#123347',
-              },
-            }}
-            fullWidth
-          >
-            Go Premium
-          </Button> */}
         </Box>
       </Box>
 

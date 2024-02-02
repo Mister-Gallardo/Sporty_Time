@@ -54,7 +54,7 @@ export const AskForTestPassDialog: React.FC<IAskForTestPassDialogProps> = ({
 
         <Link
           component={ReactRouterLink}
-          to={`/question-form?sport=${singleMatchData.sport}&step=2`}
+          to={`/question-form?sport=${singleMatchData.sport}&step=2&prev=match`}
           mt={3}
           onClick={() => handleOpen(false)}
         >

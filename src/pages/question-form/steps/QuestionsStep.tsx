@@ -5,11 +5,12 @@ import { Box, Button, Input, RadioGroup, Typography } from '@mui/material';
 import { RadioLabel } from '../../../components/molecules/RadioLabel';
 import { QuestionTitle } from '../components/QuestionTitle';
 import { ERadioLabelType, Sport } from '../../../types';
-import { isPlatform } from '@ionic/react';
+import { isPlatform, useIonToast } from '@ionic/react';
 import { useMutation } from '@tanstack/react-query';
 import { createSportRating } from '../../../services/rating';
 import { QuestionsContainer } from '../components/QuestionsContainer';
 import { useSearchParam } from '../../../hooks/useSearchParams';
+import { useHistory } from 'react-router';
 
 // leave just for now
 const getSportAndLevel = (sport: string, level: string) => {
@@ -32,9 +33,11 @@ const getSportAndLevel = (sport: string, level: string) => {
 interface QuestionsStepStepProps {
   handleStep: (step: number) => void;
 }
+const isMobile = isPlatform('mobile');
 
 export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
-  const isMobile = isPlatform('mobile');
+  const [isPrev] = useSearchParam('prev');
+  const history = useHistory();
 
   const [sportParam] = useSearchParam('sport', Sport.PADEL);
   const searchSport = sportParam?.toLocaleLowerCase();
@@ -98,13 +101,23 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     }
   }, [currentQuestions.length]);
 
+  const [showToast] = useIonToast();
+
   const createRatingMutation = useMutation({
     mutationFn: createSportRating,
     onSuccess() {
+      if (isPrev === 'filter') return history.push('/matches?q=2');
+      if (isPrev === 'match') return history.goBack();
       handleStep(1);
     },
-    onError(e) {
-      console.log(e);
+    onError() {
+      showToast({
+        color: 'danger',
+        message: `Произошла ошибка, попробуйте ещё раз`,
+        mode: 'ios',
+        position: 'bottom',
+        duration: 2000,
+      });
     },
   });
 
@@ -137,10 +150,10 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
           fontSize={20}
           fontWeight={500}
         >
-          Something went wrong, go back
+          Что-то пошло не так, вернуться на стартовую страницу
         </Typography>
         <Button onClick={() => handleStep(-2)} variant="contained">
-          Go Back
+          Вернуться
         </Button>
       </Box>
     );
