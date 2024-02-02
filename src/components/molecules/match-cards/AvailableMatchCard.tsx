@@ -112,10 +112,12 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
           justifyContent="center"
           borderRadius="0 0 7px 0"
         >
-          <Typography lineHeight={1.2} fontSize={18} fontWeight={700}>
+          <Typography lineHeight={1.2} fontSize={16} fontWeight={600}>
             {matchData.paid ? 'Оплачен' : `₽ ${matchData.price / 4}`}
           </Typography>
-          <Typography lineHeight={1.2}>{matchData.minutes} мин</Typography>
+          <Typography fontSize={14} lineHeight={1.2}>
+            {matchData.booking?.duration} мин
+          </Typography>
         </Box>
       </Box>
     </Box>

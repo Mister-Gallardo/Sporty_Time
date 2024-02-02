@@ -12,6 +12,7 @@ export interface Booking {
   startsAt: string;
   endsAt: string;
   court: Court;
+  duration: number;
   createdAt: Date;
   updatedAt: Date;
 }

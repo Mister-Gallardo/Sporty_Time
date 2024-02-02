@@ -1,4 +1,3 @@
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {
   Avatar,
   Box,
@@ -11,10 +10,6 @@ import {
   Typography,
 } from '@mui/material';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-// import MuiPhoneNumber from 'mui-phone-number';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useMutation } from '@tanstack/react-query';
 import { editUserProfile } from '../../../../services/user/service';
 import useToggle from '../../../../hooks/useToggle';
@@ -113,9 +108,11 @@ export const EditProfilePage = () => {
         ) : (
           <span />
         )}
-        <Fade in={isSmthChanged}>
-          <Button onClick={onSaveChanges}>Сохранить</Button>
-        </Fade>
+        {isSmthChanged && (
+          <Fade in>
+            <Button onClick={onSaveChanges}>Сохранить</Button>
+          </Fade>
+        )}
       </Box>
 
       <Box display="flex" flexDirection="column" alignItems="center">
@@ -169,12 +166,6 @@ export const EditProfilePage = () => {
               sx: { borderRadius: 2 },
             }}
           />
-          {/* <MuiPhoneNumber
-            onChange={(number) => {}}
-            defaultCountry="ru"
-            variant="filled"
-            fullWidth
-          /> */}
 
           <TextField
             select
@@ -194,43 +185,6 @@ export const EditProfilePage = () => {
               </MenuItem>
             ))}
           </TextField>
-          {/* <DemoContainer components={['DatePicker']}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                format="DD.MM.YYYY" 
-                onChange={(newDate) => {}}
-                slotProps={{
-                  textField: {
-                    variant: 'filled',
-                    label: 'Дата рождения',
-                    inputProps: {
-                      sx: { borderRadius: 2 },
-                    },
-                  },
-                }}
-              />
-            </LocalizationProvider>
-          </DemoContainer> */}
-          {/* <TextField
-              multiline
-              label="Описание"
-              variant="filled"
-              fullWidth
-              maxRows={4}
-              InputProps={{
-                disableUnderline: true,
-                sx: { borderRadius: 2 },
-              }}
-            /> */}
-          {/* <TextField
-            label="Где вы играете?"
-            variant="filled"
-            fullWidth
-            InputProps={{
-              disableUnderline: true,
-              sx: { borderRadius: 2 },
-            }}
-          /> */}
         </Box>
       </Box>
       <Box mt={3}>

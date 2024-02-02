@@ -5,12 +5,11 @@ import {
   Box,
   Button,
   CircularProgress,
-  Skeleton,
   Typography,
 } from '@mui/material';
 import { useFullUserData } from '../../services/api/hooks';
 import ActivitiesTab from './tabs/ActivitiesTab';
-import { isPlatform } from '@ionic/react';
+import { IonLoading, isPlatform } from '@ionic/react';
 import PostsTab from './tabs/PostsTab';
 import { useHistory } from 'react-router';
 import { NotFoundPage } from '../../components/NotFoundPage';
@@ -27,7 +26,8 @@ export function ProfilePage() {
     ? profile.user.firstname + ' ' + profile.user.lastname
     : '';
 
-  if (!profile && !rest.isLoading) return <NotFoundPage />;
+  if (rest.isLoading) return <IonLoading isOpen />;
+  if (rest.isError) return <NotFoundPage />;
 
   return (
     <>
@@ -38,38 +38,10 @@ export function ProfilePage() {
             src={`https://playpadel.lakileki.ru${profile?.user?.avatar}`}
             sx={{ width: 60, height: 60 }}
           />
-          <Box marginLeft={2}>
-            {rest.isLoading ? (
-              <Skeleton animation="wave" height={40} />
-            ) : (
-              <Typography fontSize="medium" fontWeight={700}>
-                {fullname}
-              </Typography>
-            )}
-            {/* <Typography
-              sx={{
-                fontSize: 14,
-                fontWeight: 700,
-                padding: 0,
-                // color: '#1976d2',
-                color: 'gray',
-              }}
-            >
-              Add my location
-            </Typography> */}
-            {/* <Button
-              disabled
-              variant="text"
-              sx={{
-                fontSize: 14,
-                fontWeight: 700,
-                padding: 0,
-                color: '#1976d2',
-              }}
-            >
-              Add my location
-            </Button> */}
-          </Box>
+
+          <Typography ml={2} fontSize="medium" fontWeight={700}>
+            {fullname}
+          </Typography>
         </Box>
 
         <Box
