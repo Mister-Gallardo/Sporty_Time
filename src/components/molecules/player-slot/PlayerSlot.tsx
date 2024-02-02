@@ -52,14 +52,9 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           <Typography fontSize={12} lineHeight={1.1} color="gray">
             {playerRating}
           </Typography>
-          {isShown && !isHidden && (
+          {isShown && !isHidden ? (
             <Box textAlign="center">
-              <Typography
-                textAlign="center"
-                lineHeight={1.2}
-                // maxWidth={isMobile ? 70 : 'auto'}
-                fontSize={12}
-              >
+              <Typography textAlign="center" lineHeight={1.2} fontSize={12}>
                 {isMatchPaid
                   ? 'Оплачено'
                   : player.paid
@@ -68,7 +63,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
               </Typography>
               <MonetizationOnOutlinedIcon fontSize="small" />
             </Box>
-          )}
+          ) : null}
         </Box>
       ) : (
         <Box

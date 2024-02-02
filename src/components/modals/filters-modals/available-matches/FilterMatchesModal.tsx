@@ -7,6 +7,7 @@ import { PlayLocation } from './PlayLocation';
 import { AskForLevel } from './AskForLevel';
 import { SportType } from './SportType';
 import { PlayDate } from './PlayDate';
+import { usePlayerProfile } from '../../../../services/api/hooks';
 
 interface IFilterMatchesModalProps {
   openState: boolean;
@@ -20,9 +21,22 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
   const [q, setQ] = useSearchParam('q');
   const currentStep = Number(q) || 1;
 
-  const handleStep = (step?: number) => {
-    // if (currentStep === 4) return handleModal(false);
-    if (step) setQ(String(currentStep + step));
+  const [player] = usePlayerProfile();
+
+  //if user has any rating - skip 2 step
+  const handleStep = (step: number) => {
+    if (player) {
+      const isRating =
+        player.ratingPadel || player.ratingTennis || player.ratingPickleball;
+
+      if (isRating && currentStep === 1) {
+        setQ('3');
+      } else if (isRating && currentStep === 3 && step === -1) {
+        setQ('1');
+      } else {
+        setQ(String(currentStep + step));
+      }
+    }
   };
 
   const modalTitle =
@@ -53,9 +67,7 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
           <AskForLevel handleStep={handleStep} handleModal={handleModal} />
         )}
         {currentStep === 3 && <PlayLocation handleStep={handleStep} />}
-        {currentStep === 4 && (
-          <PlayDate handleStep={handleStep} handleModal={handleModal} />
-        )}
+        {currentStep === 4 && <PlayDate handleModal={handleModal} />}
       </Box>
     </ModalContainer>
   );

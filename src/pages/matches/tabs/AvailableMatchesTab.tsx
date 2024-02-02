@@ -24,7 +24,7 @@ import { Sport } from '../../../types';
 export interface FilterFormDate {
   sportLevel: string;
   sport: Sport;
-  clubsId: never[];
+  clubsId: number[];
   gamedates: { value: Date }[];
   lat: number;
   long: number;
@@ -52,7 +52,7 @@ export function AvailableMatchesTab() {
     sport: defaultSport,
     time: MatchTimeRange.ALL,
     gamedates: dates,
-    clubsId: [],
+    clubsId: [1, 2],
     selectedLocation: 'Выбрать локацию',
     range: 50,
   });

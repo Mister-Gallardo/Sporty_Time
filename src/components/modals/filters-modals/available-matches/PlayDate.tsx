@@ -11,7 +11,6 @@ import { ERadioLabelType } from '../../../../types';
 
 interface IPlayDateProps {
   handleModal: (val?: boolean) => void;
-  handleStep: () => void;
 }
 
 const timeList = [
@@ -35,10 +34,7 @@ const timeList = [
   '23:00',
 ];
 
-export const PlayDate: React.FC<IPlayDateProps> = ({
-  handleModal,
-  handleStep,
-}) => {
+export const PlayDate: React.FC<IPlayDateProps> = ({ handleModal }) => {
   const dates = getDatesList(14);
 
   const { watch, control } = useFormContext();
