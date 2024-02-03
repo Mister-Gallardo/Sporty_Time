@@ -7,10 +7,13 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import { ProfilePage } from '.';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import React, { Suspense } from 'react';
 import { useHistory } from 'react-router';
+import { LoadingCircle } from '../../components/atoms/LoadingCircle';
+
+const ProfilePage = React.lazy(() => import('.'));
 
 export function MobileProfilePage() {
   const history = useHistory();
@@ -33,7 +36,9 @@ export function MobileProfilePage() {
       </IonHeader>
 
       <IonContent>
-        <ProfilePage />
+        <Suspense fallback={<LoadingCircle />}>
+          <ProfilePage />
+        </Suspense>
       </IonContent>
     </IonPage>
   );

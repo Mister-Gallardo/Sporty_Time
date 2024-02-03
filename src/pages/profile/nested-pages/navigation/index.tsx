@@ -64,3 +64,5 @@ export const ProfileNavPage = () => {
     </Box>
   );
 };
+
+export default ProfileNavPage;

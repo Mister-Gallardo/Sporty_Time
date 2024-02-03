@@ -116,3 +116,5 @@ export function ResetPassword() {
     </Box>
   );
 }
+
+export default ResetPassword;

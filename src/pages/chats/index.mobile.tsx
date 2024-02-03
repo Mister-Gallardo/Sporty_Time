@@ -8,7 +8,10 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
-import { ChatsPage } from '.';
+import React, { Suspense } from 'react';
+import { LoadingCircle } from '../../components/atoms/LoadingCircle';
+
+const ChatsPage = React.lazy(() => import('.'));
 
 export function MobileChatsPage() {
   return (
@@ -24,7 +27,9 @@ export function MobileChatsPage() {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <ChatsPage />
+        <Suspense fallback={<LoadingCircle />}>
+          <ChatsPage />
+        </Suspense>
       </IonContent>
     </IonPage>
   );

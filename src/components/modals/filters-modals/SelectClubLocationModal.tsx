@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getLocations } from '../../../services/club/service';
-import { transliterate } from 'transliteration';
+import transliterate from '@sindresorhus/transliterate';
 import { debounce } from 'lodash-es';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import EastRoundedIcon from '@mui/icons-material/EastRounded';

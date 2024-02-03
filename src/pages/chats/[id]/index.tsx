@@ -221,3 +221,5 @@ export function SingleChatPage() {
     </Container>
   );
 }
+
+export default SingleChatPage;

@@ -1,12 +1,19 @@
 import { IonContent, IonPage } from '@ionic/react';
-import { AuthPage } from '.';
+import React, { Suspense } from 'react';
+import { LoadingCircle } from '../../components/atoms/LoadingCircle';
+
+const AuthPage = React.lazy(() => import('.'));
 
 export function MobileAuthPage() {
   return (
     <IonPage>
       <IonContent>
-        <AuthPage />
+        <Suspense fallback={<LoadingCircle />}>
+          <AuthPage />
+        </Suspense>
       </IonContent>
     </IonPage>
   );
 }
+
+export default MobileAuthPage;

@@ -1,31 +1,20 @@
 import MobilePlayPage from './pages/play/mobile';
-import { BookCourt } from './pages/book-court';
-import { SingleCourtPage } from './pages/book-court/[id]';
 import { MobileBookCourt } from './pages/book-court/index.mobile';
 // import { DesktopHomePage } from './pages/play/desktop';
 import { MobileAuthPage } from './pages/auth/index.mobile';
 import { MobileSingleCourtPage } from './pages/book-court/[id]/index.mobile';
 import { MobileQuestionFormPage } from './pages/question-form/index.mobile';
-import { QuestionFormPage } from './pages/question-form';
 import { MobileMatchesPage } from './pages/matches/index.mobile';
-import { MatchesPage } from './pages/matches';
-import { SingleMatchPage } from './pages/matches/[id]';
 import { MobileSingleMatchPage } from './pages/matches/[id]/index.mobile';
-import { ProfilePage } from './pages/profile';
 import { MobileProfilePage } from './pages/profile/index.mobile';
 import { MobileResetPassword } from './pages/auth/reset-password/index.mobile';
-import { ChatsPage } from './pages/chats';
 import { MobileChatsPage } from './pages/chats/index.mobile';
 import { MobileSingleChatPage } from './pages/chats/[id]/index.mobile';
-import { SingleChatPage } from './pages/chats/[id]';
-import { EditProfilePage } from './pages/profile/nested-pages/edit';
 import { MobileEditProfilePage } from './pages/profile/nested-pages/edit/index.mobile';
 import { MobileProfileNavPage } from './pages/profile/nested-pages/navigation/index.mobile';
-import { ProfileNavPage } from './pages/profile/nested-pages/navigation';
-import { AboutPage } from './pages/about';
 import { Redirect, Route } from 'react-router';
-import { AuthPage } from './pages/auth';
-import { ResetPassword } from './pages/auth/reset-password';
+
+import React from 'react';
 
 export interface RouteExtraProps {
   showTabBar: boolean;
@@ -45,67 +34,69 @@ export const desktopRoutes = [
   {
     path: '/book-court',
     exact: true,
-    component: BookCourt,
+    component: React.lazy(() => import('./pages/book-court')),
   },
   {
     path: '/book-court/:clubId',
     exact: true,
-    component: SingleCourtPage,
+    component: React.lazy(() => import('./pages/book-court/[id]')),
   },
   {
     path: '/auth',
     exact: true,
-    component: AuthPage,
+    component: React.lazy(() => import('./pages/auth')),
   },
   {
     path: '/auth/reset-password',
     exact: true,
-    component: ResetPassword,
+    component: React.lazy(() => import('./pages/auth/reset-password')),
   },
   {
     path: '/question-form',
     exact: true,
-    component: QuestionFormPage,
+    component: React.lazy(() => import('./pages/question-form')),
   },
   {
     path: '/matches',
     exact: true,
-    component: MatchesPage,
+    component: React.lazy(() => import('./pages/matches')),
   },
   {
     path: '/matches/:matchId',
     exact: true,
-    component: SingleMatchPage,
+    component: React.lazy(() => import('./pages/matches/[id]')),
   },
   {
     path: '/profile',
     exact: true,
-    component: ProfilePage,
+    component: React.lazy(() => import('./pages/profile')),
   },
   {
     path: '/chats',
     exact: true,
-    component: ChatsPage,
+    component: React.lazy(() => import('./pages/chats')),
   },
   {
     path: '/chats/:chatId',
     exact: true,
-    component: SingleChatPage,
+    component: React.lazy(() => import('./pages/chats/[id]')),
   },
   {
     path: '/profile/edit',
     exact: true,
-    component: EditProfilePage,
+    component: React.lazy(() => import('./pages/profile/nested-pages/edit')),
   },
   {
     path: '/profile/navigation',
     exact: true,
-    component: ProfileNavPage,
+    component: React.lazy(
+      () => import('./pages/profile/nested-pages/navigation'),
+    ),
   },
   {
     path: '/about',
     exact: true,
-    component: AboutPage,
+    component: React.lazy(() => import('./pages/about')),
   },
 ] as React.ComponentProps<typeof Route>[];
 

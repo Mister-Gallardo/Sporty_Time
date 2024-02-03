@@ -249,3 +249,5 @@ export function BookCourt() {
     </Box>
   );
 }
+
+export default BookCourt;

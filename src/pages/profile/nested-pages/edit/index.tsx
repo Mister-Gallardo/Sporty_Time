@@ -215,3 +215,5 @@ export const EditProfilePage = () => {
     </Box>
   );
 };
+
+export default EditProfilePage;
