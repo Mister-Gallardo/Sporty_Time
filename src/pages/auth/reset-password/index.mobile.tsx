@@ -5,7 +5,8 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import React from 'react';
+import React, { Suspense } from 'react';
+import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 
 const ResetPassword = React.lazy(() => import('.'));
 
@@ -18,7 +19,9 @@ export function MobileResetPassword() {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <ResetPassword />
+        <Suspense fallback={<LoadingCircle />}>
+          <ResetPassword />
+        </Suspense>
       </IonContent>
     </IonPage>
   );

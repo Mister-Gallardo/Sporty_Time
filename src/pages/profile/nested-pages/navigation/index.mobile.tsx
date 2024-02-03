@@ -7,7 +7,8 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
-import React from 'react';
+import React, { Suspense } from 'react';
+import { LoadingCircle } from '../../../../components/atoms/LoadingCircle';
 
 const ProfileNavPage = React.lazy(() => import('.'));
 
@@ -24,7 +25,9 @@ export function MobileProfileNavPage() {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <ProfileNavPage />
+        <Suspense fallback={<LoadingCircle />}>
+          <ProfileNavPage />
+        </Suspense>
       </IonContent>
     </IonPage>
   );

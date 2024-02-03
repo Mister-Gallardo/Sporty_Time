@@ -7,7 +7,8 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
-import React from 'react';
+import React, { Suspense } from 'react';
+import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 
 const BookCourt = React.lazy(() => import('.'));
 
@@ -40,7 +41,9 @@ export function MobileBookCourt() {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <BookCourt />
+        <Suspense fallback={<LoadingCircle />}>
+          <BookCourt />
+        </Suspense>
       </IonContent>
     </IonPage>
   );

@@ -7,7 +7,8 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
-import React from 'react';
+import React, { Suspense } from 'react';
+import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 
 const MatchesPage = React.lazy(() => import('.'));
 
@@ -39,7 +40,9 @@ export function MobileMatchesPage() {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <MatchesPage />
+        <Suspense fallback={<LoadingCircle />}>
+          <MatchesPage />
+        </Suspense>
       </IonContent>
     </IonPage>
   );

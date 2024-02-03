@@ -1,5 +1,6 @@
 import { IonContent, IonPage } from '@ionic/react';
-import React from 'react';
+import React, { Suspense } from 'react';
+import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 
 const QuestionFormPage = React.lazy(() => import('.'));
 
@@ -14,7 +15,9 @@ export function MobileQuestionFormPage() {
           justifyContent: 'center',
         }}
       >
-        <QuestionFormPage />
+        <Suspense fallback={<LoadingCircle />}>
+          <QuestionFormPage />
+        </Suspense>
       </IonContent>
     </IonPage>
   );

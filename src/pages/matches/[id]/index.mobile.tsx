@@ -1,7 +1,8 @@
 import { IonBackButton, IonContent, IonPage } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 import { Box } from '@mui/material';
-import React from 'react';
+import React, { Suspense } from 'react';
+import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 
 const SingleMatchPage = React.lazy(() => import('.'));
 
@@ -58,7 +59,9 @@ export function MobileSingleMatchPage() {
             </IconButton>
           </Box> */}
         </Box>
-        <SingleMatchPage />
+        <Suspense fallback={<LoadingCircle />}>
+          <SingleMatchPage />
+        </Suspense>
       </IonContent>
     </IonPage>
   );
