@@ -27,12 +27,6 @@ export enum Sport {
   PICKLEBALL = 'PICKLEBALL',
 }
 
-// when join to team
-export interface ITeamSlot {
-  teamIndex: number;
-  slotIndex: number;
-}
-
 // possible match statuses (planning)
 export enum Status {
   CANCELED,
@@ -46,12 +40,4 @@ export enum Status {
   INVALID_RESULT,
   INCOMPLETE,
   WAITING_FOR_RESULTS,
-}
-
-// court tag
-export interface ITag {
-  createdAt: string;
-  id: number;
-  title: string;
-  updatedAt: string;
 }

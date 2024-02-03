@@ -14,12 +14,13 @@ import { useCheckUserSport } from '../../../hooks/useCheckUserSport';
 import { Accordion } from '../../../components/molecules/Accordion';
 import { getUserLocation } from '../../../helpers/getUserLocation';
 import { MatchTimeRange } from '../../../services/club/interface';
-import { getClubs } from '../../../services/club/service';
+import { getClubs, getClubsByLocation } from '../../../services/club/service';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FiltersRow } from './components/FiltersRow';
 import useToggle from '../../../hooks/useToggle';
 import { useLocalStorage } from 'usehooks-ts';
 import { Sport } from '../../../types';
+import { ELeveling } from '../../question-form/questions';
 
 export interface FilterFormDate {
   sportLevel: string;
@@ -50,9 +51,10 @@ export function AvailableMatchesTab() {
 
   const [localFilters, setLocalFilters] = useLocalStorage('matchesFilter', {
     sport: defaultSport,
+    sportLevel: ELeveling.BEGGINER,
     time: MatchTimeRange.ALL,
     gamedates: dates,
-    clubsId: [1, 2],
+    clubsId: [],
     selectedLocation: 'Выбрать локацию',
     range: 50,
   });
@@ -62,8 +64,16 @@ export function AvailableMatchesTab() {
   });
 
   const { watch, setValue } = filterParams;
-  const { sport, lat, long, gamedates, clubsId, time, selectedLocation } =
-    watch();
+  const {
+    sport,
+    lat,
+    long,
+    gamedates,
+    clubsId,
+    time,
+    selectedLocation,
+    range,
+  } = watch();
 
   const gameDatesToString = gamedates
     .map((date) => new Date(date.value).toLocaleDateString('en-ca'))
@@ -120,9 +130,24 @@ export function AvailableMatchesTab() {
     if (!lat && !long) getUserLocation(setIsLoadingLocaiton, setValue);
   }, []);
 
+  // get clubs by lat and lng
+  const { data, isLoading: isAllClubsLoading } = useQuery({
+    queryKey: ['clubs/all', lat, long, sport],
+    queryFn: () => getClubsByLocation({ lat, long, sport }),
+    enabled: lat !== 0 && long !== 0,
+  });
+
   useEffect(() => {
-    setLocalFilters(watch());
+    setLocalFilters(watch() as any);
   }, [sport, lat, long, timefrom, timeto, selectedLocation]);
+
+  useEffect(() => {
+    const clubs: number[] = [];
+    data?.forEach((club) => {
+      if (club.range && club.range <= range) clubs.push(club.id);
+    });
+    setValue('clubsId', clubs);
+  }, [range, data]);
 
   return (
     <Box position="relative">
@@ -187,12 +212,10 @@ export function AvailableMatchesTab() {
             py={2}
             px={0.1}
           >
-            {!clubsArray || clubsArray.length === 0 ? (
-              <Typography textAlign="center" width="100%" mt={3} color="gray">
-                На данный момент нет доступных матчей
-              </Typography>
+            {isAllClubsLoading ? (
+              <LoadingCircle />
             ) : (
-              clubsArray.map((club, index) => {
+              clubsArray?.map((club, index) => {
                 return <ClubMultipleDatesCard key={index} {...club} />;
               })
             )}

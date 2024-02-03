@@ -20,13 +20,11 @@ export const getUserLocation = async (
     if (location === 'denied') {
       setValue('selectedLocation', 'Выбрать локацию');
     }
-
-    setIsLoading(false);
   } catch (error: any) {
-    setIsLoading(false);
-
     if (error.message === 'User denied Geolocation') {
       setValue('selectedLocation', 'Выбрать локацию');
     }
+  } finally {
+    setIsLoading(false);
   }
 };

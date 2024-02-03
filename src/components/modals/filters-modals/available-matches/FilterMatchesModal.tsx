@@ -8,6 +8,8 @@ import { AskForLevel } from './AskForLevel';
 import { SportType } from './SportType';
 import { PlayDate } from './PlayDate';
 import { usePlayerProfile } from '../../../../services/api/hooks';
+import { useFormContext } from 'react-hook-form';
+import { Sport } from '../../../../types';
 
 interface IFilterMatchesModalProps {
   openState: boolean;
@@ -22,14 +24,26 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
   const currentStep = Number(q) || 1;
 
   const [player] = usePlayerProfile();
+  const { watch } = useFormContext();
+  const { sport } = watch();
 
-  //if user has any rating - skip 2 step
+  //if user has rating in selected sport - skip 2 step
   const handleStep = (step: number) => {
     if (player) {
-      const isRating =
-        player.ratingPadel || player.ratingTennis || player.ratingPickleball;
+      const ratingPadel = player.ratingPadel && sport === Sport.PADEL;
+      const ratingTennis = player.ratingTennis && sport === Sport.TENNIS;
+      const ratingPickleball =
+        player.ratingPickleball && sport === Sport.PICKLEBALL;
 
-      if (isRating && currentStep === 1) {
+      const isRating = ratingPadel || ratingTennis || ratingPickleball;
+
+      const isFirstStep = currentStep === 1;
+
+      if (ratingPadel && isFirstStep) {
+        setQ('3');
+      } else if (ratingTennis && isFirstStep) {
+        setQ('3');
+      } else if (ratingPickleball && isFirstStep) {
         setQ('3');
       } else if (isRating && currentStep === 3 && step === -1) {
         setQ('1');

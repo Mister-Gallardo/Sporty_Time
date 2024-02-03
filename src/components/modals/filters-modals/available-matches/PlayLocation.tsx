@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useFormContext } from 'react-hook-form';
 import {
@@ -15,10 +15,7 @@ import { DistanceSlider } from '../../../molecules/DistanceSlider';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import NearMeIcon from '@mui/icons-material/NearMe';
 import { FilterButton } from '../FilterButton';
-import {
-  getClubsByLocation,
-  getLocations,
-} from '../../../../services/club/service';
+import { getLocations } from '../../../../services/club/service';
 import { SelectClubsList } from '../SelectClubsList';
 import { transliterate } from 'transliteration';
 import { debounce } from 'lodash-es';
@@ -31,7 +28,7 @@ interface IPlayLocationProps {
 
 export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
   const { watch, setValue, resetField } = useFormContext();
-  const { lat, long, sport, selectedLocation, clubsId, range } = watch();
+  const { selectedLocation, clubsId, range } = watch();
 
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -57,22 +54,7 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
     [],
   );
 
-  // get clubs
-  const { data } = useQuery({
-    queryKey: ['clubs/all', lat, long, sport],
-    queryFn: () => getClubsByLocation({ lat, long, sport }),
-    enabled: lat !== 0 && long !== 0,
-  });
-
   const [isLoadingUserLocation, setIsLoadingLocaiton] = useToggle();
-
-  useEffect(() => {
-    const clubs: number[] = [];
-    data?.forEach((club) => {
-      if (club.range && club.range <= range) clubs.push(club.id);
-    });
-    setValue('clubsId', clubs);
-  }, [range, data]);
 
   return (
     <>
@@ -81,6 +63,7 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
           <Box height="100%">
             <Autocomplete
               options={locationOptions}
+              filterOptions={(x) => x}
               isOptionEqualToValue={(option, value) =>
                 option.title === value.title
               }
@@ -95,10 +78,8 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
                 if (value) {
                   const [lat, long] = value.coordinates;
 
-                  // setValue('long', long);
-                  // setValue('lat', lat);
-                  setValue('long', lat);
-                  setValue('lat', long);
+                  setValue('long', long);
+                  setValue('lat', lat);
 
                   setValue('selectedLocation', value.title);
                 }

@@ -99,8 +99,7 @@ export const SelectClubsList = () => {
           <LocationBlock
             icon={<BeachAccessOutlinedIcon color="disabled" />}
             title="Поблизости с Вами нет клубов"
-            subTitle="Изменить локацию"
-            handleClick={() => console.log('change location')}
+            subTitle="Измените локацию"
           />
         ) : data && data.length > 0 ? (
           data.map((club) => {
@@ -123,7 +122,13 @@ export const SelectClubsList = () => {
               />
             );
           })
-        ) : null}
+        ) : (
+          <LocationBlock
+            icon={<BeachAccessOutlinedIcon color="disabled" />}
+            title="По Вашему запросу нет клубов"
+            subTitle="Измените фильтры"
+          />
+        )}
       </Box>
     </>
   );

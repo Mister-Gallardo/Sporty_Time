@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 interface ILocationBlockProps {
   icon: ReactNode;
   title: string;
-  subTitle: string;
+  subTitle?: string;
   handleClick?: () => void;
 }
 
@@ -26,7 +26,7 @@ export const LocationBlock: React.FC<ILocationBlockProps> = ({
       borderRadius={2}
       boxShadow="1px 2px 6px #00000008"
       p={1}
-      sx={{ cursor: 'pointer' }}
+      sx={{ cursor: handleClick ? 'pointer' : 'default' }}
     >
       <Box>
         {icon}
