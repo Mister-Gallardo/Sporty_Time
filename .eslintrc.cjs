@@ -15,7 +15,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.cjs', 'tailwind.config.js', 'snapshot.cjs', 'capacitor.config.ts', 'vite.config.ts'],
+  ignorePatterns: ['.eslintrc.cjs', 'tailwind.config.js', 'snapshot.cjs', 'capacitor.config.ts', 'vite.config.ts', 'ios', 'android', 'dist', 'cypress', 'cypress.config.ts'],
   rules: {
     'unused-imports/no-unused-imports': 'error',
     '@typescript-eslint/interface-name-prefix': 'off',

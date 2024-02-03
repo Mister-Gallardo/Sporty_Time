@@ -7,10 +7,12 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import { ProfilePage } from '.';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import React from 'react';
 import { useHistory } from 'react-router';
+
+const ProfilePage = React.lazy(() => import('.'));
 
 export function MobileProfilePage() {
   const history = useHistory();

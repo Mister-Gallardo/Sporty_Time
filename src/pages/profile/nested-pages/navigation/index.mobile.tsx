@@ -7,7 +7,9 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
-import { ProfileNavPage } from '.';
+import React from 'react';
+
+const ProfileNavPage = React.lazy(() => import('.'));
 
 export function MobileProfileNavPage() {
   return (

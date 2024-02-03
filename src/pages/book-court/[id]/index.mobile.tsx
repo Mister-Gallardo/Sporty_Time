@@ -1,7 +1,9 @@
 import { IonBackButton, IonContent, IonPage } from '@ionic/react';
-import { SingleCourtPage } from '.';
 import { Box } from '@mui/material';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
+import React from 'react';
+
+const SingleCourtPage = React.lazy(() => import('.'));
 
 export function MobileSingleCourtPage() {
   return (
@@ -39,3 +41,5 @@ export function MobileSingleCourtPage() {
     </IonPage>
   );
 }
+
+export default MobileSingleCourtPage;

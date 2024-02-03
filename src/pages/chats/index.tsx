@@ -23,3 +23,5 @@ export function ChatsPage() {
     </Container>
   );
 }
+
+export default ChatsPage;

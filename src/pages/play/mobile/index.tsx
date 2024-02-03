@@ -1,10 +1,8 @@
 import { useHistory } from 'react-router';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import SportsBaseballOutlinedIcon from '@mui/icons-material/SportsBaseballOutlined';
-import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import { Box, IconButton, Typography } from '@mui/material';
 import PerfectMatch from './sections/PerfectMatch';
-import YourClubs from './sections/YourClubs';
 import {
   IonButtons,
   IonContent,

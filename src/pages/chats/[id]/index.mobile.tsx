@@ -8,7 +8,9 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
-import { SingleChatPage } from '.';
+import React from 'react';
+
+const SingleChatPage = React.lazy(() => import('.'));
 
 export function MobileSingleChatPage() {
   return (

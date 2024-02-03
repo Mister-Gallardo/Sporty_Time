@@ -1,5 +1,7 @@
 import { IonContent, IonPage } from '@ionic/react';
-import { QuestionFormPage } from '.';
+import React from 'react';
+
+const QuestionFormPage = React.lazy(() => import('.'));
 
 export function MobileQuestionFormPage() {
   return (

@@ -71,3 +71,5 @@ export function MatchesPage() {
     </Box>
   );
 }
+
+export default MatchesPage;

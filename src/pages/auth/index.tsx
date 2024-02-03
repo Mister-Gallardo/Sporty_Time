@@ -480,3 +480,5 @@ export function AuthPage() {
     </Box>
   );
 }
+
+export default AuthPage;

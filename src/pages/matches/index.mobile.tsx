@@ -7,7 +7,9 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
-import { MatchesPage } from '.';
+import React from 'react';
+
+const MatchesPage = React.lazy(() => import('.'));
 
 export function MobileMatchesPage() {
   return (

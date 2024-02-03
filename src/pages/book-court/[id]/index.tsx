@@ -135,3 +135,5 @@ export function SingleCourtPage() {
     </SwipeablePage>
   );
 }
+
+export default SingleCourtPage;

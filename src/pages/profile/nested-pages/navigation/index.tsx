@@ -1,12 +1,5 @@
 import { Avatar, Box, Button, Typography } from '@mui/material';
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
-import SportsBaseballOutlinedIcon from '@mui/icons-material/SportsBaseballOutlined';
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import { NavButton } from '../../components/NavButton';
 import { useHistory } from 'react-router';
 import { useUserInfo } from '../../../../services/api/hooks';
@@ -133,3 +126,5 @@ export const ProfileNavPage = () => {
     </Box>
   );
 };
+
+export default ProfileNavPage;

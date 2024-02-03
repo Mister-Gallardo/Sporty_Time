@@ -5,7 +5,9 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import { ResetPassword } from '.';
+import React from 'react';
+
+const ResetPassword = React.lazy(() => import('.'));
 
 export function MobileResetPassword() {
   return (

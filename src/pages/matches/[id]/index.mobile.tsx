@@ -1,7 +1,9 @@
 import { IonBackButton, IonContent, IonPage } from '@ionic/react';
-import { SingleMatchPage } from '.';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 import { Box } from '@mui/material';
+import React from 'react';
+
+const SingleMatchPage = React.lazy(() => import('.'));
 
 export function MobileSingleMatchPage() {
   return (

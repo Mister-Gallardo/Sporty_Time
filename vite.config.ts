@@ -9,13 +9,15 @@ import { version } from './package.json';
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
-    alias: [
-      { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
-    ]
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'lodash': 'lodash-es',
+    }
   },
   plugins: [
     react(),
     legacy(),
+    //@ts-expect-error
     generateFile([{
       type: 'json',
       output: './builds/latest.json',
@@ -34,6 +36,6 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
-  }
+  },
 })
 

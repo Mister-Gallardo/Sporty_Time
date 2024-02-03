@@ -8,7 +8,9 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
-import { EditProfilePage } from '.';
+import React from 'react';
+
+const EditProfilePage = React.lazy(() => import('.'));
 
 export function MobileEditProfilePage() {
   return (

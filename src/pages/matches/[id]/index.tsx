@@ -508,3 +508,5 @@ export function SingleMatchPage() {
     </>
   );
 }
+
+export default SingleMatchPage;

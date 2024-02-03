@@ -1,5 +1,7 @@
 import { IonContent, IonPage } from '@ionic/react';
-import { AuthPage } from '.';
+import React from 'react';
+
+const AuthPage = React.lazy(() => import('.'));
 
 export function MobileAuthPage() {
   return (
@@ -10,3 +12,5 @@ export function MobileAuthPage() {
     </IonPage>
   );
 }
+
+export default MobileAuthPage;

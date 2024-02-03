@@ -18,3 +18,5 @@ export function QuestionFormPage() {
     </>
   );
 }
+
+export default QuestionFormPage;

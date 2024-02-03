@@ -7,7 +7,9 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
-import { BookCourt } from '.';
+import React from 'react';
+
+const BookCourt = React.lazy(() => import('.'));
 
 export function MobileBookCourt() {
   return (
@@ -43,3 +45,5 @@ export function MobileBookCourt() {
     </IonPage>
   );
 }
+
+export default MobileBookCourt;

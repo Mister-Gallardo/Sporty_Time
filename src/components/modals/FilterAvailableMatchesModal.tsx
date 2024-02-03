@@ -26,7 +26,7 @@ import { debounce } from 'lodash-es';
 import { SelectClubBlock } from '../molecules/SelectClubBlock';
 import { LoadingCircle } from '../atoms/LoadingCircle';
 import { FilterFormDate } from '../../pages/matches/tabs/AvailableMatchesTab';
-import { transliterate } from 'transliteration';
+import transliterate from '@sindresorhus/transliterate';
 import useToggle from '../../hooks/useToggle';
 import { Geolocation } from '@capacitor/geolocation';
 import { MatchTimeRange } from '../../services/club/interface';
