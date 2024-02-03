@@ -161,7 +161,7 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
                   <Button
                     onClick={() => {
                       handleStep(1);
-                      localStorage.setItem('sport', selectedSport);
+                      setSelectedSport(selectedSport);
                     }}
                     variant="contained"
                     sx={{ borderRadius: 20 }}

@@ -2,9 +2,10 @@ import { Box, Button, RadioGroup, Typography } from '@mui/material';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { RadioLabel } from '../../../molecules/RadioLabel';
-import { ERadioLabelType, SportLevel } from '../../../../types';
+import { ERadioLabelType } from '../../../../types';
 import { FilterButton } from '../FilterButton';
 import { useHistory } from 'react-router';
+import { ELeveling } from '../../../../pages/question-form/questions';
 
 interface IAskForLevelProps {
   handleModal: (val?: boolean) => void;
@@ -34,27 +35,27 @@ export const AskForLevel: React.FC<IAskForLevelProps> = ({
           render={({ field }) => (
             <RadioGroup {...field} sx={{ gap: 1 }}>
               <RadioLabel
-                value={SportLevel.BEGINNER}
+                value={ELeveling.BEGGINER}
                 labelType={ERadioLabelType.TITLE_ONLY}
                 title="Новичок"
               />
               <RadioLabel
-                value={SportLevel.INTERMEDIATE}
+                value={ELeveling.INTERMEDIATE}
                 labelType={ERadioLabelType.TITLE_ONLY}
                 title="Средний"
               />
               <RadioLabel
-                value={SportLevel.INTERMEDIATE_HIGHT}
+                value={ELeveling.HIGHT_INTERMEDIATE}
                 labelType={ERadioLabelType.TITLE_ONLY}
                 title="Выше среднего"
               />
               <RadioLabel
-                value={SportLevel.ADVANCED}
+                value={ELeveling.ADVANCED}
                 labelType={ERadioLabelType.TITLE_ONLY}
                 title="Продвинутый"
               />
               <RadioLabel
-                value={SportLevel.COMPETITION}
+                value={ELeveling.COMPETITION}
                 labelType={ERadioLabelType.TITLE_ONLY}
                 title="Соревновательный"
               />

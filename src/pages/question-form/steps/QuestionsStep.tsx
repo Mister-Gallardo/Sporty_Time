@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { IOption, IQuestion, getQuestionsByLvlAndSport } from '../questions';
+import { ELeveling, IOption, IQuestion, leveling } from '../questions';
 import { Box, Button, Input, RadioGroup, Typography } from '@mui/material';
 import { RadioLabel } from '../../../components/molecules/RadioLabel';
 import { QuestionTitle } from '../components/QuestionTitle';
@@ -39,13 +39,19 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
   const [isPrev] = useSearchParam('prev');
   const history = useHistory();
 
-  const [sportParam] = useSearchParam('sport', Sport.PADEL);
-  const searchSport = sportParam?.toLocaleLowerCase();
+  const [sport] = useSearchParam('sport', Sport.PADEL);
+  const [level] = useSearchParam('level', ELeveling.NONE);
 
-  const allQuestions = useMemo(
-    () => getQuestionsByLvlAndSport(searchSport),
-    [],
-  );
+  const getQuestionsByLvlAndSport = () => {
+    if (!sport || !level) return null;
+
+    const selectedLevel = leveling.find((item) => item.id === level);
+    const questions = (selectedLevel?.availableFor as any)[sport.toLowerCase()];
+
+    return questions;
+  };
+
+  const allQuestions = useMemo(getQuestionsByLvlAndSport, [sport, level]);
 
   const [currentQuestions, setCurrentQuestions] = useState<IQuestion[]>([]);
   const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
@@ -89,9 +95,6 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
   // scroll to bottom when new question appears
   const questionsEndRef = useRef<HTMLDivElement>(null);
 
-  const sport = localStorage.getItem('sport') || '';
-  const userSelectedLevel = localStorage.getItem('userSelectedLevel') || '';
-
   useEffect(() => {
     if (currentQuestions.length > 2) {
       questionsEndRef.current?.scrollIntoView({
@@ -122,10 +125,7 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
   });
 
   const onApplyResults = () => {
-    const { sportIndex, levelIndex } = getSportAndLevel(
-      sport,
-      userSelectedLevel,
-    );
+    const { sportIndex, levelIndex } = getSportAndLevel(sport, level);
 
     const data = getValues();
     const answerI: any = {};

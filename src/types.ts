@@ -27,14 +27,6 @@ export enum Sport {
   PICKLEBALL = 'PICKLEBALL',
 }
 
-export enum SportLevel {
-  BEGINNER = 'BEGINNER',
-  INTERMEDIATE = 'INTERMEDIATE',
-  INTERMEDIATE_HIGHT = 'INTERMEDIATE_HIGHT',
-  ADVANCED = 'ADVANCED',
-  COMPETITION = 'COMPETITION',
-}
-
 // when join to team
 export interface ITeamSlot {
   teamIndex: number;
