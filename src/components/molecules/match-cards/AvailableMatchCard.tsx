@@ -2,7 +2,6 @@ import { useHistory } from 'react-router';
 import { EMatchType, MatchData } from '../../../services/matches/interface';
 import { Box, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from '../player-slot/PlayerSlot';
-import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
 
 interface IAvailableMatchCardProps {
   matchData: MatchData;
@@ -33,12 +32,8 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
       ? 'Дружеский'
       : '';
 
-  const startsAt = new Date(matchData.booking.startsAt);
-  const matchTime = getDayFormat(
-    startsAt,
-    EType.MONTH_AND_DAY,
-    startsAt.toLocaleTimeString('ru'),
-  );
+  const [startDate, startTime] = matchData.booking.startsAt.split('T');
+  const matchTime = `${startDate} | ${startTime.slice(0, 5)}`;
 
   return (
     <Box
@@ -57,17 +52,12 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
           <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }} noWrap>
             {matchTime}
           </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-            }}
-          >
+
+          <Box display="flex" alignItems="center" gap={1}>
             <Typography fontSize={13}>
-              {matchData.booking ? 'Забронирован' : 'Нет брони'}
+              {matchData.paid ? 'Забронирован' : 'Нет брони'}
             </Typography>
-            <Typography>{matchData.booking ? '✅' : '🔴'}</Typography>
+            <Typography>{matchData.paid ? '✅' : '🔴'}</Typography>
           </Box>
         </Box>
 

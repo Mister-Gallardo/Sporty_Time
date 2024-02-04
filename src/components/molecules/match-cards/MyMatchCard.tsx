@@ -3,7 +3,6 @@ import { Avatar, Box, Divider, Typography } from '@mui/material';
 import { useHistory } from 'react-router';
 import { isPlatform } from '@ionic/react';
 import { MatchData } from '../../../services/matches/interface';
-import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
 import { sortTeamMembers } from '../../../helpers/sortTeamMembers';
 import { getMatchStatus } from '../../../helpers/getMatchStatus';
 import { Status } from '../../../types';
@@ -15,6 +14,8 @@ interface IMyMatchCardProps extends MatchData {
   uploadResults: (id: number) => void;
 }
 
+const isMobile = isPlatform('mobile');
+
 export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
   const {
     id,
@@ -23,22 +24,19 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
     matchResults,
     winningTeam,
     uploadResults,
-    minutes,
   } = props;
 
-  const startsAt = new Date(booking.startsAt);
-  const matchDate = getDayFormat(
-    startsAt,
-    EType.MONTH_AND_DAY,
-    startsAt.toLocaleTimeString('ru'),
-    minutes,
-  );
-
-  const isMobile = isPlatform('mobile');
   const history = useHistory();
 
-  const members = sortTeamMembers(matchBookings);
+  const interval = booking.interval;
 
+  // match start date + start-end time
+  const matchDate = `${interval.slice(2, 12)} | ${interval.slice(
+    13,
+    18,
+  )}-${interval.slice(-10, -5)}`;
+
+  const members = sortTeamMembers(matchBookings);
   const status = getMatchStatus(props);
 
   const getSetResults = (team: string) => {

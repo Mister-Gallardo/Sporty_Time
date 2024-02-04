@@ -5,7 +5,7 @@ export const theme = createTheme({
     primary: { main: '#262d58' },
     secondary: { main: '#333' },
     error: { main: '#ef5350' },
-    success: { main: '#6cbf6c' },
+    success: { main: '#5fac5f' },
   },
   typography: {
     fontFamily: 'Montserrat',

@@ -13,6 +13,7 @@ export interface Booking {
   endsAt: string;
   court: Court;
   duration: number;
+  interval: string;
   createdAt: Date;
   updatedAt: Date;
 }

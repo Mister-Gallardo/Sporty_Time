@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
 import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
 import { Box, Button, Divider, RadioGroup, Typography } from '@mui/material';
-import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
+import { EType, getDayFormat } from '../../helpers/getTimeDateString';
 import { RadioLabel } from '../molecules/RadioLabel';
 import { ERadioLabelType } from '../../types';
 import { ModalContainer } from './ModalContainer';
@@ -44,16 +44,13 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
 
   const { tags = [] } = court;
   const [payFor, setPayFor] = useState('0');
+
   const matchDate = getDayFormat(
     date,
     EType.WEEK_DAY_MONTH,
     startTime,
     playtime,
   );
-  const paymentDeadline =
-    getDayFormat(date, EType.MONTH_AND_DAY) +
-    ' ' +
-    addTime(startTime, playtime + 120);
 
   const total = isPaid ? 0 : payFor === '0' || isJoin ? price / 4 : price;
   const priceFor3 = price - price / 4;
@@ -125,7 +122,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
                             }
                             icon={<CreditCardOutlinedIcon />}
                             title="Оплатить свою часть"
-                            description={`Если другие игроки не заплатят свою часть до ${paymentDeadline} - вы должны будете доплатить ${priceFor3} RUB`}
+                            description={`Если другие игроки не заплатят свою часть за 12 часов до начала матча - вы должны будете доплатить ${priceFor3} RUB`}
                           />
                           <Typography whiteSpace="nowrap">
                             {price / 4} RUB

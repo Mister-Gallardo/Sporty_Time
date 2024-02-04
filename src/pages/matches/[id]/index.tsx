@@ -251,13 +251,9 @@ export function SingleMatchPage() {
                 playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
               />
 
-              <MatchDataBlock {...singleMatchData} />
+              <MatchDataBlock />
 
-              <EditPayment
-                matchData={singleMatchData}
-                isUserOwner={isUserOwner}
-                refetchMatch={refetchMatch}
-              />
+              <EditPayment />
 
               <Box my={2}>
                 <MatchType type={singleMatchData.type} />

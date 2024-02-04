@@ -17,7 +17,7 @@ import NearMeIcon from '@mui/icons-material/NearMe';
 import { FilterButton } from '../FilterButton';
 import { getLocations } from '../../../../services/club/service';
 import { SelectClubsList } from '../SelectClubsList';
-import { transliterate } from 'transliteration';
+import transliterate from '@sindresorhus/transliterate';
 import { debounce } from 'lodash-es';
 import useToggle from '../../../../hooks/useToggle';
 import { getUserLocation } from '../../../../helpers/getUserLocation';

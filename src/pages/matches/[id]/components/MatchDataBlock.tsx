@@ -1,29 +1,31 @@
-import React from 'react';
 import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOutlined';
-import { EType, getDayFormat } from '../../../../helpers/getTimeDateString';
-import { MatchData } from '../../../../services/matches/interface';
+import { getOneAvailableMatch } from '../../../../services/matches/service';
 import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import { Box, Divider, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router';
 
-export const MatchDataBlock: React.FC<MatchData> = ({
-  minutes,
-  sport,
-  ratingFrom,
-  ratingTo,
-  price,
-  paid,
-  booking,
-  // gender,
-}) => {
+export const MatchDataBlock = () => {
+  const { matchId } = useParams<{ matchId: string }>();
+
+  const { data } = useQuery({
+    queryKey: [`match`, Number(matchId)],
+    queryFn: () => getOneAvailableMatch(Number(matchId)),
+  });
+
+  const singleMatchData = data?.data;
+  if (!singleMatchData) return null;
+
+  const { sport, ratingFrom, ratingTo, price, paid, booking } = singleMatchData;
+
   const isPremium = true;
+  const interval = booking.interval;
 
-  const startsAt = new Date(booking.startsAt);
-  const matchDate = getDayFormat(
-    startsAt,
-    EType.WEEK_DAY_MONTH,
-    startsAt.toLocaleTimeString('ru'),
-    minutes,
-  );
+  // match start date + start-end time
+  const matchDate = `${interval.slice(2, 12)} | ${interval.slice(
+    13,
+    18,
+  )}-${interval.slice(-10, -5)}`;
 
   return (
     <Box

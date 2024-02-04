@@ -120,6 +120,8 @@ export function BookTab() {
 
   if (isError) history.push('/book-court');
 
+  console.log(selectedOption);
+
   return (
     <>
       <Box
