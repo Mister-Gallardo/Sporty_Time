@@ -87,15 +87,13 @@ export function AuthPage() {
     onError(e: any) {
       if (e.response?.data.message === 'OTP is incorrect') {
         setErrorMessage(AuthErrors.INVALID_OTP);
-      }
-
-      if (e.response?.data?.error?.message === 'Email already taken') {
+      } else if (e.response?.data?.error?.message === 'Email already taken') {
         setAuthState(LoginStates.LOGIN);
       } else {
         setSuccessMessage(undefined);
-        setErrorMessage('Возникла ошибка при регистации аккаунта!');
-        setIsOpenErrorToast(true);
+        setErrorMessage(e.response.data.message);
       }
+
       return setIsOpenErrorToast(true);
     },
   });
@@ -463,7 +461,7 @@ export function AuthPage() {
         isOpen={isOpenErrorToast}
         message={errorMessage}
         onDidDismiss={() => setIsOpenErrorToast(false)}
-        duration={2000}
+        duration={6000}
       ></IonToast>
       <IonToast
         color="success"

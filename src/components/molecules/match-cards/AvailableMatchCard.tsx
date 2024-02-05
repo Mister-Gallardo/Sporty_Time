@@ -40,8 +40,8 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
       onClick={() => history.push(`/matches/${matchData.id}`)}
       display="flex"
       flexDirection="column"
-      width="100%"
-      maxWidth={370}
+      minWidth={360}
+      maxWidth={360}
       border="2px solid #EED790"
       borderRadius={2}
       boxShadow="rgba(99, 99, 99, 0.2) 0px 2px 8px 0px"
@@ -73,7 +73,13 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
         </Box>
       </Box>
 
-      <Box display="flex" gap={2} borderTop="1px solid #e8e8e8">
+      <Box
+        height="100%"
+        display="flex"
+        justifyContent="space-between"
+        gap={2}
+        borderTop="1px solid #e8e8e8"
+      >
         <Box py={0.5} pl={2}>
           <Box display="flex">
             <Typography
@@ -81,7 +87,7 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
               fontSize={13}
               fontWeight={600}
               mr={0.5}
-              whiteSpace="nowrap"
+              noWrap
             >
               {matchType} ·
             </Typography>

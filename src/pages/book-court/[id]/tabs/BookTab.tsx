@@ -115,6 +115,7 @@ export function BookTab() {
   };
 
   if (isError) return history.push('/book-court');
+
   return (
     <>
       <Box

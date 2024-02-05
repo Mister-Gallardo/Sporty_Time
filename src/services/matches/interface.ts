@@ -56,11 +56,11 @@ export interface CreateMatchDTO {
   courtId: number;
   money: number;
   gameDate: Date | string;
-  type: string;
+  type: EMatchType;
   playTime: number;
   ratingFrom: number;
   ratingTo: number;
-  gender: string;
+  gender: EGender;
   isPrivate: boolean;
 }
 
@@ -94,8 +94,8 @@ export interface GetAvailableMatchesAndClubsDTO {
 //match enums
 export enum EGender {
   ALL = 'ALL',
-  WOMEN = 'WOMEN',
-  MEN = 'MEN',
+  WOMEN = 'FEMALE',
+  MEN = 'MALE',
   MIXED = 'MIXED',
 }
 

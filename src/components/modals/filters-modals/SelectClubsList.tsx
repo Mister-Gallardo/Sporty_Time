@@ -23,7 +23,7 @@ export const SelectClubsList = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['clubs/all', lat, long, sport],
     queryFn: () => getClubsByLocation({ lat, long, sport }),
-    enabled: lat !== 0 && long !== 0,
+    enabled: lat !== undefined && long !== undefined,
   });
 
   const checkLocationPermission = async () => {

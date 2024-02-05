@@ -95,7 +95,7 @@ export function BookCourt() {
     queryFn: () =>
       getClubs({
         sport,
-        gamedates: gamedate,
+        gamedates: new Date(gamedate).toLocaleDateString('en-ca'),
         lat,
         long,
         timefrom,
@@ -173,17 +173,25 @@ export function BookCourt() {
                   fontSize="small"
                   sx={{ justifySelf: 'end' }}
                 />
-                {isLoadingLocation ? (
-                  <CircularProgress size={25} />
-                ) : (
-                  <Typography>{selectedLocation}</Typography>
-                )}
+                <Typography>{selectedLocation}</Typography>
               </Box>
-              <NearMeSharpIcon fontSize="small" sx={{ justifySelf: 'end' }} />
+
+              {isLoadingLocation ? (
+                <CircularProgress size={25} />
+              ) : (
+                <NearMeSharpIcon
+                  fontSize="small"
+                  sx={{ justifySelf: 'end' }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    getUserLocation(setIsLoadingLocaiton, setValue);
+                  }}
+                />
+              )}
             </Button>
           </Box>
           <Box mt={2}>
-            <SelectedFilterButton handleClick={setOpenFilterModal}>
+            <SelectedFilterButton handleClick={() => setOpenFilterModal()}>
               {getDayFormat(gamedate, EType.MONTH_AND_DAY)} | {timefrom}
               {timeto ? ` - ${timeto}` : ''}
             </SelectedFilterButton>
@@ -191,7 +199,7 @@ export function BookCourt() {
         </Box>
       </Box>
 
-      {isLoading ? (
+      {isLoading || isLoadingLocation ? (
         <Box marginTop={30}>
           <LoadingCircle />
         </Box>

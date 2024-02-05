@@ -188,7 +188,10 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
         </Box>
 
         <Button
-          onClick={handleNext}
+          onClick={() => {
+            handleModal();
+            handleNext();
+          }}
           variant="contained"
           fullWidth
           sx={{

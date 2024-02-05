@@ -21,6 +21,7 @@ import useToggle from '../../../hooks/useToggle';
 import { useLocalStorage } from 'usehooks-ts';
 import { ELeveling } from '../../question-form/questions';
 import { ESport } from '../../../services/matches/interface';
+import { Geolocation } from '@capacitor/geolocation';
 
 export interface FilterFormDate {
   sportLevel: string;
@@ -90,6 +91,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: 'ALL',
       }),
+    enabled: clubsId.length !== 0,
   });
   const availableArray = availableMatches.data?.data;
 
@@ -103,6 +105,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: 'ALL',
       }),
+    enabled: clubsId.length !== 0,
   });
   const noRatingArray = noRatingMatches.data?.data;
 
@@ -123,7 +126,7 @@ export function AvailableMatchesTab() {
   });
   const clubsArray = clubs.data?.data;
 
-  const [, setIsLoadingLocaiton] = useToggle();
+  const [isLoadingLocaiton, setIsLoadingLocaiton] = useToggle();
 
   // set user location as default
   useEffect(() => {
@@ -134,7 +137,7 @@ export function AvailableMatchesTab() {
   const { data, isLoading: isAllClubsLoading } = useQuery({
     queryKey: ['clubs/all', lat, long, sport],
     queryFn: () => getClubsByLocation({ lat, long, sport }),
-    enabled: lat !== 0 && long !== 0,
+    enabled: lat !== undefined && long !== undefined,
   });
 
   useEffect(() => {
@@ -148,6 +151,19 @@ export function AvailableMatchesTab() {
     });
     setValue('clubsId', clubs);
   }, [range, data]);
+
+  useEffect(() => {
+    if (!clubsArray) return;
+    const checkPermission = async () => {
+      const { location } = await Geolocation.checkPermissions();
+
+      if (location === 'denied') {
+        const clubs = clubsArray.map((club) => club.id);
+        setValue('clubsId', clubs);
+      }
+    };
+    checkPermission();
+  }, [clubsArray]);
 
   return (
     <Box position="relative">
@@ -167,7 +183,9 @@ export function AvailableMatchesTab() {
           description="Эти матчи полностью соответствуют вашему запросу и текущему уровню"
         >
           <Box display="flex" gap={1.5} overflow="auto" pb={1}>
-            {availableMatches.isLoading ? (
+            {availableMatches.isLoading ||
+            isAllClubsLoading ||
+            isLoadingLocaiton ? (
               <LoadingCircle />
             ) : !availableArray || availableArray.length === 0 ? (
               <Typography textAlign="center" width="100%" mt={3} color="gray">
@@ -186,7 +204,9 @@ export function AvailableMatchesTab() {
           description="Эти матчи не соответствуют вашему текущему уровню. Вам необходимо сделать запрос на присоединение"
         >
           <Box display="flex" gap={1.5} overflow="auto" pb={1}>
-            {noRatingMatches.isLoading ? (
+            {noRatingMatches.isLoading ||
+            isAllClubsLoading ||
+            isLoadingLocaiton ? (
               <LoadingCircle />
             ) : !noRatingArray || noRatingArray.length === 0 ? (
               <Typography textAlign="center" width="100%" mt={3} color="gray">
@@ -212,7 +232,7 @@ export function AvailableMatchesTab() {
             py={2}
             px={0.1}
           >
-            {isAllClubsLoading ? (
+            {isAllClubsLoading || isLoadingLocaiton ? (
               <LoadingCircle />
             ) : (
               clubsArray?.map((club, index) => {
