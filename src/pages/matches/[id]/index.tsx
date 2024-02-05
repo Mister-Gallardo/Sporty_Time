@@ -246,18 +246,13 @@ export function SingleMatchPage() {
               flexDirection="column"
               gap={2}
             >
-              <Prompt
-                matchData={singleMatchData}
-                playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
-              />
-
+              <Prompt />
               <MatchDataBlock />
-
               <EditPayment />
 
               <Box my={2}>
-                <MatchType type={singleMatchData.type} />
-                <PrivacyType isPrivate={singleMatchData.isPrivate} />
+                <MatchType />
+                <PrivacyType />
               </Box>
 
               <PlayersMatchCard
@@ -271,17 +266,11 @@ export function SingleMatchPage() {
                 matchData={singleMatchData}
               />
 
-              <ResultsTable matchResults={singleMatchData?.matchResults} />
+              <ResultsTable />
 
               {Date.now() > startsAt.getTime() && <UploadResultsBlock />}
 
-              <Box
-                sx={{
-                  maxWidth: '125px',
-                  marginInline: 'auto',
-                  marginBottom: '1rem',
-                }}
-              >
+              <Box maxWidth={125} mx="auto" mb={2}>
                 <Button
                   sx={{ height: '40px' }}
                   onClick={() => history.push(`/chats/${matchId}`)}
@@ -335,8 +324,8 @@ export function SingleMatchPage() {
                   </Button>
                 </Box>
               )}
-              <ClubInfoBlock data={singleMatchData} />
-              <MatchInfoBlock data={singleMatchData} />
+              <ClubInfoBlock />
+              <MatchInfoBlock />
             </Box>
           </Box>
         </>

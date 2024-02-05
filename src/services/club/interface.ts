@@ -48,6 +48,7 @@ export interface Court {
   club: Club;
   options: IAvailableTime[];
   tags: Tag[];
+  type: string;
   createdAt: Date;
   updatedAt: Date;
 }

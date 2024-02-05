@@ -1,13 +1,20 @@
-import React from 'react';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Box, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router';
+import { getOneAvailableMatch } from '../../../../services/matches/service';
 
-interface IPrivacyType {
-  isPrivate?: boolean;
-}
+export const PrivacyType = () => {
+  const { matchId } = useParams<{ matchId: string }>();
 
-export const PrivacyType: React.FC<IPrivacyType> = ({ isPrivate }) => {
+  const { data } = useQuery({
+    queryKey: [`match`, Number(matchId)],
+    queryFn: () => getOneAvailableMatch(Number(matchId)),
+  });
+
+  const isPrivate = data?.data.isPrivate;
+
   return (
     <Box
       border="1px solid #ddd"

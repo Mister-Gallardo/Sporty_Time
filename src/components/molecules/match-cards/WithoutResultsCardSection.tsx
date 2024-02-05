@@ -84,7 +84,9 @@ export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
       flexGrow={1}
       height="100%"
     >
-      <Typography fontWeight={600}>{date}</Typography>
+      <Typography fontSize={13} fontWeight={500}>
+        {date}
+      </Typography>
 
       <Typography fontSize={12} color="gray">
         {clubName}
@@ -107,7 +109,7 @@ export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
           </Typography>
         </Box>
       ) : (
-        <Typography fontSize={20} fontWeight={700}>
+        <Typography fontSize={19} fontWeight={600}>
           {courtName}
         </Typography>
       )}

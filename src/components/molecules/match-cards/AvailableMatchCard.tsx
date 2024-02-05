@@ -46,6 +46,7 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
       borderRadius={2}
       boxShadow="rgba(99, 99, 99, 0.2) 0px 2px 8px 0px"
       bgcolor="#fff"
+      sx={{ cursor: 'pointer' }}
     >
       <Box px={2} py={1.5}>
         <Box display="flex" justifyContent="space-between" gap={2}>

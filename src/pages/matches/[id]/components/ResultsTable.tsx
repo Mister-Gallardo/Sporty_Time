@@ -1,12 +1,18 @@
-import React from 'react';
-import { matchResults } from '../../../../services/matches/interface';
 import { Box, Typography } from '@mui/material';
+import { useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getOneAvailableMatch } from '../../../../services/matches/service';
 
-interface IResultsTable {
-  matchResults: matchResults;
-}
+export const ResultsTable = () => {
+  const { matchId } = useParams<{ matchId: string }>();
 
-export const ResultsTable: React.FC<IResultsTable> = ({ matchResults }) => {
+  const { data } = useQuery({
+    queryKey: [`match`, Number(matchId)],
+    queryFn: () => getOneAvailableMatch(Number(matchId)),
+  });
+
+  const matchResults = data?.data.matchResults;
+
   if (!matchResults) return;
   return (
     <Box

@@ -1,19 +1,28 @@
-import React from 'react';
-import { MatchData } from '../../../../services/matches/interface';
 import { Box, IconButton, Typography } from '@mui/material';
 import { Block } from '../../../../components/molecules/Block';
 import { Directions } from '@mui/icons-material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { getOneAvailableMatch } from '../../../../services/matches/service';
 
-interface IClubInfoBlock {
-  data: MatchData;
-}
+export const ClubInfoBlock = () => {
+  const { matchId } = useParams<{ matchId: string }>();
 
-export const ClubInfoBlock: React.FC<IClubInfoBlock> = ({ data }) => {
+  const { data } = useQuery({
+    queryKey: [`match`, Number(matchId)],
+    queryFn: () => getOneAvailableMatch(Number(matchId)),
+  });
+
+  const singleMatchData = data?.data;
+
+  if (!singleMatchData) return null;
+
+  const { booking } = singleMatchData;
+
   return (
     <Block
       component={RouterLink}
-      to={`/book-court/${data?.booking.court.club.id}`}
+      to={`/book-court/${booking.court.club.id}`}
       sx={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -23,7 +32,7 @@ export const ClubInfoBlock: React.FC<IClubInfoBlock> = ({ data }) => {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <Box
           component="img"
-          src={data?.booking.court.club.img}
+          src={booking.court.club.img}
           sx={{
             width: '64px',
             height: '64px',
@@ -34,15 +43,17 @@ export const ClubInfoBlock: React.FC<IClubInfoBlock> = ({ data }) => {
         />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
           <Typography sx={{ fontWeight: '700' }}>
-            {data?.booking.court.club.title}
+            {booking.court.club.title}
           </Typography>
           <Box sx={{ opacity: '.6' }}>
             <Typography sx={{ fontSize: '12px' }}>
-              {data?.booking.court.address}
+              {booking.court.club.city}
             </Typography>
           </Box>
           <Box>
-            <Typography sx={{ fontSize: '.75rem' }}>More info </Typography>
+            <Typography sx={{ fontSize: '.75rem' }}>
+              Больше информации
+            </Typography>
           </Box>
         </Box>
       </Box>

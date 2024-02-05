@@ -71,15 +71,6 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
       onClick={() => history.push(`/matches/${id}`)}
       sx={{ cursor: isMobile ? 'unset' : 'pointer' }}
     >
-      <Typography
-        lineHeight={1}
-        textAlign="end"
-        color="gray"
-        textTransform="capitalize"
-      >
-        {}
-      </Typography>
-
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box py={1.5} px={1}>
           {members.map((team, i) => {

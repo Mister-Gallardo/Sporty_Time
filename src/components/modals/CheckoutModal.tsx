@@ -182,7 +182,6 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
             }}
             fullWidth
           >
-            {/* Продолжить оплату */}
             Забронировать корт
           </Button>
         </Box>

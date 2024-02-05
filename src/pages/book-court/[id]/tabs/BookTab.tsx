@@ -118,9 +118,7 @@ export function BookTab() {
     setOpenCheckoutModal();
   };
 
-  if (isError) history.push('/book-court');
-
-  console.log(selectedOption);
+  if (isError) return history.push('/book-court');
 
   return (
     <>
