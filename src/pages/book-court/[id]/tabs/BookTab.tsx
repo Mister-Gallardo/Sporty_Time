@@ -11,12 +11,12 @@ import { ConfigMatchModal } from '../../../../components/modals/ConfigMatchModal
 import { CheckoutModal } from '../../../../components/modals/CheckoutModal';
 import { createMatch } from '../../../../services/matches/service';
 import { useSearchParam } from '../../../../hooks/useSearchParams';
-import { IConfigMatchModalData } from '../../../../types';
 import useToggle from '../../../../hooks/useToggle';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { getDatesList } from '../../../../helpers/getDatesList';
 import { parseDate } from '../../../../helpers/getMatchStatus';
 import { Court, IAvailableTime } from '../../../../services/club/interface';
+import { EGender, EMatchType } from '../../../../services/matches/interface';
 
 export function BookTab() {
   const dates = getDatesList(100);
@@ -39,15 +39,17 @@ export function BookTab() {
   const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(false);
   const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(false);
 
-  const { getValues, reset } = useForm({
+  const matchConfigForm = useForm({
     defaultValues: {
       isPrivate: false,
-      matchType: 'competitive',
+      type: EMatchType.COMPETITIVE,
       ratingFrom: 0,
       ratingTo: 0,
-      gender: 'all',
+      gender: EGender.ALL,
     },
   });
+
+  const { getValues } = matchConfigForm;
 
   const {
     data,
@@ -92,8 +94,6 @@ export function BookTab() {
     },
   });
 
-  const { gender, isPrivate, matchType, ratingFrom, ratingTo } = getValues();
-
   useEffect(() => {
     setSelectedTime(filteredTimes?.[0] || '');
   }, [filteredTimes]);
@@ -108,18 +108,13 @@ export function BookTab() {
       courtId: selectedOption.court.id,
       gameDate,
       playTime: selectedOption?.playTime,
-      gender: gender.toUpperCase(),
-      isPrivate,
-      type: matchType.toUpperCase(),
-      ratingFrom,
-      ratingTo,
       money,
+      ...getValues(),
     });
     setOpenCheckoutModal();
   };
 
   if (isError) return history.push('/book-court');
-
   return (
     <>
       <Box
@@ -300,23 +295,19 @@ export function BookTab() {
       </Box>
 
       {selectedOption?.court && (
-        <ConfigMatchModal
-          sport={selectedOption.court.sport}
-          openState={openConfigMatchModal}
-          handleModal={setOpenConfigMatchModal}
-          getData={(data: IConfigMatchModalData) => {
-            reset(data);
-            setOpenConfigMatchModal();
-            setOpenCheckoutModal();
-          }}
-        />
+        <FormProvider {...matchConfigForm}>
+          <ConfigMatchModal
+            sport={selectedOption.court.sport}
+            openState={openConfigMatchModal}
+            handleModal={setOpenConfigMatchModal}
+            handleNext={setOpenCheckoutModal}
+          />
+        </FormProvider>
       )}
       {selectedOption && data?.timezone && (
         <CheckoutModal
-          price={selectedOption.price!}
-          court={selectedOption.court}
+          {...selectedOption}
           date={selectedDate}
-          playtime={selectedOption.playTime}
           startTime={selectedTime}
           timezone={data?.timezone}
           openState={openCheckoutModal}

@@ -1,8 +1,7 @@
 import { Box, Button, RadioGroup, Typography } from '@mui/material';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { RadioLabel } from '../../../molecules/RadioLabel';
-import { ERadioLabelType } from '../../../../types';
+import { ERadioLabelType, RadioLabel } from '../../../molecules/RadioLabel';
 import { FilterButton } from '../FilterButton';
 import { useHistory } from 'react-router';
 import { ELeveling } from '../../../../pages/question-form/questions';

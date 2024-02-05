@@ -6,20 +6,20 @@ import { Box, Button, Typography } from '@mui/material';
 import dummy from '../../../images/home/booking-bg.png';
 import { isPlatform } from '@ionic/react';
 import { useHistory } from 'react-router';
-import { Sport } from '../../../types';
 import { RatingChart } from '../../../components/molecules/RatingChart';
+import { ESport } from '../../../services/matches/interface';
 
 const sports = [
   {
-    id: Sport.PADEL,
+    id: ESport.PADEL,
     title: 'Падел',
   },
   {
-    id: Sport.TENNIS,
+    id: ESport.TENNIS,
     title: 'Теннис',
   },
   {
-    id: Sport.PICKLEBALL,
+    id: ESport.PICKLEBALL,
     title: 'Пиклбол',
   },
 ];
@@ -29,7 +29,7 @@ export default function ActivitiesTab() {
 
   const history = useHistory();
 
-  const [activeSport, setActiveSport] = useState<Sport>(Sport.PADEL);
+  const [activeSport, setActiveSport] = useState<ESport>(ESport.PADEL);
 
   const [player] = usePlayerProfile();
   const sportLevel = player && getSportRating(player, activeSport);

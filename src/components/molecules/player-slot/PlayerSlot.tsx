@@ -3,8 +3,8 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { Avatar, Box, Typography } from '@mui/material';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
-import { Status } from '../../../types';
 import { BASE_URL } from '../../../services/api/service';
+import { Status } from '../../../services/matches/interface';
 
 interface IPlayerSlotProps {
   player: MatchPlayer;

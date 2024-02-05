@@ -1,5 +1,4 @@
-import { MatchData } from '../services/matches/interface';
-import { Status } from '../types';
+import { MatchData, Status } from '../services/matches/interface';
 
 export const parseDate = (
   date: string | undefined = '01-01-1970',

@@ -1,11 +1,6 @@
 import { Court, MatchTimeRange } from '../club/interface';
 import { Player } from '../user/interface';
 
-export enum EMatchType {
-  FRIENDLY = 'FRIENDLY',
-  COMPETITIVE = 'COMPETITIVE',
-}
-
 export type matchResults = Array<number[]> | null;
 
 export interface Booking {
@@ -94,4 +89,38 @@ export interface GetAvailableMatchesAndClubsDTO {
   clubs?: string;
   lat?: number;
   long?: number;
+}
+
+//match enums
+export enum EGender {
+  ALL = 'ALL',
+  WOMEN = 'WOMEN',
+  MEN = 'MEN',
+  MIXED = 'MIXED',
+}
+
+export enum EMatchType {
+  FRIENDLY = 'FRIENDLY',
+  COMPETITIVE = 'COMPETITIVE',
+}
+
+export enum ESport {
+  PADEL = 'PADEL',
+  TENNIS = 'TENNIS',
+  PICKLEBALL = 'PICKLEBALL',
+}
+
+// possible match statuses
+export enum Status {
+  CANCELED,
+  PENDING,
+  COMPLETE,
+  UPCOMING,
+  IN_PROGRESS,
+  VALIDATING,
+  WITHOUT_RESULT,
+  VALID_RESULT,
+  INVALID_RESULT,
+  INCOMPLETE,
+  WAITING_FOR_RESULTS,
 }

@@ -6,7 +6,7 @@ import { EType, getDayFormat } from '../../../../helpers/getTimeDateString';
 import { useSearchParam } from '../../../../hooks/useSearchParams';
 import { getSportName } from '../../../../helpers/getSportName';
 import { Box, Typography } from '@mui/material';
-import { Sport } from '../../../../types';
+import { ESport } from '../../../../services/matches/interface';
 
 interface IFiltersRowProps {
   handleModal: () => void;
@@ -51,7 +51,7 @@ export const FiltersRow: React.FC<IFiltersRowProps> = ({ handleModal }) => {
             handleModal();
           }}
         >
-          {getSportName(sport as Sport)}
+          {getSportName(sport as ESport)}
         </SelectedFilterButton>
 
         <SelectedFilterButton

@@ -7,9 +7,9 @@ import {
 } from '../../../../services/matches/service';
 import { useParams } from 'react-router';
 import { useIonToast } from '@ionic/react';
-import { Status } from '../../../../types';
 import { usePlayerProfile } from '../../../../services/api/hooks';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { Status } from '../../../../services/matches/interface';
 
 export const EditPayment = () => {
   const { matchId } = useParams<{ matchId: string }>();

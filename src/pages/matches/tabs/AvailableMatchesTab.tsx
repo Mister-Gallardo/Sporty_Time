@@ -19,12 +19,12 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { FiltersRow } from './components/FiltersRow';
 import useToggle from '../../../hooks/useToggle';
 import { useLocalStorage } from 'usehooks-ts';
-import { Sport } from '../../../types';
 import { ELeveling } from '../../question-form/questions';
+import { ESport } from '../../../services/matches/interface';
 
 export interface FilterFormDate {
   sportLevel: string;
-  sport: Sport;
+  sport: ESport;
   clubsId: number[];
   gamedates: { value: Date }[];
   lat: number;

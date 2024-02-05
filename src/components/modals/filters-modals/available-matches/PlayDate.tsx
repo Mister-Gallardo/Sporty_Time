@@ -5,9 +5,8 @@ import { CalendarDay } from '../../../molecules/CalendarDay';
 import { Box, Fade, RadioGroup, Typography } from '@mui/material';
 import { FilterButton } from '../FilterButton';
 import { DateBox } from '../../../molecules/DateBox';
-import { RadioLabel } from '../../../molecules/RadioLabel';
+import { ERadioLabelType, RadioLabel } from '../../../molecules/RadioLabel';
 import { MatchTimeRange } from '../../../../services/club/interface';
-import { ERadioLabelType } from '../../../../types';
 
 interface IPlayDateProps {
   handleModal: (val?: boolean) => void;

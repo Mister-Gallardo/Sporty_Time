@@ -1,7 +1,6 @@
-import { MatchData } from '../services/matches/interface';
+import { MatchData, Status } from '../services/matches/interface';
 import { getMatchStatus } from './getMatchStatus';
 import { isToday } from 'date-fns';
-import { Status } from '../types';
 
 enum PromptIconColor {
   PRIMARY = '#6d8ff9',

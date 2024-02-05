@@ -2,19 +2,23 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ELeveling, IOption, IQuestion, leveling } from '../questions';
 import { Box, Button, Input, RadioGroup, Typography } from '@mui/material';
-import { RadioLabel } from '../../../components/molecules/RadioLabel';
+import {
+  ERadioLabelType,
+  RadioLabel,
+} from '../../../components/molecules/RadioLabel';
 import { QuestionTitle } from '../components/QuestionTitle';
-import { ERadioLabelType, Sport } from '../../../types';
 import { isPlatform, useIonToast } from '@ionic/react';
 import { useMutation } from '@tanstack/react-query';
 import { createSportRating } from '../../../services/rating';
 import { QuestionsContainer } from '../components/QuestionsContainer';
 import { useSearchParam } from '../../../hooks/useSearchParams';
 import { useHistory } from 'react-router';
+import { ESport } from '../../../services/matches/interface';
 
 // leave just for now
 const getSportAndLevel = (sport: string, level: string) => {
-  const sportIndex = sport === Sport.PADEL ? 0 : sport === Sport.TENNIS ? 1 : 2;
+  const sportIndex =
+    sport === ESport.PADEL ? 0 : sport === ESport.TENNIS ? 1 : 2;
   const levelIndex =
     level === 'none'
       ? 0
@@ -39,7 +43,7 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
   const [isPrev] = useSearchParam('prev');
   const history = useHistory();
 
-  const [sport] = useSearchParam('sport', Sport.PADEL);
+  const [sport] = useSearchParam('sport', ESport.PADEL);
   const [level] = useSearchParam('level', ELeveling.NONE);
 
   const getQuestionsByLvlAndSport = () => {

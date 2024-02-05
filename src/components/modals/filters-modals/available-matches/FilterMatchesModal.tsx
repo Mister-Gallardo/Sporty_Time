@@ -9,7 +9,7 @@ import { SportType } from './SportType';
 import { PlayDate } from './PlayDate';
 import { usePlayerProfile } from '../../../../services/api/hooks';
 import { useFormContext } from 'react-hook-form';
-import { Sport } from '../../../../types';
+import { ESport } from '../../../../services/matches/interface';
 
 interface IFilterMatchesModalProps {
   openState: boolean;
@@ -30,10 +30,10 @@ export const FilterMatchesModal: React.FC<IFilterMatchesModalProps> = ({
   //if user has rating in selected sport - skip 2 step
   const handleStep = (step: number) => {
     if (player) {
-      const ratingPadel = player.ratingPadel && sport === Sport.PADEL;
-      const ratingTennis = player.ratingTennis && sport === Sport.TENNIS;
+      const ratingPadel = player.ratingPadel && sport === ESport.PADEL;
+      const ratingTennis = player.ratingTennis && sport === ESport.TENNIS;
       const ratingPickleball =
-        player.ratingPickleball && sport === Sport.PICKLEBALL;
+        player.ratingPickleball && sport === ESport.PICKLEBALL;
 
       const isRating = ratingPadel || ratingTennis || ratingPickleball;
 

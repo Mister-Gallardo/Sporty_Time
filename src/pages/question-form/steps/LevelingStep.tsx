@@ -1,8 +1,10 @@
-import { RadioLabel } from '../../../components/molecules/RadioLabel';
+import {
+  ERadioLabelType,
+  RadioLabel,
+} from '../../../components/molecules/RadioLabel';
 import { Box, Button, RadioGroup, Typography } from '@mui/material';
 import { QuestionTitle } from '../components/QuestionTitle';
 import { InfoRounded } from '@mui/icons-material';
-import { ERadioLabelType } from '../../../types';
 import { ELeveling, leveling } from '../questions';
 import { QuestionsContainer } from '../components/QuestionsContainer';
 import { isPlatform } from '@ionic/react';

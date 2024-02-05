@@ -31,7 +31,7 @@ import { EditMatchPlayersModal } from '../../../components/modals/EditMatchPlaye
 import { ConfirmationEditMatchDialog } from '../../../components/modals/ConfirmationEditMatchDialog';
 import useToggle from '../../../hooks/useToggle';
 import { EditPayment } from './components/EditPayment';
-import { CheckoutModal } from '../../../components/modals/CheckoutModal';
+import { OnJoinCheckoutModal } from '../../../components/modals/OnJoinCheckoutModal';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { ResultsTable } from './components/ResultsTable';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
@@ -193,7 +193,8 @@ export function SingleMatchPage() {
     </Box>
   );
 
-  const onBookSpot = () => {
+  // when user joins the match
+  const onMatchJoin = () => {
     if (matchId && playerInTeam) {
       joinMatchMutation.mutate({
         matchId: Number(matchId),
@@ -215,6 +216,7 @@ export function SingleMatchPage() {
   const startsAt = new Date(singleMatchData.booking.startsAt);
 
   const onBookPlace = () => {
+    //check specific sport rating insted!!!
     const isRating =
       myPlayer?.ratingPadel ||
       myPlayer?.ratingTennis ||
@@ -336,18 +338,10 @@ export function SingleMatchPage() {
         handleOpen={setOpenTestDialog}
       />
 
-      <CheckoutModal
-        price={singleMatchData.price}
-        isJoin
-        isPaid={!!singleMatchData.paid}
-        court={singleMatchData.booking.court}
-        date={startsAt}
-        playtime={singleMatchData.minutes}
-        startTime={startsAt.toLocaleTimeString('ru')}
-        timezone={singleMatchData.booking.court.club.timezone}
+      <OnJoinCheckoutModal
         openState={openCheckoutModal}
         handleModal={setOpenCheckoutModal}
-        handleCheckout={onBookSpot}
+        handleCheckout={onMatchJoin}
       />
 
       <EditMatchPlayersModal

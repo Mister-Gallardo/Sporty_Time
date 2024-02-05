@@ -2,8 +2,8 @@ import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutline
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { Status } from '../../../types';
 import { useHistory } from 'react-router';
+import { Status } from '../../../services/matches/interface';
 
 interface IWithoutResults {
   matchId: number;

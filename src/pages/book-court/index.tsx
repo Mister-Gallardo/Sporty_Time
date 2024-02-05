@@ -19,12 +19,12 @@ import { useCheckUserSport } from '../../hooks/useCheckUserSport';
 import { getSportName } from '../../helpers/getSportName';
 import { isBefore, isToday, parse } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
-import { Sport } from '../../types';
 import { getUserLocation } from '../../helpers/getUserLocation';
 import { SelectedFilterButton } from '../../components/modals/filters-modals/SelectedFilterButton';
+import { ESport } from '../../services/matches/interface';
 
 export interface FilterFormDate {
-  sport: Sport;
+  sport: ESport;
   gamedate: string;
   lat: number;
   long: number;

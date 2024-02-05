@@ -1,12 +1,12 @@
-import { Sport } from '../types';
+import { ESport } from '../services/matches/interface';
 
-export const getSportName = (sportKey: Sport) => {
+export const getSportName = (sportKey: ESport) => {
   const sport =
-    sportKey === Sport.PADEL
+    sportKey === ESport.PADEL
       ? 'Падел'
-      : sportKey === Sport.TENNIS
+      : sportKey === ESport.TENNIS
       ? 'Теннис'
-      : sportKey === Sport.PICKLEBALL
+      : sportKey === ESport.PICKLEBALL
       ? 'Пиклбол'
       : '';
 

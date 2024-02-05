@@ -1,4 +1,4 @@
-import { Sport } from '../../types';
+import { ESport } from '../matches/interface';
 import { User } from '../user/interface';
 
 export enum MatchTimeRange {
@@ -12,7 +12,7 @@ export enum MatchTimeRange {
 export interface IAvailableTime {
   playTime: number;
   time?: string;
-  price?: number;
+  price: number;
   gameDate?: string;
 }
 
@@ -42,7 +42,7 @@ export interface Court {
   id: number;
   title: string;
   address: string;
-  sport: Sport;
+  sport: ESport;
   location: string;
   price: number;
   club: Club;
@@ -89,5 +89,5 @@ export interface LocationsData {
 export interface LocationLatAndLong {
   lat: number;
   long: number;
-  sport: Sport;
+  sport: ESport;
 }

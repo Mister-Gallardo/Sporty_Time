@@ -2,9 +2,8 @@ import { isPlatform } from '@ionic/react';
 import { MatchPlayer } from '../../../services/user/interface';
 import { Box, Button, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from '../player-slot/PlayerSlot';
-import { MatchData } from '../../../services/matches/interface';
+import { MatchData, Status } from '../../../services/matches/interface';
 import { getMatchStatus } from '../../../helpers/getMatchStatus';
-import { Status } from '../../../types';
 
 interface IPlayersMatchCardProps {
   players: MatchPlayer[];

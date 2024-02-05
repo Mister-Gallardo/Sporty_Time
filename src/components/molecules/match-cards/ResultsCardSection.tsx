@@ -1,7 +1,7 @@
-import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
-import { Box, Divider, Typography } from '@mui/material';
-import { Status } from '../../../types';
 import React from 'react';
+import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
+import { Status } from '../../../services/matches/interface';
+import { Box, Divider, Typography } from '@mui/material';
 
 interface IResults {
   date: string;
