@@ -178,12 +178,12 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
               title="Только мужчины"
               description="Присоединиться могут только мужчины"
             />
-            <RadioLabel
+            {/* <RadioLabel
               value={EGender.MIXED}
               labelType={ERadioLabelType.WITH_DESCRIPTION}
               title="Смешанный"
               description="Мужчина и женщина в каждой команде"
-            />
+            /> */}
           </RadioGroup>
         </Box>
 

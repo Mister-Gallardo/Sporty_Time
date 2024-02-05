@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import NotListedLocationOutlinedIcon from '@mui/icons-material/NotListedLocationOutlined';
 import BeachAccessOutlinedIcon from '@mui/icons-material/BeachAccessOutlined';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import { LocationBlock } from './available-matches/LocationBlock';
@@ -11,12 +10,17 @@ import { getClubsByLocation } from '../../../services/club/service';
 import useToggle from '../../../hooks/useToggle';
 import { useFormContext } from 'react-hook-form';
 import { Geolocation } from '@capacitor/geolocation';
+import { useLocalStorage } from 'usehooks-ts';
 
 export const SelectClubsList = () => {
-  const [isLocationGranted, setIsLocationGranted] = useToggle();
+  const [, setIsLocationGranted] = useToggle();
 
   const { watch, setValue } = useFormContext();
   const { lat, long, sport, selectedLocation, clubsId } = watch();
+
+  const [localFilters, setLocalFilters] = useLocalStorage('matchesFilter', {
+    clubsId,
+  });
 
   const [selectAll, setSelectAll] = useToggle();
 
@@ -54,9 +58,11 @@ export const SelectClubsList = () => {
 
             if (!value) {
               setValue('clubsId', []);
+              setLocalFilters({ ...localFilters, clubsId: [] });
             } else {
               const allId = data?.map((club) => club.id);
               setValue('clubsId', allId);
+              setLocalFilters({ ...localFilters, clubsId: allId });
             }
             setSelectAll();
           }}
@@ -78,21 +84,15 @@ export const SelectClubsList = () => {
           msOverflowStyle: 'none',
         }}
       >
-        {!isLocationGranted && (
-          <LocationBlock
-            icon={<NotListedLocationOutlinedIcon color="disabled" />}
-            title="Где Вы находитесь?"
-            subTitle="Определить локацию"
-            handleClick={Geolocation.getCurrentPosition}
-          />
-        )}
-        {isError ? (
+        {isError && (
           <LocationBlock
             icon={<ErrorOutlineOutlinedIcon color="error" />}
             title="Ошибка сервера"
             subTitle="Данные не найдены"
           />
-        ) : isLoading ? (
+        )}
+
+        {isLoading ? (
           <LoadingCircle />
         ) : // if user selected his location, but theres no clubs
         selectedLocation === 'Рядом со мной' && data && data.length === 0 ? (

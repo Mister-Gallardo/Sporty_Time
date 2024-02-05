@@ -96,7 +96,7 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
             </Typography>
           </Box>
           <Typography fontSize={13} color="gray">
-            Смешанный
+            Любой
           </Typography>
         </Box>
         <Box

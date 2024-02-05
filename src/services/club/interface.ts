@@ -1,6 +1,13 @@
 import { ESport } from '../matches/interface';
 import { User } from '../user/interface';
 
+export enum MatchTimes {
+  ALL = 'ALL',
+  MORNING = 'MORNING',
+  AFTERNOON = 'AFTERNOON',
+  EVENING = 'EVENING',
+  // SPECIFIC = 'SPECIFIC',
+}
 export enum MatchTimeRange {
   ALL = '6:00:00-23:59:00',
   MORNING = '6:00:00-12:00:00',

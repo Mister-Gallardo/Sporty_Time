@@ -13,7 +13,7 @@ import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { useCheckUserSport } from '../../../hooks/useCheckUserSport';
 import { Accordion } from '../../../components/molecules/Accordion';
 import { getUserLocation } from '../../../helpers/getUserLocation';
-import { MatchTimeRange } from '../../../services/club/interface';
+import { MatchTimeRange, MatchTimes } from '../../../services/club/interface';
 import { getClubs, getClubsByLocation } from '../../../services/club/service';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FiltersRow } from './components/FiltersRow';
@@ -23,8 +23,24 @@ import { ELeveling } from '../../question-form/questions';
 import { ESport } from '../../../services/matches/interface';
 import { Geolocation } from '@capacitor/geolocation';
 
+const getMatchTime = (time: MatchTimeRange) => {
+  switch (time) {
+    case MatchTimeRange.ALL:
+      return MatchTimes.ALL;
+    case MatchTimeRange.MORNING:
+      return MatchTimes.MORNING;
+    case MatchTimeRange.AFTERNOON:
+      return MatchTimes.AFTERNOON;
+    case MatchTimeRange.EVENING:
+      return MatchTimes.EVENING;
+
+    default:
+      return MatchTimes.ALL;
+  }
+};
+
 export interface FilterFormDate {
-  sportLevel: string;
+  sportLevel: ELeveling;
   sport: ESport;
   clubsId: number[];
   gamedates: { value: Date }[];
@@ -32,7 +48,7 @@ export interface FilterFormDate {
   long: number;
   selectedLocation: string;
   time: MatchTimeRange;
-  times: { value: string }[];
+  // times: { value: string }[];
   range: number;
 }
 
@@ -55,7 +71,6 @@ export function AvailableMatchesTab() {
     sportLevel: ELeveling.BEGGINER,
     time: MatchTimeRange.ALL,
     gamedates: dates,
-    clubsId: [],
     selectedLocation: 'Выбрать локацию',
     range: 50,
   });
@@ -73,13 +88,14 @@ export function AvailableMatchesTab() {
     clubsId,
     time,
     selectedLocation,
+    sportLevel,
     range,
   } = watch();
 
   const gameDatesToString = gamedates
     .map((date) => new Date(date.value).toLocaleDateString('en-ca'))
     .join(',');
-  const clubsIdToString = clubsId.map((clubVal) => clubVal).join(',');
+  const clubsIdToString = clubsId?.map((clubVal) => clubVal).join(',');
 
   // Get Available matches
   const availableMatches = useQuery({
@@ -89,9 +105,9 @@ export function AvailableMatchesTab() {
         sport,
         gamedates: gameDatesToString,
         clubs: clubsIdToString,
-        time: 'ALL',
+        time: getMatchTime(time),
       }),
-    enabled: clubsId.length !== 0,
+    enabled: clubsId?.length !== 0,
   });
   const availableArray = availableMatches.data?.data;
 
@@ -103,9 +119,9 @@ export function AvailableMatchesTab() {
         sport,
         gamedates: gameDatesToString,
         clubs: clubsIdToString,
-        time: 'ALL',
+        time: getMatchTime(time),
       }),
-    enabled: clubsId.length !== 0,
+    enabled: clubsId?.length !== 0,
   });
   const noRatingArray = noRatingMatches.data?.data;
 
@@ -141,8 +157,8 @@ export function AvailableMatchesTab() {
   });
 
   useEffect(() => {
-    setLocalFilters(watch() as any);
-  }, [sport, lat, long, timefrom, timeto, selectedLocation]);
+    setLocalFilters(watch());
+  }, [sport, lat, long, timefrom, timeto, selectedLocation, sportLevel]);
 
   useEffect(() => {
     const clubs: number[] = [];
@@ -225,6 +241,7 @@ export function AvailableMatchesTab() {
         >
           <Box
             display="flex"
+            alignItems={isMobile ? 'unset' : 'start'}
             flexDirection={isMobile ? 'column' : 'row'}
             gap={2}
             width="100%"

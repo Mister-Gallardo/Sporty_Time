@@ -30,7 +30,7 @@ export const AskForLevel: React.FC<IAskForLevelProps> = ({
         <Controller
           name="sportLevel"
           control={control}
-          defaultValue=""
+          defaultValue={ELeveling.BEGGINER}
           render={({ field }) => (
             <RadioGroup {...field} sx={{ gap: 1 }}>
               <RadioLabel

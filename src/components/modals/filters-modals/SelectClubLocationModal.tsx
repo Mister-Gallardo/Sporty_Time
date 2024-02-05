@@ -28,7 +28,7 @@ interface ISelectClubLocationModalProps {
 export const SelectClubLocationModal: React.FC<
   ISelectClubLocationModalProps
 > = ({ openState, handleModal }) => {
-  const { setValue, getValues } = useFormContext();
+  const { setValue } = useFormContext();
 
   const [currentSearchTerm, setCurrentSearchTerm] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -101,11 +101,6 @@ export const SelectClubLocationModal: React.FC<
                       setValue('lat', lat);
 
                       setValue('selectedLocation', location.title);
-
-                      localStorage.setItem(
-                        'clubsFilters',
-                        JSON.stringify(getValues()),
-                      );
                       handleModal();
                     }}
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
