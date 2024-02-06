@@ -21,9 +21,6 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
   openState,
   handleModal,
 }) => {
-  const currentTime = new Date().getHours();
-  const hours = [...Array(24).keys()].slice(currentTime);
-
   const dates = getDatesList(14);
 
   const { setValue, watch } = useFormContext();
@@ -76,7 +73,6 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
               onIonChange={handleDatetimeChange}
               presentation="time"
               preferWheel
-              hourValues={hours}
               minuteValues="0,30"
               locale="ru-RU"
               style={{ width: '100%' }}

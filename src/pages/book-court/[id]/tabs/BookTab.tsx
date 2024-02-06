@@ -95,7 +95,7 @@ export function BookTab() {
   });
 
   useEffect(() => {
-    setSelectedTime(filteredTimes?.[0] || '');
+    if (!selectedTime) setSelectedTime(filteredTimes?.[0] || '');
   }, [filteredTimes]);
 
   const onCheckout = (money: number) => {

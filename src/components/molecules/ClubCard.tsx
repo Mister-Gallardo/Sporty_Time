@@ -87,18 +87,21 @@ export const ClubCard: React.FC<IClubCard> = (props) => {
               По заданным параметрам нет свободных кортов
             </Typography>
           ) : (
-            times?.map((elem: IAvailableTime, i: number) => (
-              <DateBox
-                key={i}
-                startTime={elem.time!}
-                onClick={(e: Event) => {
-                  e.stopPropagation();
-                  history.push(
-                    `/book-court/${id}?tab=2&time=${elem.time}&day=${gameDate}`,
-                  );
-                }}
-              />
-            ))
+            times?.map((elem: IAvailableTime, i: number) => {
+              if (!elem.time) return;
+              return (
+                <DateBox
+                  key={i}
+                  startTime={elem.time}
+                  onClick={(e: Event) => {
+                    e.stopPropagation();
+                    history.push(
+                      `/book-court/${id}?tab=2&time=${elem.time}&day=${gameDate}`,
+                    );
+                  }}
+                />
+              );
+            })
           )}
         </Box>
       </Box>
