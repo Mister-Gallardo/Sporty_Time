@@ -22,6 +22,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { getUserLocation } from '../../helpers/getUserLocation';
 import { SelectedFilterButton } from '../../components/modals/filters-modals/SelectedFilterButton';
 import { ESport } from '../../services/matches/interface';
+import { useHistory } from 'react-router';
 
 export interface FilterFormDate {
   sport: ESport;
@@ -52,6 +53,8 @@ const countDefaultTime = () => {
 const isMobile = isPlatform('mobile');
 
 export function BookCourt() {
+  const history = useHistory();
+
   const defaultSport = useCheckUserSport();
 
   const [localFilters, setLocalFilters] = useLocalStorage('clubsFilter', {
@@ -90,12 +93,13 @@ export function BookCourt() {
     }
   }, []);
 
+  const formatGameDate = new Date(gamedate).toLocaleDateString('en-ca');
   const { data, isLoading } = useQuery({
     queryKey: ['clubs', gamedate, sport, lat, long, timefrom, timeto],
     queryFn: () =>
       getClubs({
         sport,
-        gamedates: new Date(gamedate).toLocaleDateString('en-ca'),
+        gamedates: formatGameDate,
         lat,
         long,
         timefrom,
@@ -235,7 +239,17 @@ export function BookCourt() {
               </Button>
             </Box>
           ) : (
-            clubs?.map((club) => <ClubCard key={club.id} {...club} />)
+            clubs?.map((club) => (
+              <ClubCard
+                key={club.id}
+                {...club}
+                onClick={() =>
+                  history.push(
+                    `/book-court/${club.id}?tab=2&day=${formatGameDate}`,
+                  )
+                }
+              />
+            ))
           )}
         </Box>
       )}

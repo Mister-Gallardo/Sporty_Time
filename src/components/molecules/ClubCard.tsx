@@ -5,10 +5,12 @@ import { Box, IconButton, Typography } from '@mui/material';
 import { DateBox } from './DateBox';
 import { isPlatform } from '@ionic/react';
 
-interface IClubCard extends Club {}
+interface IClubCard extends Club {
+  onClick: () => void;
+}
 
 export const ClubCard: React.FC<IClubCard> = (props) => {
-  const { id, img, title, city, minPrice, availableTimes } = props;
+  const { onClick, id, img, title, city, minPrice, availableTimes } = props;
   const isMobile = isPlatform('mobile');
   const history = useHistory();
   const [gameDate, times] = Object.entries(availableTimes || {})[0];
@@ -17,7 +19,7 @@ export const ClubCard: React.FC<IClubCard> = (props) => {
     <Box
       bgcolor="#fff"
       boxShadow="0 7px 8px -2px #e0e0e0"
-      onClick={() => history.push(`/book-court/${id}?tab=2`)}
+      onClick={onClick}
       sx={{ cursor: isMobile ? 'unset' : 'pointer' }}
     >
       <Box
