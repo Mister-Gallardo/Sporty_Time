@@ -18,6 +18,17 @@ import { parseDate } from '../../../../helpers/getMatchStatus';
 import { Court, IAvailableTime } from '../../../../services/club/interface';
 import { EGender, EMatchType } from '../../../../services/matches/interface';
 
+const compareTimes = (time1: string, time2: string) => {
+  const [hours1, minutes1] = time1.split(':').map(Number);
+  const [hours2, minutes2] = time2.split(':').map(Number);
+
+  if (hours1 !== hours2) {
+    return hours1 - hours2;
+  } else {
+    return minutes1 - minutes2;
+  }
+};
+
 export function BookTab() {
   const dates = getDatesList(100);
 
@@ -74,9 +85,10 @@ export function BookTab() {
     if (!data) return;
 
     const times = data.availableSlots && Object.keys(data.availableSlots);
+    const sortedTimes = times?.sort(compareTimes);
 
     return onlyAvailableSlots
-      ? times?.filter(
+      ? sortedTimes?.filter(
           (time) => !!data?.availableSlots?.[time]?.available?.length,
         )
       : times;
@@ -95,7 +107,7 @@ export function BookTab() {
   });
 
   useEffect(() => {
-    setSelectedTime(filteredTimes?.[0] || '');
+    if (!selectedTime) setSelectedTime(filteredTimes?.[0] || '');
   }, [filteredTimes]);
 
   const onCheckout = (money: number) => {
