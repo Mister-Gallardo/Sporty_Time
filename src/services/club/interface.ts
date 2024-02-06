@@ -1,6 +1,13 @@
-import { Sport } from '../../types';
+import { ESport } from '../matches/interface';
 import { User } from '../user/interface';
 
+export enum MatchTimes {
+  ALL = 'ALL',
+  MORNING = 'MORNING',
+  AFTERNOON = 'AFTERNOON',
+  EVENING = 'EVENING',
+  // SPECIFIC = 'SPECIFIC',
+}
 export enum MatchTimeRange {
   ALL = '6:00:00-23:59:00',
   MORNING = '6:00:00-12:00:00',
@@ -12,7 +19,7 @@ export enum MatchTimeRange {
 export interface IAvailableTime {
   playTime: number;
   time?: string;
-  price?: number;
+  price: number;
   gameDate?: string;
 }
 
@@ -42,12 +49,13 @@ export interface Court {
   id: number;
   title: string;
   address: string;
-  sport: Sport;
+  sport: ESport;
   location: string;
   price: number;
   club: Club;
   options: IAvailableTime[];
   tags: Tag[];
+  type: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -88,5 +96,5 @@ export interface LocationsData {
 export interface LocationLatAndLong {
   lat: number;
   long: number;
-  sport: Sport;
+  sport: ESport;
 }

@@ -5,19 +5,18 @@ import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import useToggle from '../../hooks/useToggle';
 import { DateBox } from './DateBox';
 import noImage from '../../images/no-image.jpg';
-import { IAvailableTime } from '../../services/club/interface';
+import { Club, IAvailableTime } from '../../services/club/interface';
 
 type AvailableTimeItem = [string, IAvailableTime[]];
 
-interface IClubMultipleDatesCard {
-  title: string;
-  img: string;
+interface IClubMultipleDatesCard extends Club {
   availableTimes?: any;
 }
 
 const date = new Date().toLocaleDateString('en-ca');
 
 export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
+  id,
   title,
   img,
   availableTimes,
@@ -39,11 +38,13 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
 
   return (
     <Card
-      onClick={() => history.push(`/book-court/1?tab=2&day=${date}`)}
+      onClick={() => history.push(`/book-court/${id}?tab=2&day=${date}`)}
       sx={{
         width: '100%',
+        minWidth: isMobile ? 'unset' : '400px',
         maxWidth: isMobile ? '100%' : '400px',
         boxShadow: '0px 0px 5px #e3e3e3',
+        cursor: 'pointer',
       }}
     >
       <CardHeader
@@ -62,11 +63,11 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
         }
         title={title}
         titleTypographyProps={{
-          fontSize: 18,
-          fontWeight: 700,
+          fontSize: 16,
+          fontWeight: 600,
           lineHeight: 1.3,
         }}
-        subheaderTypographyProps={{ fontSize: 16 }}
+        subheaderTypographyProps={{ fontSize: 15 }}
         // subheader="2km Barcelona"
         sx={{ borderBottom: '1px solid #eee' }}
       />

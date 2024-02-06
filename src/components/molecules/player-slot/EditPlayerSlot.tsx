@@ -6,6 +6,7 @@ import { CircularLevelProgress } from '../../atoms/CircularLevelProgress';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
+import { BASE_URL } from '../../../services/api/service';
 
 interface IEditPlayerSlotProps {
   player?: MatchPlayer;
@@ -58,7 +59,7 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
 
           <CircularLevelProgress rating={playerRating}>
             <Avatar
-              src={`https://playpadel.lakileki.ru${player?.user?.avatar}`}
+              src={`${BASE_URL}${player?.user?.avatar}`}
               sx={{ width: 45, height: 45 }}
             />
           </CircularLevelProgress>

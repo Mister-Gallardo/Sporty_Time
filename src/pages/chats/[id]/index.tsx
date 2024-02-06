@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import { MessageItem } from '../components/MessageItem';
 import { IonLoading, isPlatform, useIonToast } from '@ionic/react';
-// import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import SendSharpIcon from '@mui/icons-material/SendSharp';
 import { SubmitHandler, useForm, Controller } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';

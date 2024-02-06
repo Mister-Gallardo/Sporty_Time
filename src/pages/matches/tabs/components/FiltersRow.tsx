@@ -1,10 +1,12 @@
 import React from 'react';
 import { isPlatform } from '@ionic/react';
 import { useFormContext } from 'react-hook-form';
+import { SelectedFilterButton } from '../../../../components/modals/filters-modals/SelectedFilterButton';
 import { EType, getDayFormat } from '../../../../helpers/getTimeDateString';
+import { useSearchParam } from '../../../../hooks/useSearchParams';
 import { getSportName } from '../../../../helpers/getSportName';
-import { Box, Button, Typography } from '@mui/material';
-import { Sport } from '../../../../types';
+import { Box, Typography } from '@mui/material';
+import { ESport } from '../../../../services/matches/interface';
 
 interface IFiltersRowProps {
   handleModal: () => void;
@@ -13,15 +15,10 @@ interface IFiltersRowProps {
 const isMobile = isPlatform('mobile');
 
 export const FiltersRow: React.FC<IFiltersRowProps> = ({ handleModal }) => {
+  const [, setQ] = useSearchParam('q');
+
   const { watch } = useFormContext();
-  const { sport, gamedates } = watch();
-
-  const isMainFilters = !!sport && gamedates.length > 0;
-
-  const onClearFilters = () => {
-    localStorage.removeItem('availableMatchesFilters');
-    window.location.reload();
-  };
+  const { sport, gamedates, clubsId } = watch();
 
   return (
     <Box
@@ -36,78 +33,51 @@ export const FiltersRow: React.FC<IFiltersRowProps> = ({ handleModal }) => {
       height={50}
       px={1}
     >
-      {isMainFilters ? (
-        <>
-          <Box
-            display="flex"
-            overflow="auto"
-            gap={1}
-            sx={{
-              '&::-webkit-scrollbar': {
-                display: 'none',
-              },
-              msOverflowStyle: 'none',
-            }}
-          >
-            <Typography
-              px={2}
-              py={0.5}
-              bgcolor="#0D2433"
-              color="#fff"
-              borderRadius={5}
-              fontSize={13}
-              lineHeight={1.2}
-              whiteSpace="nowrap"
-            >
-              {getSportName(sport as Sport)}
-            </Typography>
-            <Typography
-              px={2}
-              py={0.5}
-              bgcolor="#0D2433"
-              color="#fff"
-              borderRadius={5}
-              fontSize={13}
-              lineHeight={1.2}
-              whiteSpace="nowrap"
-              maxWidth={210}
-              noWrap
-            >
-              {gamedates
-                .map((date: { value: Date }) =>
-                  getDayFormat(date.value, EType.MONTH_AND_DAY),
-                )
-                .join(' | ')}
-            </Typography>
-          </Box>
-          <Button
-            onClick={onClearFilters}
-            variant="outlined"
-            sx={{
-              fontSize: 13,
-              borderRadius: 5,
-              py: 0,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Сбросить все
-          </Button>
-        </>
-      ) : (
-        <Button
-          onClick={() => handleModal()}
-          sx={{
-            fontSize: 13,
-            color: '#333',
-            border: '1px solid #eee',
-            borderRadius: 5,
-            padding: 0,
-            paddingX: 1,
+      <Box
+        width="100%"
+        display="flex"
+        overflow="auto"
+        gap={1}
+        sx={{
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+          msOverflowStyle: 'none',
+        }}
+      >
+        <SelectedFilterButton
+          handleClick={() => {
+            setQ('1');
+            handleModal();
           }}
         >
-          Спорт | Клубы | Даты и время
-        </Button>
-      )}
+          {getSportName(sport as ESport)}
+        </SelectedFilterButton>
+
+        <SelectedFilterButton
+          handleClick={() => {
+            setQ('3');
+            handleModal();
+          }}
+        >
+          Клубы | {clubsId?.length}
+        </SelectedFilterButton>
+
+        <SelectedFilterButton
+          handleClick={() => {
+            setQ('4');
+            handleModal();
+          }}
+        >
+          <Typography maxWidth={200} noWrap>
+            {gamedates
+              .map((date: { value: Date }) =>
+                getDayFormat(date.value, EType.MONTH_AND_DAY),
+              )
+              .join(' | ')}
+          </Typography>
+        </SelectedFilterButton>
+      </Box>
     </Box>
   );
 };

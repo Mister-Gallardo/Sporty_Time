@@ -7,7 +7,6 @@ import { SwipeablePage } from '../../../components/SwipeablePage';
 import {
   IonBackButton,
   IonLoading,
-  IonToast,
   isPlatform,
   useIonToast,
 } from '@ionic/react';
@@ -16,14 +15,10 @@ import { useHistory, useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
-  cancelMatch,
-  deletePlayerFromMatch,
   getOneAvailableMatch,
   joinMatch,
-  uploadResults,
 } from '../../../services/matches/service';
 import { PlayersMatchCard } from '../../../components/molecules/match-cards/PlayersMatchCard';
-import { UploadResultModal } from '../../../components/modals/UploadResultModal';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { MatchInfoBlock } from './components/MatchInfoBlock';
 import { ClubInfoBlock } from './components/ClubInfoBlock';
@@ -33,27 +28,31 @@ import { PrivacyType } from './components/PrivacyType';
 import { MatchType } from './components/MatchType';
 import { MatchDataBlock } from './components/MatchDataBlock';
 import { EditMatchPlayersModal } from '../../../components/modals/EditMatchPlayersModal';
-import { CancelDialogModal } from './components/CancelDialogModal';
+import { ConfirmationEditMatchDialog } from '../../../components/modals/ConfirmationEditMatchDialog';
 import useToggle from '../../../hooks/useToggle';
 import { EditPayment } from './components/EditPayment';
-import { CheckoutModal } from '../../../components/modals/CheckoutModal';
+import { OnJoinCheckoutModal } from '../../../components/modals/OnJoinCheckoutModal';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { ResultsTable } from './components/ResultsTable';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
+import { UploadResultsBlock } from './components/UploadResultsBlock';
+import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
   const history = useHistory();
 
   const { matchId } = useParams<{ matchId: string }>();
+
   const [showToast] = useIonToast();
   const [myPlayer] = usePlayerProfile();
-  const [error, setError] = useState<string | undefined>();
-  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
-  const [openToast, setOpenToast] = useState<boolean>(false);
+
   const [openEditModal, setOpenEditModal] = useToggle();
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
-  const [openCancelDialogModal, setOpenCancelDialogModal] = useToggle();
+  // remove player | cancel match
+  const [openEditMatchDialog, setOpenEditMatchDialog] = useToggle();
+  //if user has no rating
+  const [openTestDialog, setOpenTestDialog] = useToggle();
 
   const [playerToRemoveId, setPlayerToRemoveId] = useState<
     number | undefined
@@ -93,76 +92,9 @@ export function SingleMatchPage() {
       showToast({
         header: 'Ошибка!',
         message: 'Не удалось присоединиться к матчу',
-        duration: 20000,
+        duration: 2000,
         position: 'bottom',
         color: 'danger',
-      });
-    },
-  });
-
-  // Upload Reslults Request
-  const uploadMatchReslultsMutation = useMutation({
-    mutationFn: uploadResults,
-    onSuccess() {
-      setOpenToast(true);
-      refetchMatch();
-      qc.resetQueries({ queryKey: ['my-matches', false] });
-    },
-    onError(e: any) {
-      setError(e.response.data.message);
-      setOpenToast(true);
-    },
-  });
-
-  // Cancel / Leave match
-  const cancelMatchMutation = useMutation({
-    mutationFn: cancelMatch,
-    onSuccess() {
-      setOpenCancelDialogModal();
-      showToast({
-        color: 'success',
-        message: `Ваше бронирование отменено`,
-        mode: 'ios',
-        position: 'bottom',
-        duration: 2000,
-      });
-      refetchMatch();
-      qc.resetQueries({ queryKey: ['my-matches', false] });
-    },
-    onError() {
-      showToast({
-        color: 'danger',
-        message: `Ошибка, попробуйте ещё раз`,
-        mode: 'ios',
-        position: 'bottom',
-        duration: 2000,
-      });
-    },
-  });
-
-  // Remove Player from match
-  const deletePlayerFromMatchMutation = useMutation({
-    mutationFn: deletePlayerFromMatch,
-    onSuccess() {
-      setOpenCancelDialogModal();
-      showToast({
-        color: 'success',
-        message: `Игрок был удалён из матча`,
-        mode: 'ios',
-        position: 'bottom',
-        duration: 2000,
-      });
-      refetchMatch();
-      qc.resetQueries({ queryKey: ['my-matches', false] });
-    },
-    onError() {
-      setOpenCancelDialogModal();
-      showToast({
-        color: 'danger',
-        message: `Ошибка, попробуйте ещё раз`,
-        mode: 'ios',
-        position: 'bottom',
-        duration: 2000,
       });
     },
   });
@@ -172,9 +104,6 @@ export function SingleMatchPage() {
     (booking) => booking.player?.id === myPlayer?.id,
   );
   const [playerInTeam, setPlayerInTeam] = useState<string>('');
-  const myBooking = singleMatchData?.matchBookings.find(
-    (booking) => booking.player?.id === myPlayer?.id,
-  );
 
   useEffect(() => {
     setPlayerInTeam(playerAlreadyInSomeTeam ? '' : 'B');
@@ -264,7 +193,8 @@ export function SingleMatchPage() {
     </Box>
   );
 
-  const onBookSpot = () => {
+  // when user joins the match
+  const onMatchJoin = () => {
     if (matchId && playerInTeam) {
       joinMatchMutation.mutate({
         matchId: Number(matchId),
@@ -282,7 +212,22 @@ export function SingleMatchPage() {
 
   const booking = singleMatchData.booking;
   if (!booking) return <LoadingCircle />;
+
   const startsAt = new Date(singleMatchData.booking.startsAt);
+
+  const onBookPlace = () => {
+    //check specific sport rating insted!!!
+    const isRating =
+      myPlayer?.ratingPadel ||
+      myPlayer?.ratingTennis ||
+      myPlayer?.ratingPickleball;
+
+    if (isRating) {
+      setOpenCheckoutModal();
+    } else {
+      setOpenTestDialog();
+    }
+  };
 
   return (
     <>
@@ -303,22 +248,13 @@ export function SingleMatchPage() {
               flexDirection="column"
               gap={2}
             >
-              <Prompt
-                matchData={singleMatchData}
-                playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
-              />
-
-              <MatchDataBlock {...singleMatchData} />
-
-              <EditPayment
-                matchData={singleMatchData}
-                isUserOwner={isUserOwner}
-                refetchMatch={refetchMatch}
-              />
+              <Prompt />
+              <MatchDataBlock />
+              <EditPayment />
 
               <Box my={2}>
-                <MatchType type={singleMatchData.type} />
-                <PrivacyType isPrivate={singleMatchData.isPrivate} />
+                <MatchType />
+                <PrivacyType />
               </Box>
 
               <PlayersMatchCard
@@ -332,68 +268,11 @@ export function SingleMatchPage() {
                 matchData={singleMatchData}
               />
 
-              <ResultsTable matchResults={singleMatchData?.matchResults} />
+              <ResultsTable />
 
-              {Date.now() > startsAt.getTime() && (
-                <Box
-                  sx={{
-                    maxWidth: '400px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '1rem',
-                    mx: 'auto',
-                    marginBottom: '1rem',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {/* Confirm / Upload Result */}
-                  {singleMatchData.matchResults &&
-                    !singleMatchData.confirmMatchResults && (
-                      <Typography>Ожидание подтверждения...</Typography>
-                    )}
+              {Date.now() > startsAt.getTime() && <UploadResultsBlock />}
 
-                  {singleMatchData?.matchResults &&
-                    !myBooking?.confirmMatchResults && (
-                      <Button
-                        onClick={() =>
-                          uploadMatchReslultsMutation.mutate({
-                            matchId: +matchId,
-                            matchResults: singleMatchData?.matchResults || [
-                              [0, 0],
-                              [0, 0],
-                              [0, 0],
-                            ],
-                          })
-                        }
-                        sx={{
-                          backgroundColor: '#28a11e',
-                          fontSize: '.95rem',
-                          fontWeight: '600',
-                        }}
-                      >
-                        Подтвердить
-                      </Button>
-                    )}
-
-                  {!myBooking?.confirmMatchResults && (
-                    <Button
-                      onClick={() => setOpenUploadModal(true)}
-                      sx={{ fontSize: '.95rem', fontWeight: '600' }}
-                    >
-                      Загрузить результат
-                    </Button>
-                  )}
-                </Box>
-              )}
-
-              <Box
-                sx={{
-                  maxWidth: '125px',
-                  marginInline: 'auto',
-                  marginBottom: '1rem',
-                }}
-              >
+              <Box maxWidth={125} mx="auto" mb={2}>
                 <Button
                   sx={{ height: '40px' }}
                   onClick={() => history.push(`/chats/${matchId}`)}
@@ -420,46 +299,49 @@ export function SingleMatchPage() {
                   }}
                 >
                   <Button
-                    onClick={() => setOpenCheckoutModal()}
+                    disabled={joinMatchMutation.isPending}
+                    endIcon={
+                      joinMatchMutation.isPending && <CircularProgress />
+                    }
+                    onClick={onBookPlace}
                     sx={{
                       paddingX: 2,
                       background: '#0D2432',
-                      borderRadius: '25px',
                       color: '#fff',
                       boxShadow:
                         'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                      '&:hover': {
+                        background: '#0D2432',
+                      },
+                      '&:disabled': {
+                        background: '#777',
+                        color: '#eee',
+                      },
                     }}
                   >
-                    {joinMatchMutation.isPending ? (
-                      <CircularProgress />
-                    ) : (
-                      `Забронировать место ${
-                        singleMatchData.paid
-                          ? ''
-                          : '- ₽' + singleMatchData.price / 4
-                      }`
-                    )}
+                    Забронировать место
+                    {singleMatchData.paid
+                      ? ''
+                      : '- ₽' + singleMatchData.price / 4}
                   </Button>
                 </Box>
               )}
-              <ClubInfoBlock data={singleMatchData} />
-              <MatchInfoBlock data={singleMatchData} />
+              <ClubInfoBlock />
+              <MatchInfoBlock />
             </Box>
           </Box>
         </>
       </SwipeablePage>
-      <CheckoutModal
-        price={singleMatchData.price}
-        isJoin
-        isPaid={!!singleMatchData.paid}
-        court={singleMatchData.booking.court}
-        date={startsAt}
-        playtime={singleMatchData.minutes}
-        startTime={startsAt.toLocaleTimeString('ru')}
-        timezone={singleMatchData.booking.court.club.timezone}
+
+      <AskForTestPassDialog
+        open={openTestDialog}
+        handleOpen={setOpenTestDialog}
+      />
+
+      <OnJoinCheckoutModal
         openState={openCheckoutModal}
         handleModal={setOpenCheckoutModal}
-        handleCheckout={onBookSpot}
+        handleCheckout={onMatchJoin}
       />
 
       <EditMatchPlayersModal
@@ -469,41 +351,14 @@ export function SingleMatchPage() {
         setPlayerToRemoveId={setPlayerToRemoveId}
         onCancel={() => {
           setOpenEditModal();
-          setOpenCancelDialogModal();
+          setOpenEditMatchDialog();
         }}
         sport={singleMatchData.sport}
       />
-      <CancelDialogModal
-        openState={openCancelDialogModal}
-        handleDialog={setOpenCancelDialogModal}
-        isUserOwner={isUserOwner}
+      <ConfirmationEditMatchDialog
+        openState={openEditMatchDialog}
+        handleDialog={setOpenEditMatchDialog}
         playerToRemoveId={playerToRemoveId}
-        handleCancel={() => {
-          if (playerToRemoveId) {
-            deletePlayerFromMatchMutation.mutate({
-              matchId: +matchId,
-              deletePlayerId: playerToRemoveId,
-            });
-          } else {
-            cancelMatchMutation.mutate(+matchId);
-          }
-        }}
-      />
-
-      <UploadResultModal
-        openState={openUploadModal}
-        handleModal={() => setOpenUploadModal(false)}
-        matchId={Number(matchId)}
-      />
-
-      <IonToast
-        header="Возникла ошибка"
-        position="top"
-        isOpen={openToast}
-        message={error || 'Вы подтвердили результаты матча'}
-        onDidDismiss={() => setOpenToast(false)}
-        duration={2000}
-        color={error && 'danger'}
       />
     </>
   );

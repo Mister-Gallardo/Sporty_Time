@@ -1,19 +1,24 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { IOption, IQuestion, getQuestionsByLvlAndSport } from '../questions';
+import { ELeveling, IOption, IQuestion, leveling } from '../questions';
 import { Box, Button, Input, RadioGroup, Typography } from '@mui/material';
-import { RadioLabel } from '../../../components/molecules/RadioLabel';
+import {
+  ERadioLabelType,
+  RadioLabel,
+} from '../../../components/molecules/RadioLabel';
 import { QuestionTitle } from '../components/QuestionTitle';
-import { ERadioLabelType, Sport } from '../../../types';
-import { isPlatform } from '@ionic/react';
+import { isPlatform, useIonToast } from '@ionic/react';
 import { useMutation } from '@tanstack/react-query';
 import { createSportRating } from '../../../services/rating';
 import { QuestionsContainer } from '../components/QuestionsContainer';
 import { useSearchParam } from '../../../hooks/useSearchParams';
+import { useHistory } from 'react-router';
+import { ESport } from '../../../services/matches/interface';
 
 // leave just for now
 const getSportAndLevel = (sport: string, level: string) => {
-  const sportIndex = sport === Sport.PADEL ? 0 : sport === Sport.TENNIS ? 1 : 2;
+  const sportIndex =
+    sport === ESport.PADEL ? 0 : sport === ESport.TENNIS ? 1 : 2;
   const levelIndex =
     level === 'none'
       ? 0
@@ -32,17 +37,25 @@ const getSportAndLevel = (sport: string, level: string) => {
 interface QuestionsStepStepProps {
   handleStep: (step: number) => void;
 }
+const isMobile = isPlatform('mobile');
 
 export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
-  const isMobile = isPlatform('mobile');
+  const [isPrev] = useSearchParam('prev');
+  const history = useHistory();
 
-  const [sportParam] = useSearchParam('sport', Sport.PADEL);
-  const searchSport = sportParam?.toLocaleLowerCase();
+  const [sport] = useSearchParam('sport', ESport.PADEL);
+  const [level] = useSearchParam('level', ELeveling.NONE);
 
-  const allQuestions = useMemo(
-    () => getQuestionsByLvlAndSport(searchSport),
-    [],
-  );
+  const getQuestionsByLvlAndSport = () => {
+    if (!sport || !level) return null;
+
+    const selectedLevel = leveling.find((item) => item.id === level);
+    const questions = (selectedLevel?.availableFor as any)[sport.toLowerCase()];
+
+    return questions;
+  };
+
+  const allQuestions = useMemo(getQuestionsByLvlAndSport, [sport, level]);
 
   const [currentQuestions, setCurrentQuestions] = useState<IQuestion[]>([]);
   const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
@@ -86,9 +99,6 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
   // scroll to bottom when new question appears
   const questionsEndRef = useRef<HTMLDivElement>(null);
 
-  const sport = localStorage.getItem('sport') || '';
-  const userSelectedLevel = localStorage.getItem('userSelectedLevel') || '';
-
   useEffect(() => {
     if (currentQuestions.length > 2) {
       questionsEndRef.current?.scrollIntoView({
@@ -98,21 +108,28 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     }
   }, [currentQuestions.length]);
 
+  const [showToast] = useIonToast();
+
   const createRatingMutation = useMutation({
     mutationFn: createSportRating,
     onSuccess() {
+      if (isPrev === 'filter') return history.push('/matches?q=2');
+      if (isPrev === 'match') return history.goBack();
       handleStep(1);
     },
-    onError(e) {
-      console.log(e);
+    onError() {
+      showToast({
+        color: 'danger',
+        message: `Произошла ошибка, попробуйте ещё раз`,
+        mode: 'ios',
+        position: 'bottom',
+        duration: 2000,
+      });
     },
   });
 
   const onApplyResults = () => {
-    const { sportIndex, levelIndex } = getSportAndLevel(
-      sport,
-      userSelectedLevel,
-    );
+    const { sportIndex, levelIndex } = getSportAndLevel(sport, level);
 
     const data = getValues();
     const answerI: any = {};
@@ -137,10 +154,10 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
           fontSize={20}
           fontWeight={500}
         >
-          Something went wrong, go back
+          Что-то пошло не так, вернуться на стартовую страницу
         </Typography>
         <Button onClick={() => handleStep(-2)} variant="contained">
-          Go Back
+          Вернуться
         </Button>
       </Box>
     );

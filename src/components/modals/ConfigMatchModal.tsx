@@ -1,59 +1,45 @@
-import { useEffect, useState } from 'react';
 import { IonAvatar } from '@ionic/react';
 import { Box, Button, RadioGroup, Switch, Typography } from '@mui/material';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
-import { RadioLabel } from '../../components/molecules/RadioLabel';
-import { MultiThumbSlider } from '../molecules/MultiThumbSlider';
 import {
   ERadioLabelType,
-  IConfigMatchModalData,
-  PreferedGender,
-} from '../../types';
+  RadioLabel,
+} from '../../components/molecules/RadioLabel';
+import { MultiThumbSlider } from '../molecules/MultiThumbSlider';
 import { usePlayerProfile } from '../../services/api/hooks';
 import { ModalContainer } from './ModalContainer';
-import useToggle from '../../hooks/useToggle';
 import { getSportRating } from '../../helpers/getSportRating';
+import { EGender, EMatchType } from '../../services/matches/interface';
+import { useFormContext } from 'react-hook-form';
+import { useEffect } from 'react';
 
 interface IConfigMatchModal {
   sport: string;
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  getData: (data: IConfigMatchModalData) => void;
+  handleNext: () => void;
 }
 
 export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
   sport,
   openState,
   handleModal,
-  getData,
+  handleNext,
 }) => {
   const [player] = usePlayerProfile();
   const rating = player ? getSportRating(player, sport) : 0;
 
-  const [isPrivate, setIsPrivate] = useToggle();
-  const [matchType, setMatchType] = useState<string>('competitive');
-  const [gender, setGender] = useState<PreferedGender | string>(
-    PreferedGender.ALL,
-  );
-
-  const [rangeMinValue, setRangeMinValue] = useState<number>(0);
-  const [rangeMaxValue, setRangeMaxValue] = useState<number>(0);
+  const { setValue, watch } = useFormContext();
+  const { isPrivate, type, gender, ratingFrom, ratingTo } = watch();
 
   useEffect(() => {
     if (rating) {
       const ratingFrom = rating < 0.25 ? 0 : +(rating - 0.25).toFixed(2);
       const ratingTo = rating > 6.25 ? 7 : +(rating + 0.75).toFixed(2);
-      setRangeMinValue(ratingFrom);
-      setRangeMaxValue(ratingTo);
+      setValue('ratingFrom', ratingFrom);
+      setValue('ratingTo', ratingTo);
     }
   }, [rating]);
-
-  const handleRangeValueChange = (_: Event, values: number | number[]) => {
-    if (Array.isArray(values)) {
-      if (rangeMinValue !== values[0]) setRangeMinValue(values[0]);
-      if (rangeMaxValue !== values[1]) setRangeMaxValue(values[1]);
-    }
-  };
 
   return (
     <ModalContainer
@@ -67,7 +53,10 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
             <CheckCircleOutlinedIcon />
             <Typography>Создать приватный матч</Typography>
           </Box>
-          <Switch value={isPrivate} onChange={() => setIsPrivate()} />
+          <Switch
+            value={isPrivate}
+            onChange={(_, val) => setValue('isPrivate', val)}
+          />
         </Box>
 
         <Box>
@@ -77,18 +66,18 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
           <RadioGroup
             name="select match type"
             sx={{ gap: 2 }}
-            value={matchType}
-            onChange={(e) => setMatchType(e.target.value)}
+            value={type}
+            onChange={(e) => setValue('type', e.target.value)}
           >
             <Box>
               <RadioLabel
-                value="competitive"
+                value={EMatchType.COMPETITIVE}
                 labelType={ERadioLabelType.WITH_DESCRIPTION}
                 title="Сопернический Матч"
                 description="Результат повлияет на ваш уровень и рейтинг."
               />
 
-              {matchType === 'competitive' && (
+              {type === EMatchType.COMPETITIVE && (
                 <Box display="flex" justifyContent="center" my={2}>
                   <Box
                     sx={{
@@ -115,7 +104,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
                       <Box>
                         <Typography>Диапазон уровней</Typography>
                         <Typography>
-                          {rangeMinValue} - {rangeMaxValue}
+                          {ratingFrom} - {ratingTo}
                         </Typography>
                       </Box>
                     </Box>
@@ -128,13 +117,13 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
             </Box>
             <Box>
               <RadioLabel
-                value="friendly"
+                value={EMatchType.FRIENDLY}
                 labelType={ERadioLabelType.WITH_DESCRIPTION}
                 title="Дружеский матч"
                 description="Результат не повлияет на ваш уровень или рейтинг."
               />
 
-              {matchType === 'friendly' && (
+              {type === EMatchType.FRIENDLY && (
                 <Box marginY={2} mx={1}>
                   <Typography border="1px solid #eee" borderRadius={4} p={2}>
                     Вы выбираете и устанавливаете диапазон уровней. Игроки за
@@ -145,24 +134,15 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
                     <Box display="flex" justifyContent="space-between" mb={3}>
                       <Box>
                         <Typography>Min</Typography>
-                        <Typography textAlign="center">
-                          {rangeMinValue}
-                        </Typography>
+                        <Typography textAlign="center">{ratingFrom}</Typography>
                       </Box>
                       <Box>
                         <Typography>Max</Typography>
-                        <Typography textAlign="center">
-                          {rangeMaxValue}
-                        </Typography>
+                        <Typography textAlign="center">{ratingTo}</Typography>
                       </Box>
                     </Box>
 
-                    <MultiThumbSlider
-                      userPoint={rating}
-                      curentMinValue={rangeMinValue}
-                      curentMaxValue={rangeMaxValue}
-                      handleChange={handleRangeValueChange}
-                    />
+                    <MultiThumbSlider rating={rating} />
                   </Box>
                 </Box>
               )}
@@ -178,45 +158,40 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
             name="select gender"
             sx={{ gap: 2 }}
             value={gender}
-            onChange={(e) => setGender(e.target.value)}
+            onChange={(e) => setValue('gender', e.target.value)}
           >
             <RadioLabel
-              value={PreferedGender.ALL}
+              value={EGender.ALL}
               labelType={ERadioLabelType.WITH_DESCRIPTION}
               title="Любой"
               description="Присоединиться могут игроки обоих полов"
             />
             <RadioLabel
-              value={PreferedGender.WOMEN}
+              value={EGender.WOMEN}
               labelType={ERadioLabelType.WITH_DESCRIPTION}
               title="Только женщины"
               description="Присоединиться могут только женщины"
             />
             <RadioLabel
-              value={PreferedGender.MEN}
+              value={EGender.MEN}
               labelType={ERadioLabelType.WITH_DESCRIPTION}
               title="Только мужчины"
               description="Присоединиться могут только мужчины"
             />
-            <RadioLabel
-              value={PreferedGender.MIXED}
+            {/* <RadioLabel
+              value={EGender.MIXED}
               labelType={ERadioLabelType.WITH_DESCRIPTION}
               title="Смешанный"
               description="Мужчина и женщина в каждой команде"
-            />
+            /> */}
           </RadioGroup>
         </Box>
 
         <Button
-          onClick={() =>
-            getData({
-              isPrivate,
-              matchType,
-              ratingFrom: rangeMinValue,
-              ratingTo: rangeMaxValue,
-              gender,
-            })
-          }
+          onClick={() => {
+            handleModal();
+            handleNext();
+          }}
           variant="contained"
           fullWidth
           sx={{

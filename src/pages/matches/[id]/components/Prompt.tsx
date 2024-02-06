@@ -1,17 +1,28 @@
 import InfoIcon from '@mui/icons-material/Info';
 import { Box, Typography } from '@mui/material';
-import { MatchData } from '../../../../services/matches/interface';
+import { useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getOneAvailableMatch } from '../../../../services/matches/service';
+import { usePlayerProfile } from '../../../../services/api/hooks';
 import { getPromptParams } from '../../../../helpers/getMatchPromptParams';
 
-interface IPromptProps {
-  matchData: MatchData;
-  playerAlreadyInSomeTeam: boolean;
-}
+export const Prompt = () => {
+  const { matchId } = useParams<{ matchId: string }>();
 
-export const Prompt: React.FC<IPromptProps> = ({
-  matchData,
-  playerAlreadyInSomeTeam,
-}) => {
+  const { data } = useQuery({
+    queryKey: [`match`, Number(matchId)],
+    queryFn: () => getOneAvailableMatch(Number(matchId)),
+  });
+
+  const matchData = data?.data;
+
+  const [myPlayer] = usePlayerProfile();
+  const playerAlreadyInSomeTeam = !!matchData?.matchBookings.find(
+    (booking) => booking.player?.id === myPlayer?.id,
+  );
+
+  if (!matchData) return null;
+
   const params = getPromptParams(matchData, playerAlreadyInSomeTeam);
   if (!params) return;
 

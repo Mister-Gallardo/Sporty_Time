@@ -1,9 +1,9 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Box, RadioGroup } from '@mui/material';
-import { RadioLabel } from '../../../molecules/RadioLabel';
-import { ERadioLabelType, Sport } from '../../../../types';
+import { ERadioLabelType, RadioLabel } from '../../../molecules/RadioLabel';
 import { FilterButton } from '../FilterButton';
+import { ESport } from '../../../../services/matches/interface';
 
 interface ISportTypeProps {
   handleStep: (step: number) => void;
@@ -22,17 +22,17 @@ export const SportType: React.FC<ISportTypeProps> = ({ handleStep }) => {
           render={({ field }) => (
             <RadioGroup {...field} sx={{ gap: 1 }}>
               <RadioLabel
-                value={Sport.PADEL}
+                value={ESport.PADEL}
                 labelType={ERadioLabelType.TITLE_ONLY}
                 title="Падел"
               />
               <RadioLabel
-                value={Sport.TENNIS}
+                value={ESport.TENNIS}
                 labelType={ERadioLabelType.TITLE_ONLY}
                 title="Теннис"
               />
               <RadioLabel
-                value={Sport.PICKLEBALL}
+                value={ESport.PICKLEBALL}
                 labelType={ERadioLabelType.TITLE_ONLY}
                 title="Пиклбол"
               />

@@ -1,12 +1,19 @@
-import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { EMatchType } from '../../../../services/matches/interface';
+import { useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getOneAvailableMatch } from '../../../../services/matches/service';
 
-interface IMatchType {
-  type: string;
-}
+export const MatchType = () => {
+  const { matchId } = useParams<{ matchId: string }>();
 
-export const MatchType: React.FC<IMatchType> = ({ type }) => {
+  const { data } = useQuery({
+    queryKey: [`match`, Number(matchId)],
+    queryFn: () => getOneAvailableMatch(Number(matchId)),
+  });
+
+  const type = data?.data.type;
+
   const isFriendly =
     type === EMatchType.FRIENDLY ? 'Дружеский' : 'Соревновательный';
 

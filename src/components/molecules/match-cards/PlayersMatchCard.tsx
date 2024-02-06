@@ -2,9 +2,8 @@ import { isPlatform } from '@ionic/react';
 import { MatchPlayer } from '../../../services/user/interface';
 import { Box, Button, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from '../player-slot/PlayerSlot';
-import { MatchData } from '../../../services/matches/interface';
+import { MatchData, Status } from '../../../services/matches/interface';
 import { getMatchStatus } from '../../../helpers/getMatchStatus';
-import { Status } from '../../../types';
 
 interface IPlayersMatchCardProps {
   players: MatchPlayer[];
@@ -53,7 +52,7 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
       </Box>
 
       <Box py={1} display="flex" justifyContent="space-betweenF" gap={2}>
-        <Box display="flex" justifyContent="space-between" width="100%">
+        <Box display="flex" justifyContent="space-between" gap={2} width="100%">
           <PlayerSlot
             player={players[0]}
             onClick={() => setPlayerInTeam('A')}
@@ -72,7 +71,7 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
           />
         </Box>
         <Divider orientation="vertical" flexItem variant="middle" />
-        <Box display="flex" justifyContent="space-between" width="100%">
+        <Box display="flex" justifyContent="space-between" gap={2} width="100%">
           <PlayerSlot
             player={players[2]}
             onClick={() => setPlayerInTeam('B')}

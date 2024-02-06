@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
-import { ModalContainer } from './ModalContainer';
+import { ModalContainer } from '../../ModalContainer';
 import {
   Box,
   Button,
@@ -12,7 +12,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from '@mui/material';
-import { ModalContentContainer } from '../atoms/ModalContentContainer';
+import { ModalContentContainer } from '../../../atoms/ModalContentContainer';
 
 interface IAdvancedFilterAvailableMatchesModalProps {
   openState: boolean;

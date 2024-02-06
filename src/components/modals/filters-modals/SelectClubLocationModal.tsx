@@ -3,7 +3,6 @@ import { useFormContext } from 'react-hook-form';
 import { ModalContainer } from '../ModalContainer';
 import {
   Box,
-  Button,
   CircularProgress,
   Divider,
   InputAdornment,
@@ -20,19 +19,16 @@ import transliterate from '@sindresorhus/transliterate';
 import { debounce } from 'lodash-es';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import EastRoundedIcon from '@mui/icons-material/EastRounded';
-import { Geolocation } from '@capacitor/geolocation';
-import useToggle from '../../../hooks/useToggle';
 
 interface ISelectClubLocationModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  handleClose?: () => void;
 }
 
 export const SelectClubLocationModal: React.FC<
   ISelectClubLocationModalProps
-> = ({ openState, handleModal, handleClose }) => {
-  const { setValue, getValues } = useFormContext();
+> = ({ openState, handleModal }) => {
+  const { setValue } = useFormContext();
 
   const [currentSearchTerm, setCurrentSearchTerm] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -57,53 +53,13 @@ export const SelectClubLocationModal: React.FC<
     [],
   );
 
-  const [isUserLocationLoading, setIsUserLocationLoading] = useToggle();
-
-  const setUserLocation = async () => {
-    setIsUserLocationLoading(true);
-    try {
-      const { coords } = await Geolocation.getCurrentPosition();
-      const { latitude, longitude } = coords;
-      setIsUserLocationLoading(false);
-
-      setValue('long', longitude);
-      setValue('lat', latitude);
-
-      setValue('selectedLocation', 'Рядом со мной');
-
-      handleModal();
-    } catch (error: any) {
-      setIsUserLocationLoading(false);
-      if (error.message === 'User denied Geolocation') {
-        setValue('selectedLocation', 'Выбрать локацию');
-      }
-    }
-  };
-
   return (
     <ModalContainer
       openState={openState}
-      handleModal={() => {
-        if (handleClose) return handleClose();
-        handleModal(false);
-      }}
+      handleModal={() => handleModal(false)}
       headerTitle="Где Вы хотите играть?"
     >
       <Box height="80vh">
-        <Button
-          disabled={isUserLocationLoading}
-          onClick={setUserLocation}
-          variant="contained"
-          sx={{ borderRadius: 5, fontSize: 14, fontWeight: 600, mb: 5 }}
-          endIcon={
-            isUserLocationLoading && (
-              <CircularProgress size={15} sx={{ color: '#fff' }} />
-            )
-          }
-        >
-          Рядом со мной
-        </Button>
-
         <TextField
           value={currentSearchTerm}
           onChange={(e) => {
@@ -145,11 +101,6 @@ export const SelectClubLocationModal: React.FC<
                       setValue('lat', lat);
 
                       setValue('selectedLocation', location.title);
-
-                      localStorage.setItem(
-                        'clubsFilters',
-                        JSON.stringify(getValues()),
-                      );
                       handleModal();
                     }}
                     sx={{ display: 'flex', justifyContent: 'space-between' }}

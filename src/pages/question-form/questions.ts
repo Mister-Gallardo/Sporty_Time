@@ -1,5 +1,14 @@
 type TNext = string | null;
 
+export enum ELeveling {
+  NONE = 'NONE',
+  BEGGINER = 'BEGGINER',
+  INTERMEDIATE = 'INTERMEDIATE',
+  HIGHT_INTERMEDIATE = 'HIGHT_INTERMEDIATE',
+  ADVANCED = 'ADVANCED',
+  COMPETITION = 'COMPETITION',
+}
+
 export interface IOption {
   i: string;
   answer: string;
@@ -775,22 +784,9 @@ const pickleballCompet = {
   },
 };
 
-export const getQuestionsByLvlAndSport = (urlSport: string) => {
-  const sport = localStorage.getItem('sport');
-  const level = localStorage.getItem('userSelectedLevel');
-  const currentSport = sport ? sport.toLocaleLowerCase() : urlSport;
-  const currentLevel = level ? level.toLocaleLowerCase() : '';
-
-  const selectedLevel = leveling.find((item) => item.id === currentLevel);
-
-  const questions = (selectedLevel?.availableFor as any)[currentSport];
-
-  return questions;
-};
-
 export const leveling = [
   {
-    id: 'none',
+    id: ELeveling.NONE,
     key: 'Затрудняюсь ответить',
     descriptionFor: {
       padel: '',
@@ -804,7 +800,7 @@ export const leveling = [
     },
   },
   {
-    id: 'beginner',
+    id: ELeveling.BEGGINER,
     key: 'Новичок',
     descriptionFor: {
       padel:
@@ -821,7 +817,7 @@ export const leveling = [
     },
   },
   {
-    id: 'intermediate',
+    id: ELeveling.INTERMEDIATE,
     key: 'Средний',
     descriptionFor: {
       padel:
@@ -838,7 +834,7 @@ export const leveling = [
     },
   },
   {
-    id: 'intermediate hight',
+    id: ELeveling.HIGHT_INTERMEDIATE,
     key: 'Выше среднего',
     descriptionFor: {
       padel:
@@ -855,7 +851,7 @@ export const leveling = [
     },
   },
   {
-    id: 'advanced',
+    id: ELeveling.ADVANCED,
     key: 'Продвинутый',
     descriptionFor: {
       padel:
@@ -872,7 +868,7 @@ export const leveling = [
     },
   },
   {
-    id: 'competition',
+    id: ELeveling.COMPETITION,
     key: 'Соревновательный',
     descriptionFor: {
       padel:

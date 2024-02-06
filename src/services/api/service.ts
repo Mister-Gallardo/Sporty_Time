@@ -1,11 +1,15 @@
 import axios from 'axios';
 import { isAuthorized } from '../auth/service';
 import { history } from '../history/service';
-import { isPlatform } from '@ionic/react';
+// import { isPlatform } from '@ionic/react';
+
+export const BASE_URL = 'https://dev.sportytime.ru';
 
 export const api = axios.create({
-  baseURL: isPlatform('mobile') ? 'https://sportytime.ru/api' : '/api',
-  // baseURL: '/api',
+  // baseURL: isPlatform('mobile')
+  //   ? 'https://sportytime.ru/api'
+  //   : '/api',
+  baseURL: 'https://dev.sportytime.ru/api',
 });
 
 api.interceptors.request.use((config) => {

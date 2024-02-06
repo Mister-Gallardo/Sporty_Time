@@ -4,38 +4,35 @@ import { getDatesList } from '../../../../helpers/getDatesList';
 import { CalendarDay } from '../../../molecules/CalendarDay';
 import { Box, Fade, RadioGroup, Typography } from '@mui/material';
 import { FilterButton } from '../FilterButton';
-import { DateBox } from '../../../molecules/DateBox';
-import { RadioLabel } from '../../../molecules/RadioLabel';
+import { ERadioLabelType, RadioLabel } from '../../../molecules/RadioLabel';
 import { MatchTimeRange } from '../../../../services/club/interface';
-import { ERadioLabelType } from '../../../../types';
 
 interface IPlayDateProps {
-  handleStep: (step: number) => void;
-  onApply: () => void;
+  handleModal: (val?: boolean) => void;
 }
 
-const timeList = [
-  '6:00',
-  '7:00',
-  '8:00',
-  '9:00',
-  '10:00',
-  '11:00',
-  '12:00',
-  '13:00',
-  '14:00',
-  '15:00',
-  '16:00',
-  '17:00',
-  '18:00',
-  '19:00',
-  '20:00',
-  '21:00',
-  '22:00',
-  '23:00',
-];
+// const timeList = [
+//   '6:00',
+//   '7:00',
+//   '8:00',
+//   '9:00',
+//   '10:00',
+//   '11:00',
+//   '12:00',
+//   '13:00',
+//   '14:00',
+//   '15:00',
+//   '16:00',
+//   '17:00',
+//   '18:00',
+//   '19:00',
+//   '20:00',
+//   '21:00',
+//   '22:00',
+//   '23:00',
+// ];
 
-export const PlayDate: React.FC<IPlayDateProps> = ({ handleStep, onApply }) => {
+export const PlayDate: React.FC<IPlayDateProps> = ({ handleModal }) => {
   const dates = getDatesList(14);
 
   const { watch, control } = useFormContext();
@@ -51,15 +48,15 @@ export const PlayDate: React.FC<IPlayDateProps> = ({ handleStep, onApply }) => {
     rules: { maxLength: 7 },
   });
 
-  const {
-    fields: timeFields,
-    append: timeAppend,
-    remove: timeRemove,
-  } = useFieldArray({
-    control,
-    name: 'times',
-    rules: { maxLength: 6 },
-  });
+  // const {
+  //   fields: timeFields,
+  //   append: timeAppend,
+  //   remove: timeRemove,
+  // } = useFieldArray({
+  //   control,
+  //   name: 'times',
+  //   rules: { maxLength: 6 },
+  // });
 
   const isDisabled = time !== MatchTimeRange.SPECIFIC ? !time : !times.length;
 
@@ -147,18 +144,18 @@ export const PlayDate: React.FC<IPlayDateProps> = ({ handleStep, onApply }) => {
                       labelType={ERadioLabelType.TITLE_ONLY}
                       title="Вечер (18:00 - 00:00)"
                     />
-                    <RadioLabel
+                    {/* <RadioLabel
                       value={MatchTimeRange.SPECIFIC}
                       labelType={ERadioLabelType.TITLE_ONLY}
                       title="Выбрать конкретное время (максимум 6)"
-                    />
+                    /> */}
                   </RadioGroup>
                 )}
               />
             </Box>
           </Fade>
         )}
-        {time === 'SPECIFIC' && (
+        {/* {time === 'SPECIFIC' && (
           <Fade in>
             <Box mt={1.6} display="flex" flexWrap="wrap" gap="8px 5px">
               {timeList.map((time) => {
@@ -186,10 +183,13 @@ export const PlayDate: React.FC<IPlayDateProps> = ({ handleStep, onApply }) => {
               })}
             </Box>
           </Fade>
-        )}
+        )} */}
       </Box>
-      <FilterButton handleClick={onApply} disabled={isDisabled}>
-        Применить
+      <FilterButton
+        handleClick={() => handleModal(false)}
+        disabled={isDisabled}
+      >
+        Посмотреть результаты
       </FilterButton>
     </>
   );

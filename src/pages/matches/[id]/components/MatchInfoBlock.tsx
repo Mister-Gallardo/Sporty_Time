@@ -3,14 +3,25 @@ import {
   DialpadOutlined,
   InfoOutlined,
 } from '@mui/icons-material';
-import { MatchData } from '../../../../services/matches/interface';
 import { Box, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router';
+import { getOneAvailableMatch } from '../../../../services/matches/service';
 
-interface IMatchInfoBlock {
-  data: MatchData;
-}
+export const MatchInfoBlock = () => {
+  const { matchId } = useParams<{ matchId: string }>();
 
-export const MatchInfoBlock: React.FC<IMatchInfoBlock> = ({ data }) => {
+  const { data } = useQuery({
+    queryKey: [`match`, Number(matchId)],
+    queryFn: () => getOneAvailableMatch(Number(matchId)),
+  });
+
+  const singleMatchData = data?.data;
+
+  if (!singleMatchData) return null;
+
+  const { booking, paid } = singleMatchData;
+
   return (
     <Box>
       <Typography
@@ -27,7 +38,7 @@ export const MatchInfoBlock: React.FC<IMatchInfoBlock> = ({ data }) => {
           <InfoOutlined />
           <Box>
             <Typography>Название корта</Typography>
-            <Typography>{data?.booking.court.club.title}</Typography>
+            <Typography>{booking.court.club.title}</Typography>
           </Box>
         </Box>
 
@@ -35,11 +46,11 @@ export const MatchInfoBlock: React.FC<IMatchInfoBlock> = ({ data }) => {
           <ArticleOutlined />
           <Box>
             <Typography>Тип корта</Typography>
-            <Typography>Indoor, Crystal, Double</Typography>
+            <Typography>{booking.court.type}</Typography>
           </Box>
         </Box>
 
-        {data.paid && (
+        {paid && (
           <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             <DialpadOutlined />
             <Box>

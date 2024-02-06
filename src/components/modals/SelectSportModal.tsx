@@ -4,8 +4,8 @@ import { Box, Button } from '@mui/material';
 import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import SportsCricketIcon from '@mui/icons-material/SportsCricket';
 import SportsBaseballIcon from '@mui/icons-material/SportsBaseball';
+import { ESport } from '../../services/matches/interface';
 import { useFormContext } from 'react-hook-form';
-import { Sport } from '../../types';
 
 interface ISelectSportModalProps {
   openState: boolean;
@@ -16,12 +16,10 @@ export const SelectSportModal: React.FC<ISelectSportModalProps> = ({
   openState,
   handleModal,
 }) => {
-  const { setValue, getValues } = useFormContext();
+  const { setValue } = useFormContext();
 
-  const onClick = (sport: Sport) => {
+  const onClick = (sport: ESport) => {
     setValue('sport', sport);
-    localStorage.setItem('clubsFilters', JSON.stringify(getValues()));
-
     handleModal();
   };
 
@@ -37,7 +35,7 @@ export const SelectSportModal: React.FC<ISelectSportModalProps> = ({
           startIcon={<SportsTennisIcon />}
           sx={{ color: '#333', display: 'flex', justifyContent: 'start' }}
           fullWidth
-          onClick={() => onClick(Sport.PADEL)}
+          onClick={() => onClick(ESport.PADEL)}
         >
           Падел
         </Button>
@@ -45,7 +43,7 @@ export const SelectSportModal: React.FC<ISelectSportModalProps> = ({
           startIcon={<SportsBaseballIcon />}
           sx={{ color: '#333', display: 'flex', justifyContent: 'start' }}
           fullWidth
-          onClick={() => onClick(Sport.TENNIS)}
+          onClick={() => onClick(ESport.TENNIS)}
         >
           Теннис
         </Button>
@@ -53,7 +51,7 @@ export const SelectSportModal: React.FC<ISelectSportModalProps> = ({
           startIcon={<SportsCricketIcon />}
           sx={{ color: '#333', display: 'flex', justifyContent: 'start' }}
           fullWidth
-          onClick={() => onClick(Sport.PICKLEBALL)}
+          onClick={() => onClick(ESport.PICKLEBALL)}
         >
           Пиклбол
         </Button>

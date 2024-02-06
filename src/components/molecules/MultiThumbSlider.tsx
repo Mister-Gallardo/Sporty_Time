@@ -1,16 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Slider, { SliderThumb } from '@mui/material/Slider';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { IonAvatar, isPlatform } from '@ionic/react';
+import { useFormContext } from 'react-hook-form';
 
 interface ThumbComponentProps extends React.HTMLAttributes<unknown> {}
 
 interface IMultiThumbSlider {
-  userPoint?: number;
-  curentMinValue: number;
-  curentMaxValue: number;
-  handleChange: (_: Event, values: number | number[]) => void;
+  rating?: number;
 }
 
 const marks = Array.from({ length: 8 }, (_, index) => ({
@@ -19,10 +17,7 @@ const marks = Array.from({ length: 8 }, (_, index) => ({
 }));
 
 export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
-  userPoint = 0,
-  curentMinValue,
-  curentMaxValue,
-  handleChange,
+  rating = 0,
 }) => {
   const isMobile = isPlatform('mobile');
 
@@ -46,7 +41,7 @@ export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
           src="https://ionicframework.com/docs/img/demos/avatar.svg"
         />
       </IonAvatar>
-      <Typography color="#000">{userPoint}</Typography>
+      <Typography color="#000">{rating}</Typography>
       <Box
         sx={{
           position: 'absolute',
@@ -68,20 +63,39 @@ export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
     const curValue = elem.value;
     const nextValue = marks[i + 1].value;
 
-    if (userPoint > curValue && userPoint < nextValue) {
+    if (rating > curValue && rating < nextValue) {
       marks.splice(curValue, 0, {
-        value: userPoint,
+        value: rating,
         label: userIcon(),
       });
     }
   });
 
+  const { setValue, watch } = useFormContext();
+  const { ratingFrom, ratingTo } = watch();
+
+  const [rangeMinValue, setRangeMinValue] = useState<number>(ratingFrom);
+  const [rangeMaxValue, setRangeMaxValue] = useState<number>(ratingTo);
+
+  const handleChange = (_: Event, values: number | number[]) => {
+    if (Array.isArray(values)) {
+      if (rangeMinValue !== values[0]) setRangeMinValue(values[0]);
+      if (rangeMaxValue !== values[1]) setRangeMaxValue(values[1]);
+    }
+  };
+
   return (
     <CustomSlider
       getAriaLabel={(index) => (index === 0 ? 'min' : 'max')}
       slots={{ thumb: ThumbComponent }}
-      value={[curentMinValue, curentMaxValue]}
+      value={[rangeMinValue, rangeMaxValue]}
       onChange={handleChange}
+      onChangeCommitted={(_, newValue) => {
+        if (Array.isArray(newValue)) {
+          setValue('ratingFrom', newValue[0] as number);
+          setValue('ratingTo', newValue[1] as number);
+        }
+      }}
       min={0}
       max={7}
       marks={marks}

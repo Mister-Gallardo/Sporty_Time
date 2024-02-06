@@ -1,5 +1,10 @@
 import { Box, FormControlLabel, Radio, Typography } from '@mui/material';
-import { ERadioLabelType } from '../../types';
+
+export enum ERadioLabelType {
+  WITH_ICON_AND_DESCRIPTION,
+  TITLE_ONLY,
+  WITH_DESCRIPTION,
+}
 
 interface IRadioLabelProps {
   value: string;

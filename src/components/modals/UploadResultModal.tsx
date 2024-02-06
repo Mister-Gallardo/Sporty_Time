@@ -146,7 +146,7 @@ export function UploadResultModal({
                   background: '#F5F7F6',
                   borderRadius: '10px',
                   outline: 'none',
-
+                  color: '#111',
                   border: 'none',
                 }}
                 placeholder="-"
@@ -175,7 +175,7 @@ export function UploadResultModal({
                     background: '#F5F7F6',
                     borderRadius: '10px',
                     outline: 'none',
-
+                    color: '#111',
                     border: 'none',
                   }}
                   placeholder="-"
@@ -216,6 +216,9 @@ export function UploadResultModal({
               maxWidth: '350px',
               boxShadow:
                 'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+              '&:hover': {
+                background: '#0D2432',
+              },
             }}
             fullWidth
           >

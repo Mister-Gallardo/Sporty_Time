@@ -3,7 +3,8 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { Avatar, Box, Typography } from '@mui/material';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
-import { Status } from '../../../types';
+import { BASE_URL } from '../../../services/api/service';
+import { Status } from '../../../services/matches/interface';
 
 interface IPlayerSlotProps {
   player: MatchPlayer;
@@ -40,7 +41,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           sx={{ opacity: player?.mark ? 0.5 : 1 }}
         >
           <Avatar
-            src={`https://playpadel.lakileki.ru${player.user?.avatar}`}
+            src={`${BASE_URL}${player.user?.avatar}`}
             sx={{
               width: '50px',
               height: '50px',
@@ -51,14 +52,9 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           <Typography fontSize={12} lineHeight={1.1} color="gray">
             {playerRating}
           </Typography>
-          {isShown && !isHidden && (
+          {isShown && !isHidden ? (
             <Box textAlign="center">
-              <Typography
-                textAlign="center"
-                lineHeight={1.2}
-                // maxWidth={isMobile ? 70 : 'auto'}
-                fontSize={12}
-              >
+              <Typography textAlign="center" lineHeight={1.2} fontSize={12}>
                 {isMatchPaid
                   ? 'Оплачено'
                   : player.paid
@@ -67,7 +63,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
               </Typography>
               <MonetizationOnOutlinedIcon fontSize="small" />
             </Box>
-          )}
+          ) : null}
         </Box>
       ) : (
         <Box

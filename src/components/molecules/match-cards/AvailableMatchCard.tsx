@@ -2,7 +2,6 @@ import { useHistory } from 'react-router';
 import { EMatchType, MatchData } from '../../../services/matches/interface';
 import { Box, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from '../player-slot/PlayerSlot';
-import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
 
 interface IAvailableMatchCardProps {
   matchData: MatchData;
@@ -33,41 +32,33 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
       ? 'Дружеский'
       : '';
 
-  const startsAt = new Date(matchData.booking.startsAt);
-  const matchTime = getDayFormat(
-    startsAt,
-    EType.MONTH_AND_DAY,
-    startsAt.toLocaleTimeString('ru'),
-  );
+  const [startDate, startTime] = matchData.booking.startsAt.split('T');
+  const matchTime = `${startDate} | ${startTime.slice(0, 5)}`;
 
   return (
     <Box
       onClick={() => history.push(`/matches/${matchData.id}`)}
       display="flex"
       flexDirection="column"
-      width="100%"
-      maxWidth={370}
+      minWidth={360}
+      maxWidth={360}
       border="2px solid #EED790"
       borderRadius={2}
       boxShadow="rgba(99, 99, 99, 0.2) 0px 2px 8px 0px"
       bgcolor="#fff"
+      sx={{ cursor: 'pointer' }}
     >
       <Box px={2} py={1.5}>
         <Box display="flex" justifyContent="space-between" gap={2}>
           <Typography sx={{ fontSize: '.9rem', fontWeight: '700' }} noWrap>
             {matchTime}
           </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-            }}
-          >
+
+          <Box display="flex" alignItems="center" gap={1}>
             <Typography fontSize={13}>
-              {matchData.booking ? 'Забронирован' : 'Нет брони'}
+              {matchData.paid ? 'Забронирован' : 'Нет брони'}
             </Typography>
-            <Typography>{matchData.booking ? '✅' : '🔴'}</Typography>
+            <Typography>{matchData.paid ? '✅' : '🔴'}</Typography>
           </Box>
         </Box>
 
@@ -82,7 +73,13 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
         </Box>
       </Box>
 
-      <Box display="flex" gap={2} borderTop="1px solid #e8e8e8">
+      <Box
+        height="100%"
+        display="flex"
+        justifyContent="space-between"
+        gap={2}
+        borderTop="1px solid #e8e8e8"
+      >
         <Box py={0.5} pl={2}>
           <Box display="flex">
             <Typography
@@ -90,7 +87,7 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
               fontSize={13}
               fontWeight={600}
               mr={0.5}
-              whiteSpace="nowrap"
+              noWrap
             >
               {matchType} ·
             </Typography>
@@ -99,7 +96,7 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
             </Typography>
           </Box>
           <Typography fontSize={13} color="gray">
-            Смешанный
+            Любой
           </Typography>
         </Box>
         <Box
@@ -112,10 +109,12 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
           justifyContent="center"
           borderRadius="0 0 7px 0"
         >
-          <Typography lineHeight={1.2} fontSize={18} fontWeight={700}>
+          <Typography lineHeight={1.2} fontSize={16} fontWeight={600}>
             {matchData.paid ? 'Оплачен' : `₽ ${matchData.price / 4}`}
           </Typography>
-          <Typography lineHeight={1.2}>{matchData.minutes} мин</Typography>
+          <Typography fontSize={14} lineHeight={1.2}>
+            {matchData.booking?.duration} мин
+          </Typography>
         </Box>
       </Box>
     </Box>

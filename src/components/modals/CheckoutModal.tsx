@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
 import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
 import { Box, Button, Divider, RadioGroup, Typography } from '@mui/material';
-import { EType, addTime, getDayFormat } from '../../helpers/getTimeDateString';
-import { RadioLabel } from '../molecules/RadioLabel';
-import { ERadioLabelType } from '../../types';
+import { EType, getDayFormat } from '../../helpers/getTimeDateString';
+import { ERadioLabelType, RadioLabel } from '../molecules/RadioLabel';
 import { ModalContainer } from './ModalContainer';
 import {
   currentTimeInCLubTimezone,
@@ -14,12 +13,10 @@ import { Court } from '../../services/club/interface';
 
 interface ICheckoutModal {
   price: number;
-  isPaid?: boolean;
-  isJoin?: boolean;
   court: Court;
   date: Date;
   startTime: string;
-  playtime: number;
+  playTime: number;
   timezone: string;
   openState: boolean;
   handleModal: (val?: boolean) => void;
@@ -29,35 +26,27 @@ interface ICheckoutModal {
 export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
   const {
     price,
-    isPaid,
-    isJoin,
     court,
     openState,
     date,
     startTime,
-    playtime,
+    playTime,
     timezone,
     handleModal,
     handleCheckout,
   } = props;
-  if (!court) return;
 
-  const { tags = [] } = court;
   const [payFor, setPayFor] = useState('0');
+  const selectedPayment = payFor === '0' ? price / 4 : price;
+
   const matchDate = getDayFormat(
     date,
     EType.WEEK_DAY_MONTH,
     startTime,
-    playtime,
+    playTime,
   );
-  const paymentDeadline =
-    getDayFormat(date, EType.MONTH_AND_DAY) +
-    ' ' +
-    addTime(startTime, playtime + 120);
 
-  const total = isPaid ? 0 : payFor === '0' || isJoin ? price / 4 : price;
   const priceFor3 = price - price / 4;
-  const courtTags = tags.length > 0 ? tags.map((tag: any) => tag.title) : [];
 
   // user must pay full price if there's < 12h left before the match
   const currentTime = timezone ? currentTimeInCLubTimezone(timezone) : 0;
@@ -65,6 +54,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
   const matchStartTime = parseDate(matchData, startTime, '');
 
   const isPayingFullPrice = (matchStartTime - currentTime) / 1000 / 3600 < 12;
+  const total = isPayingFullPrice ? price : selectedPayment;
 
   return (
     <ModalContainer
@@ -81,16 +71,16 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
                   <Typography textTransform="capitalize">
                     {matchDate}
                   </Typography>
-                  <Box display="flex" gap={0.5}>
-                    <Typography textTransform="lowercase">
-                      {court?.sport},
-                    </Typography>
-                    <Typography>{court.sport}</Typography>
-                  </Box>
+                  <Typography>
+                    {court.sport}, {court.title}
+                  </Typography>
                   <Typography color="gray" fontSize={12}>
-                    {courtTags?.join(' | ')}
+                    {court.tags.join(' | ')}
                   </Typography>
                 </Box>
+
+                <Divider orientation="vertical" flexItem variant="middle" />
+
                 <Box
                   display="flex"
                   flexDirection="column"
@@ -99,10 +89,10 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
                   pr={1}
                 >
                   <HistoryToggleOffOutlinedIcon />
-                  <Typography noWrap>{playtime} мин</Typography>
+                  <Typography noWrap>{playTime} мин</Typography>
                 </Box>
               </Box>
-              {!isJoin && !isPayingFullPrice && (
+              {!isPayingFullPrice && (
                 <>
                   <Divider />
                   <Box my={2}>
@@ -112,29 +102,23 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
                       value={payFor}
                       onChange={(e) => setPayFor(e.target.value)}
                     >
-                      <>
-                        <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          gap={1}
-                        >
-                          <RadioLabel
-                            value="0"
-                            labelType={
-                              ERadioLabelType.WITH_ICON_AND_DESCRIPTION
-                            }
-                            icon={<CreditCardOutlinedIcon />}
-                            title="Оплатить свою часть"
-                            description={`Если другие игроки не заплатят свою часть до ${paymentDeadline} - вы должны будете доплатить ${priceFor3} RUB`}
-                          />
-                          <Typography whiteSpace="nowrap">
-                            {price / 4} RUB
-                          </Typography>
-                        </Box>
-                        <Typography mt={1} ml={4} color="blue">
-                          Добавить игроков
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        gap={1}
+                      >
+                        <RadioLabel
+                          value="0"
+                          labelType={ERadioLabelType.WITH_ICON_AND_DESCRIPTION}
+                          icon={<CreditCardOutlinedIcon />}
+                          title="Оплатить свою часть"
+                          description={`Если другие игроки не заплатят свою часть за 12 часов до начала матча - вы должны будете доплатить ${priceFor3} RUB`}
+                        />
+                        <Typography whiteSpace="nowrap">
+                          {price / 4} RUB
                         </Typography>
-                      </>
+                      </Box>
+
                       <Box
                         display="flex"
                         justifyContent="space-between"
@@ -161,20 +145,20 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
             gap={2}
           >
             <Box>
-              <Typography fontWeight={700}>Итог</Typography>
-              <Typography color="gray" lineHeight={1.2}>
+              <Typography fontWeight={600}>Итог</Typography>
+              <Typography fontSize={12} color="gray" lineHeight={1.2}>
                 Плата за услуги Sportytime и налоги включительно
               </Typography>
             </Box>
-            <Typography color="blue" whiteSpace="nowrap" fontSize={20}>
-              {isPayingFullPrice ? price : total} RUB
+            <Typography color="primary.main" whiteSpace="nowrap" fontSize={20}>
+              {total} RUB
             </Typography>
           </Box>
         </Box>
 
         <Box py={1.5} px={2} borderTop="1px solid #ddd">
           <Button
-            onClick={() => handleCheckout(isPayingFullPrice ? price : total)}
+            onClick={() => handleCheckout(total)}
             variant="contained"
             sx={{
               backgroundColor: '#0d2432',
@@ -185,7 +169,6 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
             }}
             fullWidth
           >
-            {/* Продолжить оплату */}
             Забронировать корт
           </Button>
         </Box>

@@ -2,17 +2,18 @@ import React from 'react';
 import { Avatar, Box, Divider, Typography } from '@mui/material';
 import { useHistory } from 'react-router';
 import { isPlatform } from '@ionic/react';
-import { MatchData } from '../../../services/matches/interface';
-import { EType, getDayFormat } from '../../../helpers/getTimeDateString';
+import { MatchData, Status } from '../../../services/matches/interface';
 import { sortTeamMembers } from '../../../helpers/sortTeamMembers';
 import { getMatchStatus } from '../../../helpers/getMatchStatus';
-import { Status } from '../../../types';
 import { WithoutResultsCardSection } from './WithoutResultsCardSection';
 import { ResultsCardSection } from './ResultsCardSection';
+import { BASE_URL } from '../../../services/api/service';
 
 interface IMyMatchCardProps extends MatchData {
   uploadResults: (id: number) => void;
 }
+
+const isMobile = isPlatform('mobile');
 
 export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
   const {
@@ -22,22 +23,19 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
     matchResults,
     winningTeam,
     uploadResults,
-    minutes,
   } = props;
 
-  const startsAt = new Date(booking.startsAt);
-  const matchDate = getDayFormat(
-    startsAt,
-    EType.MONTH_AND_DAY,
-    startsAt.toLocaleTimeString('ru'),
-    minutes,
-  );
-
-  const isMobile = isPlatform('mobile');
   const history = useHistory();
 
-  const members = sortTeamMembers(matchBookings);
+  const interval = booking.interval;
 
+  // match start date + start-end time
+  const matchDate = `${interval.slice(2, 12)} | ${interval.slice(
+    13,
+    18,
+  )}-${interval.slice(-10, -5)}`;
+
+  const members = sortTeamMembers(matchBookings);
   const status = getMatchStatus(props);
 
   const getSetResults = (team: string) => {
@@ -72,15 +70,6 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
       onClick={() => history.push(`/matches/${id}`)}
       sx={{ cursor: isMobile ? 'unset' : 'pointer' }}
     >
-      <Typography
-        lineHeight={1}
-        textAlign="end"
-        color="gray"
-        textTransform="capitalize"
-      >
-        {}
-      </Typography>
-
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box py={1.5} px={1}>
           {members.map((team, i) => {
@@ -106,7 +95,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
                       >
                         {member ? (
                           <Avatar
-                            src={`https://playpadel.lakileki.ru${member?.player.user?.avatar}`}
+                            src={`${BASE_URL}${member?.player.user?.avatar}`}
                             sx={{ width: 40, height: 40 }}
                           />
                         ) : (

@@ -5,21 +5,21 @@ import {
   Box,
   Button,
   CircularProgress,
-  Skeleton,
   Typography,
 } from '@mui/material';
 import { useFullUserData } from '../../services/api/hooks';
 import ActivitiesTab from './tabs/ActivitiesTab';
-import { isPlatform } from '@ionic/react';
+import { IonLoading, isPlatform } from '@ionic/react';
 import PostsTab from './tabs/PostsTab';
 import { useHistory } from 'react-router';
 import { NotFoundPage } from '../../components/NotFoundPage';
+import { BASE_URL } from '../../services/api/service';
 
 export function ProfilePage() {
   const isMobile = isPlatform('mobile');
   const history = useHistory();
 
-  const [tabIndex, setTabIndex] = useState<string>('1');
+  const [tabIndex] = useState<string>('1');
 
   const [profile, rest] = useFullUserData();
 
@@ -27,7 +27,8 @@ export function ProfilePage() {
     ? profile.user.firstname + ' ' + profile.user.lastname
     : '';
 
-  if (!profile && !rest.isLoading) return <NotFoundPage />;
+  if (rest.isLoading) return <IonLoading isOpen />;
+  if (rest.isError) return <NotFoundPage />;
 
   return (
     <>
@@ -35,46 +36,20 @@ export function ProfilePage() {
         <Box display="flex" alignItems="end">
           <Avatar
             alt={fullname}
-            src={`https://playpadel.lakileki.ru${profile?.user?.avatar}`}
+            src={`${BASE_URL}${profile?.user?.avatar}`}
             sx={{ width: 60, height: 60 }}
           />
-          <Box marginLeft={2}>
-            {rest.isLoading ? (
-              <Skeleton animation="wave" height={40} />
-            ) : (
-              <Typography fontSize="medium" fontWeight={700}>
-                {fullname}
-              </Typography>
-            )}
-            {/* <Typography
-              sx={{
-                fontSize: 14,
-                fontWeight: 700,
-                padding: 0,
-                // color: '#1976d2',
-                color: 'gray',
-              }}
-            >
-              Add my location
-            </Typography> */}
-            {/* <Button
-              disabled
-              variant="text"
-              sx={{
-                fontSize: 14,
-                fontWeight: 700,
-                padding: 0,
-                color: '#1976d2',
-              }}
-            >
-              Add my location
-            </Button> */}
-          </Box>
+
+          <Typography ml={2} fontSize="medium" fontWeight={700}>
+            {fullname}
+          </Typography>
         </Box>
 
         <Box
+          mt={1}
           display="flex"
           justifyContent={isMobile ? 'space-evenly' : 'center'}
+          gap={isMobile ? 'unset' : 2}
           alignItems="center"
         >
           {['Matches', 'Followers', 'Following'].map((item) => {
@@ -139,25 +114,6 @@ export function ProfilePage() {
           >
             Изменить профиль
           </Button>
-          {/* <Button
-            // disabled
-            variant="contained"
-            color="inherit"
-            sx={{
-              // backgroundColor: '#0d2432',
-              // color: 'gold',
-              fontSize: 15,
-              paddingY: 0.25,
-              borderRadius: 10,
-              whiteSpace: 'nowrap',
-              '&:hover': {
-                // backgroundColor: '#123347',
-              },
-            }}
-            fullWidth
-          >
-            Go Premium
-          </Button> */}
         </Box>
       </Box>
 

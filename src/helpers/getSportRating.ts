@@ -1,9 +1,9 @@
+import { ESport } from '../services/matches/interface';
 import { Player } from '../services/user/interface';
-import { Sport } from '../types';
 
 export const getSportRating = (player: Player, sport: string) => {
-  if (sport === Sport.PADEL) return player.ratingPadel;
-  if (sport === Sport.TENNIS) return player.ratingTennis;
-  if (sport === Sport.PICKLEBALL) return player.ratingPickleball;
+  if (sport === ESport.PADEL) return player.ratingPadel;
+  if (sport === ESport.TENNIS) return player.ratingTennis;
+  if (sport === ESport.PICKLEBALL) return player.ratingPickleball;
   return 0;
 };

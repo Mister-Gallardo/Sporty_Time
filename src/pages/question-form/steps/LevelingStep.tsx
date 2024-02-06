@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { RadioLabel } from '../../../components/molecules/RadioLabel';
+import {
+  ERadioLabelType,
+  RadioLabel,
+} from '../../../components/molecules/RadioLabel';
 import { Box, Button, RadioGroup, Typography } from '@mui/material';
 import { QuestionTitle } from '../components/QuestionTitle';
 import { InfoRounded } from '@mui/icons-material';
-import { ERadioLabelType } from '../../../types';
-import { leveling } from '../questions';
+import { ELeveling, leveling } from '../questions';
 import { QuestionsContainer } from '../components/QuestionsContainer';
 import { isPlatform } from '@ionic/react';
+import { useSearchParam } from '../../../hooks/useSearchParams';
 
 interface LevelingStepProps {
   handleStep: (stap: number) => void;
@@ -15,8 +17,8 @@ interface LevelingStepProps {
 const isMobile = isPlatform('mobile');
 
 export function LevelingStep({ handleStep }: LevelingStepProps) {
-  const sport = localStorage.getItem('sport')?.toLowerCase() || '';
-  const [level, setLevel] = useState<string>('');
+  const [sport] = useSearchParam('sport');
+  const [level, setLevel] = useSearchParam('level', ELeveling.NONE);
 
   return (
     <QuestionsContainer>
@@ -53,7 +55,9 @@ export function LevelingStep({ handleStep }: LevelingStepProps) {
                 labelType={ERadioLabelType.WITH_DESCRIPTION}
                 title={option.key}
                 description={
-                  level === option.id ? option.descriptionFor[sport] : ''
+                  level === option.id && sport
+                    ? option.descriptionFor[sport.toLocaleLowerCase()]
+                    : ''
                 }
               />
             );
@@ -74,7 +78,7 @@ export function LevelingStep({ handleStep }: LevelingStepProps) {
         <Button
           onClick={() => {
             handleStep(1);
-            localStorage.setItem('userSelectedLevel', level);
+            setLevel(level);
           }}
           variant="contained"
           sx={{ fontSize: 18, borderRadius: 20, px: isMobile ? 'unset' : 10 }}

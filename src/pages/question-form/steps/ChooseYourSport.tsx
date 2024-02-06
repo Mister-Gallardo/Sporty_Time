@@ -8,13 +8,14 @@ import { usePlayerProfile } from '../../../services/api/hooks';
 import { SportTypeRow } from '../components/SportTypeRow';
 import { BgContainer } from '../components/BgContainer';
 import { useHistory } from 'react-router';
-import { Sport } from '../../../types';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { useMutation } from '@tanstack/react-query';
 import { editUserProfile } from '../../../services/user/service';
 import { useIonToast } from '@ionic/react';
 import { useSearchParam } from '../../../hooks/useSearchParams';
+import { BASE_URL } from '../../../services/api/service';
+import { ESport } from '../../../services/matches/interface';
 
 interface ChooseYourSportProps {
   handleStep: (step: number) => void;
@@ -24,7 +25,7 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
   const history = useHistory();
   const [selectedSport, setSelectedSport] = useSearchParam(
     'sport',
-    Sport.PADEL,
+    ESport.PADEL,
   );
 
   const [player, query] = usePlayerProfile();
@@ -99,7 +100,7 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
                 mb={3}
               >
                 <Avatar
-                  src={`https://playpadel.lakileki.ru${player?.user?.avatar}`}
+                  src={`${BASE_URL}${player?.user?.avatar}`}
                   sx={{
                     width: '75px',
                     height: '75px',
@@ -117,25 +118,25 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
               </Typography>
               <Box>
                 <SportTypeRow
-                  type={Sport.PADEL}
+                  type={ESport.PADEL}
                   icon={<SportsBaseballOutlined />}
                   level={player?.ratingPadel}
-                  isActive={selectedSport === Sport.PADEL}
-                  onClick={() => setSelectedSport(Sport.PADEL)}
+                  isActive={selectedSport === ESport.PADEL}
+                  onClick={() => setSelectedSport(ESport.PADEL)}
                 />
                 <SportTypeRow
-                  type={Sport.TENNIS}
+                  type={ESport.TENNIS}
                   icon={<SportsBasketballOutlined />}
                   level={player?.ratingTennis}
-                  isActive={selectedSport === Sport.TENNIS}
-                  onClick={() => setSelectedSport(Sport.TENNIS)}
+                  isActive={selectedSport === ESport.TENNIS}
+                  onClick={() => setSelectedSport(ESport.TENNIS)}
                 />
                 <SportTypeRow
-                  type={Sport.PICKLEBALL}
+                  type={ESport.PICKLEBALL}
                   icon={<SportsTennisOutlined />}
                   level={player?.ratingPickleball}
-                  isActive={selectedSport === Sport.PICKLEBALL}
-                  onClick={() => setSelectedSport(Sport.PICKLEBALL)}
+                  isActive={selectedSport === ESport.PICKLEBALL}
+                  onClick={() => setSelectedSport(ESport.PICKLEBALL)}
                 />
               </Box>
             </Box>
@@ -160,7 +161,7 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
                   <Button
                     onClick={() => {
                       handleStep(1);
-                      localStorage.setItem('sport', selectedSport);
+                      setSelectedSport(selectedSport);
                     }}
                     variant="contained"
                     sx={{ borderRadius: 20 }}

@@ -6,7 +6,7 @@ import { BgContainer } from '../components/BgContainer';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { isPlatform } from '@ionic/react';
 import { useSearchParam } from '../../../hooks/useSearchParams';
-import { Sport } from '../../../types';
+import { ESport } from '../../../services/matches/interface';
 
 const isMobile = isPlatform('mobile');
 
@@ -15,7 +15,7 @@ export function ResultsStep() {
 
   const [profile] = usePlayerProfile();
 
-  const [sport] = useSearchParam('sport', Sport.PADEL);
+  const [sport] = useSearchParam('sport', ESport.PADEL);
   const rating = profile ? getSportRating(profile, sport) : 0;
 
   const firstName = profile?.user?.firstname || '';
