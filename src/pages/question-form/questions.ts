@@ -2,11 +2,11 @@ type TNext = string | null;
 
 export enum ELeveling {
   NONE = 'NONE',
-  BEGGINER = 'BEGGINER',
-  INTERMEDIATE = 'INTERMEDIATE',
-  HIGHT_INTERMEDIATE = 'HIGHT_INTERMEDIATE',
-  ADVANCED = 'ADVANCED',
-  COMPETITION = 'COMPETITION',
+  BEGINNER = '0.5',
+  INTERMEDIATE = '2.5',
+  HIGHT_INTERMEDIATE = '4.5',
+  ADVANCED = '5.75',
+  COMPETITION = '7',
 }
 
 export interface IOption {
@@ -800,7 +800,7 @@ export const leveling = [
     },
   },
   {
-    id: ELeveling.BEGGINER,
+    id: ELeveling.BEGINNER,
     key: 'Новичок',
     descriptionFor: {
       padel:

@@ -40,7 +40,7 @@ const getMatchTime = (time: MatchTimeRange) => {
 };
 
 export interface FilterFormDate {
-  sportLevel: ELeveling;
+  forceRating: ELeveling;
   sport: ESport;
   clubsId: number[];
   gamedates: { value: Date }[];
@@ -68,7 +68,7 @@ export function AvailableMatchesTab() {
 
   const [localFilters, setLocalFilters] = useLocalStorage('matchesFilter', {
     sport: defaultSport,
-    sportLevel: ELeveling.BEGGINER,
+    forceRating: ELeveling.BEGINNER,
     time: MatchTimeRange.ALL,
     gamedates: dates,
     selectedLocation: 'Выбрать локацию',
@@ -88,7 +88,7 @@ export function AvailableMatchesTab() {
     clubsId,
     time,
     selectedLocation,
-    sportLevel,
+    forceRating,
     range,
   } = watch();
 
@@ -158,7 +158,7 @@ export function AvailableMatchesTab() {
 
   useEffect(() => {
     setLocalFilters(watch());
-  }, [sport, lat, long, timefrom, timeto, selectedLocation, sportLevel]);
+  }, [sport, lat, long, timefrom, timeto, selectedLocation, forceRating]);
 
   useEffect(() => {
     const clubs: number[] = [];

@@ -21,13 +21,16 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
   openState,
   handleModal,
 }) => {
+  const currentTime = new Date().getHours();
+  const hours = [...Array(24).keys()].slice(currentTime);
+
   const dates = getDatesList(14);
 
   const { setValue, watch } = useFormContext();
   const { gamedate, timefrom, timeto } = watch();
 
   const handleDatetimeChange = (event: any) => {
-    const time = event.detail.value.slice(-8, -3);
+    const time = event.detail.value;
     const timePlus = addTime(time, 5 * 60);
 
     setValue('timefrom', time);
@@ -69,9 +72,11 @@ export const FilterClubsModal: React.FC<IFilterClubsModalProps> = ({
             zIndex={20010}
           >
             <IonDatetime
+              value={timefrom}
               onIonChange={handleDatetimeChange}
               presentation="time"
               preferWheel
+              hourValues={hours}
               minuteValues="0,30"
               locale="ru-RU"
               style={{ width: '100%' }}
