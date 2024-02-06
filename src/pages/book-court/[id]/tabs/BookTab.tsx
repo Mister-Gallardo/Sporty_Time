@@ -114,7 +114,10 @@ export function BookTab() {
     setOpenCheckoutModal();
   };
 
-  if (isError) return history.push('/book-court');
+  if (isError) {
+    history.push('/book-court');
+    return null;
+  }
 
   return (
     <>
