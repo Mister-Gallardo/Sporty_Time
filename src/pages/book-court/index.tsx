@@ -91,7 +91,7 @@ export function BookCourt() {
   }, []);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['clubs', gamedate, sport, lat, long],
+    queryKey: ['clubs', gamedate, sport, lat, long, timefrom, timeto],
     queryFn: () =>
       getClubs({
         sport,
