@@ -4,16 +4,22 @@ import { FavoriteBorderOutlined } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
 import { DateBox } from './DateBox';
 import { isPlatform } from '@ionic/react';
+import { BASE_URL } from '../../services/api/service';
+import noImg from '../../images/no-image.jpg';
 
 interface IClubCard extends Club {
   onClick: () => void;
 }
+const isMobile = isPlatform('mobile');
 
 export const ClubCard: React.FC<IClubCard> = (props) => {
-  const { onClick, id, img, title, city, minPrice, availableTimes } = props;
-  const isMobile = isPlatform('mobile');
+  const { onClick, id, images, title, city, minPrice, availableTimes } = props;
   const history = useHistory();
+
   const [gameDate, times] = Object.entries(availableTimes || {})[0];
+
+  const previewImg =
+    images.length === 0 ? noImg : `${BASE_URL}${images[0]?.formats.large}`;
 
   return (
     <Box
@@ -29,8 +35,9 @@ export const ClubCard: React.FC<IClubCard> = (props) => {
         display="flex"
         alignItems="flex-end"
         sx={{
-          backgroundImage: `url(${img})`,
+          backgroundImage: `url(${previewImg})`,
           backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
         <IconButton sx={{ position: 'absolute', top: '10px', right: '10px' }}>
