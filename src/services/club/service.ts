@@ -7,7 +7,8 @@ export async function getClubs(data: GetAvailableMatchesAndClubsDTO) {
   const { sport, gamedates, clubs, timefrom, timeto, lat, long } = data;
 
   const clubsData = clubs ? `&clubs=${clubs}` : '';
-  const latAndLong = lat && long ? `&lat=${lat}&long=${long}` : '';
+  // lat & long changed to display location correctly
+  const latAndLong = lat && long ? `&lat=${long}&long=${lat}` : '';
 
   const res = api.get<Club[]>(
     `/clubs?sport=${sport}&gamedates=${gamedates}${clubsData}&timefrom=${timefrom}&timeto=${timeto}${latAndLong}`,
@@ -20,7 +21,7 @@ export async function getClub(id: number, params: any) {
 }
 
 export async function getClubById(id: number, params: any) {
-  const { data } = await api.get<Club>('/clubs/simple/' + id, { params });
+  const { data } = await api.get<Club>(`/clubs/simple/${id}`, { params });
   return data;
 }
 

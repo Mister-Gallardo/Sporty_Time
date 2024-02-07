@@ -12,14 +12,15 @@ import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getClubById } from '../../../services/club/service';
 import { useSearchParam } from '../../../hooks/useSearchParams';
+import noImg from '../../../images/no-image.jpg';
+import { BASE_URL } from '../../../services/api/service';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 export function SingleCourtPage() {
   const { clubId } = useParams<{ clubId: string }>();
 
-  const [tab] = useSearchParam('tab');
-  const tabIndex = tab || '2';
+  const [tab] = useSearchParam('tab', '2');
 
   const { data, isLoading } = useQuery({
     queryKey: ['club', clubId],
@@ -35,25 +36,37 @@ export function SingleCourtPage() {
   if (isLoading) return <IonLoading isOpen />;
 
   const renderImageSlot = () => (
-    <Box sx={{ height: '100%', '*': { height: '100%' } }}>
+    <Box
+      width="100%"
+      maxWidth={1240}
+      mx="auto"
+      sx={{ height: '100%', '*': { height: '100%' } }}
+    >
       <AutoPlaySwipeableViews
         index={activeStep}
         onChangeIndex={handleStepChange}
         axis="x"
         enableMouseEvents
       >
-        <Box
-          sx={{ objectFit: 'cover' }}
-          width="100%"
-          component="img"
-          src={data?.img}
-        />
-        <Box
-          sx={{ objectFit: 'cover' }}
-          width="100%"
-          component="img"
-          src={data?.img}
-        />
+        {data?.images?.length === 0 || !data?.images ? (
+          <Box
+            sx={{ objectFit: 'cover' }}
+            width="100%"
+            component="img"
+            src={noImg}
+          />
+        ) : (
+          data?.images.map((image) => {
+            return (
+              <Box
+                sx={{ objectFit: 'cover' }}
+                width="100%"
+                component="img"
+                src={`${BASE_URL}${image?.formats.large}`}
+              />
+            );
+          })
+        )}
       </AutoPlaySwipeableViews>
     </Box>
   );
@@ -83,8 +96,11 @@ export function SingleCourtPage() {
 
   return (
     <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
-      <TabContext value={tabIndex!}>
+      <TabContext value={tab}>
         <Box
+          width="100%"
+          maxWidth={1240}
+          mx="auto"
           sx={{
             position: 'sticky',
             top: 'calc(var(--ion-safe-area-top) - 30px)',

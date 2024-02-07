@@ -23,11 +23,24 @@ export interface IAvailableTime {
   gameDate?: string;
 }
 
+export interface Images {
+  id: number;
+  formats: {
+    png: string;
+    large: string;
+    small: string;
+    medium: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
 export interface Club {
   id: number;
   title: string;
   city: string;
-  img: string;
+  images: Images[];
   user: User;
   courts: Court[];
   createdAt: Date;

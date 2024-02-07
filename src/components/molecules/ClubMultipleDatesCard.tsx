@@ -4,8 +4,9 @@ import { isPlatform } from '@ionic/react';
 import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import useToggle from '../../hooks/useToggle';
 import { DateBox } from './DateBox';
-import noImage from '../../images/no-image.jpg';
 import { Club, IAvailableTime } from '../../services/club/interface';
+import { BASE_URL } from '../../services/api/service';
+import noImg from '../../images/no-image.jpg';
 
 type AvailableTimeItem = [string, IAvailableTime[]];
 
@@ -18,7 +19,7 @@ const date = new Date().toLocaleDateString('en-ca');
 export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
   id,
   title,
-  img,
+  images,
   availableTimes,
 }) => {
   const isMobile = isPlatform('mobile');
@@ -35,6 +36,9 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
       if (!allSlots.flat().length) return setEachDateIsEmpty(true);
     }
   }, [availableTimesArray]);
+
+  const previewImg =
+    images.length === 0 ? noImg : `${BASE_URL}${images[0]?.formats.large}`;
 
   return (
     <Card
@@ -54,7 +58,7 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
             height={60}
             borderRadius={2}
             sx={{
-              backgroundImage: `url(${img ? img : noImage})`,
+              backgroundImage: `url(${previewImg})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
