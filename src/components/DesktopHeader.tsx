@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { SportsBaseballOutlined } from '@mui/icons-material';
 import { Box, Link, Typography } from '@mui/material';
 import { useIsAuthorized, useUserInfo } from '../services/api/hooks';
@@ -13,7 +13,10 @@ function DesktopHeader() {
 
   const firstName = user?.firstname;
   const lastName = user?.lastname;
-  const path = window.location.pathname;
+
+  const { pathname } = useLocation();
+  if (pathname.startsWith('/auth') || pathname.startsWith('/question-form'))
+    return null;
 
   return (
     <>
@@ -25,10 +28,7 @@ function DesktopHeader() {
           left: '0',
           zIndex: '99999',
 
-          display:
-            path.startsWith('/auth') || path.startsWith('/question-form')
-              ? 'none'
-              : 'flex',
+          display: 'flex',
           background: '#fff',
           color: '#000',
           paddingBlock: '1rem',

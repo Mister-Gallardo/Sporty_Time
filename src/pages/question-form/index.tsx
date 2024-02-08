@@ -5,8 +5,9 @@ import { LevelingStep } from './steps/LevelingStep';
 import { ResultsStep } from './steps/Results';
 
 export function QuestionFormPage() {
-  const [step, setStep] = useSearchParam('step');
-  const currentStep = Number(step) || 1;
+  const [step, setStep] = useSearchParam('step', '1');
+  const currentStep = Number(step);
+
   const handleStep = (step: number) => setStep(`${currentStep + step}`);
 
   return (

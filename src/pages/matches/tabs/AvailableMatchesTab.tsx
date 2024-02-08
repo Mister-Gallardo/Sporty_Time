@@ -10,7 +10,6 @@ import { FilterMatchesModal } from '../../../components/modals/filters-modals/av
 import { AvailableMatchCard } from '../../../components/molecules/match-cards/AvailableMatchCard';
 import { ClubMultipleDatesCard } from '../../../components/molecules/ClubMultipleDatesCard';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
-import { useCheckUserSport } from '../../../hooks/useCheckUserSport';
 import { Accordion } from '../../../components/molecules/Accordion';
 import { getUserLocation } from '../../../helpers/getUserLocation';
 import { MatchTimeRange, MatchTimes } from '../../../services/club/interface';
@@ -64,19 +63,19 @@ const dates = Array.from(Array(7)).map((_, i) => ({
 export function AvailableMatchesTab() {
   const [openFilterModal, setOpenFilterModal] = useToggle();
 
-  const defaultSport = useCheckUserSport();
-
   const [localFilters, setLocalFilters] = useLocalStorage('matchesFilter', {
-    sport: defaultSport,
-    forceRating: ELeveling.BEGINNER,
-    time: MatchTimeRange.ALL,
-    gamedates: dates,
-    selectedLocation: 'Выбрать локацию',
-    range: 50,
+    sport: ESport.PADEL,
   });
 
   const filterParams = useForm<FilterFormDate>({
-    defaultValues: localFilters,
+    defaultValues: {
+      sport: localFilters.sport,
+      forceRating: ELeveling.BEGINNER,
+      time: MatchTimeRange.ALL,
+      gamedates: dates,
+      selectedLocation: 'Выбрать локацию',
+      range: 50,
+    },
   });
 
   const { watch, setValue } = filterParams;

@@ -16,6 +16,8 @@ import { useIonToast } from '@ionic/react';
 import { useSearchParam } from '../../../hooks/useSearchParams';
 import { BASE_URL } from '../../../services/api/service';
 import { ESport } from '../../../services/matches/interface';
+import { useLocalStorage } from 'usehooks-ts';
+import { useEffect } from 'react';
 
 interface ChooseYourSportProps {
   handleStep: (step: number) => void;
@@ -27,6 +29,17 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
     'sport',
     ESport.PADEL,
   );
+  const [, setMatchSport] = useLocalStorage('matchesFilter', {
+    sport: selectedSport,
+  });
+  const [, setClubSport] = useLocalStorage('clubsFilter', {
+    sport: selectedSport,
+  });
+
+  useEffect(() => {
+    setMatchSport({ sport: selectedSport });
+    setClubSport({ sport: selectedSport });
+  }, [selectedSport]);
 
   const [player, query] = usePlayerProfile();
   const currentSportRate = player ? getSportRating(player, selectedSport) : '';

@@ -28,7 +28,7 @@ export const AskForLevel: React.FC<IAskForLevelProps> = ({
           необходимо знать Ваш уровень.
         </Typography>
         <Controller
-          name="sportLevel"
+          name="forceRating"
           control={control}
           defaultValue={ELeveling.BEGINNER}
           render={({ field }) => (
