@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { ModalContainer } from '../ModalContainer';
 import {
   Box,
+  Button,
   CircularProgress,
   Divider,
   InputAdornment,
@@ -19,6 +20,8 @@ import transliterate from '@sindresorhus/transliterate';
 import { debounce } from 'lodash-es';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import EastRoundedIcon from '@mui/icons-material/EastRounded';
+import { getUserLocation } from '../../../helpers/getUserLocation';
+import useToggle from '../../../hooks/useToggle';
 
 interface ISelectClubLocationModalProps {
   openState: boolean;
@@ -53,12 +56,30 @@ export const SelectClubLocationModal: React.FC<
     [],
   );
 
+  const [isLoadingLocation, setIsLoadingLocaiton] = useToggle();
+
   return (
     <ModalContainer
       openState={openState}
       handleModal={() => handleModal(false)}
       headerTitle="Где Вы хотите играть?"
     >
+      <Button
+        onClick={() => {
+          getUserLocation(setIsLoadingLocaiton, setValue);
+        }}
+        disabled={isLoadingLocation}
+        endIcon={isLoadingLocation && <CircularProgress size={20} />}
+        variant="contained"
+        sx={{
+          mb: 1,
+          textTransform: 'initial',
+          fontSize: 13,
+          fontWeight: 400,
+        }}
+      >
+        Рядом со мной
+      </Button>
       <Box height="80vh">
         <TextField
           value={currentSearchTerm}

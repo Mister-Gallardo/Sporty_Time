@@ -15,7 +15,6 @@ import useToggle from '../../hooks/useToggle';
 import { SelectClubLocationModal } from '../../components/modals/filters-modals/SelectClubLocationModal';
 import { SelectSportModal } from '../../components/modals/SelectSportModal';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
-import { useCheckUserSport } from '../../hooks/useCheckUserSport';
 import { getSportName } from '../../helpers/getSportName';
 import { isBefore, isToday, parse } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
@@ -46,7 +45,6 @@ const countDefaultTime = () => {
   } else {
     defaultTime += `${hours}:30`;
   }
-
   return defaultTime;
 };
 
@@ -55,13 +53,8 @@ const isMobile = isPlatform('mobile');
 export function BookCourt() {
   const history = useHistory();
 
-  const defaultSport = useCheckUserSport();
-
   const [localFilters, setLocalFilters] = useLocalStorage('clubsFilter', {
-    sport: defaultSport,
     gamedate: now.toString(),
-    timefrom: countDefaultTime(),
-    timeto: addTime(countDefaultTime(), 5 * 60),
     selectedLocation: 'Выбрать локацию',
   });
 
@@ -72,6 +65,18 @@ export function BookCourt() {
   const { watch, setValue } = filterParams;
   const { sport, gamedate, lat, long, timefrom, timeto, selectedLocation } =
     watch();
+
+  useEffect(() => {
+    if (!timefrom) {
+      setValue('timefrom', countDefaultTime());
+    }
+    if (!timeto) {
+      setValue('timeto', addTime(countDefaultTime(), 5 * 60));
+    }
+    if (!gamedate) {
+      setValue('gamedate', now.toString());
+    }
+  }, []);
 
   const [isLoadingLocation, setIsLoadingLocaiton] = useToggle();
 
@@ -87,6 +92,7 @@ export function BookCourt() {
     new Date(),
   );
 
+  // check is prev selected date is already passed
   useEffect(() => {
     if (isBefore(parsedTargetDate, new Date()) && !isSelectedDateToday) {
       setValue('gamedate', now.toString());
@@ -112,12 +118,6 @@ export function BookCourt() {
   const [openSelectSport, setOpenSelectSport] = useToggle();
   const [openClubLocation, setOpenClubLocation] = useToggle();
   const [openFilterModal, setOpenFilterModal] = useToggle();
-
-  useEffect(() => {
-    if (!timeto) {
-      setValue('timeto', addTime(timefrom, 5 * 60));
-    }
-  }, []);
 
   useEffect(() => {
     setLocalFilters(watch());
