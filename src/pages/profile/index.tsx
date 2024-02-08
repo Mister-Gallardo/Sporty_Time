@@ -13,7 +13,6 @@ import { IonLoading, isPlatform } from '@ionic/react';
 import PostsTab from './tabs/PostsTab';
 import { useHistory } from 'react-router';
 import { NotFoundPage } from '../../components/NotFoundPage';
-import { BASE_URL } from '../../services/api/service';
 
 export function ProfilePage() {
   const isMobile = isPlatform('mobile');
@@ -36,7 +35,7 @@ export function ProfilePage() {
         <Box display="flex" alignItems="end">
           <Avatar
             alt={fullname}
-            src={`${BASE_URL}${profile?.user?.avatar}`}
+            src={profile?.user?.avatar}
             sx={{ width: 60, height: 60 }}
           />
 

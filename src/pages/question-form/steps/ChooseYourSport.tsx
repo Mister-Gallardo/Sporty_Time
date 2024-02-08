@@ -14,7 +14,6 @@ import { useMutation } from '@tanstack/react-query';
 import { editUserProfile } from '../../../services/user/service';
 import { useIonToast } from '@ionic/react';
 import { useSearchParam } from '../../../hooks/useSearchParams';
-import { BASE_URL } from '../../../services/api/service';
 import { ESport } from '../../../services/matches/interface';
 import { useLocalStorage } from 'usehooks-ts';
 import { useEffect } from 'react';
@@ -113,7 +112,7 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
                 mb={3}
               >
                 <Avatar
-                  src={`${BASE_URL}${player?.user?.avatar}`}
+                  src={player?.user?.avatar}
                   sx={{
                     width: '75px',
                     height: '75px',

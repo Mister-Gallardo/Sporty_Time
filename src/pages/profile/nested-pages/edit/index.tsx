@@ -20,7 +20,6 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { isPlatform, useIonToast } from '@ionic/react';
 import { NotFoundPage } from '../../../../components/NotFoundPage';
 import { useHistory } from 'react-router';
-import { BASE_URL } from '../../../../services/api/service';
 
 const isMobile = isPlatform('mobile');
 
@@ -118,7 +117,7 @@ export const EditProfilePage = () => {
 
       <Box display="flex" flexDirection="column" alignItems="center">
         <Avatar
-          src={watch('image') || `${BASE_URL}${user?.avatar}` || ''}
+          src={watch('image') || user?.avatar || ''}
           sx={{ width: 50, height: 50 }}
         />
         <Button onClick={() => takePhoto()} sx={{ fontSize: 13 }}>

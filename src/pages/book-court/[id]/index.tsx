@@ -13,7 +13,6 @@ import { useQuery } from '@tanstack/react-query';
 import { getClubById } from '../../../services/club/service';
 import { useSearchParam } from '../../../hooks/useSearchParams';
 import noImg from '../../../images/no-image.jpg';
-import { BASE_URL } from '../../../services/api/service';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -62,7 +61,7 @@ export function SingleCourtPage() {
                 sx={{ objectFit: 'cover' }}
                 width="100%"
                 component="img"
-                src={`${BASE_URL}${image?.formats.large}`}
+                src={image?.formats.large}
               />
             );
           })

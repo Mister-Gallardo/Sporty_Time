@@ -3,7 +3,6 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { Avatar, Box, Typography } from '@mui/material';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
-import { BASE_URL } from '../../../services/api/service';
 import { Status } from '../../../services/matches/interface';
 
 interface IPlayerSlotProps {
@@ -41,7 +40,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           sx={{ opacity: player?.mark ? 0.5 : 1 }}
         >
           <Avatar
-            src={`${BASE_URL}${player.user?.avatar}`}
+            src={player.user?.avatar}
             sx={{
               width: '50px',
               height: '50px',
