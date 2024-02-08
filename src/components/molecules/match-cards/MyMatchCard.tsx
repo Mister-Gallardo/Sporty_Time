@@ -94,7 +94,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
                       >
                         {member ? (
                           <Avatar
-                            src={`${member?.player.user?.avatar}`}
+                            src={member?.player?.user?.avatar}
                             sx={{ width: 40, height: 40 }}
                           />
                         ) : (

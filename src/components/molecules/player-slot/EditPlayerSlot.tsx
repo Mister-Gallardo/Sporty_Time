@@ -57,10 +57,7 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
           )}
 
           <CircularLevelProgress rating={playerRating}>
-            <Avatar
-              src={`${player?.user?.avatar}`}
-              sx={{ width: 45, height: 45 }}
-            />
+            <Avatar src={player?.user?.avatar} sx={{ width: 45, height: 45 }} />
           </CircularLevelProgress>
           <Typography mt={1} fontSize={12}>
             {player.user?.firstname}
