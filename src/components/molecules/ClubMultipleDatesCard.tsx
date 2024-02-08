@@ -5,7 +5,6 @@ import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import useToggle from '../../hooks/useToggle';
 import { DateBox } from './DateBox';
 import { Club, IAvailableTime } from '../../services/club/interface';
-import { BASE_URL } from '../../services/api/service';
 import noImg from '../../images/no-image.jpg';
 
 type AvailableTimeItem = [string, IAvailableTime[]];
@@ -37,8 +36,7 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
     }
   }, [availableTimesArray]);
 
-  const previewImg =
-    images.length === 0 ? noImg : `${BASE_URL}${images[0]?.formats.large}`;
+  const previewImg = images.length === 0 ? noImg : images[0]?.formats.large;
 
   return (
     <Card

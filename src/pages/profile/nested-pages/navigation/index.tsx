@@ -5,7 +5,6 @@ import { useHistory } from 'react-router';
 import { useUserInfo } from '../../../../services/api/hooks';
 import { isPlatform } from '@ionic/react';
 import { NotFoundPage } from '../../../../components/NotFoundPage';
-import { BASE_URL } from '../../../../services/api/service';
 
 const isMobile = isPlatform('mobile');
 
@@ -32,10 +31,7 @@ export const ProfileNavPage = () => {
             Стандартный аккаунт
           </Typography>
         </Box>
-        <Avatar
-          src={`${BASE_URL}${user?.avatar}`}
-          sx={{ width: 50, height: 50 }}
-        />
+        <Avatar src={user?.avatar} sx={{ width: 50, height: 50 }} />
       </Box>
 
       <Box mt={3}>

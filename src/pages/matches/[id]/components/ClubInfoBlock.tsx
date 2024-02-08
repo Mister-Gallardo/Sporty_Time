@@ -4,7 +4,6 @@ import { Directions } from '@mui/icons-material';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getOneAvailableMatch } from '../../../../services/matches/service';
-import { BASE_URL } from '../../../../services/api/service';
 import noImg from '../../../../images/no-image.jpg';
 
 export const ClubInfoBlock = () => {
@@ -22,9 +21,7 @@ export const ClubInfoBlock = () => {
   const { booking } = singleMatchData;
   const images = booking.court.club?.images;
   const previewImg =
-    !images || images?.length === 0
-      ? noImg
-      : `${BASE_URL}${images[0]?.formats.large}`;
+    !images || images?.length === 0 ? noImg : images[0]?.formats.large;
 
   return (
     <Block

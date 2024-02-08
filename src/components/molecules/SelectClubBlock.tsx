@@ -4,7 +4,6 @@ import noImage from '../../images/no-image.jpg';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Club } from '../../services/club/interface';
-import { BASE_URL } from '../../services/api/service';
 
 interface ISelectClubBlockProps extends Club {
   isChecked: boolean;
@@ -19,9 +18,7 @@ export const SelectClubBlock: React.FC<ISelectClubBlockProps> = ({
   onCheck,
 }) => {
   const previewImg =
-    !images || images.length === 0
-      ? noImage
-      : `${BASE_URL}${images[0]?.formats.large}`;
+    !images || images.length === 0 ? noImage : images[0]?.formats.large;
 
   return (
     <Box

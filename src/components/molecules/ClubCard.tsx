@@ -4,7 +4,6 @@ import { FavoriteBorderOutlined } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
 import { DateBox } from './DateBox';
 import { isPlatform } from '@ionic/react';
-import { BASE_URL } from '../../services/api/service';
 import noImg from '../../images/no-image.jpg';
 
 interface IClubCard extends Club {
@@ -18,8 +17,7 @@ export const ClubCard: React.FC<IClubCard> = (props) => {
 
   const [gameDate, times] = Object.entries(availableTimes || {})[0];
 
-  const previewImg =
-    images.length === 0 ? noImg : `${BASE_URL}${images[0]?.formats.large}`;
+  const previewImg = images.length === 0 ? noImg : images[0]?.formats.large;
 
   return (
     <Box

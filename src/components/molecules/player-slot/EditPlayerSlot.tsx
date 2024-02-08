@@ -6,7 +6,6 @@ import { CircularLevelProgress } from '../../atoms/CircularLevelProgress';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
-import { BASE_URL } from '../../../services/api/service';
 
 interface IEditPlayerSlotProps {
   player?: MatchPlayer;
@@ -58,10 +57,7 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
           )}
 
           <CircularLevelProgress rating={playerRating}>
-            <Avatar
-              src={`${BASE_URL}${player?.user?.avatar}`}
-              sx={{ width: 45, height: 45 }}
-            />
+            <Avatar src={player?.user?.avatar} sx={{ width: 45, height: 45 }} />
           </CircularLevelProgress>
           <Typography mt={1} fontSize={12}>
             {player.user?.firstname}

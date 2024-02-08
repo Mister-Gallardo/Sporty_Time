@@ -7,7 +7,6 @@ import { sortTeamMembers } from '../../../helpers/sortTeamMembers';
 import { getMatchStatus } from '../../../helpers/getMatchStatus';
 import { WithoutResultsCardSection } from './WithoutResultsCardSection';
 import { ResultsCardSection } from './ResultsCardSection';
-import { BASE_URL } from '../../../services/api/service';
 
 interface IMyMatchCardProps extends MatchData {
   uploadResults: (id: number) => void;
@@ -95,7 +94,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
                       >
                         {member ? (
                           <Avatar
-                            src={`${BASE_URL}${member?.player.user?.avatar}`}
+                            src={member?.player?.user?.avatar}
                             sx={{ width: 40, height: 40 }}
                           />
                         ) : (
