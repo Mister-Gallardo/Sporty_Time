@@ -16,7 +16,7 @@ import { SelectClubLocationModal } from '../../components/modals/filters-modals/
 import { SelectSportModal } from '../../components/modals/SelectSportModal';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 import { getSportName } from '../../helpers/getSportName';
-import { isBefore, isToday, parse } from 'date-fns';
+import { isBefore, isToday } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
 import { getUserLocation } from '../../helpers/getUserLocation';
 import { SelectedFilterButton } from '../../components/modals/filters-modals/SelectedFilterButton';
@@ -86,15 +86,13 @@ export function BookCourt() {
 
   // If the date selected by the user in the past has gone, set current date
   const isSelectedDateToday = isToday(new Date(localFilters?.gamedate));
-  const parsedTargetDate = parse(
-    localFilters?.gamedate,
-    'yyyy-MM-dd',
-    new Date(),
-  );
 
   // check is prev selected date is already passed
   useEffect(() => {
-    if (isBefore(parsedTargetDate, new Date()) && !isSelectedDateToday) {
+    if (
+      isBefore(new Date(localFilters?.gamedate), new Date()) &&
+      !isSelectedDateToday
+    ) {
       setValue('gamedate', now.toString());
     }
   }, []);
