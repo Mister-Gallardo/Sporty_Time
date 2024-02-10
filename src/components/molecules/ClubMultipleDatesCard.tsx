@@ -112,7 +112,7 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
                         onClick={(e: Event) => {
                           e.stopPropagation();
                           history.push(
-                            `/book-court/1?tab=2&day=${item[0]}&time=${slot.time}`,
+                            `/book-court/${id}?tab=2&day=${item[0]}&time=${slot.time}`,
                           );
                         }}
                       />

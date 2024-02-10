@@ -71,7 +71,7 @@ export const FiltersRow: React.FC<IFiltersRowProps> = ({ handleModal }) => {
         >
           <Typography maxWidth={200} noWrap>
             {gamedates
-              .map((date: { value: Date }) =>
+              ?.map((date: { value: Date }) =>
                 getDayFormat(date.value, EType.MONTH_AND_DAY),
               )
               .join(' | ')}

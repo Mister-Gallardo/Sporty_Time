@@ -808,7 +808,7 @@ export const leveling = [
       tennis:
         'Игроки, которые играют в теннис в течение короткого времени и испытывают трудности с удержанием мяча в игре. Они начинают подачу сверху, но часто допускают двойные ошибки. Они учатся вести себя на площадке',
       pickleball:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Только начинаю играть с минимальным пониманием правил и ограниченным спортивным опытом. Развитие зрительно-моторной координации и базовых техник.',
     },
     availableFor: {
       padel: padelNoneAndBeginner,
@@ -823,9 +823,9 @@ export const leveling = [
       padel:
         'Игрок, которому необходимо улучшить свою технику и тактику, в течение года играет пару игр в месяц и, возможно, получил несколько уроков, бьет и возвращает мяч на низких скоростях.',
       tennis:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Игроки, которые могут удерживать мяч без особого ритма и лучше бить справа, чем сзади. Они по-прежнему совершают двойные ошибки и пытаются приблизиться к сетке для удара с лета.',
       pickleball:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Есть некоторый опыт с лучшим пониманием правил, развивается последовательность, базовая постановка удара и способность выдерживать короткие розыгрыши.',
     },
     availableFor: {
       padel: padelInterAndHightInter,
@@ -838,11 +838,11 @@ export const leveling = [
     key: 'Выше среднего',
     descriptionFor: {
       padel:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Игрок с большим разнообразием ударов приобретает навыки выполнения различных типов ударов с подноса. Агрессивно бьет с лета, обычно возвращает воздушные шары и начинает переносить мяч на свое поле для удара над головой и зарабатывает очки, отправляя мяч за пределы площадки/через забор/на три или четыре аута.',
       tennis:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Игроки, которые покрывают площадку и играют розыгрыши из 8 и более ударов. Они улучшили стабильность и направление мяча, намеренно выполняют первую подачу с обеих сторон, совершают очень мало двойных ошибок и приближаются к воротам, чтобы завершить розыгрыш.',
       pickleball:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Умеренный опыт, улучшенная последовательность, правильность размещения ударов и осведомленность о площадке. Работа над стратегией и переходом от нападения к защите.',
     },
     availableFor: {
       padel: padelInterAndHightInter,
@@ -855,11 +855,11 @@ export const leveling = [
     key: 'Продвинутый',
     descriptionFor: {
       padel:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Обычный игрок в падел. Бьет по мячу сильно и точно. Анализирует слабые места соперника и меняет стратегию матча и стиль игры в сложных ситуациях. Регулярно выигрывает очко с преимуществом в три-четыре. Имеет хороший удар от стены и может успешно запускать воздушные шары.',
       tennis:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Игроки, которые основывают свою игру на дифференциальном ударе и меняют стратегию игры в зависимости от различных ситуаций матча. Они играют стабильно, варьируют подачи и выполняют высокие или низкие удары с лета, не боясь потерпеть неудачу.',
       pickleball:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Значительный опыт, высокая последовательность, точность, сильная стратегия и участие в турнирах.',
     },
     availableFor: {
       padel: padelAdvanced,
@@ -872,11 +872,10 @@ export const leveling = [
     key: 'Соревновательный',
     descriptionFor: {
       padel:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
-      tennis:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Федеративный игрок (в настоящее время), который участвует в турнирах федерации и имеет очки в рейтинге сообщества.',
+      tennis: 'Игроки, выступающие на национальном и международном уровнях.',
       pickleball:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat iure, est laudantium perferendis quas provident itaque assumenda, suscipit deleniti atque dolorum dolor excepturi',
+        'Высочайший уровень мастерства, исключительная техника, точное исполнение сложных ударов, адаптируется к разным противникам. Соревнуется профессионально',
     },
     availableFor: {
       padel: padelCompetition,

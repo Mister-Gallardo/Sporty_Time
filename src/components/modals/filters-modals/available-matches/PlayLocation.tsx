@@ -28,7 +28,7 @@ interface IPlayLocationProps {
 
 export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
   const { watch, setValue, resetField } = useFormContext();
-  const { selectedLocation, clubsId, range } = watch();
+  const { selectedLocation, clubsId } = watch();
 
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -127,16 +127,13 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
 
             <SelectClubsList />
 
-            <DistanceSlider
-              value={range}
-              setValue={(range) => setValue('range', range)}
-            />
+            <DistanceSlider />
           </Box>
         </Fade>
       </Box>
       <FilterButton
         handleClick={() => handleStep(1)}
-        disabled={!clubsId.length}
+        disabled={!clubsId || !clubsId.length}
       >
         Далее
       </FilterButton>

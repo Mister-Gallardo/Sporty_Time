@@ -55,9 +55,10 @@ export function SingleCourtPage() {
             src={noImg}
           />
         ) : (
-          data?.images.map((image) => {
+          data?.images.map((image, i) => {
             return (
               <Box
+                key={i}
                 sx={{ objectFit: 'cover' }}
                 width="100%"
                 component="img"

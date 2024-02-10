@@ -54,6 +54,7 @@ export function BookCourt() {
   const history = useHistory();
 
   const [localFilters, setLocalFilters] = useLocalStorage('clubsFilter', {
+    sport: ESport.PADEL,
     gamedate: now.toString(),
     selectedLocation: 'Выбрать локацию',
   });
@@ -264,6 +265,7 @@ export function BookCourt() {
         <SelectClubLocationModal
           openState={openClubLocation}
           handleModal={setOpenClubLocation}
+          setIsLoadingLocaiton={setIsLoadingLocaiton}
         />
       </FormProvider>
     </Box>

@@ -56,6 +56,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
   const isPayingFullPrice = (matchStartTime - currentTime) / 1000 / 3600 < 12;
   const total = isPayingFullPrice ? price : selectedPayment;
 
+  const tags = court.tags.map((tag) => tag.title).join(' | ');
   return (
     <ModalContainer
       openState={openState}
@@ -75,7 +76,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
                     {court.sport}, {court.title}
                   </Typography>
                   <Typography color="gray" fontSize={12}>
-                    {court.tags.join(' | ')}
+                    {tags}
                   </Typography>
                 </Box>
 
