@@ -55,8 +55,10 @@ const isMobile = isPlatform('mobile');
 export function AvailableMatchesTab() {
   const [openFilterModal, setOpenFilterModal] = useToggle();
 
+  const [globalSport] = useLocalStorage('sport', ESport.PADEL);
+
   const [localFilters, setLocalFilters] = useLocalStorage('matchesFilter', {
-    sport: ESport.PADEL,
+    sport: globalSport,
     lat: 0,
     long: 0,
     forceRating: ELeveling.BEGINNER,
@@ -98,7 +100,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: getMatchTime(time),
       }),
-    enabled: clubsId?.length !== 0,
+    enabled: !!clubsIdToString || clubsId === undefined,
   });
   const availableArray = availableMatches.data?.data;
 
@@ -112,7 +114,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: getMatchTime(time),
       }),
-    enabled: clubsId?.length !== 0,
+    enabled: !!clubsIdToString || clubsId === undefined,
   });
   const noRatingArray = noRatingMatches.data?.data;
 

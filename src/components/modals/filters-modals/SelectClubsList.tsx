@@ -27,6 +27,10 @@ export const SelectClubsList = () => {
     'toggleSelectedClubs',
     false,
   );
+  useEffect(() => {
+    setValue('clubsId', []);
+    setSelectAll(false);
+  }, [selectedLocation]);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['clubs/all', lat, long, sport],

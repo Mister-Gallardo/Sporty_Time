@@ -52,9 +52,10 @@ const isMobile = isPlatform('mobile');
 
 export function BookCourt() {
   const history = useHistory();
+  const [globalSport] = useLocalStorage('sport', ESport.PADEL);
 
   const [localFilters, setLocalFilters] = useLocalStorage('clubsFilter', {
-    sport: ESport.PADEL,
+    sport: globalSport,
     gamedate: now.toString(),
     selectedLocation: 'Выбрать локацию',
   });
