@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { useFormContext } from 'react-hook-form';
+import { useLocalStorage } from 'usehooks-ts';
 
 const marks = [
   {
@@ -36,14 +37,17 @@ export const DistanceSlider = () => {
 
   const [point, setPoint] = useState(range || 1);
 
+  const [, setSelectAll] = useLocalStorage('toggleSelectedClubs', false);
+
   useEffect(() => {
     setPoint(range);
+    setSelectAll(false);
   }, [range]);
 
   return (
     <Box px={0.5}>
       <Slider
-        min={0}
+        min={0.1}
         max={50}
         step={10}
         marks={marks}

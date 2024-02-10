@@ -69,7 +69,7 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
               }
               getOptionLabel={(option) => option.title}
               renderOption={(props, option) => (
-                <Typography {...props} fontSize={14}>
+                <Typography {...props} key={props.id} fontSize={14}>
                   {option.title}
                 </Typography>
               )}

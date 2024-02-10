@@ -22,14 +22,15 @@ export const SelectClubsList = () => {
     clubsId,
   });
 
-  // const [] = useToggle();
   const [selectAll, setSelectAll] = useLocalStorage(
     'toggleSelectedClubs',
     false,
   );
+
   useEffect(() => {
-    setValue('clubsId', []);
-    setSelectAll(false);
+    if (!selectedLocation) {
+      setValue('clubsId', []);
+    }
   }, [selectedLocation]);
 
   const { data, isLoading, isError } = useQuery({
@@ -119,6 +120,7 @@ export const SelectClubsList = () => {
                 {...club}
                 isChecked={isSelected}
                 onCheck={() => {
+                  setSelectAll(false);
                   if (isSelected) {
                     setValue(
                       'clubsId',

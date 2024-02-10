@@ -90,6 +90,9 @@ export function AvailableMatchesTab() {
     .join(',');
   const clubsIdToString = clubsId?.map((clubVal) => clubVal).join(',');
 
+  const isEnabled =
+    (Array.isArray(clubsId) && clubsId.length === 0) || clubsId === undefined;
+
   // Get Available matches
   const availableMatches = useQuery({
     queryKey: [`available-matches`, gamedates, clubsId],
@@ -100,7 +103,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: getMatchTime(time),
       }),
-    enabled: !!clubsIdToString || clubsId === undefined,
+    enabled: !isEnabled,
   });
   const availableArray = availableMatches.data?.data;
 
@@ -114,7 +117,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: getMatchTime(time),
       }),
-    enabled: !!clubsIdToString || clubsId === undefined,
+    enabled: !isEnabled,
   });
   const noRatingArray = noRatingMatches.data?.data;
 
@@ -160,22 +163,21 @@ export function AvailableMatchesTab() {
     selectedLocation,
     forceRating,
     clubsId,
+    range,
   ]);
 
   useEffect(() => {
     if (!data) return;
+    if (localFilters.range === range) return;
+
     const clubs: number[] = [];
 
     data.forEach((club) => {
       if (club.range && club.range <= range) clubs.push(club.id);
     });
+
     setValue('clubsId', clubs);
-  }, [
-    // data,
-    range,
-    lat,
-    long,
-  ]);
+  }, [range, lat, long]);
 
   return (
     <Box position="relative">
