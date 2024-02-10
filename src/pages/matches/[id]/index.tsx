@@ -37,6 +37,7 @@ import { ResultsTable } from './components/ResultsTable';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
+import { isBefore } from 'date-fns';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
@@ -62,6 +63,7 @@ export function SingleMatchPage() {
   const {
     data,
     isLoading,
+    isError,
     refetch: refetchMatch,
   } = useQuery({
     queryKey: [`match`, Number(matchId)],
@@ -155,7 +157,7 @@ export function SingleMatchPage() {
   if (isLoading) {
     return <IonLoading isOpen />;
   }
-  if (!singleMatchData) {
+  if (!singleMatchData || isError) {
     return <NotFoundPage />;
   }
 
@@ -284,48 +286,54 @@ export function SingleMatchPage() {
                 </Button>
               </Box>
 
-              {!playerAlreadyInSomeTeam && (
-                <Box
-                  sx={{
-                    position: 'fixed',
-                    zIndex: 1,
-                    left: '0',
-                    right: '0',
-                    bottom: '1.5rem',
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Button
-                    disabled={joinMatchMutation.isPending}
-                    endIcon={
-                      joinMatchMutation.isPending && <CircularProgress />
-                    }
-                    onClick={onBookPlace}
+              {/* if user already in team | match already started/passed | there's full stack - hide btn */}
+              {!playerAlreadyInSomeTeam ||
+                isBefore(
+                  new Date(singleMatchData?.booking?.startsAt),
+                  new Date(),
+                ) ||
+                (singleMatchData.matchBookings.length === 4 && (
+                  <Box
                     sx={{
-                      paddingX: 2,
-                      background: '#0D2432',
-                      color: '#fff',
-                      boxShadow:
-                        'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-                      '&:hover': {
-                        background: '#0D2432',
-                      },
-                      '&:disabled': {
-                        background: '#777',
-                        color: '#eee',
-                      },
+                      position: 'fixed',
+                      zIndex: 1,
+                      left: '0',
+                      right: '0',
+                      bottom: '1.5rem',
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}
                   >
-                    Забронировать место
-                    {singleMatchData.paid
-                      ? ''
-                      : '- ₽' + singleMatchData.price / 4}
-                  </Button>
-                </Box>
-              )}
+                    <Button
+                      disabled={joinMatchMutation.isPending}
+                      endIcon={
+                        joinMatchMutation.isPending && <CircularProgress />
+                      }
+                      onClick={onBookPlace}
+                      sx={{
+                        paddingX: 2,
+                        background: '#0D2432',
+                        color: '#fff',
+                        boxShadow:
+                          'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                        '&:hover': {
+                          background: '#0D2432',
+                        },
+                        '&:disabled': {
+                          background: '#777',
+                          color: '#eee',
+                        },
+                      }}
+                    >
+                      Забронировать место
+                      {singleMatchData.paid
+                        ? ''
+                        : '- ₽' + singleMatchData.price / 4}
+                    </Button>
+                  </Box>
+                ))}
               <ClubInfoBlock />
               <MatchInfoBlock />
             </Box>

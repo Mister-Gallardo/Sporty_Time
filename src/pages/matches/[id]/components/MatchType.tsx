@@ -3,6 +3,7 @@ import { EMatchType } from '../../../../services/matches/interface';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getOneAvailableMatch } from '../../../../services/matches/service';
+import { getMatchTypeName } from '../../../../helpers/getNameOf';
 
 export const MatchType = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -14,12 +15,14 @@ export const MatchType = () => {
 
   const type = data?.data.type;
 
-  const isFriendly =
-    type === EMatchType.FRIENDLY ? 'Дружеский' : 'Соревновательный';
+  const isFriendly = type === EMatchType.FRIENDLY;
+  if (!type) return null;
 
   return (
     <Box border="1px solid #ddd" borderRadius={2} p={1} bgcolor="#fff" mb={2}>
-      <Typography textTransform="capitalize">{isFriendly}</Typography>
+      <Typography textTransform="capitalize">
+        {getMatchTypeName(type)}
+      </Typography>
       <Typography color="gray">{`Результат этого матча ${
         isFriendly ? 'не' : ''
       } повлияет на уровень`}</Typography>

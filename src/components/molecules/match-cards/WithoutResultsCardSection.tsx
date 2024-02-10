@@ -9,7 +9,7 @@ interface IWithoutResults {
   matchId: number;
   date: string;
   clubName?: string;
-  courtName: string;
+  courtName?: string;
   status: Status;
   uploadResults: (() => void) | null;
 }

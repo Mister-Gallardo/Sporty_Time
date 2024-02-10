@@ -114,9 +114,9 @@ export function SingleChatPage() {
           {isMatchLoading ? (
             <LoadingCircle />
           ) : (
-            <Typography>{`${match?.booking.court.club.title} ${matchStartsAt
+            <Typography>{`${match?.booking?.court?.club?.title} ${matchStartsAt
               .toLocaleTimeString('ru')
-              .slice(0, 5)}, ${match?.booking.court.title}`}</Typography>
+              .slice(0, 5)}, ${match?.booking?.court?.title}`}</Typography>
           )}
           <Typography color="gray">
             {match && getDayFormat(matchStartsAt, EType.MONTH_AND_DAY)}

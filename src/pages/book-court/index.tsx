@@ -15,7 +15,7 @@ import useToggle from '../../hooks/useToggle';
 import { SelectClubLocationModal } from '../../components/modals/filters-modals/SelectClubLocationModal';
 import { SelectSportModal } from '../../components/modals/SelectSportModal';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
-import { getSportName } from '../../helpers/getSportName';
+import { getSportName } from '../../helpers/getNameOf';
 import { isBefore, isToday } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
 import { getUserLocation } from '../../helpers/getUserLocation';

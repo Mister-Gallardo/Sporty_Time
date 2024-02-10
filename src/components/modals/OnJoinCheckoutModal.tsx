@@ -5,6 +5,7 @@ import { Box, Button, Divider, Typography } from '@mui/material';
 import { getOneAvailableMatch } from '../../services/matches/service';
 import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
 import { ModalContainer } from './ModalContainer';
+import { getMatchTypeName, getSportName } from '../../helpers/getNameOf';
 
 interface IOnJoinCheckoutModalProps {
   openState: boolean;
@@ -39,6 +40,8 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
 
   const total = paid ? 0 : price / 4;
 
+  const tags = booking?.court?.tags.map((tag) => tag.title).join(' | ');
+
   return (
     <ModalContainer
       openState={openState}
@@ -54,11 +57,11 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
       >
         <Box flexGrow={1} pr={1}>
           <Typography>{matchDate}</Typography>
-          <Typography color="gray">{type}</Typography>
+          <Typography color="gray">{getMatchTypeName(type)}</Typography>
           <Typography>
-            {sport}, {booking.court.title}
+            {getSportName(sport)}, {booking?.court?.title}
           </Typography>
-          <Typography>{booking.court.tags.join(' | ')}</Typography>
+          <Typography>{tags}</Typography>
         </Box>
         <Divider orientation="vertical" variant="middle" flexItem />
         <Box

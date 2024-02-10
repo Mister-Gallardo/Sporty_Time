@@ -4,6 +4,7 @@ import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import { Box, Divider, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
+import { getSportName } from '../../../../helpers/getNameOf';
 
 export const MatchDataBlock = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -43,7 +44,7 @@ export const MatchDataBlock = () => {
         <Box display="flex" alignItems="center" gap={2}>
           <SportsTennisIcon />
           <Box>
-            <Typography fontWeight={700}>{sport}</Typography>
+            <Typography fontWeight={700}>{getSportName(sport)}</Typography>
             <Typography
               fontSize={13}
               fontWeight={600}

@@ -19,14 +19,15 @@ export const ClubInfoBlock = () => {
   if (!singleMatchData) return null;
 
   const { booking } = singleMatchData;
-  const images = booking.court.club?.images;
+  const images = booking?.court?.club?.images;
   const previewImg =
     !images || images?.length === 0 ? noImg : images[0]?.formats.large;
 
+  if (!booking?.court?.club) return null;
   return (
     <Block
       component={RouterLink}
-      to={`/book-court/${booking.court.club.id}`}
+      to={`/book-court/${booking?.court?.club?.id}`}
       sx={{
         display: 'flex',
         justifyContent: 'space-between',

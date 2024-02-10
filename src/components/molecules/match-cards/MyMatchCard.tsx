@@ -137,8 +137,8 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
           <WithoutResultsCardSection
             matchId={id}
             date={matchDate}
-            clubName={booking.court.club.title}
-            courtName={booking.court.title}
+            clubName={booking?.court?.club?.title}
+            courtName={booking?.court?.title}
             status={status}
             uploadResults={
               status === Status.WAITING_FOR_RESULTS

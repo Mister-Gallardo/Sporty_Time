@@ -6,7 +6,7 @@ export type matchResults = Array<number[]> | null;
 export interface Booking {
   startsAt: string;
   endsAt: string;
-  court: Court;
+  court: Court | null;
   duration: number;
   interval: string;
   createdAt: Date;
