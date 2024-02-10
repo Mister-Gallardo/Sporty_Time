@@ -22,7 +22,15 @@ export const SelectClubsList = () => {
     clubsId,
   });
 
-  const [selectAll, setSelectAll] = useToggle();
+  // const [] = useToggle();
+  const [selectAll, setSelectAll] = useLocalStorage(
+    'toggleSelectedClubs',
+    false,
+  );
+  useEffect(() => {
+    setValue('clubsId', []);
+    setSelectAll(false);
+  }, [selectedLocation]);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['clubs/all', lat, long, sport],
@@ -59,12 +67,13 @@ export const SelectClubsList = () => {
             if (!value) {
               setValue('clubsId', []);
               setLocalFilters({ ...localFilters, clubsId: [] });
+              setSelectAll(false);
             } else {
               const allId = data?.map((club) => club.id);
               setValue('clubsId', allId);
               setLocalFilters({ ...localFilters, clubsId: allId });
+              setSelectAll(true);
             }
-            setSelectAll();
           }}
         />
       </Box>
@@ -103,7 +112,7 @@ export const SelectClubsList = () => {
           />
         ) : data && data.length > 0 ? (
           data.map((club) => {
-            const isSelected = clubsId.find((id: any) => id === club.id);
+            const isSelected = clubsId?.find((id: any) => id === club.id);
             return (
               <SelectClubBlock
                 key={club.id}
@@ -113,7 +122,7 @@ export const SelectClubsList = () => {
                   if (isSelected) {
                     setValue(
                       'clubsId',
-                      clubsId.filter((id: any) => id !== club.id),
+                      clubsId?.filter((id: any) => id !== club.id),
                     );
                   } else {
                     setValue('clubsId', [...clubsId, club.id]);

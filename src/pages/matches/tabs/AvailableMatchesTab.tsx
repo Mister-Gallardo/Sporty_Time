@@ -20,7 +20,6 @@ import useToggle from '../../../hooks/useToggle';
 import { useLocalStorage } from 'usehooks-ts';
 import { ELeveling } from '../../question-form/questions';
 import { ESport } from '../../../services/matches/interface';
-import { Geolocation } from '@capacitor/geolocation';
 
 const getMatchTime = (time: MatchTimeRange) => {
   switch (time) {
@@ -53,29 +52,24 @@ export interface FilterFormDate {
 
 const isMobile = isPlatform('mobile');
 
-const now = new Date();
-const dates = Array.from(Array(7)).map((_, i) => ({
-  value: new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + i),
-  ),
-}));
-
 export function AvailableMatchesTab() {
   const [openFilterModal, setOpenFilterModal] = useToggle();
 
+  const [globalSport] = useLocalStorage('sport', ESport.PADEL);
+
   const [localFilters, setLocalFilters] = useLocalStorage('matchesFilter', {
-    sport: ESport.PADEL,
+    sport: globalSport,
+    lat: 0,
+    long: 0,
+    forceRating: ELeveling.BEGINNER,
+    time: MatchTimeRange.ALL,
+    gamedates: [{ value: new Date() }],
+    selectedLocation: 'Выбрать локацию',
+    range: 50,
   });
 
   const filterParams = useForm<FilterFormDate>({
-    defaultValues: {
-      sport: localFilters.sport,
-      forceRating: ELeveling.BEGINNER,
-      time: MatchTimeRange.ALL,
-      gamedates: dates,
-      selectedLocation: 'Выбрать локацию',
-      range: 50,
-    },
+    defaultValues: localFilters,
   });
 
   const { watch, setValue } = filterParams;
@@ -92,7 +86,7 @@ export function AvailableMatchesTab() {
   } = watch();
 
   const gameDatesToString = gamedates
-    .map((date) => new Date(date.value).toLocaleDateString('en-ca'))
+    ?.map((date) => new Date(date.value).toLocaleDateString('en-ca'))
     .join(',');
   const clubsIdToString = clubsId?.map((clubVal) => clubVal).join(',');
 
@@ -106,7 +100,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: getMatchTime(time),
       }),
-    enabled: clubsId?.length !== 0,
+    enabled: !!clubsIdToString || clubsId === undefined,
   });
   const availableArray = availableMatches.data?.data;
 
@@ -120,7 +114,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: getMatchTime(time),
       }),
-    enabled: clubsId?.length !== 0,
+    enabled: !!clubsIdToString || clubsId === undefined,
   });
   const noRatingArray = noRatingMatches.data?.data;
 
@@ -157,28 +151,31 @@ export function AvailableMatchesTab() {
 
   useEffect(() => {
     setLocalFilters(watch());
-  }, [sport, lat, long, timefrom, timeto, selectedLocation, forceRating]);
+  }, [
+    sport,
+    lat,
+    long,
+    timefrom,
+    timeto,
+    selectedLocation,
+    forceRating,
+    clubsId,
+  ]);
 
   useEffect(() => {
+    if (!data) return;
     const clubs: number[] = [];
-    data?.forEach((club) => {
+
+    data.forEach((club) => {
       if (club.range && club.range <= range) clubs.push(club.id);
     });
     setValue('clubsId', clubs);
-  }, [range, data]);
-
-  useEffect(() => {
-    if (!clubsArray) return;
-    const checkPermission = async () => {
-      const { location } = await Geolocation.checkPermissions();
-
-      if (location === 'denied') {
-        const clubs = clubsArray.map((club) => club.id);
-        setValue('clubsId', clubs);
-      }
-    };
-    checkPermission();
-  }, [clubsArray]);
+  }, [
+    // data,
+    range,
+    lat,
+    long,
+  ]);
 
   return (
     <Box position="relative">

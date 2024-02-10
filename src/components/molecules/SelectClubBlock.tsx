@@ -22,7 +22,8 @@ export const SelectClubBlock: React.FC<ISelectClubBlockProps> = ({
 
   return (
     <Box
-      minWidth={110}
+      minWidth={130}
+      maxWidth={130}
       position="relative"
       borderRadius={1.2}
       boxShadow="0 1px 8px #0000000f"

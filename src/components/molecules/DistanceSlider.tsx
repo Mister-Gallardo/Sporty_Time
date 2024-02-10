@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
+import { useFormContext } from 'react-hook-form';
 
 const marks = [
   {
@@ -29,19 +30,16 @@ const marks = [
   },
 ];
 
-interface IDistanceSliderProps {
-  value: number;
-  setValue: (range: number) => void;
-}
+export const DistanceSlider = () => {
+  const { watch, setValue } = useFormContext();
+  const { range } = watch();
 
-export const DistanceSlider: React.FC<IDistanceSliderProps> = ({
-  value,
-  setValue,
-}) => {
-  const [point, setPoint] = useState(value || 1);
+  const [point, setPoint] = useState(range || 1);
+
   useEffect(() => {
-    setPoint(value);
-  }, [value]);
+    setPoint(range);
+  }, [range]);
+
   return (
     <Box px={0.5}>
       <Slider
@@ -51,7 +49,7 @@ export const DistanceSlider: React.FC<IDistanceSliderProps> = ({
         marks={marks}
         value={point}
         onChange={(_, value) => setPoint(value as number)}
-        onChangeCommitted={(_, value) => setValue(value as number)}
+        onChangeCommitted={(_, value) => setValue('range', value as number)}
         aria-label="Distance"
       />
     </Box>

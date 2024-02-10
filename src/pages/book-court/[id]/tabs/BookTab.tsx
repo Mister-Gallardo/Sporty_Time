@@ -36,8 +36,8 @@ export function BookTab() {
   const [selectedOption, setSelectedOption] = useState<
     IAvailableTime & { court: Court }
   >();
-  const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(false);
-  const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(false);
+  const [onlyAvailableSlots, setOnlyAvailableSlots] = useState(true);
+  const [onlyAvailableCourts, setOnlyAvailableCourts] = useState(true);
 
   const matchConfigForm = useForm({
     defaultValues: {

@@ -28,16 +28,10 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
     'sport',
     ESport.PADEL,
   );
-  const [, setMatchSport] = useLocalStorage('matchesFilter', {
-    sport: selectedSport,
-  });
-  const [, setClubSport] = useLocalStorage('clubsFilter', {
-    sport: selectedSport,
-  });
+  const [, setSport] = useLocalStorage('sport', selectedSport);
 
   useEffect(() => {
-    setMatchSport({ sport: selectedSport });
-    setClubSport({ sport: selectedSport });
+    setSport(selectedSport);
   }, [selectedSport]);
 
   const [player, query] = usePlayerProfile();

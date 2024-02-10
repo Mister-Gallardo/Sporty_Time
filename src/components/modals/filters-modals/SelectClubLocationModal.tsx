@@ -21,16 +21,16 @@ import { debounce } from 'lodash-es';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import EastRoundedIcon from '@mui/icons-material/EastRounded';
 import { getUserLocation } from '../../../helpers/getUserLocation';
-import useToggle from '../../../hooks/useToggle';
 
 interface ISelectClubLocationModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
+  setIsLoadingLocaiton: () => void;
 }
 
 export const SelectClubLocationModal: React.FC<
   ISelectClubLocationModalProps
-> = ({ openState, handleModal }) => {
+> = ({ openState, handleModal, setIsLoadingLocaiton }) => {
   const { setValue } = useFormContext();
 
   const [currentSearchTerm, setCurrentSearchTerm] = useState<string>('');
@@ -56,8 +56,6 @@ export const SelectClubLocationModal: React.FC<
     [],
   );
 
-  const [isLoadingLocation, setIsLoadingLocaiton] = useToggle();
-
   return (
     <ModalContainer
       openState={openState}
@@ -67,9 +65,8 @@ export const SelectClubLocationModal: React.FC<
       <Button
         onClick={() => {
           getUserLocation(setIsLoadingLocaiton, setValue);
+          handleModal(false);
         }}
-        disabled={isLoadingLocation}
-        endIcon={isLoadingLocation && <CircularProgress size={20} />}
         variant="contained"
         sx={{
           mb: 1,

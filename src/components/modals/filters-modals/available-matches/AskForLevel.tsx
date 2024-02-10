@@ -72,9 +72,7 @@ export const AskForLevel: React.FC<IAskForLevelProps> = ({
           Хотите пройти тестирование?
         </Button>
       </Box>
-      <FilterButton handleClick={() => handleStep(1)} disabled={!sportLevel}>
-        Далее
-      </FilterButton>
+      <FilterButton handleClick={() => handleStep(1)}>Далее</FilterButton>
     </>
   );
 };

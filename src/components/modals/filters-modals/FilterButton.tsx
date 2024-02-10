@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react';
 
 interface IFilterButtonProps extends PropsWithChildren {
   handleClick: () => void;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export const FilterButton: React.FC<IFilterButtonProps> = ({
