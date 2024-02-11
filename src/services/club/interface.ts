@@ -1,6 +1,11 @@
 import { ESport } from '../matches/interface';
 import { User } from '../user/interface';
 
+export enum ECourtType {
+  OUTDOOR = 'OUTDOOR',
+  INDOOR = 'INDOOR',
+}
+
 export enum MatchTimes {
   ALL = 'ALL',
   MORNING = 'MORNING',
@@ -65,7 +70,7 @@ export interface Court {
   sport: ESport;
   location: string;
   price: number;
-  club: Club;
+  club: Club | null;
   options: IAvailableTime[];
   tags: Tag[];
   type: string;

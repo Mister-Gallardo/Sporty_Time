@@ -43,10 +43,10 @@ export const CourtAccordion: React.FC<ICourtAccordionProps> = (props) => {
       >
         <Box>
           <Typography variant="body1" fontSize={16} fontWeight={600}>
-            {court.sport}
+            {court?.title}
           </Typography>
           <Typography variant="body2" sx={{ opacity: '.7' }}>
-            {court.tags.map((tag) => tag.title).join(' · ')}
+            {court?.tags.map((tag) => tag.title).join(' · ')}
           </Typography>
         </Box>
       </AccordionSummary>

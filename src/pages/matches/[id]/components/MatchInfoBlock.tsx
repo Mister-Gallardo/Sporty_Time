@@ -7,6 +7,7 @@ import { Box, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 import { getOneAvailableMatch } from '../../../../services/matches/service';
+import { getCourtTypeName } from '../../../../helpers/getNameOf';
 
 export const MatchInfoBlock = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -22,6 +23,7 @@ export const MatchInfoBlock = () => {
 
   const { booking, paid } = singleMatchData;
 
+  if (!booking?.court) return null;
   return (
     <Box>
       <Typography
@@ -38,7 +40,7 @@ export const MatchInfoBlock = () => {
           <InfoOutlined />
           <Box>
             <Typography>Название корта</Typography>
-            <Typography>{booking.court.club.title}</Typography>
+            <Typography>{booking.court.title}</Typography>
           </Box>
         </Box>
 
@@ -46,7 +48,7 @@ export const MatchInfoBlock = () => {
           <ArticleOutlined />
           <Box>
             <Typography>Тип корта</Typography>
-            <Typography>{booking.court.type}</Typography>
+            <Typography>{getCourtTypeName(booking.court.type)}</Typography>
           </Box>
         </Box>
 

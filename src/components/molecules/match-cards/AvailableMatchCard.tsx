@@ -1,7 +1,8 @@
 import { useHistory } from 'react-router';
-import { EMatchType, MatchData } from '../../../services/matches/interface';
+import { MatchData } from '../../../services/matches/interface';
 import { Box, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from '../player-slot/PlayerSlot';
+import { getMatchTypeName } from '../../../helpers/getNameOf';
 
 interface IAvailableMatchCardProps {
   matchData: MatchData;
@@ -25,12 +26,7 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
   teamBPlayers.length = 2;
   const players = [...Array.from(teamAPlayers), ...Array.from(teamBPlayers)];
 
-  const matchType =
-    matchData.type === EMatchType.COMPETITIVE
-      ? 'Соревновательный'
-      : matchData.type === EMatchType.FRIENDLY
-      ? 'Дружеский'
-      : '';
+  const matchType = getMatchTypeName(matchData.type);
 
   const [startDate, startTime] = matchData.booking.startsAt.split('T');
   const matchTime = `${startDate} | ${startTime.slice(0, 5)}`;

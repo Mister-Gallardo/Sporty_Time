@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getClubById } from '../../../services/club/service';
 import { useSearchParam } from '../../../hooks/useSearchParams';
 import noImg from '../../../images/no-image.jpg';
+import { NotFoundPage } from '../../../components/NotFoundPage';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -21,7 +22,7 @@ export function SingleCourtPage() {
 
   const [tab] = useSearchParam('tab', '2');
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['club', clubId],
     queryFn: () => getClubById(Number(clubId), {}),
   });
@@ -33,6 +34,7 @@ export function SingleCourtPage() {
   };
 
   if (isLoading) return <IonLoading isOpen />;
+  if (!data || isError) return <NotFoundPage />;
 
   const renderImageSlot = () => (
     <Box

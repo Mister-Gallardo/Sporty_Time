@@ -4,9 +4,8 @@ import { useFormContext } from 'react-hook-form';
 import { SelectedFilterButton } from '../../../../components/modals/filters-modals/SelectedFilterButton';
 import { EType, getDayFormat } from '../../../../helpers/getTimeDateString';
 import { useSearchParam } from '../../../../hooks/useSearchParams';
-import { getSportName } from '../../../../helpers/getSportName';
+import { getSportName } from '../../../../helpers/getNameOf';
 import { Box, Typography } from '@mui/material';
-import { ESport } from '../../../../services/matches/interface';
 
 interface IFiltersRowProps {
   handleModal: () => void;
@@ -51,7 +50,7 @@ export const FiltersRow: React.FC<IFiltersRowProps> = ({ handleModal }) => {
             handleModal();
           }}
         >
-          {getSportName(sport as ESport)}
+          {getSportName(sport)}
         </SelectedFilterButton>
 
         <SelectedFilterButton
