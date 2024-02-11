@@ -74,7 +74,7 @@ export function SingleCourtPage() {
   );
 
   const renderTopSlot = () => (
-    <Box px={1} display="flex" alignItems="center">
+    <Box p={2} display="flex" alignItems="center" sx={{ background: 'white' }}>
       <IonBackButton
         text={''}
         style={{
@@ -104,8 +104,8 @@ export function SingleCourtPage() {
           maxWidth={1240}
           mx="auto"
           sx={{
-            position: 'sticky',
-            top: 'calc(var(--ion-safe-area-top) - 30px)',
+            // position: 'sticky',
+            // top: 'calc(var(--ion-safe-area-top) - 50px)',
             zIndex: 100,
           }}
         >

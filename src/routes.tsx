@@ -15,99 +15,26 @@ import { MobileProfileNavPage } from './pages/profile/nested-pages/navigation/in
 import { Redirect, Route } from 'react-router';
 
 import React from 'react';
+import { isPlatform } from '@ionic/react';
+import MobileAboutPage from './pages/about/index.mobile';
 
 export interface RouteExtraProps {
   showTabBar: boolean;
 }
 
-export const desktopRoutes = [
-  // {
-  //   path: '/',
-  //   exact: true,
-  //   component: DesktopHomePage,
-  // },
-  {
-    path: '/',
-    exact: true,
-    component: () => <Redirect to="/book-court" />,
-  },
-  {
-    path: '/book-court',
-    exact: true,
-    component: React.lazy(() => import('./pages/book-court')),
-  },
-  {
-    path: '/book-court/:clubId',
-    exact: true,
-    component: React.lazy(() => import('./pages/book-court/[id]')),
-  },
-  {
-    path: '/auth',
-    exact: true,
-    component: React.lazy(() => import('./pages/auth')),
-  },
-  {
-    path: '/auth/reset-password',
-    exact: true,
-    component: React.lazy(() => import('./pages/auth/reset-password')),
-  },
-  {
-    path: '/question-form',
-    exact: true,
-    component: React.lazy(() => import('./pages/question-form')),
-  },
-  {
-    path: '/matches',
-    exact: true,
-    component: React.lazy(() => import('./pages/matches')),
-  },
-  {
-    path: '/matches/:matchId',
-    exact: true,
-    component: React.lazy(() => import('./pages/matches/[id]')),
-  },
-  {
-    path: '/profile',
-    exact: true,
-    component: React.lazy(() => import('./pages/profile')),
-  },
-  {
-    path: '/chats',
-    exact: true,
-    component: React.lazy(() => import('./pages/chats')),
-  },
-  {
-    path: '/chats/:chatId',
-    exact: true,
-    component: React.lazy(() => import('./pages/chats/[id]')),
-  },
-  {
-    path: '/profile/edit',
-    exact: true,
-    component: React.lazy(() => import('./pages/profile/nested-pages/edit')),
-  },
-  {
-    path: '/profile/navigation',
-    exact: true,
-    component: React.lazy(
-      () => import('./pages/profile/nested-pages/navigation'),
-    ),
-  },
-  {
-    path: '/about',
-    exact: true,
-    component: React.lazy(() => import('./pages/about')),
-  },
-] as React.ComponentProps<typeof Route>[];
-
 export const mobileRoutes = [
-  {
+  isPlatform('mobile') && {
     path: '/',
     exact: true,
     component: () => <Redirect to="/play" />,
     showTabBar: true,
   },
-  {
+  isPlatform('desktop') && {
+    path: '/',
+    exact: true,
+    component: () => <Redirect to="/book-court" />,
+  },
+  isPlatform('mobile') && {
     path: '/play',
     exact: true,
     component: MobilePlayPage,
@@ -185,4 +112,9 @@ export const mobileRoutes = [
     component: MobileProfileNavPage,
     showTabBar: true,
   },
-] as React.ComponentProps<typeof Route<RouteExtraProps>>[];
+  {
+    path: '/about',
+    exact: true,
+    component: MobileAboutPage,
+  },
+].filter(Boolean) as React.ComponentProps<typeof Route<RouteExtraProps>>[];

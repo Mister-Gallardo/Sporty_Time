@@ -5,6 +5,7 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs,
+  isPlatform,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 /* Core CSS required for Ionic components to work properly */
@@ -25,10 +26,11 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 import '../mobile.css';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { history } from '../services/history/service';
 import { RouteExtraProps, mobileRoutes } from '../routes';
 import { useCurrentRoute } from '../hooks/useCurrentRoute';
+import DesktopHeader from './DesktopHeader';
 
 export interface IMobileLayoutProps {
   children: React.ReactNode;
@@ -42,25 +44,42 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
   return (
     <IonApp style={{ minHeight: '100dvh' }}>
       <IonReactRouter history={history}>
-        <IonTabs
-          onIonTabsWillChange={() =>
-            Haptics.impact({ style: ImpactStyle.Light })
-          }
-        >
-          <IonRouterOutlet>{children}</IonRouterOutlet>
-          <IonTabBar
-            slot={showTabBar ? 'bottom' : undefined}
-            style={{
-              paddingBlock: '.50rem',
-              borderRadius: '0',
-              borderTop: '1px solid #cdcccc',
+        {isPlatform('desktop') && (
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: '1280px',
+              margin: '0 auto',
+              paddingInline: '15px',
+              height: '5rem',
             }}
           >
-            <IonTabButton tab="play" href="/play">
-              <IonIcon size="medium" icon={tennisball} />
-              <Typography variant="body2">Играть</Typography>
-            </IonTabButton>
-            {/* <IonTabButton tab="discovery" href="/" disabled>
+            <DesktopHeader />
+          </Box>
+        )}
+
+        <Box position="relative" height="100%">
+          <IonTabs
+            onIonTabsWillChange={() =>
+              Haptics.impact({ style: ImpactStyle.Light })
+            }
+          >
+            <IonRouterOutlet animated={isPlatform('mobile')}>
+              {children}
+            </IonRouterOutlet>
+            <IonTabBar
+              slot={showTabBar && isPlatform('mobile') ? 'bottom' : undefined}
+              style={{
+                paddingBlock: '.50rem',
+                borderRadius: '0',
+                borderTop: '1px solid #cdcccc',
+              }}
+            >
+              <IonTabButton tab="play" href="/play">
+                <IonIcon size="medium" icon={tennisball} />
+                <Typography variant="body2">Играть</Typography>
+              </IonTabButton>
+              {/* <IonTabButton tab="discovery" href="/" disabled>
               <IonIcon size="medium" icon={book} />
               <Typography variant="body2">Исследовать</Typography>
             </IonTabButton>
@@ -68,12 +87,13 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
               <IonIcon size="medium" icon={home} />
               <Typography variant="body2">Сообщество</Typography>
             </IonTabButton> */}
-            <IonTabButton tab="profile" href="/profile">
-              <IonIcon size="medium" icon={person} />
-              <Typography variant="body2">Профиль</Typography>
-            </IonTabButton>
-          </IonTabBar>
-        </IonTabs>
+              <IonTabButton tab="profile" href="/profile">
+                <IonIcon size="medium" icon={person} />
+                <Typography variant="body2">Профиль</Typography>
+              </IonTabButton>
+            </IonTabBar>
+          </IonTabs>
+        </Box>
       </IonReactRouter>
     </IonApp>
   );

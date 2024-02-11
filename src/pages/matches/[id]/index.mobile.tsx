@@ -15,7 +15,7 @@ export function MobileSingleMatchPage() {
             width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
-            position: 'fixed',
+            position: 'absolute',
             zIndex: 1,
             top: '2.5rem',
             px: 2,

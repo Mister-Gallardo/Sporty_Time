@@ -80,6 +80,16 @@ function DesktopHeader() {
                     О компании
                   </Typography>
                   <Typography
+                    onClick={() => history.push('/book-court')}
+                    sx={{
+                      opacity: '0.6',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Клубы
+                  </Typography>
+                  <Typography
                     onClick={() => history.push('/matches')}
                     sx={{
                       opacity: '0.6',
@@ -89,6 +99,21 @@ function DesktopHeader() {
                   >
                     Матчи
                   </Typography>
+                </>
+              )}
+              {isAuthorized ? (
+                <>
+                  <Link
+                    component={RouterLink}
+                    to="/profile"
+                    sx={{
+                      opacity: '0.6',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {firstName} {lastName}
+                  </Link>
                   <Typography
                     onClick={() => {
                       history.go(0);
@@ -103,19 +128,6 @@ function DesktopHeader() {
                     Выход
                   </Typography>
                 </>
-              )}
-              {isAuthorized ? (
-                <Link
-                  component={RouterLink}
-                  to="/profile"
-                  sx={{
-                    opacity: '0.6',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {firstName} {lastName}
-                </Link>
               ) : (
                 <Typography
                   onClick={() => history.push('/auth')}

@@ -133,7 +133,6 @@ export function BookCourt() {
       alignItems="center"
     >
       <Box
-        top={isMobile ? 'unset' : 70}
         bgcolor="#fff"
         position="fixed"
         zIndex={2}

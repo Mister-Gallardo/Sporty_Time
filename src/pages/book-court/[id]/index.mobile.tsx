@@ -15,7 +15,7 @@ export function MobileSingleCourtPage() {
             width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
-            position: 'fixed',
+            position: 'absolute',
             zIndex: 1,
             top: '1.5rem',
             px: 2,
