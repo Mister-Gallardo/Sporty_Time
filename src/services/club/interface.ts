@@ -58,7 +58,7 @@ export interface Club {
     }
   >;
   availableTimes?: Record<string, IAvailableTime[]>;
-  minPrice: number;
+  minPrice?: number;
   timezone: string;
   range?: number;
 }

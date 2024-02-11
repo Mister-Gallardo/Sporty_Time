@@ -1,7 +1,6 @@
 import { useHistory } from 'react-router';
 import { Club, IAvailableTime } from '../../services/club/interface';
-import { FavoriteBorderOutlined } from '@mui/icons-material';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { DateBox } from './DateBox';
 import { isPlatform } from '@ionic/react';
 import noImg from '../../images/no-image.jpg';
@@ -38,9 +37,6 @@ export const ClubCard: React.FC<IClubCard> = (props) => {
           backgroundPosition: 'center',
         }}
       >
-        <IconButton sx={{ position: 'absolute', top: '10px', right: '10px' }}>
-          <FavoriteBorderOutlined sx={{ color: '#fff' }} />
-        </IconButton>
         <Box
           position="absolute"
           bottom={0}
@@ -65,14 +61,16 @@ export const ClubCard: React.FC<IClubCard> = (props) => {
           <Typography fontSize={20} fontWeight={700}>
             {title}
           </Typography>
-          <Box>
-            <Typography textAlign="center" sx={{ opacity: 0.8 }}>
-              1ч от
-            </Typography>
-            <Typography fontSize={20} fontWeight={700}>
-              {minPrice} p
-            </Typography>
-          </Box>
+          {minPrice && (
+            <Box>
+              <Typography textAlign="center" sx={{ opacity: 0.8 }}>
+                1ч от
+              </Typography>
+              <Typography fontSize={20} fontWeight={700}>
+                {minPrice} p
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Box>
 
