@@ -18,7 +18,7 @@ import {
   registerUser,
 } from '../../services/auth/service';
 import { useHistory } from 'react-router';
-import { IonToast, isPlatform } from '@ionic/react';
+import { IonToast } from '@ionic/react';
 import useToggle from '../../hooks/useToggle';
 import { RestorePasswordModal } from '../../components/modals/RestorePasswordModal';
 import { AuthErrors } from '../../services/auth/interface';
@@ -197,7 +197,6 @@ export function AuthPage() {
   return (
     <Box
       sx={{
-        paddingTop: isPlatform('mobile') ? '0' : '10%',
         width: '100%',
         display: 'flex',
         height: '99%',

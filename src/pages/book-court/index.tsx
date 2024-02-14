@@ -16,7 +16,7 @@ import { SelectClubLocationModal } from '../../components/modals/filters-modals/
 import { SelectSportModal } from '../../components/modals/SelectSportModal';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 import { getSportName } from '../../helpers/getNameOf';
-import { isBefore, isToday } from 'date-fns';
+import { format, isBefore, isToday } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
 import { getUserLocation } from '../../helpers/getUserLocation';
 import { SelectedFilterButton } from '../../components/modals/filters-modals/SelectedFilterButton';
@@ -99,7 +99,8 @@ export function BookCourt() {
     }
   }, []);
 
-  const formatGameDate = new Date(gamedate).toLocaleDateString('en-ca');
+  const formatGameDate = format(new Date(gamedate), 'yyyy-MM-dd');
+
   const { data, isLoading } = useQuery({
     queryKey: ['clubs', gamedate, sport, lat, long, timefrom, timeto],
     queryFn: () =>

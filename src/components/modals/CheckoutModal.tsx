@@ -5,11 +5,9 @@ import { Box, Button, Divider, RadioGroup, Typography } from '@mui/material';
 import { EType, getDayFormat } from '../../helpers/getTimeDateString';
 import { ERadioLabelType, RadioLabel } from '../molecules/RadioLabel';
 import { ModalContainer } from './ModalContainer';
-import {
-  currentTimeInCLubTimezone,
-  parseDate,
-} from '../../helpers/getMatchStatus';
+import { currentTimeInCLubTimezone } from '../../helpers/getMatchStatus';
 import { Court } from '../../services/club/interface';
+import { differenceInHours, format, parseISO } from 'date-fns';
 
 interface ICheckoutModal {
   price: number;
@@ -50,10 +48,13 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
 
   // user must pay full price if there's < 12h left before the match
   const currentTime = timezone ? currentTimeInCLubTimezone(timezone) : 0;
-  const matchData = new Date(date).toLocaleDateString('en-ca');
-  const matchStartTime = parseDate(matchData, startTime, '');
 
-  const isPayingFullPrice = (matchStartTime - currentTime) / 1000 / 3600 < 12;
+  const matchStartTime = parseISO(
+    `${format(new Date(date), 'yyyy-MM-dd')}T${startTime}:00`,
+  );
+  const timeDifference = differenceInHours(matchStartTime, currentTime);
+
+  const isPayingFullPrice = timeDifference < 12;
   const total = isPayingFullPrice ? price : selectedPayment;
 
   const tags = court.tags.map((tag) => tag.title).join(' | ');

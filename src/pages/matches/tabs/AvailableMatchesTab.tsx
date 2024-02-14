@@ -20,6 +20,7 @@ import useToggle from '../../../hooks/useToggle';
 import { useLocalStorage } from 'usehooks-ts';
 import { ELeveling } from '../../question-form/questions';
 import { ESport } from '../../../services/matches/interface';
+import { format } from 'date-fns';
 
 const getMatchTime = (time: MatchTimeRange) => {
   switch (time) {
@@ -86,7 +87,7 @@ export function AvailableMatchesTab() {
   } = watch();
 
   const gameDatesToString = gamedates
-    ?.map((date) => new Date(date.value).toLocaleDateString('en-ca'))
+    ?.map((date) => format(new Date(date.value), 'yyyy-MM-dd'))
     .join(',');
   const clubsIdToString = clubsId?.map((clubVal) => clubVal).join(',');
 

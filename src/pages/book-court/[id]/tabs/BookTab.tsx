@@ -14,9 +14,9 @@ import { useSearchParam } from '../../../../hooks/useSearchParams';
 import useToggle from '../../../../hooks/useToggle';
 import { FormProvider, useForm } from 'react-hook-form';
 import { getDatesList } from '../../../../helpers/getDatesList';
-import { parseDate } from '../../../../helpers/getMatchStatus';
 import { Court, IAvailableTime } from '../../../../services/club/interface';
 import { EGender, EMatchType } from '../../../../services/matches/interface';
+import { format } from 'date-fns';
 
 export function BookTab() {
   const dates = getDatesList(100);
@@ -29,7 +29,7 @@ export function BookTab() {
   const [openSuccessBookToast, setOpenSuccessBookToast] = useToggle();
   const [date, setSelectedDate] = useSearchParam(
     'day',
-    new Date().toLocaleDateString('en-ca'),
+    format(new Date(), 'yyyy-MM-dd'),
   );
   const selectedDate = new Date(date);
   const [selectedTime = '', setSelectedTime] = useSearchParam('time');
@@ -60,7 +60,7 @@ export function BookTab() {
     queryKey: ['club', selectedDate, clubId],
     queryFn: () =>
       getClub(Number(clubId), {
-        gamedate: selectedDate.toLocaleDateString('en-ca'),
+        gamedate: format(selectedDate, 'yyyy-MM-dd'),
       }),
   });
 
@@ -99,9 +99,11 @@ export function BookTab() {
   }, [filteredTimes]);
 
   const onCheckout = (money: number) => {
-    const gameDate = new Date(
-      parseDate(selectedDate.toLocaleDateString('en-ca'), selectedTime, 'Z'),
-    );
+    const gameDate = `${format(
+      selectedDate,
+      'yyyy-MM-dd',
+    )}T${selectedTime}:00.00Z`;
+
     if (!selectedOption) return;
 
     createMatchMutation.mutate({
@@ -157,7 +159,7 @@ export function BookTab() {
                   <CalendarDay
                     key={i}
                     onSelect={() => {
-                      setSelectedDate(date.toLocaleDateString('en-ca'));
+                      setSelectedDate(format(new Date(date), 'yyyy-MM-dd'));
                     }}
                     date={date}
                     selected={selectedDate.toISOString() === date.toISOString()}

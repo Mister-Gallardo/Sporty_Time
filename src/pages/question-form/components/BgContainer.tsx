@@ -52,7 +52,7 @@ export const BgContainer = ({ children }: { children: JSX.Element[] }) => {
             bottom={0}
             bgcolor="#1f1f1fb0"
           />
-          <Box display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="center" pt={10}>
             <Box
               position="relative"
               zIndex={1}

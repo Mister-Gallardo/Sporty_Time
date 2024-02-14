@@ -44,19 +44,7 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
   return (
     <IonApp style={{ minHeight: '100dvh' }}>
       <IonReactRouter history={history}>
-        {isPlatform('desktop') && (
-          <Box
-            sx={{
-              width: '100%',
-              maxWidth: '1280px',
-              margin: '0 auto',
-              paddingInline: '15px',
-              height: '5rem',
-            }}
-          >
-            <DesktopHeader />
-          </Box>
-        )}
+        <DesktopHeader />
 
         <Box position="relative" height="100%">
           <IonTabs
