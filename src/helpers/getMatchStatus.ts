@@ -1,3 +1,4 @@
+import { getTime } from 'date-fns';
 import { MatchData, Status } from '../services/matches/interface';
 
 export const parseDate = (
@@ -14,12 +15,11 @@ export const currentTimeInCLubTimezone = (timeZone: string) => {
 };
 
 export const getMatchStatus = (match: MatchData) => {
-  const currentTime = Date.now();
+  const currentTime = getTime(new Date());
 
-  const [matchDate, matchTimeLong] = match.booking.startsAt.split('T');
+  const expiresTime = getTime(new Date(match.timeExpires));
+  const matchTime = getTime(new Date(match.booking.startsAt.slice(0, -5)));
 
-  const expiresTime = new Date(match.timeExpires).getTime();
-  const matchTime = parseDate(matchDate, matchTimeLong.slice(0, 5));
   const matchEndTime = matchTime + match.booking.duration * 60000;
 
   // is Cancelled

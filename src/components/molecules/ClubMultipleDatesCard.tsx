@@ -6,6 +6,7 @@ import useToggle from '../../hooks/useToggle';
 import { DateBox } from './DateBox';
 import { Club, IAvailableTime } from '../../services/club/interface';
 import noImg from '../../images/no-image.jpg';
+import { format } from 'date-fns';
 
 type AvailableTimeItem = [string, IAvailableTime[]];
 
@@ -13,7 +14,7 @@ interface IClubMultipleDatesCard extends Club {
   availableTimes?: any;
 }
 
-const date = new Date().toLocaleDateString('en-ca');
+const date = format(new Date(), 'yyyy-MM-dd');
 
 export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
   id,
