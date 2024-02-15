@@ -36,8 +36,7 @@ export async function getClubsByLocation({
   sport,
 }: LocationLatAndLong) {
   const { data } = await api.get<Club[]>(
-    //find miss setting and switch values back
-    `/clubs/all?lat=${long}&long=${lat}&sport=${sport}`,
+    `/clubs/all?lat=${lat}&long=${long}&sport=${sport}`,
   );
   return data;
 }

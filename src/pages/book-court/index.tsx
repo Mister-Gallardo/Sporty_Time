@@ -58,6 +58,8 @@ export function BookCourt() {
     sport: globalSport,
     gamedate: now.toString(),
     selectedLocation: 'Выбрать локацию',
+    timefrom: countDefaultTime(),
+    timeto: addTime(countDefaultTime(), 5 * 60),
   });
 
   const filterParams = useForm<FilterFormDate>({
@@ -67,18 +69,6 @@ export function BookCourt() {
   const { watch, setValue } = filterParams;
   const { sport, gamedate, lat, long, timefrom, timeto, selectedLocation } =
     watch();
-
-  useEffect(() => {
-    if (!timefrom) {
-      setValue('timefrom', countDefaultTime());
-    }
-    if (!timeto) {
-      setValue('timeto', addTime(countDefaultTime(), 5 * 60));
-    }
-    if (!gamedate) {
-      setValue('gamedate', now.toString());
-    }
-  }, []);
 
   const [isLoadingLocation, setIsLoadingLocaiton] = useToggle();
 
@@ -112,6 +102,7 @@ export function BookCourt() {
         timefrom,
         timeto,
       }),
+    enabled: lat !== undefined && long !== undefined,
   });
 
   const clubs = data?.data;
