@@ -136,6 +136,7 @@ export function AvailableMatchesTab() {
         timefrom,
         timeto,
       }),
+    enabled: lat !== undefined && long !== undefined,
   });
   const clubsArray = clubs.data?.data;
 

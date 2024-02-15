@@ -11,7 +11,8 @@ export const getUserLocation = async (
 
     const { latitude, longitude } = (await Geolocation.getCurrentPosition())
       .coords;
-    if (location === 'granted') {
+
+    if (location === 'granted' || location === 'prompt') {
       setValue('lat', latitude);
       setValue('long', longitude);
       setValue('selectedLocation', 'Рядом со мной');

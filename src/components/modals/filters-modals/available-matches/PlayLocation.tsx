@@ -76,7 +76,7 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
               onChange={(_, value) => {
                 resetField('clubsId');
                 if (value) {
-                  const [lat, long] = value.coordinates;
+                  const [long, lat] = value.coordinates;
 
                   setValue('long', long);
                   setValue('lat', lat);

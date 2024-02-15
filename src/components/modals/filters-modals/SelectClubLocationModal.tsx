@@ -127,7 +127,10 @@ export const SelectClubLocationModal: React.FC<
                       <ListItemIcon sx={{ minWidth: 'unset' }}>
                         <FmdGoodOutlinedIcon />
                       </ListItemIcon>
-                      <ListItemText primary={location.title} />
+                      <ListItemText
+                        primary={location.title}
+                        sx={{ color: '#111' }}
+                      />
                     </Box>
                     <ListItemIcon sx={{ minWidth: 'unset' }}>
                       <EastRoundedIcon />
