@@ -61,7 +61,7 @@ export const PlayDate: React.FC<IPlayDateProps> = ({ handleModal }) => {
   const isDisabled = time !== MatchTimeRange.SPECIFIC ? !time : !times.length;
 
   return (
-    <>
+    <Box>
       <Box
         mb={6}
         height="100%"
@@ -185,12 +185,14 @@ export const PlayDate: React.FC<IPlayDateProps> = ({ handleModal }) => {
           </Fade>
         )} */}
       </Box>
-      <FilterButton
-        handleClick={() => handleModal(false)}
-        disabled={isDisabled}
-      >
-        Посмотреть результаты
-      </FilterButton>
-    </>
+      <Box mb={-2}>
+        <FilterButton
+          handleClick={() => handleModal(false)}
+          disabled={isDisabled}
+        >
+          Посмотреть результаты
+        </FilterButton>
+      </Box>
+    </Box>
   );
 };

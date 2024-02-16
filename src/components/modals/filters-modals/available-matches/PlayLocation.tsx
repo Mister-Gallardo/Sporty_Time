@@ -57,7 +57,7 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
   const [isLoadingUserLocation, setIsLoadingLocaiton] = useToggle();
 
   return (
-    <>
+    <Box>
       <Box mb={6} height="100%">
         <Fade in>
           <Box height="100%">
@@ -137,6 +137,6 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
       >
         Далее
       </FilterButton>
-    </>
+    </Box>
   );
 };

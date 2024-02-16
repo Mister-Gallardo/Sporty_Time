@@ -58,7 +58,9 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
           </Box>
         </Box>
 
-        <Typography color="gray">11km · Dubai</Typography>
+        <Typography color="gray">
+          {matchData.booking.court?.club?.city}
+        </Typography>
 
         <Box mt={2} display="flex" justifyContent="space-between">
           <PlayerSlot player={players[0]} sport={matchData.sport} />

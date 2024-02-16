@@ -13,8 +13,8 @@ export const SportType: React.FC<ISportTypeProps> = ({ handleStep }) => {
   const { watch, control } = useFormContext();
   const { sport } = watch();
   return (
-    <>
-      <Box height="100%" mb={6}>
+    <Box height="100%">
+      <Box height="100%" mb={5}>
         <Controller
           name="sport"
           control={control}
@@ -40,9 +40,10 @@ export const SportType: React.FC<ISportTypeProps> = ({ handleStep }) => {
           )}
         />
       </Box>
+
       <FilterButton handleClick={() => handleStep(1)} disabled={!sport}>
         Далее
       </FilterButton>
-    </>
+    </Box>
   );
 };
