@@ -104,7 +104,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: getMatchTime(time),
       }),
-    enabled: !isEnabled,
+    enabled: !!gamedates.length && !isEnabled,
   });
   const availableArray = availableMatches.data?.data;
 
@@ -118,7 +118,7 @@ export function AvailableMatchesTab() {
         clubs: clubsIdToString,
         time: getMatchTime(time),
       }),
-    enabled: !isEnabled,
+    enabled: !!gamedates.length && !isEnabled,
   });
   const noRatingArray = noRatingMatches.data?.data;
 
@@ -136,7 +136,7 @@ export function AvailableMatchesTab() {
         timefrom,
         timeto,
       }),
-    enabled: lat !== undefined && long !== undefined,
+    enabled: !!gamedates.length && lat !== undefined && long !== undefined,
   });
   const clubsArray = clubs.data?.data;
 
@@ -163,6 +163,7 @@ export function AvailableMatchesTab() {
     timefrom,
     timeto,
     selectedLocation,
+    gamedates,
     forceRating,
     clubsId,
     range,

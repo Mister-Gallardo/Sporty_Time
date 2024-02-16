@@ -21,7 +21,7 @@ export const AskForLevel: React.FC<IAskForLevelProps> = ({
   const { sport, sportLevel } = watch();
 
   return (
-    <>
+    <Box>
       <Box height="100%" mb={6}>
         <Typography mb={2} fontSize={13} color="gray">
           Для того, что бы показать Вам подходящие результаты поиска, нам
@@ -73,6 +73,6 @@ export const AskForLevel: React.FC<IAskForLevelProps> = ({
         </Button>
       </Box>
       <FilterButton handleClick={() => handleStep(1)}>Далее</FilterButton>
-    </>
+    </Box>
   );
 };
