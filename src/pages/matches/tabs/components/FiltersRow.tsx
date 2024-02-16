@@ -82,7 +82,9 @@ export const FiltersRow: React.FC<IFiltersRowProps> = ({ handleModal }) => {
             handleModal();
           }}
         >
-          Клубы | {clubsId?.length}
+          {clubsId?.length === 0
+            ? 'Выбрать клуб'
+            : `Клубы | ${clubsId?.length}`}
         </SelectedFilterButton>
 
         <SelectedFilterButton

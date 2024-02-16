@@ -96,7 +96,7 @@ export function AvailableMatchesTab() {
 
   // Get Available matches
   const availableMatches = useQuery({
-    queryKey: [`available-matches`, gamedates, clubsId],
+    queryKey: [`available-matches`, gamedates, clubsId, sport],
     queryFn: () =>
       getAvailableMatches({
         sport,
@@ -110,7 +110,7 @@ export function AvailableMatchesTab() {
 
   // Get available matches with out of lvl range
   const noRatingMatches = useQuery({
-    queryKey: [`available-no-rating`, gamedates, clubsId],
+    queryKey: [`available-no-rating`, gamedates, clubsId, sport],
     queryFn: () =>
       getAvailableNoRatingMatches({
         sport,
@@ -127,7 +127,7 @@ export function AvailableMatchesTab() {
 
   // Get available clubs
   const clubs = useQuery({
-    queryKey: ['clubs', gamedates, clubsId],
+    queryKey: ['clubs', gamedates, clubsId, sport],
     queryFn: () =>
       getClubs({
         sport,

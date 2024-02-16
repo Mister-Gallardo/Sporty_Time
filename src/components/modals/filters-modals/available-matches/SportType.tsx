@@ -1,17 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Box, RadioGroup } from '@mui/material';
 import { ERadioLabelType, RadioLabel } from '../../../molecules/RadioLabel';
 import { FilterButton } from '../FilterButton';
 import { ESport } from '../../../../services/matches/interface';
+import { useLocalStorage } from 'usehooks-ts';
 
 interface ISportTypeProps {
   handleStep: (step: number) => void;
 }
 
 export const SportType: React.FC<ISportTypeProps> = ({ handleStep }) => {
-  const { watch, control } = useFormContext();
+  const { watch, control, setValue } = useFormContext();
   const { sport } = watch();
+
+  const [filters] = useLocalStorage('matchesFilter', { sport });
+
+  useEffect(() => {
+    if (filters.sport !== sport) setValue('clubsId', []);
+  }, [sport]);
+
   return (
     <Box height="100%">
       <Box height="100%" mb={5}>
