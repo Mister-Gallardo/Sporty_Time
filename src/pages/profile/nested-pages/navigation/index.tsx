@@ -41,7 +41,7 @@ export const ProfileNavPage = () => {
         <Box bgcolor="#f7f7f7" borderRadius={3} p={1}>
           <NavButton
             primaryText="Изменить профиль"
-            secondaryText="Имя, почта, телефон, локация, пол"
+            secondaryText="Имя, Фамилия, почта, пол"
             startIcon={<PersonOutlinedIcon sx={{ color: '#000' }} />}
             onClick={() => history.push('/profile/edit')}
           />
