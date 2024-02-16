@@ -102,7 +102,6 @@ export function BookCourt() {
         timefrom,
         timeto,
       }),
-    enabled: lat !== undefined && long !== undefined,
   });
 
   const clubs = data?.data;
