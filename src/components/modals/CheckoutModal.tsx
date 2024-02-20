@@ -8,6 +8,7 @@ import { ModalContainer } from './ModalContainer';
 import { currentTimeInCLubTimezone } from '../../helpers/getMatchStatus';
 import { Court } from '../../services/club/interface';
 import { differenceInHours, format, parseISO } from 'date-fns';
+import { renderCheckoutWidget } from '../../helpers/renderCheckoutWidget';
 
 interface ICheckoutModal {
   price: number;
@@ -160,7 +161,8 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
 
         <Box py={1.5} px={2} borderTop="1px solid #ddd">
           <Button
-            onClick={() => handleCheckout(total)}
+            // onClick={() => handleCheckout(total)}
+            onClick={() => renderCheckoutWidget()}
             variant="contained"
             sx={{
               backgroundColor: '#0d2432',
@@ -171,7 +173,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
             }}
             fullWidth
           >
-            Забронировать корт
+            Продолжить оплату
           </Button>
         </Box>
       </>

@@ -26,6 +26,8 @@ export function BookTab() {
 
   const [openConfigMatchModal, setOpenConfigMatchModal] = useToggle();
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
+  const [openPaymentWidget, setOpenPaymentWidget] = useToggle();
+
   const [openSuccessBookToast, setOpenSuccessBookToast] = useToggle();
   const [date, setSelectedDate] = useSearchParam(
     'day',
@@ -85,7 +87,7 @@ export function BookTab() {
   const createMatchMutation = useMutation({
     mutationFn: createMatch,
     onSuccess(data) {
-      data?.matchId && history.push(`/matches/${data.matchId}`);
+      // data?.matchId && history.push(`/matches/${data.matchId}`);
       refetchClubs();
       setOpenSuccessBookToast(true);
     },
