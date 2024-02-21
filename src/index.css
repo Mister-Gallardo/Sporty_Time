@@ -32,6 +32,10 @@ h6 {
   min-height: unset;
 }
 
+a {
+  text-decoration: none;
+}
+
 ion-loading {
   --background: transparent !important;
   --spinner-color: #1c6dff !important;
@@ -79,7 +83,6 @@ html {
   color: var(--color);
   background: var(--ion-background-color, #fff);
 }
-
 
 /* TEMP */
 * {

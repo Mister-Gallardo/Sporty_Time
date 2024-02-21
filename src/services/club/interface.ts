@@ -44,23 +44,37 @@ export interface Images {
 export interface Club {
   id: number;
   title: string;
-  city: string;
-  images: Images[];
-  user: User;
-  courts: Court[];
-  createdAt: Date;
-  updatedAt: Date;
-  availableSlots?: Record<
-    string,
-    {
-      available: Court[];
-      booked: Court[];
-    }
-  >;
-  availableTimes?: Record<string, IAvailableTime[]>;
-  minPrice?: number;
+  location: {
+    type: string;
+    coordinates: [number, number];
+  };
   timezone: string;
-  range?: number;
+  timezoneOffset: string;
+  city: string | null;
+  country: string | null;
+  district: string | null;
+  street: string | null;
+  postalCode: string | null;
+  description: string | null;
+  website: string | null;
+  phoneNumber: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  images: Images[];
+
+  // user: User;
+  // courts: Court[];
+  // availableSlots?: Record<
+  //   string,
+  //   {
+  //     available: Court[];
+  //     booked: Court[];
+  //   }
+  // >;
+  // availableTimes?: Record<string, IAvailableTime[]>;
+  // minPrice?: number;
+  // range?: number;
 }
 
 export interface Court {

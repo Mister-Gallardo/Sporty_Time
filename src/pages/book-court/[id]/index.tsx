@@ -14,13 +14,14 @@ import { getClubById } from '../../../services/club/service';
 import { useSearchParam } from '../../../hooks/useSearchParams';
 import noImg from '../../../images/no-image.jpg';
 import { NotFoundPage } from '../../../components/NotFoundPage';
+import { TabList } from '../../../components/molecules/TabList';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 export function SingleCourtPage() {
   const { clubId } = useParams<{ clubId: string }>();
 
-  const [tab] = useSearchParam('tab', '2');
+  const [tab, setTab] = useSearchParam('tab', '2');
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['club', clubId],
@@ -133,10 +134,10 @@ export function SingleCourtPage() {
               </IconButton> */}
             </Box>
 
-            {/* <TabList
-              tabs={['Главная', 'Бронь', 'Действия']}
-              onChange={(_, value) => setTabIndex('tab', value)}
-            /> */}
+            <TabList
+              tabs={['Главная', 'Бронь']}
+              onChange={(_, value) => setTab(value)}
+            />
           </Box>
         </Box>
 
@@ -146,9 +147,9 @@ export function SingleCourtPage() {
         <TabPanel value="2" sx={{ p: 0 }}>
           <BookTab />
         </TabPanel>
-        <TabPanel value="3" sx={{ p: 0 }}>
+        {/* <TabPanel value="3" sx={{ p: 0 }}>
           Something
-        </TabPanel>
+        </TabPanel> */}
       </TabContext>
     </SwipeablePage>
   );
