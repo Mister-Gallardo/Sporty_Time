@@ -25,6 +25,7 @@ import { useParams } from 'react-router';
 import { getClubById } from '../../../../services/club/service';
 import { LoadingCircle } from '../../../../components/atoms/LoadingCircle';
 import { isPlatform } from '@ionic/react';
+import { CustomClubMap } from '../../../../components/molecules/CustomClubMap';
 
 const isMobile = isPlatform('mobile');
 
@@ -41,7 +42,7 @@ export function BookTabMain() {
 
   return (
     <Box bgcolor="#fff" py={3} px={2} width="100%" maxWidth={1240} mx="auto">
-      <Stack spacing={isMobile ? 2 : 5}>
+      <Stack spacing={isMobile ? 2 : 3}>
         <Typography variant="h6">Информация клуба</Typography>
         <Box>
           <Stack direction="row" spacing={2}>
@@ -95,12 +96,9 @@ export function BookTabMain() {
             </Stack>
           </a>
         </Stack>
-        <Box
-          sx={{
-            height: '300px',
-            backgroundColor: '#757575',
-          }}
-        ></Box>
+
+        <CustomClubMap />
+
         <Box>
           <Typography variant="h6">График работы:</Typography>
           <List sx={{ width: '100%' }}>

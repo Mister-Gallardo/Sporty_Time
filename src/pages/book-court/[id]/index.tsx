@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IonBackButton, IonLoading } from '@ionic/react';
+import { IonBackButton, IonLoading, isPlatform } from '@ionic/react';
 import SwipeableViews from 'react-swipeable-views';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
@@ -17,6 +17,8 @@ import { NotFoundPage } from '../../../components/NotFoundPage';
 import { TabList } from '../../../components/molecules/TabList';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
+
+const isMobile = isPlatform('mobile');
 
 export function SingleCourtPage() {
   const { clubId } = useParams<{ clubId: string }>();
@@ -133,11 +135,16 @@ export function SingleCourtPage() {
                 />
               </IconButton> */}
             </Box>
-
-            <TabList
-              tabs={['Главная', 'Бронь']}
-              onChange={(_, value) => setTab(value)}
-            />
+            <Box
+              width={isMobile ? 'unset' : '100%'}
+              display={isMobile ? 'unset' : 'flex'}
+              justifyContent={isMobile ? 'unset' : 'center'}
+            >
+              <TabList
+                tabs={['Главная', 'Бронь']}
+                onChange={(_, value) => setTab(value)}
+              />
+            </Box>
           </Box>
         </Box>
 
