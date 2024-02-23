@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "591915381041",
+    "project_id": "st-ionic-push-notifications",
+    "storage_bucket": "st-ionic-push-notifications.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591915381041:android:0e4e9a8433029b5b8cc010",
+        "android_client_info": {
+          "package_name": "ru.sportytime"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZSt7CTFm778QnTM1kxKiet6c7XQuLfwY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
