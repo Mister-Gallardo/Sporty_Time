@@ -3,8 +3,5 @@
   "integrations": {
     "capacitor": {}
   },
-  "type": "react-vite",
-  "assets": [
-    "src/firebase-messaging-sw.js"
-  ]
+  "type": "react-vite"
 }

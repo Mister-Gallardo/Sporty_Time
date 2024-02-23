@@ -5,9 +5,6 @@ importScripts(
   'https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js',
 );
 
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/messaging';
-
 firebase.initializeApp({
   apiKey: 'AIzaSyCL7ELmGH9RmiSKe00OU_NtRSOTIDHAyio',
   authDomain: 'st-ionic-push-notifications.firebaseapp.com',
@@ -17,4 +14,5 @@ firebase.initializeApp({
   appId: '1:591915381041:web:3e316679e6b5edeb8cc010',
   measurementId: 'G-VC50FBZ5EK',
 });
-const messaging = firebase.messaging();
+
+firebase.messaging();
