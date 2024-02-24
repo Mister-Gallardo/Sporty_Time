@@ -53,6 +53,7 @@
     "react-router-dom": "^5.3.4",
     "react-swipeable-views": "^0.14.0",
     "react-swipeable-views-utils": "^0.14.0",
+    "react-toastify": "^10.0.4",
     "recharts": "^2.10.3",
     "usehooks-ts": "^2.12.1",
     "uuid": "^9.0.1"
