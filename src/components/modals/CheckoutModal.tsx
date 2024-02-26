@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
 import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
-import { Box, Button, Divider, RadioGroup, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  RadioGroup,
+  Typography,
+} from '@mui/material';
 import { EType, getDayFormat } from '../../helpers/getTimeDateString';
 import { ERadioLabelType, RadioLabel } from '../molecules/RadioLabel';
 import { ModalContainer } from './ModalContainer';
@@ -9,6 +16,8 @@ import { currentTimeInCLubTimezone } from '../../helpers/getMatchStatus';
 import { Court } from '../../services/club/interface';
 import { differenceInHours, format, parseISO } from 'date-fns';
 import { renderCheckoutWidget } from '../../helpers/renderCheckoutWidget';
+import { useMutation } from '@tanstack/react-query';
+import { createYookassa } from '../../services/matches/service';
 
 interface ICheckoutModal {
   price: number;
@@ -19,7 +28,6 @@ interface ICheckoutModal {
   timezone: string;
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  handleCheckout: (payPrice: number) => void;
 }
 
 export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
@@ -32,8 +40,17 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
     playTime,
     timezone,
     handleModal,
-    handleCheckout,
   } = props;
+
+  const cancelMatchMutation = useMutation({
+    mutationFn: createYookassa,
+    onSuccess(token) {
+      renderCheckoutWidget(token);
+    },
+    onError(error: any) {
+      console.log(error);
+    },
+  });
 
   const [payFor, setPayFor] = useState('0');
   const selectedPayment = payFor === '0' ? price / 4 : price;
@@ -162,7 +179,17 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
         <Box py={1.5} px={2} borderTop="1px solid #ddd">
           <Button
             // onClick={() => handleCheckout(total)}
-            onClick={() => renderCheckoutWidget()}
+            disabled={cancelMatchMutation.isPending}
+            endIcon={
+              cancelMatchMutation.isPending && <CircularProgress size={25} />
+            }
+            onClick={() =>
+              cancelMatchMutation.mutate({
+                // money: total,
+                money: 1,
+                description: 'Test 1',
+              })
+            }
             variant="contained"
             sx={{
               backgroundColor: '#0d2432',

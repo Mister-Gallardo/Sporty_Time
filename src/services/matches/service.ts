@@ -68,3 +68,8 @@ export function extraMatchPayment(matchId: number) {
   const res = api.post(`/matches/extra-payment/${matchId}`);
   return res;
 }
+
+export async function createYookassa(data: any) {
+  const res = await api.post('/matches/create-yookassa', data);
+  return res.data;
+}

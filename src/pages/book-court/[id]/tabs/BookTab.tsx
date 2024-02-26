@@ -26,7 +26,6 @@ export function BookTab() {
 
   const [openConfigMatchModal, setOpenConfigMatchModal] = useToggle();
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
-  const [openPaymentWidget, setOpenPaymentWidget] = useToggle();
 
   const [openSuccessBookToast, setOpenSuccessBookToast] = useToggle();
   const [date, setSelectedDate] = useSearchParam(
@@ -320,7 +319,7 @@ export function BookTab() {
           timezone={data?.timezone}
           openState={openCheckoutModal}
           handleModal={setOpenCheckoutModal}
-          handleCheckout={onCheckout}
+          // handleCheckout={onCheckout}
         />
       )}
     </>

@@ -4,10 +4,10 @@ declare global {
   }
 }
 
-export const renderCheckoutWidget = () => {
+export const renderCheckoutWidget = (token: string) => {
   const checkout = new window.YooMoneyCheckoutWidget({
-    confirmation_token: 'confirmation-token', //Token that must be obtained from YooMoney before the payment process
-    // return_url: 'https://example.com', // navigate after suc. payment
+    confirmation_token: token, //Token that must be obtained from YooMoney before the payment process
+    // return_url: 'https://dev.sportytime.ru/book-court/18', // navigate after suc. payment
     customization: {
       modal: true,
     },
@@ -17,9 +17,10 @@ export const renderCheckoutWidget = () => {
     },
   });
 
-  checkout.on('complete', () => {
+  checkout.on('complete', (e: any) => {
     //Code to be run after payment.
-
+    console.log(e);
+    console.log('test');
     //Deletion of an initialized widget
     checkout.destroy();
   });
