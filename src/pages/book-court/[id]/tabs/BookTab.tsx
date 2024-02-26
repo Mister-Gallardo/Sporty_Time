@@ -9,7 +9,7 @@ import { CalendarDay } from '../../../../components/molecules/CalendarDay';
 import { CourtAccordion } from '../../../../components/molecules/CourtAccordion';
 import { ConfigMatchModal } from '../../../../components/modals/ConfigMatchModal';
 import { CheckoutModal } from '../../../../components/modals/CheckoutModal';
-import { createMatch } from '../../../../services/matches/service';
+import { createYookassa } from '../../../../services/matches/service';
 import { useSearchParam } from '../../../../hooks/useSearchParams';
 import useToggle from '../../../../hooks/useToggle';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -17,6 +17,8 @@ import { getDatesList } from '../../../../helpers/getDatesList';
 import { Court, IAvailableTime } from '../../../../services/club/interface';
 import { EGender, EMatchType } from '../../../../services/matches/interface';
 import { format } from 'date-fns';
+import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
+import { useUserInfo } from '../../../../services/api/hooks';
 
 export function BookTab() {
   const dates = getDatesList(100);
@@ -52,12 +54,7 @@ export function BookTab() {
 
   const { getValues } = matchConfigForm;
 
-  const {
-    data,
-    isLoading,
-    isError,
-    refetch: refetchClubs,
-  } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['club', selectedDate, clubId],
     queryFn: () =>
       getClub(Number(clubId), {
@@ -83,35 +80,36 @@ export function BookTab() {
       : times;
   }, [data, onlyAvailableSlots]);
 
-  const createMatchMutation = useMutation({
-    mutationFn: createMatch,
-    onSuccess(data) {
-      // data?.matchId && history.push(`/matches/${data.matchId}`);
-      refetchClubs();
-      setOpenSuccessBookToast(true);
-    },
-    onError(e: any) {
-      console.log(e, 'ERROR');
-    },
-  });
-
   useEffect(() => {
     if (!selectedTime) setSelectedTime(filteredTimes?.[0] || '');
   }, [filteredTimes]);
 
+  const [user] = useUserInfo();
+
+  const createYookassaMutation = useMutation({
+    mutationFn: createYookassa,
+    onSuccess(token: string) {
+      renderCheckoutWidget(token);
+    },
+    onError(error: any) {
+      console.log(error);
+    },
+  });
+
   const onCheckout = (money: number) => {
+    if (!user || !selectedOption) return;
+
     const gameDate = `${format(
       selectedDate,
       'yyyy-MM-dd',
     )}T${selectedTime}:00.00Z`;
 
-    if (!selectedOption) return;
-
-    createMatchMutation.mutate({
+    createYookassaMutation.mutate({
+      userId: user?.id,
+      money,
       courtId: selectedOption.court.id,
       gameDate,
       playTime: selectedOption?.playTime,
-      money,
       ...getValues(),
     });
     setOpenCheckoutModal();
@@ -319,7 +317,7 @@ export function BookTab() {
           timezone={data?.timezone}
           openState={openCheckoutModal}
           handleModal={setOpenCheckoutModal}
-          // handleCheckout={onCheckout}
+          handleCheckout={onCheckout}
         />
       )}
     </>

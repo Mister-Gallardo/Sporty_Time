@@ -69,7 +69,7 @@ export function extraMatchPayment(matchId: number) {
   return res;
 }
 
-export async function createYookassa(data: any) {
+export async function createYookassa(data: CreateMatchDTO | JoinMatchDTO) {
   const res = await api.post('/matches/create-yookassa', data);
   return res.data;
 }

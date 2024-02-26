@@ -53,6 +53,7 @@ export interface MatchData {
 [];
 
 export interface CreateMatchDTO {
+  userId: number;
   courtId: number;
   money: number;
   gameDate: Date | string;
