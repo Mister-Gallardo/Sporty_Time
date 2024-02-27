@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   SportsTennis,
   Accessible,
@@ -26,6 +27,7 @@ import { getClubById } from '../../../../services/club/service';
 import { LoadingCircle } from '../../../../components/atoms/LoadingCircle';
 import { isPlatform } from '@ionic/react';
 import { CustomClubMap } from '../../../../components/molecules/CustomClubMap';
+import parse from 'html-react-parser';
 
 const isMobile = isPlatform('mobile');
 
@@ -44,6 +46,7 @@ export function BookTabMain() {
     <Box bgcolor="#fff" py={3} px={2} width="100%" maxWidth={1240} mx="auto">
       <Stack spacing={isMobile ? 2 : 3}>
         <Typography variant="h6">Информация клуба</Typography>
+        {data.description && <Typography>{parse(data.description)}</Typography>}
         <Box>
           <Stack direction="row" spacing={2}>
             <SportsTennis />
