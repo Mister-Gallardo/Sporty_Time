@@ -52,6 +52,7 @@
     "react-swipeable-views": "^0.14.0",
     "react-swipeable-views-utils": "^0.14.0",
     "recharts": "^2.10.3",
+    "socket.io-client": "^4.7.4",
     "usehooks-ts": "^2.12.1",
     "uuid": "^9.0.1"
   },

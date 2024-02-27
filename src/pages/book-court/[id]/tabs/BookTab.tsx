@@ -104,13 +104,25 @@ export function BookTab() {
       'yyyy-MM-dd',
     )}T${selectedTime}:00.00Z`;
 
+    // createYookassaMutation.mutate({
+    //   money,
+    //   courtId: selectedOption.court.id,
+    //   gameDate,
+    //   playTime: selectedOption?.playTime,
+    //   ...getValues(),
+    // });
     createYookassaMutation.mutate({
-      userId: user?.id,
-      money,
-      courtId: selectedOption.court.id,
-      gameDate,
-      playTime: selectedOption?.playTime,
-      ...getValues(),
+      money: 1,
+      description: `Court booking ${selectedOption.court.id}`,
+      metadata: {
+        meta_type: 'create',
+        meta_data: {
+          courtId: selectedOption.court.id,
+          gameDate,
+          playTime: selectedOption?.playTime,
+          ...getValues(),
+        },
+      },
     });
     setOpenCheckoutModal();
   };

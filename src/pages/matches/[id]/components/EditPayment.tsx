@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import { getMatchStatus } from '../../../../helpers/getMatchStatus';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  extraMatchPayment,
+  createYookassa,
   getOneAvailableMatch,
 } from '../../../../services/matches/service';
 import { useParams } from 'react-router';
@@ -10,6 +10,7 @@ import { useIonToast } from '@ionic/react';
 import { usePlayerProfile } from '../../../../services/api/hooks';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Status } from '../../../../services/matches/interface';
+import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
 
 export const EditPayment = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -19,7 +20,7 @@ export const EditPayment = () => {
 
   const [myPlayer] = usePlayerProfile();
 
-  const { data, refetch } = useQuery({
+  const { data } = useQuery({
     queryKey: [`match`, Number(matchId)],
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
@@ -28,17 +29,9 @@ export const EditPayment = () => {
   const isUserOwner = matchData?.owner?.id === myPlayer?.id;
 
   const extraPaymentMutation = useMutation({
-    mutationFn: extraMatchPayment,
-    onSuccess() {
-      refetch();
-      qc.resetQueries({ queryKey: ['my-matches', false] });
-      showToast({
-        color: 'success',
-        message: 'Матч подтверждён, благодарим за оплату!',
-        mode: 'ios',
-        position: 'bottom',
-        duration: 2000,
-      });
+    mutationFn: createYookassa,
+    onSuccess(token: string) {
+      renderCheckoutWidget(token);
     },
     onError() {
       showToast({

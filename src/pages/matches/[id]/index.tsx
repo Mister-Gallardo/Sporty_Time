@@ -15,6 +15,7 @@ import { useHistory, useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
+  createYookassa,
   getOneAvailableMatch,
   joinMatch,
 } from '../../../services/matches/service';
@@ -38,6 +39,7 @@ import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
 import { isBefore } from 'date-fns';
+import { renderCheckoutWidget } from '../../../helpers/renderCheckoutWidget';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
@@ -74,7 +76,7 @@ export function SingleMatchPage() {
 
   const qc = useQueryClient();
 
-  // Join Match / Book a Place Request
+  // Join Match / Book a Place Request (when match is fully paid)
   const joinMatchMutation = useMutation({
     mutationFn: joinMatch,
     onSuccess() {
@@ -100,6 +102,40 @@ export function SingleMatchPage() {
       });
     },
   });
+
+  // Join Match / Book a Place Request (when user has to pay for the spot)
+  const createYookassaMutation = useMutation({
+    mutationFn: createYookassa,
+    onSuccess(token: string) {
+      renderCheckoutWidget(token);
+    },
+    onError() {
+      showToast({
+        color: 'danger',
+        message: 'Ошибка! Попробуйте ещё раз!',
+        mode: 'ios',
+        position: 'bottom',
+        duration: 2000,
+      });
+    },
+  });
+
+  useEffect(() => {
+    const redirectOnSuccessPayment = (e: {
+      action: string;
+      matchId: number;
+    }) => {
+      if (!matchId) return;
+      qc.refetchQueries({ queryKey: ['my-matches'] });
+      if (e.action === 'update') history.push(`matches/${matchId}`);
+    };
+
+    // socket.on("", redirectOnSuccessPayment);
+
+    return () => {
+      // socket.off("", redirectOnSuccessPayment);
+    };
+  }, []);
 
   const [players, setPlayers] = useState<MatchPlayer[]>([]);
   const playerAlreadyInSomeTeam = !!singleMatchData?.matchBookings.find(
@@ -197,12 +233,21 @@ export function SingleMatchPage() {
 
   // when user joins the match
   const onMatchJoin = () => {
+    if (!myPlayer?.user) return;
+
     if (matchId && playerInTeam) {
-      joinMatchMutation.mutate({
-        matchId: Number(matchId),
-        team: playerInTeam,
-        money: singleMatchData.paid ? 0 : singleMatchData.price / 4,
-      });
+      if (singleMatchData.paid) {
+        joinMatchMutation.mutate({
+          matchId: Number(matchId),
+          team: playerInTeam,
+        });
+      } else {
+        createYookassaMutation.mutate({
+          matchId: Number(matchId),
+          team: playerInTeam,
+          money: singleMatchData.price / 4,
+        });
+      }
     } else {
       showToast({
         message: 'Выберите команду!',
@@ -287,53 +332,53 @@ export function SingleMatchPage() {
               </Box>
 
               {/* if user already in team | match already started/passed | there's full stack - hide btn */}
-              {!playerAlreadyInSomeTeam ||
+              {(singleMatchData.matchBookings.length === 4 ||
+                !playerAlreadyInSomeTeam ||
                 isBefore(
                   new Date(singleMatchData?.booking?.startsAt),
                   new Date(),
-                ) ||
-                (singleMatchData.matchBookings.length === 4 && (
-                  <Box
+                )) && (
+                <Box
+                  sx={{
+                    position: 'fixed',
+                    zIndex: 1,
+                    left: '0',
+                    right: '0',
+                    bottom: '1.5rem',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Button
+                    disabled={joinMatchMutation.isPending}
+                    endIcon={
+                      joinMatchMutation.isPending && <CircularProgress />
+                    }
+                    onClick={onBookPlace}
                     sx={{
-                      position: 'fixed',
-                      zIndex: 1,
-                      left: '0',
-                      right: '0',
-                      bottom: '1.5rem',
-                      width: '100%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
+                      paddingX: 2,
+                      background: '#0D2432',
+                      color: '#fff',
+                      boxShadow:
+                        'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                      '&:hover': {
+                        background: '#0D2432',
+                      },
+                      '&:disabled': {
+                        background: '#777',
+                        color: '#eee',
+                      },
                     }}
                   >
-                    <Button
-                      disabled={joinMatchMutation.isPending}
-                      endIcon={
-                        joinMatchMutation.isPending && <CircularProgress />
-                      }
-                      onClick={onBookPlace}
-                      sx={{
-                        paddingX: 2,
-                        background: '#0D2432',
-                        color: '#fff',
-                        boxShadow:
-                          'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-                        '&:hover': {
-                          background: '#0D2432',
-                        },
-                        '&:disabled': {
-                          background: '#777',
-                          color: '#eee',
-                        },
-                      }}
-                    >
-                      Забронировать место
-                      {singleMatchData.paid
-                        ? ''
-                        : '- ₽' + singleMatchData.price / 4}
-                    </Button>
-                  </Box>
-                ))}
+                    Забронировать место
+                    {singleMatchData.paid
+                      ? ''
+                      : '- ₽' + singleMatchData.price / 4}
+                  </Button>
+                </Box>
+              )}
               <ClubInfoBlock />
               <MatchInfoBlock />
             </Box>

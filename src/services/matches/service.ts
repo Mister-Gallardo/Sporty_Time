@@ -40,10 +40,10 @@ export function getOneAvailableMatch(id: number) {
   return res;
 }
 
-export async function createMatch(data: CreateMatchDTO) {
-  const { data: res } = await api.post('/matches', data);
-  return res;
-}
+// export async function createMatch(data: CreateMatchDTO) {
+//   const { data: res } = await api.post('/matches', data);
+//   return res;
+// }
 export function joinMatch(data: JoinMatchDTO) {
   const res = api.post('/matches/join', data);
   return res;
@@ -69,7 +69,9 @@ export function extraMatchPayment(matchId: number) {
   return res;
 }
 
-export async function createYookassa(data: CreateMatchDTO | JoinMatchDTO) {
+export async function createYookassa(
+  data: CreateMatchDTO | JoinMatchDTO | number,
+) {
   const res = await api.post('/matches/create-yookassa', data);
   return res.data;
 }
