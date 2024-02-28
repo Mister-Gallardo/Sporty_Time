@@ -23,6 +23,9 @@ export const getUserLocation = async (
     }
   } catch (error: any) {
     if (error.message === 'User denied Geolocation') {
+      alert(
+        'Что бы найти ближайшие к вам клубы необходима информация о вашей геолокации. В настройках вашего девайса вы можете разрешить приложению использовать данные о вашем местоположении',
+      );
       setValue('selectedLocation', 'Выбрать локацию');
     }
   } finally {
