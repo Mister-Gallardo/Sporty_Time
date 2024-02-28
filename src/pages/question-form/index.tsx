@@ -9,18 +9,12 @@ import {
   GetTokenOptions,
 } from '@capacitor-firebase/messaging';
 import { Capacitor } from '@capacitor/core';
-import { vapidKey } from '../../notifications/firebase';
-import { toast } from 'react-toastify';
+import { vapidKey } from '../../services/notifications/firebase';
 
 export function QuestionFormPage() {
   const addListeners = useCallback(() => {
     FirebaseMessaging.addListener('notificationReceived', (event) => {
-      toast(
-        <>
-          <p>{event.notification?.title}</p>
-          <p>{event.notification?.body}</p>
-        </>,
-      );
+      console.log(event);
     });
 
     FirebaseMessaging.addListener('notificationActionPerformed', (event) => {
@@ -33,7 +27,7 @@ export function QuestionFormPage() {
       if (receive === 'granted') {
         addListeners();
 
-        const options: GetTokenOptions = { vapidKey: vapidKey };
+        const options: GetTokenOptions = { vapidKey };
 
         if (Capacitor.getPlatform() === 'web') {
           if ('serviceWorker' in navigator) {

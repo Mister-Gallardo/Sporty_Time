@@ -5,9 +5,7 @@ import { mobileRoutes } from './routes';
 import { LoadingCircle } from './components/atoms/LoadingCircle';
 import { Capacitor } from '@capacitor/core';
 import { initializeApp } from 'firebase/app';
-import { firebaseConfig } from './notifications/firebase';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { firebaseConfig } from './services/notifications/firebase';
 import { Geolocation } from '@capacitor/geolocation';
 
 setupIonicReact({ mode: 'ios' });
@@ -15,26 +13,23 @@ const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 
 const App: React.FC = () => {
   useEffect(() => {
+    Geolocation.getCurrentPosition();
+  }, []);
+
+  useEffect(() => {
     if (Capacitor.isNativePlatform()) return;
     initializeApp(firebaseConfig);
   }, []);
 
-  useEffect(() => {
-    Geolocation.getCurrentPosition();
-  }, []);
-
   return (
-    <>
-      <Suspense fallback={<LoadingCircle />}>
-        <MobileLayout>
-          {mobileRoutes.map((route, i) => (
-            <Route key={i} {...route} />
-          ))}
-          <Redirect to="/" />
-        </MobileLayout>
-      </Suspense>
-      <ToastContainer />
-    </>
+    <Suspense fallback={<LoadingCircle />}>
+      <MobileLayout>
+        {mobileRoutes.map((route, i) => (
+          <Route key={i} {...route} />
+        ))}
+        <Redirect to="/" />
+      </MobileLayout>
+    </Suspense>
   );
 };
 
