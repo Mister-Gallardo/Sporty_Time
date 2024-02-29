@@ -7,6 +7,7 @@ import { Capacitor } from '@capacitor/core';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from './services/notifications/firebase';
 import { Geolocation } from '@capacitor/geolocation';
+import { useNotifications } from './hooks/useNotifications';
 
 setupIonicReact({ mode: 'ios' });
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
@@ -14,12 +15,11 @@ const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 const App: React.FC = () => {
   useEffect(() => {
     Geolocation.getCurrentPosition();
-  }, []);
-
-  useEffect(() => {
     if (Capacitor.isNativePlatform()) return;
     initializeApp(firebaseConfig);
   }, []);
+
+  useNotifications();
 
   return (
     <Suspense fallback={<LoadingCircle />}>

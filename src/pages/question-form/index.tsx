@@ -3,68 +3,10 @@ import { QuestionsStepStep } from './steps/QuestionsStep';
 import { ChooseYourSport } from './steps/ChooseYourSport';
 import { LevelingStep } from './steps/LevelingStep';
 import { ResultsStep } from './steps/Results';
-import { useCallback, useEffect } from 'react';
-import {
-  FirebaseMessaging,
-  GetTokenOptions,
-} from '@capacitor-firebase/messaging';
-import { Capacitor } from '@capacitor/core';
-import { vapidKey } from '../../services/notifications/firebase';
+import { useNotifications } from '../../hooks/useNotifications';
 
 export function QuestionFormPage() {
-  const addListeners = useCallback(() => {
-    FirebaseMessaging.addListener('notificationReceived', (event) => {
-      console.log(event);
-    });
-
-    FirebaseMessaging.addListener('notificationActionPerformed', (event) => {
-      console.log('notificationActionPerformed: ', { event });
-    });
-  }, []);
-
-  useEffect(() => {
-    FirebaseMessaging.requestPermissions().then(({ receive }) => {
-      if (receive === 'granted') {
-        addListeners();
-
-        const options: GetTokenOptions = { vapidKey };
-
-        if (Capacitor.getPlatform() === 'web') {
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker
-              .register('../firebase-messaging-sw.js', {
-                scope: './',
-              })
-              .then(
-                (registration) =>
-                  (options.serviceWorkerRegistration = registration),
-              )
-              .catch(console.error);
-
-            navigator.serviceWorker.addEventListener(
-              'message',
-              (event: any) => {
-                const notification = new Notification(
-                  event.data.notification.title,
-                  {
-                    body: event.data.notification.body,
-                  },
-                );
-                notification.onclick = (event) => {
-                  console.log('notification clicked: ', { event });
-                };
-              },
-            );
-          }
-        }
-        FirebaseMessaging.getToken(options).then(({ token }) => {
-          console.log('token: ', token);
-        });
-      } else {
-        FirebaseMessaging.requestPermissions();
-      }
-    });
-  }, []);
+  useNotifications();
 
   const [step, setStep] = useSearchParam('step', '1');
   const currentStep = Number(step);
