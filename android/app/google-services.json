@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "591915381041",
-    "project_id": "st-ionic-push-notifications",
-    "storage_bucket": "st-ionic-push-notifications.appspot.com"
+    "project_number": "796890637573",
+    "project_id": "sportytime-d49ed",
+    "storage_bucket": "sportytime-d49ed.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:591915381041:android:0e4e9a8433029b5b8cc010",
+        "mobilesdk_app_id": "1:796890637573:android:37361cf8e6e3f15eef836c",
         "android_client_info": {
           "package_name": "ru.sportytime"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCZSt7CTFm778QnTM1kxKiet6c7XQuLfwY"
+          "current_key": "AIzaSyB2si7GJnSdDF9EiD0cMZUtGD9Gu9o0KJM"
         }
       ],
       "services": {
