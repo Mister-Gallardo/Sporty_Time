@@ -98,7 +98,7 @@ export const mobileRoutes = [
     path: '/chats/:chatId',
     exact: true,
     component: MobileSingleChatPage,
-    showTabBar: true,
+    showTabBar: false,
   },
   {
     path: '/profile/edit',

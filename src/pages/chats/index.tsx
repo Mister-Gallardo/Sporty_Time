@@ -1,26 +1,29 @@
-import { Box, Container } from '@mui/material';
-import { ChatItem } from './components/ChatItem';
-import { useQuery } from '@tanstack/react-query';
-import { getChats } from '../../services/chats/service';
-import { IonLoading } from '@ionic/react';
-import { NotFoundPage } from '../../components/NotFoundPage';
+import { Box, Stack } from '@mui/material';
+import { useSearchParam } from '../../hooks/useSearchParams';
+import { MessageTextField } from './components/MessageTextField';
+import { ChatsList } from './components/ChatsList';
+import { MessagesList } from './components/MessagesList';
+import { MatchDataHeader } from './components/MatchDataHeader';
 
 export function ChatsPage() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['chat'],
-    queryFn: getChats,
-  });
-
-  if (isLoading) return <IonLoading isOpen />;
-  if (!data) return <NotFoundPage />;
+  const [chatId] = useSearchParam('chat', '');
 
   return (
-    <Container maxWidth="md">
-      <Box my={2} display="flex" flexDirection="column" gap={2.5}>
-        {data.length > 0 &&
-          data.map((chat) => <ChatItem key={chat.id} {...chat} />)}
-      </Box>
-    </Container>
+    <Box
+      display="flex"
+      maxWidth={1240}
+      height="78vh"
+      m="auto"
+      mt={4}
+      boxShadow="1px 1px 14px #00000017"
+    >
+      <ChatsList />
+      <Stack width="70%">
+        <MatchDataHeader />
+        <MessagesList />
+        <MessageTextField chatId={chatId} />
+      </Stack>
+    </Box>
   );
 }
 
