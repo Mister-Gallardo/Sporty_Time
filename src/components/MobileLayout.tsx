@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   IonApp,
   IonIcon,
@@ -30,7 +31,7 @@ import { Box, Typography } from '@mui/material';
 import { history } from '../services/history/service';
 import { RouteExtraProps, mobileRoutes } from '../routes';
 import { useCurrentRoute } from '../hooks/useCurrentRoute';
-import DesktopHeader from './DesktopHeader';
+import DesktopHeader from './organisms/DesktopHeader';
 
 export interface IMobileLayoutProps {
   children: React.ReactNode;
