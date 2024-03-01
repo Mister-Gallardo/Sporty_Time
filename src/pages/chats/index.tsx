@@ -1,9 +1,11 @@
-import { Box, Stack } from '@mui/material';
+import React from 'react';
+import { Box, Stack, Typography } from '@mui/material';
 import { useSearchParam } from '../../hooks/useSearchParams';
 import { MessageTextField } from './components/MessageTextField';
 import { ChatsList } from './components/ChatsList';
 import { MessagesList } from './components/MessagesList';
 import { MatchDataHeader } from './components/MatchDataHeader';
+import emptyImg from '../../images/no-results.svg';
 
 export function ChatsPage() {
   const [chatId] = useSearchParam('chat', '');
@@ -19,9 +21,20 @@ export function ChatsPage() {
     >
       <ChatsList />
       <Stack width="70%">
-        <MatchDataHeader />
-        <MessagesList />
-        <MessageTextField chatId={chatId} />
+        {chatId ? (
+          <>
+            <MatchDataHeader />
+            <MessagesList />
+            <MessageTextField chatId={chatId} />
+          </>
+        ) : (
+          <Stack alignItems="center" height="100%" justifyContent="center">
+            <Box component="img" src={emptyImg} width="40%" />
+            <Typography textAlign="center" color="gray" fontSize={16}>
+              Выберите чат...
+            </Typography>
+          </Stack>
+        )}
       </Stack>
     </Box>
   );

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
@@ -12,6 +13,7 @@ const isDesktop = isPlatform('desktop');
 
 export const MessagesList = () => {
   const [chatIdDesktop] = useSearchParam('chat', '');
+
   const { chatId } = useParams<{ chatId: string }>();
 
   const currentChatId = isDesktop ? chatIdDesktop : chatId;
