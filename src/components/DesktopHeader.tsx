@@ -2,7 +2,7 @@ import { useHistory, useLocation } from 'react-router';
 import { SportsBaseballOutlined } from '@mui/icons-material';
 import { Box, Link, Typography } from '@mui/material';
 import { useIsAuthorized, useUserInfo } from '../services/api/hooks';
-import { Link as RouterLink } from 'react-router-dom';
+import { NavLink as RouterNavLink } from 'react-router-dom';
 import { isPlatform } from '@ionic/react';
 
 function DesktopHeader() {
@@ -80,48 +80,56 @@ function DesktopHeader() {
                 <Box sx={{ display: 'flex', gap: '10px' }}>
                   {isAuthorized && (
                     <>
-                      <Typography
-                        onClick={() => history.push('/about')}
-                        sx={{
-                          opacity: '0.6',
-                          textDecoration: 'underline',
-                          cursor: 'pointer',
-                        }}
+                      <Link
+                        component={RouterNavLink}
+                        to="/about"
+                        exact
+                        underline="none"
+                        color="#333"
+                        fontWeight={500}
                       >
                         О компании
-                      </Typography>
-                      <Typography
-                        onClick={() => history.push('/book-court')}
-                        sx={{
-                          opacity: '0.6',
-                          textDecoration: 'underline',
-                          cursor: 'pointer',
-                        }}
+                      </Link>
+                      <Link
+                        component={RouterNavLink}
+                        to="/book-court"
+                        exact
+                        underline="none"
+                        color="#333"
+                        fontWeight={500}
                       >
                         Клубы
-                      </Typography>
-                      <Typography
-                        onClick={() => history.push('/matches')}
-                        sx={{
-                          opacity: '0.6',
-                          textDecoration: 'underline',
-                          cursor: 'pointer',
-                        }}
+                      </Link>
+                      <Link
+                        component={RouterNavLink}
+                        to="/chats"
+                        exact
+                        underline="none"
+                        color="#333"
+                        fontWeight={500}
+                      >
+                        Чаты
+                      </Link>
+                      <Link
+                        component={RouterNavLink}
+                        to="/matches"
+                        exact
+                        underline="none"
+                        color="#333"
+                        fontWeight={500}
                       >
                         Матчи
-                      </Typography>
+                      </Link>
                     </>
                   )}
                   {isAuthorized ? (
                     <>
                       <Link
-                        component={RouterLink}
+                        component={RouterNavLink}
                         to="/profile"
-                        sx={{
-                          opacity: '0.6',
-                          textDecoration: 'underline',
-                          cursor: 'pointer',
-                        }}
+                        exact
+                        color="#333"
+                        fontWeight={500}
                       >
                         {firstName} {lastName}
                       </Link>
@@ -140,16 +148,15 @@ function DesktopHeader() {
                       </Typography>
                     </>
                   ) : (
-                    <Typography
-                      onClick={() => history.push('/auth')}
-                      sx={{
-                        opacity: '0.6',
-                        textDecoration: 'underline',
-                        cursor: 'pointer',
-                      }}
+                    <Link
+                      component={RouterNavLink}
+                      to="/auth"
+                      exact
+                      color="#333"
+                      fontWeight={500}
                     >
                       Войти
-                    </Typography>
+                    </Link>
                   )}
                 </Box>
               </Box>

@@ -8,13 +8,26 @@ import {
   IonToolbar,
   isPlatform,
 } from '@ionic/react';
+import { Suspense, useEffect } from 'react';
+import { Box } from '@mui/material';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
-import React, { Suspense } from 'react';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
+import { MessageTextField } from '../components/MessageTextField';
+import { MatchDataHeader } from '../components/MatchDataHeader';
+import { MessagesList } from '../components/MessagesList';
+import { useHistory, useParams } from 'react-router';
 
-const SingleChatPage = React.lazy(() => import('.'));
+const isDesktop = isPlatform('desktop');
 
 export function MobileSingleChatPage() {
+  const { chatId } = useParams<{ chatId: string }>();
+  const history = useHistory();
+
+  useEffect(() => {
+    if (isDesktop) {
+      history.push(`/chats?chat=${chatId}`);
+    }
+  }, []);
   return (
     <IonPage>
       {isPlatform('mobile') && (
@@ -31,7 +44,25 @@ export function MobileSingleChatPage() {
       )}
       <IonContent fullscreen>
         <Suspense fallback={<LoadingCircle />}>
-          <SingleChatPage />
+          <Box>
+            <Box position="fixed" zIndex={2} right={0} left={0} bgcolor="#fff">
+              <MatchDataHeader />
+            </Box>
+            <Box pt={8} pb={6}>
+              <MessagesList />
+            </Box>
+
+            <Box
+              position="fixed"
+              zIndex={1}
+              bottom={0}
+              right={0}
+              left={0}
+              bgcolor="#fff"
+            >
+              <MessageTextField chatId={chatId} />
+            </Box>
+          </Box>
         </Suspense>
       </IonContent>
     </IonPage>
