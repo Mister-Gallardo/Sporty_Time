@@ -273,15 +273,18 @@ export function SingleMatchPage() {
 
               {Date.now() > startsAt.getTime() && <UploadResultsBlock />}
 
-              <Box maxWidth={125} mx="auto" mb={2}>
-                <Link
-                  to={isMobile ? `/chats/${matchId}` : `/chats?chat=${matchId}`}
-                >
-                  <ChatBubbleOutlineRounded sx={{ marginRight: '.75rem' }} />
-                  <Typography fontWeight={600}>Чат</Typography>
-                </Link>
-              </Box>
-
+              {playerAlreadyInSomeTeam && (
+                <Box maxWidth={125} mx="auto" mb={2}>
+                  <Link
+                    to={
+                      isMobile ? `/chats/${matchId}` : `/chats?chat=${matchId}`
+                    }
+                  >
+                    <ChatBubbleOutlineRounded sx={{ marginRight: '.75rem' }} />
+                    <Typography fontWeight={600}>Чат</Typography>
+                  </Link>
+                </Box>
+              )}
               {/* if user already in team | match already started/passed | there's full stack - hide btn */}
               {!playerAlreadyInSomeTeam ||
                 isBefore(
