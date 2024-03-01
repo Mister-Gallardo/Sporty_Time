@@ -130,7 +130,7 @@ export function BookTab() {
     socket.on('newMatch', redirectOnSuccessPayment);
 
     return () => {
-      socket.off('', redirectOnSuccessPayment);
+      socket.off('newMatch', redirectOnSuccessPayment);
     };
   }, []);
 

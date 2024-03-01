@@ -40,6 +40,7 @@ import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
 import { isBefore } from 'date-fns';
 import { renderCheckoutWidget } from '../../../helpers/renderCheckoutWidget';
+import { socket } from '../../../utils/socket';
 
 export function SingleMatchPage() {
   const isMobile = isPlatform('mobile');
@@ -91,11 +92,11 @@ export function SingleMatchPage() {
       refetchMatch();
       qc.resetQueries({ queryKey: ['my-matches', false] });
     },
-    onError() {
+    onError(e: any) {
       setOpenCheckoutModal();
       showToast({
         header: 'Ошибка!',
-        message: 'Не удалось присоединиться к матчу',
+        message: e?.response?.data?.message,
         duration: 2000,
         position: 'bottom',
         color: 'danger',
@@ -108,15 +109,18 @@ export function SingleMatchPage() {
     mutationFn: createJoinMatchYookassaToken,
     onSuccess(token: string) {
       renderCheckoutWidget(token);
+      setOpenCheckoutModal();
     },
-    onError() {
+    onError(e: any) {
       showToast({
         color: 'danger',
-        message: 'Ошибка! Попробуйте ещё раз!',
+        message: e?.response?.data?.message,
         mode: 'ios',
         position: 'bottom',
         duration: 2000,
       });
+
+      setOpenCheckoutModal();
     },
   });
 
@@ -240,6 +244,20 @@ export function SingleMatchPage() {
       });
     }
   };
+
+  useEffect(() => {
+    const updateMatchData = (e: { action: string }) => {
+      if (e.action === 'update') {
+        qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
+      }
+    };
+
+    socket.on(`matchId - ${matchId}`, updateMatchData);
+
+    return () => {
+      socket.off(`matchId - ${matchId}`, updateMatchData);
+    };
+  }, []);
 
   const booking = singleMatchData.booking;
   if (!booking) return <LoadingCircle />;
