@@ -54,20 +54,14 @@ export interface MatchData {
 
 export interface CreateMatchDTO {
   money: number;
-  description: string;
-  metadata: {
-    meta_type: string;
-    meta_data: {
-      courtId: number;
-      gameDate: Date | string;
-      type: EMatchType;
-      playTime: number;
-      ratingFrom: number;
-      ratingTo: number;
-      gender: EGender;
-      isPrivate: boolean;
-    };
-  };
+  courtId: number;
+  gameDate: Date | string;
+  type: EMatchType;
+  playTime: number;
+  ratingFrom: number;
+  ratingTo: number;
+  gender: EGender;
+  isPrivate: boolean;
 }
 
 export interface JoinMatchDTO {

@@ -15,7 +15,7 @@ import { useHistory, useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
-  createYookassa,
+  createJoinMatchYookassaToken,
   getOneAvailableMatch,
   joinMatch,
 } from '../../../services/matches/service';
@@ -105,7 +105,7 @@ export function SingleMatchPage() {
 
   // Join Match / Book a Place Request (when user has to pay for the spot)
   const createYookassaMutation = useMutation({
-    mutationFn: createYookassa,
+    mutationFn: createJoinMatchYookassaToken,
     onSuccess(token: string) {
       renderCheckoutWidget(token);
     },
@@ -119,23 +119,6 @@ export function SingleMatchPage() {
       });
     },
   });
-
-  useEffect(() => {
-    const redirectOnSuccessPayment = (e: {
-      action: string;
-      matchId: number;
-    }) => {
-      if (!matchId) return;
-      qc.refetchQueries({ queryKey: ['my-matches'] });
-      if (e.action === 'update') history.push(`matches/${matchId}`);
-    };
-
-    // socket.on("", redirectOnSuccessPayment);
-
-    return () => {
-      // socket.off("", redirectOnSuccessPayment);
-    };
-  }, []);
 
   const [players, setPlayers] = useState<MatchPlayer[]>([]);
   const playerAlreadyInSomeTeam = !!singleMatchData?.matchBookings.find(
@@ -236,6 +219,7 @@ export function SingleMatchPage() {
     if (!myPlayer?.user) return;
 
     if (matchId && playerInTeam) {
+      // if match is fully paid - just join the mtach without payment
       if (singleMatchData.paid) {
         joinMatchMutation.mutate({
           matchId: Number(matchId),

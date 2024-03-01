@@ -4,12 +4,12 @@ import { IonSpinner, IonToast, IonToggle, isPlatform } from '@ionic/react';
 import { Box, Typography, Divider, Stack } from '@mui/material';
 import { SportsTennis } from '@mui/icons-material';
 import { getClub } from '../../../../services/club/service';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CalendarDay } from '../../../../components/molecules/CalendarDay';
 import { CourtAccordion } from '../../../../components/molecules/CourtAccordion';
 import { ConfigMatchModal } from '../../../../components/modals/ConfigMatchModal';
 import { CheckoutModal } from '../../../../components/modals/CheckoutModal';
-import { createYookassa } from '../../../../services/matches/service';
+import { createBookingYookassaToken } from '../../../../services/matches/service';
 import { useSearchParam } from '../../../../hooks/useSearchParams';
 import useToggle from '../../../../hooks/useToggle';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -19,6 +19,7 @@ import { EGender, EMatchType } from '../../../../services/matches/interface';
 import { format } from 'date-fns';
 import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
 import { useUserInfo } from '../../../../services/api/hooks';
+import { socket } from '../../../../utils/socket';
 
 export function BookTab() {
   const dates = getDatesList(100);
@@ -87,7 +88,7 @@ export function BookTab() {
   const [user] = useUserInfo();
 
   const createYookassaMutation = useMutation({
-    mutationFn: createYookassa,
+    mutationFn: createBookingYookassaToken,
     onSuccess(token: string) {
       renderCheckoutWidget(token);
     },
@@ -104,28 +105,34 @@ export function BookTab() {
       'yyyy-MM-dd',
     )}T${selectedTime}:00.00Z`;
 
-    // createYookassaMutation.mutate({
-    //   money,
-    //   courtId: selectedOption.court.id,
-    //   gameDate,
-    //   playTime: selectedOption?.playTime,
-    //   ...getValues(),
-    // });
     createYookassaMutation.mutate({
-      money: 1,
-      description: `Court booking ${selectedOption.court.id}`,
-      metadata: {
-        meta_type: 'create',
-        meta_data: {
-          courtId: selectedOption.court.id,
-          gameDate,
-          playTime: selectedOption?.playTime,
-          ...getValues(),
-        },
-      },
+      money,
+      courtId: selectedOption.court.id,
+      gameDate,
+      playTime: selectedOption?.playTime,
+      ...getValues(),
     });
     setOpenCheckoutModal();
   };
+
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    const redirectOnSuccessPayment = (e: {
+      action: string;
+      matchId: number;
+    }) => {
+      if (!e.matchId) return;
+      qc.refetchQueries({ queryKey: ['my-matches'] });
+      if (e.action === 'create') history.push(`matches/${e.matchId}`);
+    };
+
+    socket.on('newMatch', redirectOnSuccessPayment);
+
+    return () => {
+      socket.off('', redirectOnSuccessPayment);
+    };
+  }, []);
 
   if (isError) {
     history.push('/book-court');

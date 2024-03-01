@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import { getMatchStatus } from '../../../../helpers/getMatchStatus';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  createYookassa,
+  createExtraPaymentYookassaToken,
   getOneAvailableMatch,
 } from '../../../../services/matches/service';
 import { useParams } from 'react-router';
@@ -29,7 +29,7 @@ export const EditPayment = () => {
   const isUserOwner = matchData?.owner?.id === myPlayer?.id;
 
   const extraPaymentMutation = useMutation({
-    mutationFn: createYookassa,
+    mutationFn: createExtraPaymentYookassaToken,
     onSuccess(token: string) {
       renderCheckoutWidget(token);
     },
@@ -62,6 +62,8 @@ export const EditPayment = () => {
 
   const formatMustBePaidDate = `${payDate} | ${payTime.slice(0, 5)}`;
 
+  const extraPayment = price - currentPaidAmount;
+
   return (
     <Box py={2} px={1} border="1px solid #ffdee4" borderRadius={2}>
       <Typography mb={1} fontSize={15} fontWeight={600}>
@@ -77,12 +79,17 @@ export const EditPayment = () => {
       </Box>
 
       <Button
-        onClick={() => extraPaymentMutation.mutate(+matchId)}
+        onClick={() =>
+          extraPaymentMutation.mutate({
+            matchId: +matchId,
+            money: extraPayment,
+          })
+        }
         variant="contained"
         sx={{ backgroundColor: 'success.main', mt: 2 }}
         fullWidth
       >
-        Доплатить - {price - currentPaidAmount} ₽
+        Доплатить - {extraPayment} ₽
       </Button>
     </Box>
   );

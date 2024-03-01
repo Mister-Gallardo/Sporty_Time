@@ -64,14 +64,35 @@ export function deletePlayerFromMatch(data: RemovePlayerFromMatch) {
   return res;
 }
 
-export function extraMatchPayment(matchId: number) {
-  const res = api.post(`/matches/extra-payment/${matchId}`);
-  return res;
+// export function extraMatchPayment(matchId: number) {
+//   const res = api.post(`/matches/extra-payment/${matchId}`);
+//   return res;
+// }
+
+// export async function createYookassa(
+//   data: CreateMatchDTO | JoinMatchDTO | number,
+// ) {
+//   const res = await api.post('/matches/create-yookassa', data);
+//   return res.data;
+// }
+
+// get Yookassa's token for creating new match payment
+export async function createBookingYookassaToken(data: CreateMatchDTO) {
+  const res = await api.post('/matches/new-match-payment', data);
+  return res.data;
 }
 
-export async function createYookassa(
-  data: CreateMatchDTO | JoinMatchDTO | number,
-) {
-  const res = await api.post('/matches/create-yookassa', data);
+// get Yookassa's token for join match payment
+export async function createJoinMatchYookassaToken(data: JoinMatchDTO) {
+  const res = await api.post('/matches/join-payment', data);
+  return res.data;
+}
+
+// get Yookassa's token for the rest of the booking price payment
+export async function createExtraPaymentYookassaToken(data: {
+  money: number;
+  matchId: number;
+}) {
+  const res = await api.post('/matches/extra-payment', data);
   return res.data;
 }
