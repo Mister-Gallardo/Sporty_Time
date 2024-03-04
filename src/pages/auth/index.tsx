@@ -107,6 +107,8 @@ export function AuthPage() {
       const authEvent = new Event('auth-changed');
       document.dispatchEvent(authEvent);
 
+      reset({ password: '', email: '' });
+
       history.push('/question-form');
     },
     onError(e: any) {

@@ -5,23 +5,23 @@ import { mobileRoutes } from './routes';
 import { LoadingCircle } from './components/atoms/LoadingCircle';
 import { Capacitor } from '@capacitor/core';
 import { initializeApp } from 'firebase/app';
-import { firebaseConfig } from './notifications/firebase';
+import { firebaseConfig } from './services/notifications/firebase';
+import { Geolocation } from '@capacitor/geolocation';
+import { useRegisterNotificationsToken } from './hooks/useRegisterNotificationsToken';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Geolocation } from '@capacitor/geolocation';
 
 setupIonicReact({ mode: 'ios' });
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
 
 const App: React.FC = () => {
   useEffect(() => {
+    Geolocation.getCurrentPosition();
     if (Capacitor.isNativePlatform()) return;
     initializeApp(firebaseConfig);
   }, []);
 
-  useEffect(() => {
-    Geolocation.getCurrentPosition();
-  }, []);
+  useRegisterNotificationsToken();
 
   return (
     <>
@@ -33,7 +33,7 @@ const App: React.FC = () => {
           <Redirect to="/" />
         </MobileLayout>
       </Suspense>
-      <ToastContainer />
+      <ToastContainer autoClose={5000} />
     </>
   );
 };
