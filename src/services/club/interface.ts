@@ -1,5 +1,4 @@
 import { ESport } from '../matches/interface';
-import { User } from '../user/interface';
 
 export enum ECourtType {
   OUTDOOR = 'OUTDOOR',
@@ -62,19 +61,9 @@ export interface Club {
   updatedAt: string;
   deletedAt: string | null;
   images: Images[];
-
-  // user: User;
-  // courts: Court[];
-  // availableSlots?: Record<
-  //   string,
-  //   {
-  //     available: Court[];
-  //     booked: Court[];
-  //   }
-  // >;
-  // availableTimes?: Record<string, IAvailableTime[]>;
-  // minPrice?: number;
-  // range?: number;
+  sports: string[];
+  courts: Court[];
+  tags: Tag[];
 }
 
 export interface Court {

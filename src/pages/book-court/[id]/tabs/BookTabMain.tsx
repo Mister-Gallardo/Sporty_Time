@@ -1,15 +1,4 @@
-import React from 'react';
-import {
-  SportsTennis,
-  Accessible,
-  Icecream,
-  LocalMall,
-  Lock,
-  Phone,
-  Shower,
-  Link,
-} from '@mui/icons-material';
-
+import { Phone, Link } from '@mui/icons-material';
 import {
   Box,
   Typography,
@@ -28,6 +17,7 @@ import { LoadingCircle } from '../../../../components/atoms/LoadingCircle';
 import { isPlatform } from '@ionic/react';
 import { CustomClubMap } from '../../../../components/molecules/CustomClubMap';
 import parse from 'html-react-parser';
+import { getSportName } from '../../../../helpers/getNameOf';
 
 const isMobile = isPlatform('mobile');
 
@@ -47,21 +37,31 @@ export function BookTabMain() {
       <Stack spacing={isMobile ? 2 : 3}>
         <Typography variant="h6">Информация клуба</Typography>
         {data.description && <Typography>{parse(data.description)}</Typography>}
+
+        <Typography fontSize={16}>
+          Доступных кортов - {data.courts?.length}{' '}
+        </Typography>
+
         <Box>
-          <Stack direction="row" spacing={2}>
-            <SportsTennis />
-            <Typography fontWeight={600} color="#333">
-              Padel
-            </Typography>
+          <Typography fontSize={16} mb={1}>
+            Выды спорта:
+          </Typography>
+          <Stack
+            direction="row"
+            spacing={1}
+            pb={1}
+            sx={{ overflowX: 'overlay' }}
+          >
+            {data.sports?.map((sport) => {
+              return <Chip key={sport} label={getSportName(sport)} />;
+            })}
           </Stack>
         </Box>
-        <Typography>4 Доступных корта</Typography>
-        <Stack direction="row" spacing={1} sx={{ overflowX: 'overlay' }}>
-          <Chip icon={<Accessible />} label="Special access"></Chip>
-          <Chip icon={<Icecream />} label="Snack bar"></Chip>
-          <Chip icon={<LocalMall />} label="Store"></Chip>
-          <Chip icon={<Lock />} label="Locker"></Chip>
-          <Chip icon={<Shower />} label="Changing rooms"></Chip>
+
+        <Stack direction="row" spacing={1} pb={1} sx={{ overflowX: 'overlay' }}>
+          {data.tags?.map((tag) => {
+            return <Chip key={tag.id} label={tag.title} />;
+          })}
         </Stack>
         <Stack direction="row" justifyContent="center" spacing={4}>
           <a
