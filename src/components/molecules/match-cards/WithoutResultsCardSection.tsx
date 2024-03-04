@@ -4,6 +4,8 @@ import { Box, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useHistory } from 'react-router';
 import { Status } from '../../../services/matches/interface';
+import { isPlatform } from '@ionic/react';
+import { Link } from 'react-router-dom';
 
 interface IWithoutResults {
   matchId: number;
@@ -13,6 +15,8 @@ interface IWithoutResults {
   status: Status;
   uploadResults: (() => void) | null;
 }
+
+const isDesktop = isPlatform('desktop');
 
 export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
   matchId,
@@ -134,14 +138,12 @@ export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
         {status === Status.WAITING_FOR_RESULTS ? (
           <Add sx={{ color: '#fff' }} />
         ) : (
-          <ChatBubbleOutlineOutlinedIcon
-            onClick={(e) => {
-              e.stopPropagation();
-              history.push(`/chats/${matchId}`);
-            }}
-            fontSize="small"
-            sx={{ color: '#fff' }}
-          />
+          <Link to={isDesktop ? `/chats?chat=${matchId}` : `/chats/${matchId}`}>
+            <ChatBubbleOutlineOutlinedIcon
+              fontSize="small"
+              sx={{ color: '#fff' }}
+            />
+          </Link>
         )}
       </Box>
     </Box>
