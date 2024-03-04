@@ -1,12 +1,13 @@
+import React from 'react';
 import { useSearchParam } from '../../hooks/useSearchParams';
 import { QuestionsStepStep } from './steps/QuestionsStep';
 import { ChooseYourSport } from './steps/ChooseYourSport';
 import { LevelingStep } from './steps/LevelingStep';
 import { ResultsStep } from './steps/Results';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useRegisterNotificationsToken } from '../../hooks/useRegisterNotificationsToken';
 
 export function QuestionFormPage() {
-  useNotifications();
+  useRegisterNotificationsToken();
 
   const [step, setStep] = useSearchParam('step', '1');
   const currentStep = Number(step);

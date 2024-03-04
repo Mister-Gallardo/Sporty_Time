@@ -14,21 +14,33 @@ import { NavLink as RouterNavLink } from 'react-router-dom';
 import { isPlatform } from '@ionic/react';
 import { MediumScreenMenu } from './MediumScreenMenu';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import { useMutation } from '@tanstack/react-query';
+import { removeDeviceToken } from '../../services/notifications/service';
+import { useLocalStorage } from 'usehooks-ts';
 
 function DesktopHeader() {
   const [mdMoreAnchorEl, setMdMoreAnchorEl] = useState<null | HTMLElement>(
     null,
   );
   const history = useHistory();
+  const { pathname } = useLocation();
 
   const isAuthorized = useIsAuthorized();
-
   const [user] = useUserInfo({ enabled: isAuthorized });
 
   const firstName = user?.firstname;
   const lastName = user?.lastname;
 
-  const { pathname } = useLocation();
+  const [deviceToken] = useLocalStorage('deviceToken', '');
+
+  const removeTokenMutation = useMutation({
+    mutationFn: removeDeviceToken,
+    onSuccess() {
+      localStorage.removeItem('deviceToken');
+      localStorage.removeItem('jwtToken');
+    },
+  });
+
   if (
     pathname.startsWith('/auth') ||
     pathname.startsWith('/question-form') ||
@@ -122,6 +134,8 @@ function DesktopHeader() {
                   </Link>
                   <Typography
                     onClick={() => {
+                      if (deviceToken)
+                        return removeTokenMutation.mutate(deviceToken);
                       history.go(0);
                       localStorage.removeItem('jwtToken');
                     }}

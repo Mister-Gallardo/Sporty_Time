@@ -10,6 +10,9 @@ import { isAuthorized } from '../../services/auth/service';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import SportsTennisRoundedIcon from '@mui/icons-material/SportsTennisRounded';
+import { useLocalStorage } from 'usehooks-ts';
+import { useMutation } from '@tanstack/react-query';
+import { removeDeviceToken } from '../../services/notifications/service';
 
 interface IMediumScreenMenuProps {
   mdMoreAnchorEl: HTMLElement | null;
@@ -21,6 +24,16 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
   handleMdMenuClose,
 }) => {
   const isAuth = isAuthorized();
+
+  const [deviceToken] = useLocalStorage('deviceToken', '');
+
+  const removeTokenMutation = useMutation({
+    mutationFn: removeDeviceToken,
+    onSuccess() {
+      localStorage.removeItem('deviceToken');
+      localStorage.removeItem('jwtToken');
+    },
+  });
 
   return (
     <Menu
@@ -82,20 +95,7 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
           </Typography>
         </MenuItem>
       </Link>
-      <Link
-        onClick={handleMdMenuClose}
-        component={RouterNavLink}
-        to="/profile"
-        underline="none"
-        fontWeight={500}
-      >
-        <MenuItem sx={{ gap: 1.5 }}>
-          <AccountCircle sx={{ fontSize: 27, color: '#575757' }} />
-          <Typography fontWeight={600} fontSize={15}>
-            Профиль
-          </Typography>
-        </MenuItem>
-      </Link>
+
       <Link
         onClick={handleMdMenuClose}
         component={RouterNavLink}
@@ -111,20 +111,51 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
         </MenuItem>
       </Link>
 
-      <Link
-        component={RouterNavLink}
-        to="/auth"
-        fontWeight={500}
-        display="inline-block"
-        mt={3}
-        pl={2.5}
-        onClick={() => {
-          if (isAuth) localStorage.removeItem('jwtToken');
-          handleMdMenuClose();
-        }}
-      >
-        {isAuth ? 'Выйти' : 'Войти'}
-      </Link>
+      {isAuth && (
+        <Link
+          onClick={handleMdMenuClose}
+          component={RouterNavLink}
+          to="/profile"
+          underline="none"
+          fontWeight={500}
+        >
+          <MenuItem sx={{ gap: 1.5 }}>
+            <AccountCircle sx={{ fontSize: 27, color: '#575757' }} />
+            <Typography fontWeight={600} fontSize={15}>
+              Профиль
+            </Typography>
+          </MenuItem>
+        </Link>
+      )}
+      {isAuth ? (
+        <Link
+          component={RouterNavLink}
+          to="/auth"
+          fontWeight={500}
+          display="inline-block"
+          mt={3}
+          pl={2.5}
+          onClick={() => {
+            handleMdMenuClose();
+            if (deviceToken) return removeTokenMutation.mutate(deviceToken);
+            localStorage.removeItem('jwtToken');
+          }}
+        >
+          Выйти
+        </Link>
+      ) : (
+        <Link
+          component={RouterNavLink}
+          to="/auth"
+          fontWeight={500}
+          display="inline-block"
+          mt={3}
+          pl={2.5}
+          onClick={() => handleMdMenuClose()}
+        >
+          Войти
+        </Link>
+      )}
     </Menu>
   );
 };

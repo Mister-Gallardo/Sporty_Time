@@ -7,7 +7,9 @@ import { Capacitor } from '@capacitor/core';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from './services/notifications/firebase';
 import { Geolocation } from '@capacitor/geolocation';
-import { useNotifications } from './hooks/useNotifications';
+import { useRegisterNotificationsToken } from './hooks/useRegisterNotificationsToken';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 setupIonicReact({ mode: 'ios' });
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
@@ -19,17 +21,20 @@ const App: React.FC = () => {
     initializeApp(firebaseConfig);
   }, []);
 
-  useNotifications();
+  useRegisterNotificationsToken();
 
   return (
-    <Suspense fallback={<LoadingCircle />}>
-      <MobileLayout>
-        {mobileRoutes.map((route, i) => (
-          <Route key={i} {...route} />
-        ))}
-        <Redirect to="/" />
-      </MobileLayout>
-    </Suspense>
+    <>
+      <Suspense fallback={<LoadingCircle />}>
+        <MobileLayout>
+          {mobileRoutes.map((route, i) => (
+            <Route key={i} {...route} />
+          ))}
+          <Redirect to="/" />
+        </MobileLayout>
+      </Suspense>
+      <ToastContainer autoClose={5000} />
+    </>
   );
 };
 
