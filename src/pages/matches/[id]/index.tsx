@@ -11,7 +11,7 @@ import {
   useIonToast,
 } from '@ionic/react';
 import { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
@@ -42,10 +42,8 @@ import { isBefore } from 'date-fns';
 import { renderCheckoutWidget } from '../../../helpers/renderCheckoutWidget';
 import { socket } from '../../../utils/socket';
 
+const isMobile = isPlatform('mobile');
 export function SingleMatchPage() {
-  const isMobile = isPlatform('mobile');
-  const history = useHistory();
-
   const { matchId } = useParams<{ matchId: string }>();
 
   const [showToast] = useIonToast();
@@ -321,18 +319,18 @@ export function SingleMatchPage() {
 
               {Date.now() > startsAt.getTime() && <UploadResultsBlock />}
 
-              <Box maxWidth={125} mx="auto" mb={2}>
-                <Button
-                  sx={{ height: '40px' }}
-                  onClick={() => history.push(`/chats/${matchId}`)}
-                >
-                  <ChatBubbleOutlineRounded sx={{ marginRight: '.75rem' }} />
-                  <Typography sx={{ fontSize: '1.1rem', fontWeight: '600' }}>
-                    Чат
-                  </Typography>
-                </Button>
-              </Box>
-
+              {playerAlreadyInSomeTeam && (
+                <Box maxWidth={125} mx="auto" mb={2}>
+                  <Link
+                    to={
+                      isMobile ? `/chats/${matchId}` : `/chats?chat=${matchId}`
+                    }
+                  >
+                    <ChatBubbleOutlineRounded sx={{ marginRight: '.75rem' }} />
+                    <Typography fontWeight={600}>Чат</Typography>
+                  </Link>
+                </Box>
+              )}
               {/* if user already in team | match already started/passed | there's full stack - hide btn */}
               {(singleMatchData.matchBookings.length === 4 ||
                 !playerAlreadyInSomeTeam ||
