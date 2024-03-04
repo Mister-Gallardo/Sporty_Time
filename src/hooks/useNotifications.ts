@@ -5,6 +5,8 @@ import {
 } from '@capacitor-firebase/messaging';
 import { Capacitor } from '@capacitor/core';
 import { vapidKey } from '../services/notifications/firebase';
+import { useMutation } from '@tanstack/react-query';
+import { registerDeviceToken } from '../services/notifications/service';
 
 const addListeners = () => {
   FirebaseMessaging.addListener('notificationReceived', (event) => {
@@ -26,6 +28,10 @@ const serviceWorkerListener = (event: any) => {
 
 export const useNotifications = () => {
   const [isGranted, setIsGranted] = useState<boolean>(true);
+
+  const registerTokenMutation = useMutation({
+    mutationFn: registerDeviceToken,
+  });
 
   const requestPermission = async () => {
     try {
@@ -62,6 +68,7 @@ export const useNotifications = () => {
       }
       FirebaseMessaging.getToken(options).then(({ token }) => {
         console.log('token: ', token);
+        registerTokenMutation.mutate(token);
       });
     } else {
       requestPermission();
@@ -73,5 +80,5 @@ export const useNotifications = () => {
         serviceWorkerListener,
       );
     };
-  }, []);
+  }, [isGranted]);
 };
