@@ -64,6 +64,12 @@ export interface Club {
   sports: string[];
   courts: Court[];
   tags: Tag[];
+  availableSlots?: {
+    [key: string]: {
+      available: [] | Court[];
+      booked: [] | Court[];
+    };
+  };
 }
 
 export interface Court {
@@ -79,6 +85,20 @@ export interface Court {
   type: string;
   createdAt: Date;
   updatedAt: Date;
+  schedule: Schedule[];
+}
+export interface Schedule {
+  id: number;
+  startsAt: string;
+  endsAt: string;
+  interval: string;
+  price: number;
+  series: string[];
+  weekDay: number;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }
 
 export interface Tag {
