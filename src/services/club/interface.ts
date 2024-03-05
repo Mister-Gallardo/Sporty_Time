@@ -1,5 +1,4 @@
 import { ESport } from '../matches/interface';
-import { User } from '../user/interface';
 
 export enum ECourtType {
   OUTDOOR = 'OUTDOOR',
@@ -44,23 +43,33 @@ export interface Images {
 export interface Club {
   id: number;
   title: string;
-  city: string;
-  images: Images[];
-  user: User;
-  courts: Court[];
-  createdAt: Date;
-  updatedAt: Date;
-  availableSlots?: Record<
-    string,
-    {
-      available: Court[];
-      booked: Court[];
-    }
-  >;
-  availableTimes?: Record<string, IAvailableTime[]>;
-  minPrice?: number;
+  location: {
+    type: string;
+    coordinates: [number, number];
+  };
   timezone: string;
-  range?: number;
+  timezoneOffset: string;
+  city: string | null;
+  country: string | null;
+  district: string | null;
+  street: string | null;
+  postalCode: string | null;
+  description: string | null;
+  website: string | null;
+  phoneNumber: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  images: Images[];
+  sports: string[];
+  courts: Court[];
+  tags: Tag[];
+  availableSlots?: {
+    [key: string]: {
+      available: [] | Court[];
+      booked: [] | Court[];
+    };
+  };
 }
 
 export interface Court {
@@ -76,6 +85,20 @@ export interface Court {
   type: string;
   createdAt: Date;
   updatedAt: Date;
+  schedule: Schedule[];
+}
+export interface Schedule {
+  id: number;
+  startsAt: string;
+  endsAt: string;
+  interval: string;
+  price: number;
+  series: string[];
+  weekDay: number;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }
 
 export interface Tag {
