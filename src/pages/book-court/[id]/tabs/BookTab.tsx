@@ -19,7 +19,7 @@ import { EGender, EMatchType } from '../../../../services/matches/interface';
 import { format } from 'date-fns';
 import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
 import { useUserInfo } from '../../../../services/api/hooks';
-import { socket } from '../../../../utils/socket';
+// import { socket } from '../../../../utils/socket';
 
 export function BookTab() {
   const dates = getDatesList(100);
@@ -127,11 +127,11 @@ export function BookTab() {
       if (e.action === 'create') history.push(`matches/${e.matchId}`);
     };
 
-    socket.on('newMatch', redirectOnSuccessPayment);
+    // socket.on('newMatch', redirectOnSuccessPayment);
 
-    return () => {
-      socket.off('newMatch', redirectOnSuccessPayment);
-    };
+    // return () => {
+    //   socket.off('newMatch', redirectOnSuccessPayment);
+    // };
   }, []);
 
   if (isError) {

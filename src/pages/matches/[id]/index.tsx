@@ -10,7 +10,7 @@ import {
   isPlatform,
   useIonToast,
 } from '@ionic/react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
@@ -38,9 +38,10 @@ import { ResultsTable } from './components/ResultsTable';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
-import { isBefore } from 'date-fns';
+import { isAfter } from 'date-fns';
 import { renderCheckoutWidget } from '../../../helpers/renderCheckoutWidget';
-import { socket } from '../../../utils/socket';
+// import { socket } from '../../../utils/socket';
+import { Link } from 'react-router-dom';
 
 const isMobile = isPlatform('mobile');
 export function SingleMatchPage() {
@@ -129,8 +130,13 @@ export function SingleMatchPage() {
   const [playerInTeam, setPlayerInTeam] = useState<string>('');
 
   useEffect(() => {
+    if (!singleMatchData) return;
+
+    if (isAfter(new Date(), new Date(singleMatchData?.booking?.startsAt)))
+      return;
+
     setPlayerInTeam(playerAlreadyInSomeTeam ? '' : 'B');
-  }, [playerAlreadyInSomeTeam]);
+  }, [playerAlreadyInSomeTeam, singleMatchData]);
 
   const isUserOwner = singleMatchData?.owner?.id === myPlayer?.id;
 
@@ -175,6 +181,47 @@ export function SingleMatchPage() {
     setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
   }, [singleMatchData, playerInTeam, myPlayer]);
 
+  // when user joins the match
+  const onMatchJoin = () => {
+    if (!myPlayer?.user || !singleMatchData) return;
+
+    if (matchId && playerInTeam) {
+      // if match is fully paid - just join the mtach without payment
+      if (singleMatchData.paid) {
+        joinMatchMutation.mutate({
+          matchId: Number(matchId),
+          team: playerInTeam,
+        });
+      } else {
+        createYookassaMutation.mutate({
+          matchId: Number(matchId),
+          team: playerInTeam,
+          money: singleMatchData.price / 4,
+        });
+      }
+    } else {
+      showToast({
+        message: 'Выберите команду!',
+        duration: 1000,
+        color: 'danger',
+      });
+    }
+  };
+
+  useEffect(() => {
+    const updateMatchData = (e: { action: string }) => {
+      if (e.action === 'update') {
+        qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
+      }
+    };
+
+    // socket.on(`matchId - ${matchId}`, updateMatchData);
+
+    // return () => {
+    //   socket.off(`matchId - ${matchId}`, updateMatchData);
+    // };
+  }, []);
+
   if (isLoading) {
     return <IonLoading isOpen />;
   }
@@ -215,47 +262,6 @@ export function SingleMatchPage() {
       </Typography>
     </Box>
   );
-
-  // when user joins the match
-  const onMatchJoin = () => {
-    if (!myPlayer?.user) return;
-
-    if (matchId && playerInTeam) {
-      // if match is fully paid - just join the mtach without payment
-      if (singleMatchData.paid) {
-        joinMatchMutation.mutate({
-          matchId: Number(matchId),
-          team: playerInTeam,
-        });
-      } else {
-        createYookassaMutation.mutate({
-          matchId: Number(matchId),
-          team: playerInTeam,
-          money: singleMatchData.price / 4,
-        });
-      }
-    } else {
-      showToast({
-        message: 'Выберите команду!',
-        duration: 1000,
-        color: 'danger',
-      });
-    }
-  };
-
-  useEffect(() => {
-    const updateMatchData = (e: { action: string }) => {
-      if (e.action === 'update') {
-        qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
-      }
-    };
-
-    socket.on(`matchId - ${matchId}`, updateMatchData);
-
-    return () => {
-      socket.off(`matchId - ${matchId}`, updateMatchData);
-    };
-  }, []);
 
   const booking = singleMatchData.booking;
   if (!booking) return <LoadingCircle />;
@@ -308,7 +314,14 @@ export function SingleMatchPage() {
                 players={players}
                 playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
                 setPlayerInTeam={(team) => {
-                  if (playerAlreadyInSomeTeam) return;
+                  if (
+                    playerAlreadyInSomeTeam ||
+                    isAfter(
+                      new Date(),
+                      new Date(singleMatchData?.booking?.startsAt),
+                    )
+                  )
+                    return;
                   setPlayerInTeam(team);
                 }}
                 handleEditModal={setOpenEditModal}
@@ -317,7 +330,9 @@ export function SingleMatchPage() {
 
               <ResultsTable />
 
-              {Date.now() > startsAt.getTime() && <UploadResultsBlock />}
+              {Date.now() > startsAt.getTime() && playerAlreadyInSomeTeam && (
+                <UploadResultsBlock />
+              )}
 
               {playerAlreadyInSomeTeam && (
                 <Box maxWidth={125} mx="auto" mb={2}>
@@ -331,54 +346,55 @@ export function SingleMatchPage() {
                   </Link>
                 </Box>
               )}
-              {/* if user already in team | match already started/passed | there's full stack - hide btn */}
-              {(singleMatchData.matchBookings.length === 4 ||
-                !playerAlreadyInSomeTeam ||
-                isBefore(
+              {/* if user isn't the owner, there is empty slot, users isn't in match and match isn't started - show the btn */}
+              {!isUserOwner &&
+                singleMatchData.matchBookings.length !== 4 &&
+                !playerAlreadyInSomeTeam &&
+                isAfter(
                   new Date(singleMatchData?.booking?.startsAt),
                   new Date(),
-                )) && (
-                <Box
-                  sx={{
-                    position: 'fixed',
-                    zIndex: 1,
-                    left: '0',
-                    right: '0',
-                    bottom: '1.5rem',
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Button
-                    disabled={joinMatchMutation.isPending}
-                    endIcon={
-                      joinMatchMutation.isPending && <CircularProgress />
-                    }
-                    onClick={onBookPlace}
+                ) && (
+                  <Box
                     sx={{
-                      paddingX: 2,
-                      background: '#0D2432',
-                      color: '#fff',
-                      boxShadow:
-                        'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-                      '&:hover': {
-                        background: '#0D2432',
-                      },
-                      '&:disabled': {
-                        background: '#777',
-                        color: '#eee',
-                      },
+                      position: 'fixed',
+                      zIndex: 1,
+                      left: '0',
+                      right: '0',
+                      bottom: '1.5rem',
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}
                   >
-                    Забронировать место
-                    {singleMatchData.paid
-                      ? ''
-                      : '- ₽' + singleMatchData.price / 4}
-                  </Button>
-                </Box>
-              )}
+                    <Button
+                      disabled={joinMatchMutation.isPending}
+                      endIcon={
+                        joinMatchMutation.isPending && <CircularProgress />
+                      }
+                      onClick={onBookPlace}
+                      sx={{
+                        paddingX: 2,
+                        background: '#0D2432',
+                        color: '#fff',
+                        boxShadow:
+                          'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                        '&:hover': {
+                          background: '#0D2432',
+                        },
+                        '&:disabled': {
+                          background: '#777',
+                          color: '#eee',
+                        },
+                      }}
+                    >
+                      Забронировать место
+                      {singleMatchData.paid
+                        ? ''
+                        : '- ₽' + singleMatchData.price / 4}
+                    </Button>
+                  </Box>
+                )}
               <ClubInfoBlock />
               <MatchInfoBlock />
             </Box>
