@@ -1,14 +1,8 @@
 import { useHistory } from 'react-router';
-import { Geolocation } from '@capacitor/geolocation';
-import { useEffect } from 'react';
 import { SportsBaseballOutlined } from '@mui/icons-material';
 
 export function DesktopHomePage() {
   const history = useHistory();
-
-  useEffect(() => {
-    Geolocation.getCurrentPosition();
-  }, []);
 
   return (
     <>

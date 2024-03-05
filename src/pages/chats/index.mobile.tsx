@@ -11,8 +11,11 @@ import {
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 import React, { Suspense } from 'react';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
+import { ChatsList } from './components/ChatsList';
 
 const ChatsPage = React.lazy(() => import('.'));
+
+const isMobile = isPlatform('mobile');
 
 export function MobileChatsPage() {
   return (
@@ -31,7 +34,7 @@ export function MobileChatsPage() {
       )}
       <IonContent fullscreen>
         <Suspense fallback={<LoadingCircle />}>
-          <ChatsPage />
+          {isMobile ? <ChatsList /> : <ChatsPage />}
         </Suspense>
       </IonContent>
     </IonPage>

@@ -20,8 +20,13 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { isPlatform, useIonToast } from '@ionic/react';
 import { NotFoundPage } from '../../../../components/NotFoundPage';
 import { useHistory } from 'react-router';
+import { EGender } from '../../../../services/matches/interface';
 
 const isMobile = isPlatform('mobile');
+const genders = [
+  { option: 'Женский', value: EGender.WOMEN },
+  { option: 'Мужской', value: EGender.MEN },
+];
 
 export const EditProfilePage = () => {
   const history = useHistory();
@@ -168,16 +173,16 @@ export const EditProfilePage = () => {
             label="Пол"
             variant="filled"
             fullWidth
-            value={watch('gender') || user?.gender || 'Не выбрано'}
+            value={watch('gender') || user?.gender}
             onChange={(e) => setValue('gender', e.target.value)}
             InputProps={{
               disableUnderline: true,
               sx: { borderRadius: 2 },
             }}
           >
-            {['Не выбрано', 'Мужской', 'Женский'].map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
+            {genders.map((gender) => (
+              <MenuItem key={gender.value} value={gender.value}>
+                {gender.option}
               </MenuItem>
             ))}
           </TextField>
