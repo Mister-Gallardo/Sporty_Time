@@ -11,10 +11,11 @@ interface IClubCard extends Club {
 const isMobile = isPlatform('mobile');
 
 export const ClubCard: React.FC<IClubCard> = (props) => {
-  const { onClick, id, images, title, city, minPrice, availableTimes } = props;
+  const { onClick, id, images, title, city, minPrice, availableTimes } =
+    props as any; // FIX
   const history = useHistory();
 
-  const [gameDate, times] = Object.entries(availableTimes || {})[0];
+  const [gameDate, times] = Object.entries(availableTimes || {})[0] as any; // FIX;
 
   const previewImg = images.length === 0 ? noImg : images[0]?.formats.large;
 

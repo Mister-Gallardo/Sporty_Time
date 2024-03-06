@@ -175,7 +175,7 @@ export function AvailableMatchesTab() {
 
     const clubs: number[] = [];
 
-    data.forEach((club) => {
+    data.forEach((club: any) => {
       if (club.range && club.range <= range) clubs.push(club.id);
     });
 
