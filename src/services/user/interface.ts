@@ -31,7 +31,7 @@ export interface User {
   email: string;
   gender: string;
   roles: Role[];
-  avatar: string;
+  avatar: any; // MEDIA
   createdAt: Date;
   updatedAt: Date;
   player: Player;

@@ -80,7 +80,7 @@ export const EditProfilePage = () => {
       try {
         const res = await fetch(getValues('image'));
         const imageBlob = await res.blob();
-        formData.append('image', imageBlob);
+        formData.append('avatar', imageBlob);
       } catch (error) {
         console.log(error);
       }
@@ -122,7 +122,7 @@ export const EditProfilePage = () => {
 
       <Box display="flex" flexDirection="column" alignItems="center">
         <Avatar
-          src={watch('image') || user?.avatar || ''}
+          src={watch('image') || user?.avatar?.formats?.png || ''}
           sx={{ width: 50, height: 50 }}
         />
         <Button onClick={() => takePhoto()} sx={{ fontSize: 13 }}>
