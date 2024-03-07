@@ -40,7 +40,7 @@ export const MessageItem: React.FC<IMessageItemProps> = ({
       maxWidth="85%"
       alignSelf={isMyUser ? 'flex-end' : 'flex-start'}
     >
-      {isMyUser || (
+      {!isMyUser && (
         <Box minWidth={40} minHeight={40}>
           {nextMsgFromSameUser || (
             <Avatar src="" sx={{ width: 40, height: 40, zIndex: 1 }} />
@@ -59,7 +59,7 @@ export const MessageItem: React.FC<IMessageItemProps> = ({
             : `tail ${isMyUser ? 'tail__right' : 'tail__left'}`
         }
       >
-        {isMyUser || (
+        {!isMyUser && (
           <Typography color={intToRGB(userFrom.id)}>
             {userFrom.firstname} {userFrom.lastname}
           </Typography>

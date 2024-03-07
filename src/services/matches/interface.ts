@@ -53,8 +53,8 @@ export interface MatchData {
 [];
 
 export interface CreateMatchDTO {
-  courtId: number;
   money: number;
+  courtId: number;
   gameDate: Date | string;
   type: EMatchType;
   playTime: number;
@@ -67,7 +67,7 @@ export interface CreateMatchDTO {
 export interface JoinMatchDTO {
   matchId: number;
   team: string;
-  money: number;
+  money?: number;
 }
 
 export interface UploadResultsDTO {

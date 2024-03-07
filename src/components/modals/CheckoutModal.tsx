@@ -18,7 +18,7 @@ interface ICheckoutModal {
   timezone: string;
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  handleCheckout: (payPrice: number) => void;
+  handleCheckout: (total: number) => void;
 }
 
 export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
@@ -171,7 +171,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
             }}
             fullWidth
           >
-            Забронировать корт
+            Продолжить оплату
           </Button>
         </Box>
       </>

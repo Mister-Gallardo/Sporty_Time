@@ -10,11 +10,12 @@ import {
   isPlatform,
   useIonToast,
 } from '@ionic/react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
+  createJoinMatchYookassaToken,
   getOneAvailableMatch,
   joinMatch,
 } from '../../../services/matches/service';
@@ -37,7 +38,9 @@ import { ResultsTable } from './components/ResultsTable';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
-import { isBefore } from 'date-fns';
+import { isAfter } from 'date-fns';
+import { renderCheckoutWidget } from '../../../helpers/renderCheckoutWidget';
+// import { socket } from '../../../utils/socket';
 import { Link } from 'react-router-dom';
 
 const isMobile = isPlatform('mobile');
@@ -73,7 +76,7 @@ export function SingleMatchPage() {
 
   const qc = useQueryClient();
 
-  // Join Match / Book a Place Request
+  // Join Match / Book a Place Request (when match is fully paid)
   const joinMatchMutation = useMutation({
     mutationFn: joinMatch,
     onSuccess() {
@@ -88,15 +91,35 @@ export function SingleMatchPage() {
       refetchMatch();
       qc.resetQueries({ queryKey: ['my-matches', false] });
     },
-    onError() {
+    onError(e: any) {
       setOpenCheckoutModal();
       showToast({
         header: 'Ошибка!',
-        message: 'Не удалось присоединиться к матчу',
+        message: e?.response?.data?.message,
         duration: 2000,
         position: 'bottom',
         color: 'danger',
       });
+    },
+  });
+
+  // Join Match / Book a Place Request (when user has to pay for the spot)
+  const createYookassaMutation = useMutation({
+    mutationFn: createJoinMatchYookassaToken,
+    onSuccess(token: string) {
+      renderCheckoutWidget(token);
+      setOpenCheckoutModal();
+    },
+    onError(e: any) {
+      showToast({
+        color: 'danger',
+        message: e?.response?.data?.message,
+        mode: 'ios',
+        position: 'bottom',
+        duration: 2000,
+      });
+
+      setOpenCheckoutModal();
     },
   });
 
@@ -107,8 +130,13 @@ export function SingleMatchPage() {
   const [playerInTeam, setPlayerInTeam] = useState<string>('');
 
   useEffect(() => {
+    if (!singleMatchData) return;
+
+    if (isAfter(new Date(), new Date(singleMatchData?.booking?.startsAt)))
+      return;
+
     setPlayerInTeam(playerAlreadyInSomeTeam ? '' : 'B');
-  }, [playerAlreadyInSomeTeam]);
+  }, [playerAlreadyInSomeTeam, singleMatchData]);
 
   const isUserOwner = singleMatchData?.owner?.id === myPlayer?.id;
 
@@ -153,6 +181,47 @@ export function SingleMatchPage() {
     setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
   }, [singleMatchData, playerInTeam, myPlayer]);
 
+  // when user joins the match
+  const onMatchJoin = () => {
+    if (!myPlayer?.user || !singleMatchData) return;
+
+    if (matchId && playerInTeam) {
+      // if match is fully paid - just join the mtach without payment
+      if (singleMatchData.paid) {
+        joinMatchMutation.mutate({
+          matchId: Number(matchId),
+          team: playerInTeam,
+        });
+      } else {
+        createYookassaMutation.mutate({
+          matchId: Number(matchId),
+          team: playerInTeam,
+          money: singleMatchData.price / 4,
+        });
+      }
+    } else {
+      showToast({
+        message: 'Выберите команду!',
+        duration: 1000,
+        color: 'danger',
+      });
+    }
+  };
+
+  useEffect(() => {
+    const updateMatchData = (e: { action: string }) => {
+      if (e.action === 'update') {
+        qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
+      }
+    };
+
+    // socket.on(`matchId - ${matchId}`, updateMatchData);
+
+    // return () => {
+    //   socket.off(`matchId - ${matchId}`, updateMatchData);
+    // };
+  }, []);
+
   if (isLoading) {
     return <IonLoading isOpen />;
   }
@@ -193,23 +262,6 @@ export function SingleMatchPage() {
       </Typography>
     </Box>
   );
-
-  // when user joins the match
-  const onMatchJoin = () => {
-    if (matchId && playerInTeam) {
-      joinMatchMutation.mutate({
-        matchId: Number(matchId),
-        team: playerInTeam,
-        money: singleMatchData.paid ? 0 : singleMatchData.price / 4,
-      });
-    } else {
-      showToast({
-        message: 'Выберите команду!',
-        duration: 1000,
-        color: 'danger',
-      });
-    }
-  };
 
   const booking = singleMatchData.booking;
   if (!booking) return <LoadingCircle />;
@@ -262,7 +314,14 @@ export function SingleMatchPage() {
                 players={players}
                 playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
                 setPlayerInTeam={(team) => {
-                  if (playerAlreadyInSomeTeam) return;
+                  if (
+                    playerAlreadyInSomeTeam ||
+                    isAfter(
+                      new Date(),
+                      new Date(singleMatchData?.booking?.startsAt),
+                    )
+                  )
+                    return;
                   setPlayerInTeam(team);
                 }}
                 handleEditModal={setOpenEditModal}
@@ -271,7 +330,9 @@ export function SingleMatchPage() {
 
               <ResultsTable />
 
-              {Date.now() > startsAt.getTime() && <UploadResultsBlock />}
+              {Date.now() > startsAt.getTime() && playerAlreadyInSomeTeam && (
+                <UploadResultsBlock />
+              )}
 
               {playerAlreadyInSomeTeam && (
                 <Box maxWidth={125} mx="auto" mb={2}>
@@ -285,13 +346,14 @@ export function SingleMatchPage() {
                   </Link>
                 </Box>
               )}
-              {/* if user already in team | match already started/passed | there's full stack - hide btn */}
-              {!playerAlreadyInSomeTeam ||
-                isBefore(
+              {/* if user isn't the owner, there is empty slot, users isn't in match and match isn't started - show the btn */}
+              {!isUserOwner &&
+                singleMatchData.matchBookings.length !== 4 &&
+                !playerAlreadyInSomeTeam &&
+                isAfter(
                   new Date(singleMatchData?.booking?.startsAt),
                   new Date(),
-                ) ||
-                (singleMatchData.matchBookings.length === 4 && (
+                ) && (
                   <Box
                     sx={{
                       position: 'fixed',
@@ -332,7 +394,7 @@ export function SingleMatchPage() {
                         : '- ₽' + singleMatchData.price / 4}
                     </Button>
                   </Box>
-                ))}
+                )}
               <ClubInfoBlock />
               <MatchInfoBlock />
             </Box>

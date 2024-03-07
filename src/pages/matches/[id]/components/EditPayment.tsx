@@ -1,8 +1,9 @@
+import React, { useEffect } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { getMatchStatus } from '../../../../helpers/getMatchStatus';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  extraMatchPayment,
+  createExtraPaymentYookassaToken,
   getOneAvailableMatch,
 } from '../../../../services/matches/service';
 import { useParams } from 'react-router';
@@ -10,6 +11,8 @@ import { useIonToast } from '@ionic/react';
 import { usePlayerProfile } from '../../../../services/api/hooks';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Status } from '../../../../services/matches/interface';
+import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
+// import { socket } from '../../../../utils/socket';
 
 export const EditPayment = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -19,7 +22,7 @@ export const EditPayment = () => {
 
   const [myPlayer] = usePlayerProfile();
 
-  const { data, refetch } = useQuery({
+  const { data } = useQuery({
     queryKey: [`match`, Number(matchId)],
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
@@ -28,17 +31,9 @@ export const EditPayment = () => {
   const isUserOwner = matchData?.owner?.id === myPlayer?.id;
 
   const extraPaymentMutation = useMutation({
-    mutationFn: extraMatchPayment,
-    onSuccess() {
-      refetch();
-      qc.resetQueries({ queryKey: ['my-matches', false] });
-      showToast({
-        color: 'success',
-        message: 'Матч подтверждён, благодарим за оплату!',
-        mode: 'ios',
-        position: 'bottom',
-        duration: 2000,
-      });
+    mutationFn: createExtraPaymentYookassaToken,
+    onSuccess(token: string) {
+      renderCheckoutWidget(token);
     },
     onError() {
       showToast({
@@ -50,6 +45,20 @@ export const EditPayment = () => {
       });
     },
   });
+
+  useEffect(() => {
+    const updateMatchData = (e: { action: string }) => {
+      if (e.action === 'update') {
+        qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
+      }
+    };
+
+    // socket.on(`matchId - ${matchId}`, updateMatchData);
+
+    // return () => {
+    //   socket.off(`matchId - ${matchId}`, updateMatchData);
+    // };
+  }, []);
 
   if (!matchData) return null;
 
@@ -69,6 +78,8 @@ export const EditPayment = () => {
 
   const formatMustBePaidDate = `${payDate} | ${payTime.slice(0, 5)}`;
 
+  const extraPayment = price - currentPaidAmount;
+
   return (
     <Box py={2} px={1} border="1px solid #ffdee4" borderRadius={2}>
       <Typography mb={1} fontSize={15} fontWeight={600}>
@@ -84,12 +95,17 @@ export const EditPayment = () => {
       </Box>
 
       <Button
-        onClick={() => extraPaymentMutation.mutate(+matchId)}
+        onClick={() =>
+          extraPaymentMutation.mutate({
+            matchId: +matchId,
+            money: extraPayment,
+          })
+        }
         variant="contained"
         sx={{ backgroundColor: 'success.main', mt: 2 }}
         fullWidth
       >
-        Доплатить - {price - currentPaidAmount} ₽
+        Доплатить - {extraPayment} ₽
       </Button>
     </Box>
   );

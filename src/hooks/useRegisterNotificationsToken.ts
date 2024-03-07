@@ -15,8 +15,7 @@ export const useRegisterNotificationsToken = () => {
 
   const addListeners = () => {
     FirebaseMessaging.addListener('notificationReceived', (event) => {
-      console.log(event);
-      if (Capacitor.getPlatform() !== 'web') {
+      if (Capacitor.getPlatform() === 'android') {
         toast(event.notification.title);
       }
     });
