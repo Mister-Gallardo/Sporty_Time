@@ -12,7 +12,7 @@ import { usePlayerProfile } from '../../../../services/api/hooks';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Status } from '../../../../services/matches/interface';
 import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
-// import { socket } from '../../../../utils/socket';
+import { socket } from '../../../../utils/socket';
 
 export const EditPayment = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -53,11 +53,11 @@ export const EditPayment = () => {
       }
     };
 
-    // socket.on(`matchId - ${matchId}`, updateMatchData);
+    socket.on(`matchId - ${matchId}`, updateMatchData);
 
-    // return () => {
-    //   socket.off(`matchId - ${matchId}`, updateMatchData);
-    // };
+    return () => {
+      socket.off(`matchId - ${matchId}`, updateMatchData);
+    };
   }, []);
 
   if (!matchData) return null;

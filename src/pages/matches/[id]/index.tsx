@@ -40,7 +40,7 @@ import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
 import { isAfter } from 'date-fns';
 import { renderCheckoutWidget } from '../../../helpers/renderCheckoutWidget';
-// import { socket } from '../../../utils/socket';
+import { socket } from '../../../utils/socket';
 import { Link } from 'react-router-dom';
 
 const isMobile = isPlatform('mobile');
@@ -215,11 +215,11 @@ export function SingleMatchPage() {
       }
     };
 
-    // socket.on(`matchId - ${matchId}`, updateMatchData);
+    socket.on(`matchId - ${matchId}`, updateMatchData);
 
-    // return () => {
-    //   socket.off(`matchId - ${matchId}`, updateMatchData);
-    // };
+    return () => {
+      socket.off(`matchId - ${matchId}`, updateMatchData);
+    };
   }, []);
 
   if (isLoading) {
