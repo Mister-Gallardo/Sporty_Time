@@ -13,7 +13,6 @@ const isDesktop = isPlatform('desktop');
 
 export const MessagesList = () => {
   const [chatIdDesktop] = useSearchParam('chat', '');
-
   const { chatId } = useParams<{ chatId: string }>();
 
   const currentChatId = isDesktop ? chatIdDesktop : chatId;
@@ -27,6 +26,7 @@ export const MessagesList = () => {
 
   const ref = useRef<HTMLDivElement>(null);
 
+  // scroll bottom on new message
   useEffect(() => {
     if (data?.length) {
       ref.current?.scrollIntoView({

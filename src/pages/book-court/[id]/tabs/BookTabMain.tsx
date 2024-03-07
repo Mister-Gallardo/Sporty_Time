@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect } from 'react';
 import { Phone, Link } from '@mui/icons-material';
 import {
   Box,
@@ -17,17 +18,16 @@ import { isPlatform } from '@ionic/react';
 import { CustomClubMap } from '../../../../components/molecules/CustomClubMap';
 import parse from 'html-react-parser';
 import { getSportName } from '../../../../helpers/getNameOf';
-import { useCallback, useEffect } from 'react';
 
 const isMobile = isPlatform('mobile');
 const weekDays = [
+  'Воскресенье',
   'Понедельник',
   'Вторник',
   'Среда',
   'Четверг',
   'Пятница',
   'Суббота',
-  'Воскресенье',
 ];
 
 type SceduleIntervals = { [key: number]: [] | [string, string] };
@@ -128,6 +128,7 @@ export function BookTabMain() {
         <Stack direction="row" justifyContent="center" spacing={4}>
           <a
             href={data?.website || ''}
+            target="_blank"
             style={{ pointerEvents: data?.website ? 'all' : 'none' }}
           >
             <Stack alignItems="center">
