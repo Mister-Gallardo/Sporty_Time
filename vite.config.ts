@@ -33,8 +33,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        // target: 'http://localhost:10000',
-        target: 'https://dev.sportytime.ru',
+        target: 'http://localhost:10000',
+        // target: 'https://dev.sportytime.ru',
         changeOrigin: true,
       },
     },
