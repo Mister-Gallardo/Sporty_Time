@@ -64,7 +64,6 @@ export const useRegisterNotificationsToken = () => {
         }
 
         FirebaseMessaging.getToken(options).then(({ token }) => {
-          console.log('token: ', token);
           if (!deviceToken) {
             setDeviceToken(token);
             registerTokenMutation.mutate(token);
