@@ -17,7 +17,6 @@ import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
 import {
   createJoinMatchYookassaToken,
   getOneAvailableMatch,
-  joinMatch,
 } from '../../../services/matches/service';
 import { PlayersMatchCard } from '../../../components/molecules/match-cards/PlayersMatchCard';
 import { usePlayerProfile } from '../../../services/api/hooks';
@@ -62,12 +61,7 @@ export function SingleMatchPage() {
   >();
 
   // Get Particular Match Request
-  const {
-    data,
-    isLoading,
-    isError,
-    refetch: refetchMatch,
-  } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: [`match`, Number(matchId)],
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
@@ -76,38 +70,21 @@ export function SingleMatchPage() {
 
   const qc = useQueryClient();
 
-  // Join Match / Book a Place Request (when match is fully paid)
-  const joinMatchMutation = useMutation({
-    mutationFn: joinMatch,
-    onSuccess() {
-      setOpenCheckoutModal();
-      showToast({
-        header: 'Поздравляем!',
-        message: 'Вы присоединились к матчу',
-        duration: 2000,
-        position: 'bottom',
-        color: 'success',
-      });
-      refetchMatch();
-      qc.resetQueries({ queryKey: ['my-matches', false] });
-    },
-    onError(e: any) {
-      setOpenCheckoutModal();
-      showToast({
-        header: 'Ошибка!',
-        message: e?.response?.data?.message,
-        duration: 2000,
-        position: 'bottom',
-        color: 'danger',
-      });
-    },
-  });
-
-  // Join Match / Book a Place Request (when user has to pay for the spot)
+  // Join Match / Book a Place Request
   const createYookassaMutation = useMutation({
     mutationFn: createJoinMatchYookassaToken,
     onSuccess(token: string) {
-      renderCheckoutWidget(token);
+      if (token) {
+        renderCheckoutWidget(token);
+      } else {
+        showToast({
+          header: 'Поздравляем!',
+          message: 'Вы присоединились к матчу',
+          duration: 2000,
+          position: 'bottom',
+          color: 'success',
+        });
+      }
       setOpenCheckoutModal();
     },
     onError(e: any) {
@@ -186,19 +163,11 @@ export function SingleMatchPage() {
     if (!myPlayer?.user || !singleMatchData) return;
 
     if (matchId && playerInTeam) {
-      // if match is fully paid - just join the mtach without payment
-      if (singleMatchData.paid) {
-        joinMatchMutation.mutate({
-          matchId: Number(matchId),
-          team: playerInTeam,
-        });
-      } else {
-        createYookassaMutation.mutate({
-          matchId: Number(matchId),
-          team: playerInTeam,
-          money: singleMatchData.price / 4,
-        });
-      }
+      createYookassaMutation.mutate({
+        matchId: Number(matchId),
+        team: playerInTeam,
+        money: singleMatchData.paid ? 0 : singleMatchData.price / 4,
+      });
     } else {
       showToast({
         message: 'Выберите команду!',
@@ -368,9 +337,9 @@ export function SingleMatchPage() {
                     }}
                   >
                     <Button
-                      disabled={joinMatchMutation.isPending}
+                      disabled={createYookassaMutation.isPending}
                       endIcon={
-                        joinMatchMutation.isPending && <CircularProgress />
+                        createYookassaMutation.isPending && <CircularProgress />
                       }
                       onClick={onBookPlace}
                       sx={{

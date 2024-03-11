@@ -123,8 +123,11 @@ export function BookTab() {
       matchId: number;
     }) => {
       if (!e.matchId) return;
-      qc.refetchQueries({ queryKey: ['my-matches'] });
-      if (e.action === 'create') history.push(`matches/${e.matchId}`);
+      if (e.action === 'create') {
+        qc.refetchQueries({ queryKey: ['my-matches'] });
+        history.push(`/matches/${e.matchId}`);
+        return null;
+      }
     };
 
     socket.on('newMatch', redirectOnSuccessPayment);

@@ -28,8 +28,8 @@ export const useRegisterNotificationsToken = () => {
     const notification = new Notification(event.data.notification.title, {
       body: event.data.notification.body,
     });
-    notification.onclick = (event) => {
-      console.log('notification clicked: ', { event });
+    notification.onclick = (event: any) => {
+      window.location.href = event?.target?.data?.url;
     };
   };
 
@@ -64,7 +64,6 @@ export const useRegisterNotificationsToken = () => {
         }
 
         FirebaseMessaging.getToken(options).then(({ token }) => {
-          console.log('token: ', token);
           if (!deviceToken) {
             setDeviceToken(token);
             registerTokenMutation.mutate(token);
