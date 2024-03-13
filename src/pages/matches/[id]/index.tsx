@@ -74,7 +74,7 @@ export function SingleMatchPage() {
   const createYookassaMutation = useMutation({
     mutationFn: createJoinMatchYookassaToken,
     onSuccess(token: string) {
-      setOpenCheckoutModal();
+      // setOpenCheckoutModal();
       renderCheckoutWidget(token);
     },
     onError(e: any) {

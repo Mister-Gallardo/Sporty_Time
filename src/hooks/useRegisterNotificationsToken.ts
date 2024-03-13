@@ -27,14 +27,11 @@ export const useRegisterNotificationsToken = () => {
   const serviceWorkerListener = (event: any) => {
     const notification = new Notification(event.data.notification.title, {
       body: event.data.notification.body,
-      data: event.data.notification.data,
+      data: event.data.data.redirect,
     });
 
     notification.onclick = (event: any) => {
-      console.log('clicked');
-      console.log('event: ', event);
-      console.log('notification: ', notification);
-      // window.location.href = event?.target?.data?.redirect;
+      window.location.href = event?.target?.data;
     };
   };
 

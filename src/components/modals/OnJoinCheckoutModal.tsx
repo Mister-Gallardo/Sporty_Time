@@ -6,6 +6,7 @@ import { getOneAvailableMatch } from '../../services/matches/service';
 import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
 import { ModalContainer } from './ModalContainer';
 import { getMatchTypeName, getSportName } from '../../helpers/getNameOf';
+import useToggle from '../../hooks/useToggle';
 
 interface IOnJoinCheckoutModalProps {
   openState: boolean;
@@ -42,10 +43,15 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
 
   const tags = booking?.court?.tags.map((tag) => tag.title).join(' | ');
 
+  const [isDisabled, setIsDisabled] = useToggle();
+
   return (
     <ModalContainer
       openState={openState}
-      handleModal={handleModal}
+      handleModal={(val) => {
+        setIsDisabled(false);
+        handleModal(val);
+      }}
       headerTitle="Оплата"
     >
       <Box
@@ -95,7 +101,11 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
 
       <Box py={1.5} px={2} borderTop="1px solid #ddd">
         <Button
-          onClick={handleCheckout}
+          disabled={isDisabled}
+          onClick={() => {
+            setIsDisabled();
+            handleCheckout();
+          }}
           variant="contained"
           sx={{
             backgroundColor: '#0d2432',
@@ -109,6 +119,7 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
           Забронировать место
         </Button>
       </Box>
+      <Box mt={2} id="payment-form" />
     </ModalContainer>
   );
 };

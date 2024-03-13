@@ -23,9 +23,9 @@ import { getDatesList } from '../../../../helpers/getDatesList';
 import { Court, IAvailableTime } from '../../../../services/club/interface';
 import { EGender, EMatchType } from '../../../../services/matches/interface';
 import { format } from 'date-fns';
-import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
 import { useUserInfo } from '../../../../services/api/hooks';
 import { socket } from '../../../../utils/socket';
+import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
 
 export function BookTab() {
   const dates = getDatesList(100);
@@ -97,6 +97,9 @@ export function BookTab() {
     mutationFn: createBookingYookassaToken,
     onSuccess(token: string) {
       renderCheckoutWidget(token);
+      // setOpenYookassaModal();
+
+      // setYookassaToken(token);
     },
     onError(error: any) {
       console.log(error);
@@ -118,7 +121,6 @@ export function BookTab() {
       playTime: selectedOption?.playTime,
       ...getValues(),
     });
-    setOpenCheckoutModal();
   };
 
   const qc = useQueryClient();
