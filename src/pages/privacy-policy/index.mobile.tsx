@@ -4,7 +4,7 @@ import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 
 const AboutPage = React.lazy(() => import('.'));
 
-export function MobileAboutPage() {
+export function MobilePrivacyPolicyPage() {
   return (
     <IonPage>
       <IonContent>

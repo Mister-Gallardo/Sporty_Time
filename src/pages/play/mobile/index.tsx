@@ -11,7 +11,7 @@ import {
   IonToolbar,
 } from '@ionic/react';
 
-function MobilePlayPage() {
+export function MobilePlayPage() {
   const history = useHistory();
 
   return (
@@ -64,5 +64,3 @@ function MobilePlayPage() {
     </IonPage>
   );
 }
-
-export default MobilePlayPage;

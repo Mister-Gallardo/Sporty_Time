@@ -1,6 +1,8 @@
-import MobilePlayPage from './pages/play/mobile';
+import React from 'react';
+import { isPlatform } from '@ionic/react';
+import { Redirect, Route } from 'react-router';
+import { MobilePlayPage } from './pages/play/mobile';
 import { MobileBookCourt } from './pages/book-court/index.mobile';
-// import { DesktopHomePage } from './pages/play/desktop';
 import { MobileAuthPage } from './pages/auth/index.mobile';
 import { MobileSingleCourtPage } from './pages/book-court/[id]/index.mobile';
 import { MobileQuestionFormPage } from './pages/question-form/index.mobile';
@@ -12,11 +14,8 @@ import { MobileChatsPage } from './pages/chats/index.mobile';
 import { MobileSingleChatPage } from './pages/chats/[id]/index.mobile';
 import { MobileEditProfilePage } from './pages/profile/nested-pages/edit/index.mobile';
 import { MobileProfileNavPage } from './pages/profile/nested-pages/navigation/index.mobile';
-import { Redirect, Route } from 'react-router';
-
-import React from 'react';
-import { isPlatform } from '@ionic/react';
-import MobileAboutPage from './pages/about/index.mobile';
+import { MobileAboutPage } from './pages/about/index.mobile';
+import { MobilePrivacyPolicyPage } from './pages/privacy-policy/index.mobile';
 
 export interface RouteExtraProps {
   showTabBar: boolean;
@@ -116,5 +115,10 @@ export const mobileRoutes = [
     path: '/about',
     exact: true,
     component: MobileAboutPage,
+  },
+  {
+    path: '/privacy-policy',
+    exact: true,
+    component: MobilePrivacyPolicyPage,
   },
 ].filter(Boolean) as React.ComponentProps<typeof Route<RouteExtraProps>>[];
