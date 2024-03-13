@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { IonSpinner, IonToast, IonToggle, isPlatform } from '@ionic/react';
+import {
+  IonSpinner,
+  IonToast,
+  IonToggle,
+  isPlatform,
+  useIonToast,
+} from '@ionic/react';
 import { Box, Typography, Divider, Stack } from '@mui/material';
 import { SportsTennis } from '@mui/icons-material';
 import { getClub } from '../../../../services/club/service';
@@ -116,6 +122,7 @@ export function BookTab() {
   };
 
   const qc = useQueryClient();
+  const [showToast] = useIonToast();
 
   useEffect(() => {
     const redirectOnSuccessPayment = (e: {
@@ -124,6 +131,13 @@ export function BookTab() {
     }) => {
       if (!e.matchId) return;
       if (e.action === 'create') {
+        showToast({
+          color: 'success',
+          message: 'Оплата проведена успешно',
+          mode: 'ios',
+          position: 'top',
+          duration: 2000,
+        });
         qc.refetchQueries({ queryKey: ['my-matches'] });
         history.push(`/matches/${e.matchId}`);
         return null;

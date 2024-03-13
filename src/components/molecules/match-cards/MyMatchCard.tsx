@@ -81,7 +81,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
                   alignItems="center"
                   justifyContent="space-between"
                 >
-                  {team.map((member: any, i: number) => {
+                  {team.slice(0, 2).map((member: any, i: number) => {
                     return (
                       <Box
                         key={i}

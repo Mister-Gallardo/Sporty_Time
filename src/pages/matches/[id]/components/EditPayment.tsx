@@ -49,6 +49,13 @@ export const EditPayment = () => {
   useEffect(() => {
     const updateMatchData = (e: { action: string }) => {
       if (e.action === 'update') {
+        showToast({
+          color: 'success',
+          message: 'Оплата проведена успешно',
+          mode: 'ios',
+          position: 'top',
+          duration: 2000,
+        });
         qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
       }
     };

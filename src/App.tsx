@@ -33,7 +33,9 @@ const App: React.FC = () => {
           <Redirect to="/" />
         </MobileLayout>
       </Suspense>
-      <ToastContainer autoClose={5000} />
+      {Capacitor.getPlatform() === 'android' && (
+        <ToastContainer autoClose={5000} />
+      )}
     </>
   );
 };
