@@ -66,10 +66,8 @@ export const useRegisterNotificationsToken = () => {
         }
 
         FirebaseMessaging.getToken(options).then(({ token }) => {
-          if (!deviceToken) {
-            setDeviceToken(token);
-            registerTokenMutation.mutate(token);
-          }
+          setDeviceToken(token);
+          registerTokenMutation.mutate(token);
         });
       } else {
         if (deviceToken) localStorage.removeItem('deviceToken');

@@ -7,6 +7,7 @@ import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOu
 import { ModalContainer } from './ModalContainer';
 import { getMatchTypeName, getSportName } from '../../helpers/getNameOf';
 import useToggle from '../../hooks/useToggle';
+import { LoadingCircle } from '../atoms/LoadingCircle';
 
 interface IOnJoinCheckoutModalProps {
   openState: boolean;
@@ -119,7 +120,18 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
           Забронировать место
         </Button>
       </Box>
-      <Box mt={2} id="payment-form" />
+      <Box
+        mt={2}
+        id="payment-form"
+        minHeight={isDisabled ? 550 : 'unset'}
+        position="relative"
+        zIndex={2}
+      />
+      {isDisabled && (
+        <Box bottom="20%" position="absolute" zIndex={1} width="90%">
+          <LoadingCircle />
+        </Box>
+      )}
     </ModalContainer>
   );
 };

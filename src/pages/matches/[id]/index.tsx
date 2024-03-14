@@ -74,10 +74,10 @@ export function SingleMatchPage() {
   const createYookassaMutation = useMutation({
     mutationFn: createJoinMatchYookassaToken,
     onSuccess(token: string) {
-      // setOpenCheckoutModal();
       renderCheckoutWidget(token);
     },
     onError(e: any) {
+      setOpenCheckoutModal(false);
       showToast({
         color: 'danger',
         message: e?.response?.data?.message,
@@ -85,8 +85,6 @@ export function SingleMatchPage() {
         position: 'bottom',
         duration: 2000,
       });
-
-      setOpenCheckoutModal();
     },
   });
 
@@ -170,6 +168,7 @@ export function SingleMatchPage() {
   useEffect(() => {
     const updateMatchData = (e: { action: string }) => {
       if (e.action === 'update') {
+        setOpenCheckoutModal(false);
         showToast({
           color: 'success',
           message: singleMatchData?.paid

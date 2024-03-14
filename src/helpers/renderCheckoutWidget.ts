@@ -27,5 +27,10 @@ export const renderCheckoutWidget = (token: string) => {
   checkout.on('complete', () => {
     checkout.destroy();
   });
-  checkout.render('payment-form');
+  checkout.render('payment-form').then(() => {
+    document.getElementById('payment-form')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    });
+  });
 };
