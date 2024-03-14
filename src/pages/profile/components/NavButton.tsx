@@ -45,12 +45,14 @@ export const NavButton: React.FC<INavButtonProps> = ({
       >
         <Typography
           color={disabled ? disabledTextColor : primaryTextColor}
+          textAlign="start"
           fontWeight={500}
         >
           {primaryText}
         </Typography>
         <Typography
           color={disabled ? disabledTextColor : secondaryTextColor}
+          textAlign="start"
           fontSize={13}
         >
           {secondaryText}
