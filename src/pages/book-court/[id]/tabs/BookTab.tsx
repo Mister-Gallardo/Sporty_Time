@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { IonSpinner, IonToast, IonToggle, isPlatform } from '@ionic/react';
+import {
+  IonSpinner,
+  IonToast,
+  IonToggle,
+  isPlatform,
+  useIonToast,
+} from '@ionic/react';
 import { Box, Typography, Divider, Stack } from '@mui/material';
 import { SportsTennis } from '@mui/icons-material';
 import { getClub } from '../../../../services/club/service';
@@ -17,9 +23,9 @@ import { getDatesList } from '../../../../helpers/getDatesList';
 import { Court, IAvailableTime } from '../../../../services/club/interface';
 import { EGender, EMatchType } from '../../../../services/matches/interface';
 import { format } from 'date-fns';
-import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
 import { useUserInfo } from '../../../../services/api/hooks';
 import { socket } from '../../../../utils/socket';
+import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
 
 export function BookTab() {
   const dates = getDatesList(100);
@@ -91,6 +97,9 @@ export function BookTab() {
     mutationFn: createBookingYookassaToken,
     onSuccess(token: string) {
       renderCheckoutWidget(token);
+      // setOpenYookassaModal();
+
+      // setYookassaToken(token);
     },
     onError(error: any) {
       console.log(error);
@@ -112,10 +121,10 @@ export function BookTab() {
       playTime: selectedOption?.playTime,
       ...getValues(),
     });
-    setOpenCheckoutModal();
   };
 
   const qc = useQueryClient();
+  const [showToast] = useIonToast();
 
   useEffect(() => {
     const redirectOnSuccessPayment = (e: {
@@ -124,6 +133,13 @@ export function BookTab() {
     }) => {
       if (!e.matchId) return;
       if (e.action === 'create') {
+        showToast({
+          color: 'success',
+          message: 'Оплата проведена успешно',
+          mode: 'ios',
+          position: 'top',
+          duration: 2000,
+        });
         qc.refetchQueries({ queryKey: ['my-matches'] });
         history.push(`/matches/${e.matchId}`);
         return null;

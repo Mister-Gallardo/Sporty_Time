@@ -74,18 +74,8 @@ export function SingleMatchPage() {
   const createYookassaMutation = useMutation({
     mutationFn: createJoinMatchYookassaToken,
     onSuccess(token: string) {
-      if (token) {
-        renderCheckoutWidget(token);
-      } else {
-        showToast({
-          header: 'Поздравляем!',
-          message: 'Вы присоединились к матчу',
-          duration: 2000,
-          position: 'bottom',
-          color: 'success',
-        });
-      }
-      setOpenCheckoutModal();
+      // setOpenCheckoutModal();
+      renderCheckoutWidget(token);
     },
     onError(e: any) {
       showToast({
@@ -180,6 +170,15 @@ export function SingleMatchPage() {
   useEffect(() => {
     const updateMatchData = (e: { action: string }) => {
       if (e.action === 'update') {
+        showToast({
+          color: 'success',
+          message: singleMatchData?.paid
+            ? 'Вы присоединились к матчу!'
+            : 'Оплата проведена успешно',
+          mode: 'ios',
+          position: 'top',
+          duration: 2000,
+        });
         qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
       }
     };

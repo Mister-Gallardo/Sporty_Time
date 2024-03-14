@@ -15,7 +15,8 @@ export const currentTimeInCLubTimezone = (timeZone: string) => {
 };
 
 export const getMatchStatus = (match: MatchData) => {
-  const currentTime = getTime(new Date());
+  const clubTZ = match?.booking?.court?.club?.timezone;
+  const currentTime = currentTimeInCLubTimezone(clubTZ || '');
 
   const expiresTime = getTime(new Date(match.timeExpires));
   const matchTime = getTime(new Date(match.booking.startsAt.slice(0, -5)));

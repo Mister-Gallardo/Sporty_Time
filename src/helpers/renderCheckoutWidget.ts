@@ -4,13 +4,22 @@ declare global {
   }
 }
 
+let script = document.querySelector(
+  'script[src="https://yookassa.ru/checkout-widget/v1/checkout-widget.js"]',
+) as HTMLScriptElement;
+
+if (!script) {
+  script = document.createElement('script');
+  script.type = 'application/javascript';
+  script.src = 'https://yookassa.ru/checkout-widget/v1/checkout-widget.js';
+  script.async = true;
+  document.body.appendChild(script);
+}
+
 export const renderCheckoutWidget = (token: string) => {
   const checkout = new window.YooMoneyCheckoutWidget({
     confirmation_token: token, //Token that must be obtained from YooMoney before the payment process
-    customization: {
-      modal: true,
-    },
-    error_callback: (error: any) => {
+    error_callback: function (error: any) {
       console.log('widget error: ', error);
     },
   });
@@ -18,7 +27,5 @@ export const renderCheckoutWidget = (token: string) => {
   checkout.on('complete', () => {
     checkout.destroy();
   });
-
-  //Display of payment form in the container
-  checkout.render();
+  checkout.render('payment-form');
 };

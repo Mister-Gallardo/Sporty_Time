@@ -67,15 +67,17 @@ export function MyMatchesTab() {
               забронировать корт и начать играть!
             </Typography>
           ) : (
-            myMatchesData?.map((card) => {
-              return (
-                <MyMatchCard
-                  key={card.id}
-                  {...card}
-                  uploadResults={uploadResults}
-                />
-              );
-            })
+            myMatchesData
+              ?.map((card) => {
+                return (
+                  <MyMatchCard
+                    key={card.id}
+                    {...card}
+                    uploadResults={uploadResults}
+                  />
+                );
+              })
+              ?.reverse()
           )}
         </Box>
         <UploadResultModal

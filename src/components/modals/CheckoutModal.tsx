@@ -8,6 +8,7 @@ import { ModalContainer } from './ModalContainer';
 import { currentTimeInCLubTimezone } from '../../helpers/getMatchStatus';
 import { Court } from '../../services/club/interface';
 import { differenceInHours, format, parseISO } from 'date-fns';
+import useToggle from '../../hooks/useToggle';
 
 interface ICheckoutModal {
   price: number;
@@ -58,10 +59,16 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
   const total = isPayingFullPrice ? price : selectedPayment;
 
   const tags = court.tags.map((tag) => tag.title).join(' | ');
+
+  const [isDisabled, setIsDisabled] = useToggle();
+
   return (
     <ModalContainer
       openState={openState}
-      handleModal={handleModal}
+      handleModal={(val) => {
+        setIsDisabled(false);
+        handleModal(val);
+      }}
       headerTitle="Оплата"
     >
       <>
@@ -160,7 +167,11 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
 
         <Box py={1.5} px={2} borderTop="1px solid #ddd">
           <Button
-            onClick={() => handleCheckout(total)}
+            disabled={isDisabled}
+            onClick={() => {
+              setIsDisabled();
+              handleCheckout(total);
+            }}
             variant="contained"
             sx={{
               backgroundColor: '#0d2432',
@@ -174,6 +185,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
             Продолжить оплату
           </Button>
         </Box>
+        <Box mt={2} id="payment-form" />
       </>
     </ModalContainer>
   );
