@@ -7,3 +7,7 @@ export function getUserInfo() {
 export function editUserProfile(data: FormData | EditUserProfile) {
   return api.post('/users/me', data);
 }
+
+export const deleteMe = async () => {
+  return await api.delete('/users/me');
+};

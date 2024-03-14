@@ -9,10 +9,12 @@ import {
 } from '@mui/material';
 import { useFullUserData } from '../../services/api/hooks';
 import ActivitiesTab from './tabs/ActivitiesTab';
-import { IonLoading, isPlatform } from '@ionic/react';
+import { IonButton, IonButtons, IonLoading, isPlatform } from '@ionic/react';
 import PostsTab from './tabs/PostsTab';
 import { useHistory } from 'react-router';
 import { NotFoundPage } from '../../components/NotFoundPage';
+import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 
 export function ProfilePage() {
   const isMobile = isPlatform('mobile');
@@ -42,6 +44,18 @@ export function ProfilePage() {
           <Typography ml={2} fontSize="medium" fontWeight={700}>
             {fullname}
           </Typography>
+          {isPlatform('desktop') && (
+            <Box ml="auto">
+              <IonButtons slot="end">
+                <IonButton onClick={() => history.push('/chats')}>
+                  <ChatBubbleOutlineRoundedIcon sx={{ color: '#000' }} />
+                </IonButton>
+                <IonButton onClick={() => history.push('/profile/navigation')}>
+                  <MenuRoundedIcon sx={{ color: '#000' }} />
+                </IonButton>
+              </IonButtons>
+            </Box>
+          )}
         </Box>
 
         <Box

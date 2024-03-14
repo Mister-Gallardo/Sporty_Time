@@ -5,6 +5,10 @@ import { Box, Button, Typography } from '@mui/material';
 interface INavButtonProps {
   primaryText: string;
   secondaryText?: string;
+  primaryTextColor?: string;
+  secondaryTextColor?: string;
+  disabledTextColor?: string;
+  iconColor?: string;
   startIcon: any;
   onClick: () => void;
   disabled?: boolean;
@@ -13,6 +17,10 @@ interface INavButtonProps {
 export const NavButton: React.FC<INavButtonProps> = ({
   primaryText,
   secondaryText,
+  primaryTextColor = '#000',
+  secondaryTextColor = 'gray',
+  disabledTextColor = '#ccc',
+  iconColor = '#000',
   startIcon,
   onClick,
   disabled,
@@ -23,7 +31,7 @@ export const NavButton: React.FC<INavButtonProps> = ({
       startIcon={startIcon}
       endIcon={
         <ArrowForwardIosRoundedIcon
-          sx={{ color: disabled ? '#ccc' : '#000' }}
+          sx={{ color: disabled ? disabledTextColor : iconColor }}
         />
       }
       fullWidth
@@ -35,10 +43,16 @@ export const NavButton: React.FC<INavButtonProps> = ({
         alignItems="flex-start"
         flexGrow={1}
       >
-        <Typography color={disabled ? '#ccc' : '#000'} fontWeight={500}>
+        <Typography
+          color={disabled ? disabledTextColor : primaryTextColor}
+          fontWeight={500}
+        >
           {primaryText}
         </Typography>
-        <Typography color={disabled ? '#ccc' : 'gray'} fontSize={13}>
+        <Typography
+          color={disabled ? disabledTextColor : secondaryTextColor}
+          fontSize={13}
+        >
           {secondaryText}
         </Typography>
       </Box>
