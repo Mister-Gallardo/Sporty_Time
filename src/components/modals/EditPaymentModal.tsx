@@ -8,6 +8,7 @@ import { socket } from '../../utils/socket';
 import { useParams } from 'react-router';
 import { useIonToast } from '@ionic/react';
 import useToggle from '../../hooks/useToggle';
+import { LoadingCircle } from '../atoms/LoadingCircle';
 
 interface IEditPaymentModalProps {
   openState: boolean;
@@ -31,6 +32,7 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
       renderCheckoutWidget(token);
     },
     onError() {
+      handleModal(false);
       showToast({
         color: 'danger',
         message: 'Ошибка! Попробуйте ещё раз!',
@@ -44,6 +46,7 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
   useEffect(() => {
     const updateMatchData = (e: { action: string }) => {
       if (e.action === 'update') {
+        handleModal(false);
         showToast({
           color: 'success',
           message: 'Оплата проведена успешно',
@@ -110,7 +113,18 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
           Отмена
         </Button>
       </Box>
-      <Box mt={2} id="payment-form" />
+      <Box
+        mt={2}
+        id="payment-form"
+        minHeight={isDisabled ? 550 : 'unset'}
+        position="relative"
+        zIndex={2}
+      />
+      {isDisabled && (
+        <Box bottom="40%" position="absolute" zIndex={1} width="90%">
+          <LoadingCircle />
+        </Box>
+      )}
     </ModalContainer>
   );
 };

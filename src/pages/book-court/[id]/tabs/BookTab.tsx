@@ -97,9 +97,6 @@ export function BookTab() {
     mutationFn: createBookingYookassaToken,
     onSuccess(token: string) {
       renderCheckoutWidget(token);
-      // setOpenYookassaModal();
-
-      // setYookassaToken(token);
     },
     onError(error: any) {
       console.log(error);
@@ -133,6 +130,7 @@ export function BookTab() {
     }) => {
       if (!e.matchId) return;
       if (e.action === 'create') {
+        setOpenCheckoutModal(false);
         showToast({
           color: 'success',
           message: 'Оплата проведена успешно',

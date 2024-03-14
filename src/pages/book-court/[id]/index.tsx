@@ -67,7 +67,7 @@ export function SingleCourtPage() {
                 sx={{ objectFit: 'cover' }}
                 width="100%"
                 component="img"
-                src={image?.formats.large}
+                src={image?.formats?.large || image?.formats?.medium}
               />
             );
           })
