@@ -2,22 +2,14 @@ import {
   ArrowBackIosNewOutlined,
   ChatBubbleOutlineRounded,
 } from '@mui/icons-material';
-import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { SwipeablePage } from '../../../components/SwipeablePage';
-import {
-  IonBackButton,
-  IonLoading,
-  isPlatform,
-  useIonToast,
-} from '@ionic/react';
-import React, { useEffect, useState } from 'react';
+import { IonBackButton, IonLoading, isPlatform } from '@ionic/react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
-import {
-  createJoinMatchYookassaToken,
-  getOneAvailableMatch,
-} from '../../../services/matches/service';
+import { getOneAvailableMatch } from '../../../services/matches/service';
 import { PlayersMatchCard } from '../../../components/molecules/match-cards/PlayersMatchCard';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { MatchInfoBlock } from './components/MatchInfoBlock';
@@ -38,15 +30,12 @@ import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
 import { isAfter } from 'date-fns';
-import { renderCheckoutWidget } from '../../../helpers/renderCheckoutWidget';
-import { socket } from '../../../utils/socket';
 import { Link } from 'react-router-dom';
 
 const isMobile = isPlatform('mobile');
 export function SingleMatchPage() {
   const { matchId } = useParams<{ matchId: string }>();
 
-  const [showToast] = useIonToast();
   const [myPlayer] = usePlayerProfile();
 
   const [openEditModal, setOpenEditModal] = useToggle();
@@ -67,26 +56,6 @@ export function SingleMatchPage() {
   });
 
   const singleMatchData = data?.data;
-
-  const qc = useQueryClient();
-
-  // Join Match / Book a Place Request
-  const createYookassaMutation = useMutation({
-    mutationFn: createJoinMatchYookassaToken,
-    onSuccess(token: string) {
-      renderCheckoutWidget(token);
-    },
-    onError(e: any) {
-      setOpenCheckoutModal(false);
-      showToast({
-        color: 'danger',
-        message: e?.response?.data?.message,
-        mode: 'ios',
-        position: 'bottom',
-        duration: 2000,
-      });
-    },
-  });
 
   const [players, setPlayers] = useState<MatchPlayer[]>([]);
   const playerAlreadyInSomeTeam = !!singleMatchData?.matchBookings.find(
@@ -146,55 +115,8 @@ export function SingleMatchPage() {
     setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
   }, [singleMatchData, playerInTeam, myPlayer]);
 
-  // when user joins the match
-  const onMatchJoin = () => {
-    if (!myPlayer?.user || !singleMatchData) return;
-
-    if (matchId && playerInTeam) {
-      createYookassaMutation.mutate({
-        matchId: Number(matchId),
-        team: playerInTeam,
-        money: singleMatchData.paid ? 0 : singleMatchData.price / 4,
-      });
-    } else {
-      showToast({
-        message: 'Выберите команду!',
-        duration: 1000,
-        color: 'danger',
-      });
-    }
-  };
-
-  useEffect(() => {
-    const updateMatchData = (e: { action: string }) => {
-      if (e.action === 'update') {
-        setOpenCheckoutModal(false);
-        showToast({
-          color: 'success',
-          message: singleMatchData?.paid
-            ? 'Вы присоединились к матчу!'
-            : 'Оплата проведена успешно',
-          mode: 'ios',
-          position: 'top',
-          duration: 2000,
-        });
-        qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
-      }
-    };
-
-    socket.on(`matchId - ${matchId}`, updateMatchData);
-
-    return () => {
-      socket.off(`matchId - ${matchId}`, updateMatchData);
-    };
-  }, []);
-
-  if (isLoading) {
-    return <IonLoading isOpen />;
-  }
-  if (!singleMatchData || isError) {
-    return <NotFoundPage />;
-  }
+  if (isLoading) return <IonLoading isOpen />;
+  if (!singleMatchData || isError) return <NotFoundPage />;
 
   const renderImageSlot = () => (
     <Box sx={{ height: '100%', '*': { height: '100%' } }}>
@@ -335,10 +257,6 @@ export function SingleMatchPage() {
                     }}
                   >
                     <Button
-                      disabled={createYookassaMutation.isPending}
-                      endIcon={
-                        createYookassaMutation.isPending && <CircularProgress />
-                      }
                       onClick={onBookPlace}
                       sx={{
                         paddingX: 2,
@@ -377,7 +295,7 @@ export function SingleMatchPage() {
       <OnJoinCheckoutModal
         openState={openCheckoutModal}
         handleModal={setOpenCheckoutModal}
-        handleCheckout={onMatchJoin}
+        playerInTeam={playerInTeam}
       />
 
       <EditMatchPlayersModal

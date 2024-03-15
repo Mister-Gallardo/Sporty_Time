@@ -1,25 +1,39 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
-import { Box, Button, Divider, Typography } from '@mui/material';
-import { getOneAvailableMatch } from '../../services/matches/service';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Typography,
+} from '@mui/material';
+import {
+  createJoinMatchYookassaToken,
+  getOneAvailableMatch,
+} from '../../services/matches/service';
 import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
 import { ModalContainer } from './ModalContainer';
 import { getMatchTypeName, getSportName } from '../../helpers/getNameOf';
 import useToggle from '../../hooks/useToggle';
+import { renderCheckoutWidget } from '../../helpers/renderCheckoutWidget';
+import { useIonToast } from '@ionic/react';
+import { socket } from '../../utils/socket';
+import { usePlayerProfile } from '../../services/api/hooks';
 
 interface IOnJoinCheckoutModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  handleCheckout: () => void;
+  playerInTeam: string;
 }
 
 export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   openState,
   handleModal,
-  handleCheckout,
+  playerInTeam,
 }) => {
   const { matchId } = useParams<{ matchId: string }>();
+  const [myPlayer] = usePlayerProfile();
 
   const { data } = useQuery({
     queryKey: [`match`, Number(matchId)],
@@ -27,10 +41,75 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   });
 
   const matchData = data?.data;
+
+  const qc = useQueryClient();
+  const [showToast] = useIonToast();
+
+  // Join Match / Book a Place Request
+  const createYookassaMutation = useMutation({
+    mutationFn: createJoinMatchYookassaToken,
+    onSuccess(token: string) {
+      renderCheckoutWidget(token);
+    },
+    onError(e: any) {
+      handleModal(false);
+      setIsDisabled(false);
+      showToast({
+        color: 'danger',
+        message: e?.response?.data?.message,
+        mode: 'ios',
+        position: 'bottom',
+        duration: 2000,
+      });
+    },
+  });
+
+  // when user joins the match
+  const onMatchJoin = () => {
+    if (!myPlayer?.user || !matchData) return;
+
+    if (matchId && playerInTeam) {
+      createYookassaMutation.mutate({
+        matchId: Number(matchId),
+        team: playerInTeam,
+        money: matchData.paid ? 0 : matchData.price / 4,
+      });
+    } else {
+      showToast({
+        message: 'Выберите команду!',
+        duration: 1000,
+        color: 'danger',
+      });
+    }
+  };
+
+  useEffect(() => {
+    const updateMatchData = (e: { action: string }) => {
+      if (e.action === 'update') {
+        handleModal(false);
+        showToast({
+          color: 'success',
+          message: matchData?.paid
+            ? 'Вы присоединились к матчу!'
+            : 'Оплата проведена успешно',
+          mode: 'ios',
+          position: 'top',
+          duration: 2000,
+        });
+        qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
+      }
+    };
+
+    socket.on(`matchId - ${matchId}`, updateMatchData);
+
+    return () => {
+      socket.off(`matchId - ${matchId}`, updateMatchData);
+    };
+  }, []);
+
   if (!matchData) return null;
 
   const { booking, type, sport, paid, price } = matchData;
-
   const interval = booking.interval;
 
   // match start date + start-end time
@@ -40,7 +119,6 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   )}-${interval.slice(-10, -5)}`;
 
   const total = paid ? 0 : price / 4;
-
   const tags = booking?.court?.tags.map((tag) => tag.title).join(' | ');
 
   const [isDisabled, setIsDisabled] = useToggle();
@@ -102,9 +180,10 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
       <Box py={1.5} px={2} borderTop="1px solid #ddd">
         <Button
           disabled={isDisabled}
+          endIcon={createYookassaMutation.isPending && <CircularProgress />}
           onClick={() => {
             setIsDisabled();
-            handleCheckout();
+            onMatchJoin();
           }}
           variant="contained"
           sx={{

@@ -17,6 +17,7 @@ import { useSearchParam } from '../../../hooks/useSearchParams';
 import { ESport } from '../../../services/matches/interface';
 import { useLocalStorage } from 'usehooks-ts';
 import { useEffect } from 'react';
+import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 
 interface ChooseYourSportProps {
   handleStep: (step: number) => void;
@@ -154,12 +155,10 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
               width="100%"
               height={90}
             >
-              {currentSportRate ? (
-                <Button
-                  onClick={() => history.push('/')}
-                  variant="contained"
-                  sx={{ borderRadius: 20 }}
-                >
+              {query.isLoading ? (
+                <LoadingCircle />
+              ) : currentSportRate ? (
+                <Button onClick={() => history.push('/')} variant="contained">
                   Продолжить
                 </Button>
               ) : (
@@ -170,14 +169,13 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
                       setSelectedSport(selectedSport);
                     }}
                     variant="contained"
-                    sx={{ borderRadius: 20 }}
                   >
                     Начать
                   </Button>
                   <Button
                     onClick={() => history.push('/')}
                     variant="text"
-                    sx={{ borderRadius: 20 }}
+                    sx={{ color: '#fff' }}
                   >
                     Не сейчас
                   </Button>
