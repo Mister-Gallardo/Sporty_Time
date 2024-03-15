@@ -21,7 +21,7 @@ export const ClubInfoBlock = () => {
   const { booking } = singleMatchData;
   const images = booking?.court?.club?.images;
   const previewImg =
-    !images || images?.length === 0 ? noImg : images[0]?.formats.large;
+    images && images.length > 0 ? images[0]?.formats.small : noImg;
 
   if (!booking?.court?.club) return null;
   return (
@@ -38,13 +38,13 @@ export const ClubInfoBlock = () => {
         <Box
           component="img"
           src={previewImg}
+          width={64}
+          height={64}
           sx={{
-            width: '64px',
-            height: '64px',
-            background: '#e5e5e5',
-            borderRadius: '7px',
             objectFit: 'cover',
           }}
+          alt="Фото клуба"
+          onError={(e) => ((e.target as HTMLImageElement).src = noImg)}
         />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
           <Typography sx={{ fontWeight: '700' }}>

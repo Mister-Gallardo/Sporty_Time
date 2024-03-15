@@ -37,7 +37,7 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
     }
   }, [availableTimesArray]);
 
-  const previewImg = images.length === 0 ? noImg : images[0]?.formats.large;
+  const previewImg = images.length === 0 ? noImg : images[0]?.formats.small;
 
   return (
     <Card
@@ -53,15 +53,15 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
       <CardHeader
         avatar={
           <Box
+            component="img"
+            src={previewImg}
             width={60}
             height={60}
-            borderRadius={2}
             sx={{
-              backgroundImage: `url(${previewImg})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
+              objectFit: 'cover',
             }}
+            alt="Фото клуба"
+            onError={(e) => ((e.target as HTMLImageElement).src = noImg)}
           />
         }
         title={title}
@@ -71,7 +71,6 @@ export const ClubMultipleDatesCard: React.FC<IClubMultipleDatesCard> = ({
           lineHeight: 1.3,
         }}
         subheaderTypographyProps={{ fontSize: 15 }}
-        // subheader="2km Barcelona"
         sx={{ borderBottom: '1px solid #eee' }}
       />
 

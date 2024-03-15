@@ -15,9 +15,9 @@ export const ClubCard: React.FC<IClubCard> = (props) => {
     props as any; // FIX
   const history = useHistory();
 
-  const [gameDate, times] = Object.entries(availableTimes || {})[0] as any; // FIX;
+  const [gameDate, times] = Object.entries(availableTimes || {})[0];
 
-  const previewImg = images.length === 0 ? noImg : images[0]?.formats.large;
+  const previewImg = images.length === 0 ? noImg : images[0]?.formats.medium;
 
   return (
     <Box
@@ -77,11 +77,10 @@ export const ClubCard: React.FC<IClubCard> = (props) => {
 
       <Box py={1.5} pl={1.5}>
         <Typography mb={1} color="gray">
-          {/* 6km - L'Hospitalet de Llobregat */}
           {city}
         </Typography>
         <Box display="flex" gap={1} pb={2} sx={{ overflowX: 'auto' }}>
-          {times.length === 0 ? (
+          {(times as IAvailableTime[]).length === 0 ? (
             <Typography
               color="gray"
               width="100%"
@@ -91,21 +90,23 @@ export const ClubCard: React.FC<IClubCard> = (props) => {
               По заданным параметрам нет свободных кортов
             </Typography>
           ) : (
-            times?.map((elem: IAvailableTime, i: number) => {
-              if (!elem.time) return;
-              return (
-                <DateBox
-                  key={i}
-                  startTime={elem.time}
-                  onClick={(e: Event) => {
-                    e.stopPropagation();
-                    history.push(
-                      `/book-court/${id}?tab=2&time=${elem.time}&day=${gameDate}`,
-                    );
-                  }}
-                />
-              );
-            })
+            (times as IAvailableTime[])?.map(
+              (elem: IAvailableTime, i: number) => {
+                if (!elem.time) return;
+                return (
+                  <DateBox
+                    key={i}
+                    startTime={elem.time}
+                    onClick={(e: Event) => {
+                      e.stopPropagation();
+                      history.push(
+                        `/book-court/${id}?tab=2&time=${elem.time}&day=${gameDate}`,
+                      );
+                    }}
+                  />
+                );
+              },
+            )
           )}
         </Box>
       </Box>

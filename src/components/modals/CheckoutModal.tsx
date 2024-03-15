@@ -9,7 +9,6 @@ import { currentTimeInCLubTimezone } from '../../helpers/getMatchStatus';
 import { Court } from '../../services/club/interface';
 import { differenceInHours, format, parseISO } from 'date-fns';
 import useToggle from '../../hooks/useToggle';
-import { LoadingCircle } from '../atoms/LoadingCircle';
 
 interface ICheckoutModal {
   price: number;
@@ -194,11 +193,6 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
           position="relative"
           zIndex={2}
         />
-        {isDisabled && (
-          <Box bottom="5%" position="absolute" zIndex={1} width="90%">
-            <LoadingCircle />
-          </Box>
-        )}
       </>
     </ModalContainer>
   );
