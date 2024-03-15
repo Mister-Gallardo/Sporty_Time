@@ -57,10 +57,6 @@ export function ResultsStep() {
                   {initials}
                 </Avatar>
                 <Typography>{firstName + ' ' + lastName}</Typography>
-                <Box display="flex" gap={1}>
-                  <Typography component="span">🇷🇺</Typography>
-                  <Typography>Russian Federation</Typography>
-                </Box>
               </Box>
               <Box>
                 <Box
@@ -84,8 +80,8 @@ export function ResultsStep() {
                 history.push('/');
                 history.go(0);
               }}
-              sx={{ borderRadius: 20, px: 7 }}
-              fullWidth={!isMobile}
+              sx={{ px: 7 }}
+              fullWidth
             >
               ИГРАТЬ!
             </Button>
