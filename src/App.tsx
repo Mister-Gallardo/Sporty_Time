@@ -7,7 +7,6 @@ import { Capacitor } from '@capacitor/core';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from './services/notifications/firebase';
 import { Geolocation } from '@capacitor/geolocation';
-import { useRegisterNotificationsToken } from './hooks/useRegisterNotificationsToken';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -20,8 +19,6 @@ const App: React.FC = () => {
     if (Capacitor.isNativePlatform()) return;
     initializeApp(firebaseConfig);
   }, []);
-
-  useRegisterNotificationsToken();
 
   return (
     <>

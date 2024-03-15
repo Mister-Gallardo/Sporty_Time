@@ -8,7 +8,6 @@ import { socket } from '../../utils/socket';
 import { useParams } from 'react-router';
 import { useIonToast } from '@ionic/react';
 import useToggle from '../../hooks/useToggle';
-import { LoadingCircle } from '../atoms/LoadingCircle';
 
 interface IEditPaymentModalProps {
   openState: boolean;
@@ -120,11 +119,6 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
         position="relative"
         zIndex={2}
       />
-      {isDisabled && (
-        <Box bottom="40%" position="absolute" zIndex={1} width="90%">
-          <LoadingCircle />
-        </Box>
-      )}
     </ModalContainer>
   );
 };
