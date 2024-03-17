@@ -26,7 +26,6 @@ export interface IQuestion {
 export interface IQuestions {
   isFederated?: IQuestion;
   federateCategory?: IQuestion;
-  licenseNumber?: IQuestion;
   competeLevel?: IQuestion;
   gender?: IQuestion;
   age?: IQuestion;
@@ -297,20 +296,13 @@ const padelCompetition = {
     id: 'federateCategory',
     question: 'В какой категории?',
     options: [
-      { answer: '1', next: 'licenseNumber' },
-      { answer: '2', next: 'licenseNumber' },
-      { answer: '3', next: 'licenseNumber' },
-      { answer: '4', next: 'licenseNumber' },
-      { answer: '5', next: 'licenseNumber' },
+      { answer: '1', next: 'otherSportExp' },
+      { answer: '2', next: 'otherSportExp' },
+      { answer: '3', next: 'otherSportExp' },
+      { answer: '4', next: 'otherSportExp' },
+      { answer: '5', next: 'otherSportExp' },
     ],
     isInput: false,
-    isMatter: false,
-  },
-  licenseNumber: {
-    id: 'licenseNumber',
-    question: 'Введите Ваш лицензионный номер:',
-    options: null,
-    isInput: true,
     isMatter: false,
   },
 

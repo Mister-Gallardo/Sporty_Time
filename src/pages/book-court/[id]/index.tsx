@@ -77,7 +77,7 @@ export function SingleCourtPage() {
   );
 
   const renderTopSlot = () => (
-    <Box p={2} display="flex" alignItems="center" sx={{ background: 'white' }}>
+    <Box display="flex" alignItems="center">
       <IonBackButton
         text={''}
         style={{
