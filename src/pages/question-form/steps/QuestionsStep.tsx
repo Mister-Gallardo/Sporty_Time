@@ -14,25 +14,7 @@ import { QuestionsContainer } from '../components/QuestionsContainer';
 import { useSearchParam } from '../../../hooks/useSearchParams';
 import { useHistory } from 'react-router';
 import { ESport } from '../../../services/matches/interface';
-
-// leave just for now
-const getSportAndLevel = (sport: string, level: string) => {
-  const sportIndex =
-    sport === ESport.PADEL ? 0 : sport === ESport.TENNIS ? 1 : 2;
-  const levelIndex =
-    level === 'none'
-      ? 0
-      : level === 'beginner'
-      ? 1
-      : level === 'intermediate'
-      ? 2
-      : level === 'intermediate hight'
-      ? 3
-      : level === 'advanced'
-      ? 4
-      : 5;
-  return { sportIndex, levelIndex };
-};
+import { getSportAndLevel } from '../../../helpers/getSportAndLevelIndx';
 
 interface QuestionsStepStepProps {
   handleStep: (step: number) => void;

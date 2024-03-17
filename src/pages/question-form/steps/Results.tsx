@@ -4,11 +4,8 @@ import { usePlayerProfile } from '../../../services/api/hooks';
 import { SportsBaseballOutlined } from '@mui/icons-material';
 import { BgContainer } from '../components/BgContainer';
 import { getSportRating } from '../../../helpers/getSportRating';
-import { isPlatform } from '@ionic/react';
 import { useSearchParam } from '../../../hooks/useSearchParams';
 import { ESport } from '../../../services/matches/interface';
-
-const isMobile = isPlatform('mobile');
 
 export function ResultsStep() {
   const history = useHistory();

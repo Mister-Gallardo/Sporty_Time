@@ -82,7 +82,7 @@ export const MessageTextField = ({ chatId }: { chatId: string }) => {
               {...field}
               placeholder="Напишите сообщение..."
               autoComplete="off"
-              InputProps={{ disableUnderline: true }}
+              InputProps={{ disableUnderline: true, sx: { color: '#000' } }}
               fullWidth
               sx={{ paddingX: 1 }}
             />
