@@ -4,6 +4,7 @@ import { Box, Typography } from '@mui/material';
 import { DateBox } from './DateBox';
 import { isPlatform } from '@ionic/react';
 import noImg from '../../images/no-image.jpg';
+import { withHostname } from '../../services/api/service';
 
 interface IClubCard extends Club {
   onClick: () => void;
@@ -33,7 +34,7 @@ export const ClubCard: React.FC<IClubCard> = (props) => {
         display="flex"
         alignItems="flex-end"
         sx={{
-          backgroundImage: `url(${previewImg})`,
+          backgroundImage: `url(${withHostname(previewImg)})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

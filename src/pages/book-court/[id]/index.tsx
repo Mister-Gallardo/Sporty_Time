@@ -15,6 +15,7 @@ import { useSearchParam } from '../../../hooks/useSearchParams';
 import noImg from '../../../images/no-image.jpg';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { TabList } from '../../../components/molecules/TabList';
+import { withHostname } from '../../../services/api/service';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -67,7 +68,9 @@ export function SingleCourtPage() {
                 sx={{ objectFit: 'cover' }}
                 width="100%"
                 component="img"
-                src={image?.formats?.large || image?.formats?.medium}
+                src={withHostname(
+                  image?.formats?.large || image?.formats?.medium,
+                )}
               />
             );
           })

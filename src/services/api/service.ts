@@ -1,9 +1,28 @@
 import axios from 'axios';
 import { isAuthorized } from '../auth/service';
 import { history } from '../history/service';
+import { isPlatform } from '@ionic/react';
+
+export const BASE_URL = isPlatform('mobile')
+  ? 'https://dev.sportytime.ru/api'
+  : '/api';
+
+export const withHostname = (url: string) => {
+  try {
+    const urlObj = new URL(url, window.location as unknown as URL);
+    if (urlObj.origin === 'capacitor://localhost') {
+      urlObj.hostname = 'dev.sportytime.ru';
+      urlObj.protocol = 'https';
+    }
+    return urlObj.toString();
+  } catch (e) {
+    console.error(e);
+    return url;
+  }
+};
 
 export const api = axios.create({
-  baseURL: '/api',
+  baseURL: BASE_URL,
 });
 
 api.interceptors.request.use((config) => {

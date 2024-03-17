@@ -7,7 +7,6 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   server: {
     androidScheme: 'https',
-    url: 'https://sportytime.ru'
   },
   plugins: {
     CapacitorUpdater: {
