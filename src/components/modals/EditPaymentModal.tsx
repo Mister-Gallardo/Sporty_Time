@@ -76,7 +76,7 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
       }}
     >
       <Typography textAlign="center" fontSize={18}>
-        Доплать {money}p для подтверждения брони?
+        Доплатить {money}p для подтверждения брони?
       </Typography>
       <Box display="flex" gap={2} mt={3}>
         <Button
@@ -92,7 +92,12 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
           sx={{
             backgroundColor: 'success.main',
             color: '#fff',
-            '&:hover': { backgroundColor: 'primary.main' },
+            '&:hover': {
+              backgroundColor: '#262d58f2',
+            },
+            '&:active': {
+              backgroundColor: '#262d58',
+            },
           }}
         >
           Оплатить
@@ -106,7 +111,12 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
           sx={{
             backgroundColor: 'error.main',
             color: '#fff',
-            '&:hover': { backgroundColor: 'primary.main' },
+            '&:hover': {
+              backgroundColor: '#262d58f2',
+            },
+            '&:active': {
+              backgroundColor: '#262d58',
+            },
           }}
         >
           Отмена

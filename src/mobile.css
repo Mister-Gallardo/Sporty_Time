@@ -1,59 +1,72 @@
 :root {
-    --ion-background-color: #fff;
-    --ion-tab-bar-background: #FFF;
-    --ion-toolbar-background: #FFF;
-    --ion-color-primary: grey;
+  --ion-background-color: #fff;
+  --ion-tab-bar-background: #fff;
+  --ion-toolbar-background: #fff;
+  --ion-color-primary: grey;
+  --ion-safe-area-top: env(safe-area-inset-top);
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+  --ion-safe-area-bottom: env(safe-area-inset-bottom);
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  --ion-safe-area-left: env(safe-area-inset-left);
+  padding-left: constant(safe-area-inset-left);
+  padding-left: env(safe-area-inset-left);
+  --ion-safe-area-right: env(safe-area-inset-right);
+  padding-right: constant(safe-area-inset-right);
+  padding-right: env(safe-area-inset-right);
 }
 
 ::placeholder {
-    color: #000;
-    opacity: 1;
+  color: #000;
+  opacity: 1;
 }
 
 ion-content::part(scroll) {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-ion-content::part(scroll)::-webkit-scrollbar { 
-    display: none;
+ion-content::part(scroll)::-webkit-scrollbar {
+  display: none;
 }
 
 ion-item {
-    --background: white
+  --background: white;
 }
 
 ion-modal ion-content {
-    --background: white
+  --background: white;
 }
 
-html, body {
-    height: 100%;
+html,
+body {
+  height: 100%;
 }
 
 ion-tab-bar {
-    border: none;
-    border-radius: 16px 16px 0 0;
-    box-shadow: 0 0 10px #3331;
+  border: none;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 0 10px #3331;
 }
 
 ion-header {
-    border-top: none;
-    overflow: hidden;
+  border-top: none;
+  overflow: hidden;
 }
 
 ion-toolbar {
-    --border-width: 0 !important
+  --border-width: 0 !important;
 }
 
 .ion-page {
-    justify-content: flex-start;
+  justify-content: flex-start;
 }
 
 ion-modal.overlay-hidden {
-    display: unset;
+  display: unset;
 }
 
 ion-modal::part(content) {
-    width: 100%;
+  width: 100%;
 }
