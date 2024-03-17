@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "private": true,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -28,8 +28,8 @@
     "@capgo/capacitor-updater": "^5.3.40",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@ionic/react": "^7.5.3",
-    "@ionic/react-router": "^7.5.3",
+    "@ionic/react": "^7.8.0",
+    "@ionic/react-router": "^7.8.0",
     "@mapcomponents/react-maplibre": "^1.0.2",
     "@mui/icons-material": "^5.14.16",
     "@mui/lab": "5.0.0-alpha.152",
@@ -44,7 +44,7 @@
     "firebase": "^10.8.0",
     "history": "~4.7.2",
     "html-react-parser": "^5.1.8",
-    "ionicons": "^7.2.1",
+    "ionicons": "^7.2.2",
     "lodash-es": "^4.17.21",
     "maplibre-gl": "^4.0.2",
     "markdown-to-jsx": "^7.4.1",
