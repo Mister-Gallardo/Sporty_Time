@@ -1,5 +1,12 @@
 import { Club } from '../club/interface';
 
+export enum EEditProfileErrors {
+  FIRSTNAME = 'Укажите имя',
+  LASTNAME = 'Укажите фамилию',
+  EMAIL = 'Укажите email',
+  PASSWORD = 'Пароль не может быть пустым',
+}
+
 export enum Role {
   PLAYER = 'PLAYER',
   CLUB = 'CLUB',
@@ -44,7 +51,7 @@ export interface UserProfile {
 }
 
 export interface EditUserProfile {
-  image?: string;
+  avatar?: string;
   firstname?: string;
   lastname?: string;
   email?: string;

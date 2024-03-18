@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Fade,
   IconButton,
   InputAdornment,
@@ -18,9 +19,12 @@ import { useUserInfo } from '../../../../services/api/hooks';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { isPlatform, useIonToast } from '@ionic/react';
-import { NotFoundPage } from '../../../../components/NotFoundPage';
+// import { NotFoundPage } from '../../../../components/NotFoundPage';
 import { useHistory } from 'react-router';
 import { EGender } from '../../../../services/matches/interface';
+import { useState } from 'react';
+import { EEditProfileErrors } from '../../../../services/user/interface';
+import { isEmpty } from 'lodash-es';
 
 const isMobile = isPlatform('mobile');
 const genders = [
@@ -28,13 +32,26 @@ const genders = [
   { option: 'Мужской', value: EGender.MEN },
 ];
 
+interface FormData {
+  avatar?: string | URL;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  gender?: string;
+  password?: string;
+}
+
 export const EditProfilePage = () => {
   const history = useHistory();
   const [showPassword, setShowPassword] = useToggle();
 
   const [user, query] = useUserInfo();
 
-  const { getValues, watch, setValue, reset } = useForm();
+  const [errorMsg, setErrorMsg] = useState<EEditProfileErrors | null>(null);
+
+  const { watch, setValue, reset, handleSubmit } = useForm<FormData>();
+  const { avatar, firstname, lastname, email, gender, password } = watch();
+
   const [showToast] = useIonToast();
 
   const editProfileMutation = useMutation({
@@ -50,13 +67,21 @@ export const EditProfilePage = () => {
       query.refetch();
       reset();
     },
-    onError() {
+    onError(e: any) {
+      const errorData = e.response?.data?.message;
+      let message;
+
+      if (Array.isArray(errorData)) {
+        message = errorData[0];
+      } else {
+        message = errorData;
+      }
       showToast({
-        color: 'danger',
-        message: 'Произошла ошибка! Попробуйте ещё раз.',
+        message,
         mode: 'ios',
-        position: 'bottom',
-        duration: 2000,
+        position: 'top',
+        duration: 6000,
+        color: 'danger',
       });
     },
   });
@@ -70,153 +95,192 @@ export const EditProfilePage = () => {
     });
 
     if (!photo.webPath) return;
-    setValue('image', photo.webPath);
+    setValue('avatar', photo.webPath);
   };
 
-  const onSaveChanges = async () => {
-    const formData = new FormData();
+  const onSubmit = async (data: FormData) => {
+    if (isEmpty(data)) return;
 
-    if (watch('image')) {
-      try {
-        const res = await fetch(getValues('image'));
-        const imageBlob = await res.blob();
-        formData.append('avatar', imageBlob);
-      } catch (error) {
-        console.log(error);
-      }
+    if (typeof data.firstname === 'string' && !data.firstname.trim()) {
+      return setErrorMsg(EEditProfileErrors.FIRSTNAME);
+    }
+    if (typeof data.lastname === 'string' && !data.lastname.trim()) {
+      return setErrorMsg(EEditProfileErrors.LASTNAME);
+    }
+    if (typeof data.email === 'string' && !data.email.trim()) {
+      return setErrorMsg(EEditProfileErrors.EMAIL);
     }
 
-    Object.entries(getValues()).map((item) => {
-      if (item[0] === 'image') return;
-      return formData.append(item[0], item[1]);
-    });
+    const formData = new FormData();
+
+    for (const key in data) {
+      if (key === 'avatar') {
+        if (data[key] === undefined) return;
+
+        const res = await fetch(data[key] as URL);
+        const avaBlob = await res.blob();
+
+        formData.append(key, avaBlob);
+      } else {
+        formData.append(key, (data as any)[key]);
+      }
+    }
 
     editProfileMutation.mutate(formData);
   };
 
   const isSmthChanged = Object.keys(watch()).length > 0;
 
-  if (!user && !query.isLoading) return <NotFoundPage />;
-
+  // if (!user && !query.isLoading) return <NotFoundPage />;
+  // if (query.isLoading) return <IonOp;
   return (
-    <Box
-      px={2}
-      my={4}
-      position="relative"
-      width="100%"
-      maxWidth={isMobile ? 'unset' : 500}
-      mx={isMobile ? 'unset' : 'auto'}
-    >
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        {!isMobile ? (
-          <Button onClick={() => history.goBack()}>Назад</Button>
-        ) : (
-          <span />
-        )}
-        {isSmthChanged && (
-          <Fade in>
-            <Button onClick={onSaveChanges}>Сохранить</Button>
-          </Fade>
-        )}
-      </Box>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        px={2}
+        my={4}
+        position="relative"
+        width="100%"
+        maxWidth={isMobile ? 'unset' : 500}
+        mx={isMobile ? 'unset' : 'auto'}
+      >
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          {!isMobile ? (
+            <Button onClick={() => history.goBack()}>Назад</Button>
+          ) : (
+            <span />
+          )}
+          {isSmthChanged && (
+            <Fade in>
+              <Button
+                type="submit"
+                disabled={editProfileMutation.isPending}
+                endIcon={
+                  editProfileMutation.isPending && (
+                    <CircularProgress size={20} />
+                  )
+                }
+              >
+                Сохранить
+              </Button>
+            </Fade>
+          )}
+        </Box>
 
-      <Box display="flex" flexDirection="column" alignItems="center">
-        <Avatar
-          src={watch('image') || user?.avatar?.formats?.png || ''}
-          sx={{ width: 50, height: 50 }}
-        />
-        <Button onClick={() => takePhoto()} sx={{ fontSize: 13 }}>
-          Изменить фото профиля
-        </Button>
-      </Box>
-      <Box mt={3}>
-        <Typography mb={1.5} fontWeight={600} fontSize={16}>
-          Персональная информация
-        </Typography>
-        <Box display="flex" flexDirection="column" gap={1.5}>
-          <TextField
-            label="Имя"
-            value={watch('firstname') || user?.firstname || ''}
-            onChange={(e) => setValue('firstname', e.target.value)}
-            variant="filled"
-            fullWidth
-            InputProps={{
-              disableUnderline: true,
-              sx: { borderRadius: 2 },
-            }}
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Avatar
+            src={avatar || user?.avatar?.formats?.png || ''}
+            sx={{ width: 50, height: 50 }}
           />
-          <TextField
-            label="Фамилия"
-            value={watch('lastname') || user?.lastname || ''}
-            onChange={(e) => setValue('lastname', e.target.value)}
-            variant="filled"
-            fullWidth
-            InputProps={{
-              disableUnderline: true,
-              sx: { borderRadius: 2 },
-            }}
-          />
-          <TextField
-            label="Email"
-            value={watch('email') || user?.email || ''}
-            onChange={(e) => setValue('email', e.target.value)}
-            variant="filled"
-            fullWidth
-            InputProps={{
-              disableUnderline: true,
-              sx: { borderRadius: 2 },
-            }}
-          />
+          <Button onClick={() => takePhoto()} sx={{ fontSize: 13 }}>
+            Изменить фото профиля
+          </Button>
+        </Box>
+        <Box mt={3}>
+          <Typography mb={1.5} fontWeight={600} fontSize={16}>
+            Персональная информация
+          </Typography>
+          <Box display="flex" flexDirection="column" gap={1.5}>
+            <TextField
+              label="Имя"
+              error={errorMsg === EEditProfileErrors.FIRSTNAME}
+              helperText={errorMsg === EEditProfileErrors.FIRSTNAME && errorMsg}
+              value={(firstname === '' ? ' ' : firstname) || user?.firstname}
+              onChange={(e) => {
+                if (errorMsg) setErrorMsg(null);
+                setValue('firstname', e.target.value);
+              }}
+              variant="filled"
+              fullWidth
+              InputProps={{
+                disableUnderline: true,
+              }}
+            />
+            <TextField
+              label="Фамилия"
+              error={errorMsg === EEditProfileErrors.LASTNAME}
+              helperText={errorMsg === EEditProfileErrors.LASTNAME && errorMsg}
+              value={(lastname === '' ? ' ' : lastname) || user?.lastname}
+              onChange={(e) => {
+                if (errorMsg) setErrorMsg(null);
+                setValue('lastname', e.target.value);
+              }}
+              variant="filled"
+              fullWidth
+              InputProps={{
+                disableUnderline: true,
+              }}
+            />
+            <TextField
+              label="Email"
+              error={errorMsg === EEditProfileErrors.EMAIL}
+              helperText={errorMsg === EEditProfileErrors.EMAIL && errorMsg}
+              value={(email === '' ? ' ' : email) || user?.email}
+              onChange={(e) => {
+                if (errorMsg) setErrorMsg(null);
+                setValue('email', e.target.value);
+              }}
+              variant="filled"
+              fullWidth
+              InputProps={{
+                disableUnderline: true,
+              }}
+            />
 
+            <TextField
+              select
+              label="Пол"
+              variant="filled"
+              fullWidth
+              value={gender || user?.gender}
+              onChange={(e) => setValue('gender', e.target.value)}
+              InputProps={{
+                disableUnderline: true,
+              }}
+            >
+              {genders.map((gender) => (
+                <MenuItem key={gender.value} value={gender.value}>
+                  {gender.option}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+        </Box>
+        <Box mt={3}>
+          <Typography mb={1.5} fontWeight={600} fontSize={16}>
+            Пароль
+          </Typography>
           <TextField
-            select
-            label="Пол"
+            label="Пароль"
+            // value={watch('password') || ''}
+            // onChange={(e) => setValue('password', e.target.value)}
+            error={errorMsg === EEditProfileErrors.PASSWORD}
+            helperText={errorMsg === EEditProfileErrors.PASSWORD && errorMsg}
+            value={password}
+            onChange={(e) => {
+              if (errorMsg) setErrorMsg(null);
+              setValue('password', e.target.value);
+            }}
+            type={showPassword ? 'text' : 'password'}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword()}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+              disableUnderline: true,
+            }}
             variant="filled"
             fullWidth
-            value={watch('gender') || user?.gender}
-            onChange={(e) => setValue('gender', e.target.value)}
-            InputProps={{
-              disableUnderline: true,
-              sx: { borderRadius: 2 },
-            }}
-          >
-            {genders.map((gender) => (
-              <MenuItem key={gender.value} value={gender.value}>
-                {gender.option}
-              </MenuItem>
-            ))}
-          </TextField>
+          />
         </Box>
       </Box>
-      <Box mt={3}>
-        <Typography mb={1.5} fontWeight={600} fontSize={16}>
-          Пароль
-        </Typography>
-        <TextField
-          label="Пароль"
-          value={watch('password') || ''}
-          onChange={(e) => setValue('password', e.target.value)}
-          type={showPassword ? 'text' : 'password'}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={() => setShowPassword()}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-            disableUnderline: true,
-            sx: { borderRadius: 2 },
-          }}
-          variant="filled"
-          fullWidth
-        />
-      </Box>
-    </Box>
+    </form>
   );
 };
 
