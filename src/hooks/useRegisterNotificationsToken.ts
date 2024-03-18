@@ -76,7 +76,7 @@ export const useRegisterNotificationsToken = () => {
     });
 
     return () => {
-      navigator.serviceWorker.removeEventListener(
+      navigator.serviceWorker?.removeEventListener(
         'message',
         serviceWorkerListener,
       );
