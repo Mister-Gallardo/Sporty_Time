@@ -1,7 +1,12 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ELeveling, IOption, IQuestion, leveling } from '../questions';
-import { Box, Button, Input, RadioGroup, Typography } from '@mui/material';
+import {
+  ELeveling,
+  IOption,
+  IQuestion,
+  simpleQuestionsList,
+} from '../questions';
+import { Box, Button, RadioGroup, Typography } from '@mui/material';
 import {
   ERadioLabelType,
   RadioLabel,
@@ -16,66 +21,71 @@ import { useHistory } from 'react-router';
 import { ESport } from '../../../services/matches/interface';
 import { getSportAndLevel } from '../../../helpers/getSportAndLevelIndx';
 
-interface QuestionsStepStepProps {
+interface QuestionsStepProps {
   handleStep: (step: number) => void;
 }
 const isMobile = isPlatform('mobile');
 
-export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
+export function QuestionsStep({ handleStep }: QuestionsStepProps) {
   const [isPrev] = useSearchParam('prev');
   const history = useHistory();
 
   const [sport] = useSearchParam('sport', ESport.PADEL);
   const [level] = useSearchParam('level', ELeveling.NONE);
 
-  const getQuestionsByLvlAndSport = () => {
-    if (!sport || !level) return null;
+  // const getQuestionsByLvlAndSport = () => {
+  //   if (!sport || !level) return null;
 
-    const selectedLevel = leveling.find((item) => item.id === level);
-    const questions = (selectedLevel?.availableFor as any)[sport.toLowerCase()];
+  //   const selectedLevel = leveling.find((item) => item.id === level);
+  //   const questions = (selectedLevel?.availableFor as any)[sport.toLowerCase()];
 
-    return questions;
-  };
+  //   return questions;
+  // };
 
-  const allQuestions = useMemo(getQuestionsByLvlAndSport, [sport, level]);
+  // const allQuestions = useMemo(getQuestionsByLvlAndSport, [sport, level]);
 
-  const [currentQuestions, setCurrentQuestions] = useState<IQuestion[]>([]);
+  const [currentQuestions, setCurrentQuestions] = useState<IQuestion[]>([
+    simpleQuestionsList.gender,
+  ]);
   const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (allQuestions) setCurrentQuestions([allQuestions.gender]);
-  }, []);
-  const { setValue, getValues, register, unregister } = useForm();
+  const { setValue, getValues, watch, unregister } = useForm();
 
   const handleRadioGroupChange = (
     question: string,
     questionID: string,
     isAnswerMatter: boolean,
   ) => {
-    const { answer, next, i }: IOption = JSON.parse(question);
+    const { answer, next, id }: IOption = JSON.parse(question);
 
-    if (!next) return setIsLastQuestion(true);
+    if (!next) setIsLastQuestion(true);
     const isExist = getValues(questionID);
-
-    if (isExist === undefined) {
-      setCurrentQuestions((prev) => [...prev, allQuestions[next]]);
+    // console.log('isExist: ', isExist);
+    // console.log('getValues: ', getValues());
+    // console.log('watch: ', watch());
+    if (isExist === undefined && next) {
+      setCurrentQuestions((prev) => [...prev, simpleQuestionsList[next]]);
     }
 
     // if answer was already selected and it affects on the next question - remove all questions after it
-    if (isExist && isAnswerMatter) {
+    if (isExist && next && isAnswerMatter) {
       const curQuestionIdx = currentQuestions.findIndex(
         (item) => item.id === questionID,
       );
 
       setCurrentQuestions((prev) => [
         ...prev.slice(0, curQuestionIdx + 1),
-        allQuestions[next],
+        simpleQuestionsList[next],
       ]);
 
       const removeQuestions = currentQuestions.slice(curQuestionIdx + 1);
       removeQuestions.map((q) => unregister(q.id));
     }
-    setValue(questionID, { answer, i });
+    setValue(questionID, { answer, id });
+    console.log('setValue(questionID, { answer, id }): ', questionID, {
+      answer,
+      id,
+    });
   };
 
   // scroll to bottom when new question appears
@@ -117,8 +127,9 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     const answerI: any = {};
 
     for (const key in data) {
-      answerI[key] = data[key].i;
+      answerI[key] = data[key].id;
     }
+    console.log('answerI: ', answerI);
 
     createRatingMutation.mutate({
       ...answerI,
@@ -127,23 +138,23 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
     });
   };
 
-  if (!allQuestions) {
-    return (
-      <Box marginTop={5}>
-        <Typography
-          textAlign="center"
-          marginBottom={2}
-          fontSize={20}
-          fontWeight={500}
-        >
-          Что-то пошло не так, вернуться на стартовую страницу
-        </Typography>
-        <Button onClick={() => handleStep(-2)} variant="contained">
-          Вернуться
-        </Button>
-      </Box>
-    );
-  }
+  // if (!allQuestions) {
+  //   return (
+  //     <Box marginTop={5}>
+  //       <Typography
+  //         textAlign="center"
+  //         marginBottom={2}
+  //         fontSize={20}
+  //         fontWeight={500}
+  //       >
+  //         Что-то пошло не так, вернуться на стартовую страницу
+  //       </Typography>
+  //       <Button onClick={() => handleStep(-2)} variant="contained">
+  //         Вернуться
+  //       </Button>
+  //     </Box>
+  //   );
+  // }
 
   return (
     <QuestionsContainer>
@@ -161,43 +172,30 @@ export function QuestionsStepStep({ handleStep }: QuestionsStepStepProps) {
           {currentQuestions.length > 0 &&
             currentQuestions.map((questionBlock) => {
               return (
-                <React.Fragment key={questionBlock.id}>
-                  {questionBlock.isInput ? (
-                    <Box>
-                      <QuestionTitle title={questionBlock.question} />
-                      <Input
-                        {...register(questionBlock.id)}
-                        placeholder="Type here..."
-                        fullWidth
-                      />
-                    </Box>
-                  ) : (
-                    <Box marginBottom={1.8}>
-                      <QuestionTitle title={questionBlock.question} />
-                      <RadioGroup
-                        onChange={(e) =>
-                          handleRadioGroupChange(
-                            e.target.value,
-                            questionBlock.id,
-                            questionBlock.isMatter,
-                          )
-                        }
-                        sx={{ gap: 0.7 }}
-                      >
-                        {questionBlock.options?.map((option, i) => {
-                          return (
-                            <RadioLabel
-                              key={option.answer}
-                              value={JSON.stringify({ ...option, i })}
-                              labelType={ERadioLabelType.TITLE_ONLY}
-                              title={option.answer}
-                            />
-                          );
-                        })}
-                      </RadioGroup>
-                    </Box>
-                  )}
-                </React.Fragment>
+                <Box key={questionBlock.id} marginBottom={1.8}>
+                  <QuestionTitle title={questionBlock.question} />
+                  <RadioGroup
+                    onChange={(e) =>
+                      handleRadioGroupChange(
+                        e.target.value,
+                        questionBlock.id,
+                        questionBlock.isMatter,
+                      )
+                    }
+                    sx={{ gap: 0.7 }}
+                  >
+                    {questionBlock.options?.map((option, i) => {
+                      return (
+                        <RadioLabel
+                          key={option.answer}
+                          value={JSON.stringify({ ...option, i })}
+                          labelType={ERadioLabelType.TITLE_ONLY}
+                          title={option.answer}
+                        />
+                      );
+                    })}
+                  </RadioGroup>
+                </Box>
               );
             })}
         </Box>

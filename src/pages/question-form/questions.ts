@@ -1,5 +1,3 @@
-type TNext = string | null;
-
 export enum ELeveling {
   NONE = 'NONE',
   BEGINNER = '0.5',
@@ -10,9 +8,9 @@ export enum ELeveling {
 }
 
 export interface IOption {
-  i: string;
+  id: string;
   answer: string;
-  next: TNext;
+  next: string | null;
 }
 
 export interface IQuestion {
@@ -20,7 +18,7 @@ export interface IQuestion {
   question: string;
   options: IOption[] | null;
   isMatter: boolean;
-  isInput: boolean;
+  // isInput: boolean;
 }
 
 export interface IQuestions {
@@ -36,6 +34,75 @@ export interface IQuestions {
   fitness?: IQuestion;
   howLongPlaying?: IQuestion;
 }
+
+export const simpleQuestionsList: { [key: string]: IQuestion } = {
+  gender: {
+    id: 'gender',
+    question: 'Вы мужчина или женщина?',
+    options: [
+      { answer: 'Мужчина', id: 'MALE', next: 'age' },
+      { answer: 'Женщина', id: 'FEMALE', next: 'age' },
+    ],
+    isMatter: false,
+  },
+  age: {
+    id: 'age',
+    question: 'Сколько Вам лет?',
+    options: [
+      { answer: '18-30', id: '0', next: 'experience' },
+      { answer: '30-40', id: '1', next: 'experience' },
+      { answer: '40-50', id: '2', next: 'experience' },
+      { answer: 'Больше 50', id: '3', next: 'experience' },
+    ],
+    isMatter: false,
+  },
+  experience: {
+    id: 'experience',
+    question: 'Занимались ли Вы в прошлом другими видами ракеточного спорта?',
+    options: [
+      { answer: 'Нет, никогда', id: '0', next: 'countMatches' },
+      { answer: 'Да, менее 2 лет', id: '1', next: 'countMatches' },
+      { answer: 'Да, более 2 лет', id: '2', next: 'countMatches' },
+      { answer: 'Да, более 5 лет', id: '3', next: 'countMatches' },
+    ],
+    isMatter: false,
+  },
+  countMatches: {
+    id: 'countMatches',
+    question:
+      'Сколько матчей по паделу вы играли в среднем в неделю за последние 6 месяцев?',
+    options: [
+      { answer: '0', id: '0', next: 'lessons' },
+      { answer: '1', id: '1', next: 'lessons' },
+      { answer: '2', id: '2', next: 'lessons' },
+      { answer: '3 или больше', id: '3', next: 'lessons' },
+    ],
+    isMatter: false,
+  },
+  lessons: {
+    id: 'lessons',
+    question:
+      'Получали ли вы уроки падела в прошлом году? Сколько уроков в неделю?',
+    options: [
+      { answer: 'Нет, ни одного', id: '0', next: 'fitness' },
+      { answer: 'Да, 1 занятие в неделю', id: '1', next: 'fitness' },
+      { answer: 'Да, 2-3 занятия в неделю', id: '2', next: 'fitness' },
+    ],
+    isMatter: false,
+  },
+  fitness: {
+    id: 'fitness',
+    question: 'Какой у Вас уровень физической подготовки?',
+    options: [
+      { answer: 'Отличный', id: '0', next: null },
+      { answer: 'Хороший', id: '1', next: null },
+      { answer: 'Нормальный', id: '2', next: null },
+      { answer: 'Низкий', id: '3', next: null },
+      { answer: 'Очень низкий', id: '4', next: null },
+    ],
+    isMatter: false,
+  },
+};
 
 // padel
 const padelNoneAndBeginner = {

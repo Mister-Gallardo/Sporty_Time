@@ -1,16 +1,22 @@
 export interface CreateRatingOTD {
   sport: number;
   level: number;
-  isFederated?: number;
-  federateCategory?: number;
-  licenseNumber?: number;
-  competeLevel?: number;
-  gender?: number;
-  age?: number;
-  otherSportExp?: number;
-  matchesPerWeek?: number;
-  matchesPerMonth?: number;
-  lessons?: number;
-  fitness?: number;
-  howLongPlaying?: number;
+  gender?: string;
+  age?: string;
+  experience?: string;
+  countMatches?: string;
+  lessons?: string;
+  fitness?: string;
+
+  // isFederated?: string;
+  // federateCategory?: string;
+  // competeLevel?: string;
+  // gender?: string;
+  // age?: string;
+  // otherSportExp?: string;
+  // matchesPerWeek?: string;
+  // matchesPerMonth?: string;
+  // lessons?: string;
+  // fitness?: string;
+  // howLongPlaying?: string;
 }
