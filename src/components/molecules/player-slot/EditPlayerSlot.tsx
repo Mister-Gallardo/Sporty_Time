@@ -57,7 +57,10 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
             />
           )}
 
-          <Avatar src={player?.user?.avatar} sx={{ width: 45, height: 45 }} />
+          <Avatar
+            src={player?.user?.avatar || ''}
+            sx={{ width: 45, height: 45 }}
+          />
 
           <Typography mt={1} fontSize={12}>
             {player.user?.firstname}
