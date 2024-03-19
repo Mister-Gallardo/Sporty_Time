@@ -3,18 +3,6 @@
   --ion-tab-bar-background: #fff;
   --ion-toolbar-background: #fff;
   --ion-color-primary: grey;
-  /* --ion-safe-area-top: env(safe-area-inset-top);
-  padding-top: constant(safe-area-inset-top);
-  padding-top: env(safe-area-inset-top);
-  --ion-safe-area-bottom: env(safe-area-inset-bottom);
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
-  --ion-safe-area-left: env(safe-area-inset-left);
-  padding-left: constant(safe-area-inset-left);
-  padding-left: env(safe-area-inset-left);
-  --ion-safe-area-right: env(safe-area-inset-right);
-  padding-right: constant(safe-area-inset-right);
-  padding-right: env(safe-area-inset-right); */
 }
 
 ::placeholder {
@@ -46,8 +34,8 @@ body {
 
 ion-tab-bar {
   border: none;
-  border-radius: 16px 16px 0 0;
   box-shadow: 0 0 10px #3331;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 ion-header {
