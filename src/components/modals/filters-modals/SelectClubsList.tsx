@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import BeachAccessOutlinedIcon from '@mui/icons-material/BeachAccessOutlined';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import { LocationBlock } from './available-matches/LocationBlock';
@@ -121,13 +121,18 @@ export const SelectClubsList = () => {
                 isChecked={isSelected}
                 onCheck={() => {
                   setSelectAll(false);
+
                   if (isSelected) {
                     setValue(
                       'clubsId',
                       clubsId?.filter((id: any) => id !== club.id),
                     );
                   } else {
-                    setValue('clubsId', [...clubsId, club.id]);
+                    if (clubsId) {
+                      setValue('clubsId', [...clubsId, club.id]);
+                    } else {
+                      setValue('clubsId', [club.id]);
+                    }
                   }
                 }}
               />

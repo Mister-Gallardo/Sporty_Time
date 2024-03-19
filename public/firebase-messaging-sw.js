@@ -6,13 +6,12 @@ importScripts(
 );
 
 firebase.initializeApp({
-  apiKey: 'AIzaSyCL7ELmGH9RmiSKe00OU_NtRSOTIDHAyio',
-  authDomain: 'st-ionic-push-notifications.firebaseapp.com',
-  projectId: 'st-ionic-push-notifications',
-  storageBucket: 'st-ionic-push-notifications.appspot.com',
-  messagingSenderId: '591915381041',
-  appId: '1:591915381041:web:3e316679e6b5edeb8cc010',
-  measurementId: 'G-VC50FBZ5EK',
+  apiKey: 'AIzaSyDD5RWgMJdwJmxx9IBZpBhL4iAgVIeE91k',
+  authDomain: 'sportytime-d49ed.firebaseapp.com',
+  projectId: 'sportytime-d49ed',
+  storageBucket: 'sportytime-d49ed.appspot.com',
+  messagingSenderId: '796890637573',
+  appId: '1:796890637573:web:146c1cbb9528e6a2ef836c',
 });
 
 firebase.messaging();

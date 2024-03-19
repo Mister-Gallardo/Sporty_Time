@@ -64,6 +64,7 @@ export const MessageTextField = ({ chatId }: { chatId: string }) => {
       position="relative"
       px={1}
       borderTop="1px solid #eee"
+      pb={isDesktop ? 'unset' : 'env(safe-area-inset-bottom)'}
     >
       <form
         onSubmit={handleSubmit(onSendMessage)}

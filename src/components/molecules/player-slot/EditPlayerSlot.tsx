@@ -1,8 +1,7 @@
 import React from 'react';
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import CloseIcon from '@mui/icons-material/Close';
 import { Avatar, Box, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { CircularLevelProgress } from '../../atoms/CircularLevelProgress';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
@@ -35,7 +34,8 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
       {player ? (
         <>
           {(player?.isOwner || isUser) && (
-            <CancelRoundedIcon
+            <CloseIcon
+              fontSize="small"
               onClick={() => {
                 if (player?.isOwner && !isUser) {
                   setPlayerToRemoveId(player?.id);
@@ -47,18 +47,21 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
               }}
               sx={{
                 cursor: 'pointer',
-                color: '#ff484e',
+                color: '#fff',
+                backgroundColor: '#ff484e',
                 position: 'absolute',
                 zIndex: 1,
-                right: -3,
+                right: -10,
                 top: -10,
               }}
             />
           )}
 
-          <CircularLevelProgress rating={playerRating}>
-            <Avatar src={player?.user?.avatar} sx={{ width: 45, height: 45 }} />
-          </CircularLevelProgress>
+          <Avatar
+            src={player?.user?.avatar || ''}
+            sx={{ width: 45, height: 45 }}
+          />
+
           <Typography mt={1} fontSize={12}>
             {player.user?.firstname}
           </Typography>

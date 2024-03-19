@@ -42,7 +42,7 @@ export const MessageItem: React.FC<IMessageItemProps> = ({
     >
       {!isMyUser && (
         <Box minWidth={40} minHeight={40}>
-          {nextMsgFromSameUser || (
+          {!nextMsgFromSameUser && (
             <Avatar src="" sx={{ width: 40, height: 40, zIndex: 1 }} />
           )}
         </Box>
