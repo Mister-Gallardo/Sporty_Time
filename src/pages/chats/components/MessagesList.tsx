@@ -8,6 +8,7 @@ import { getSingleChat } from '../../../services/chats/service';
 import { useSearchParam } from '../../../hooks/useSearchParams';
 import { isPlatform } from '@ionic/react';
 import { useParams } from 'react-router';
+import { socket } from '../../../utils/socket';
 
 const isDesktop = isPlatform('desktop');
 
@@ -17,7 +18,7 @@ export const MessagesList = () => {
 
   const currentChatId = isDesktop ? chatIdDesktop : chatId;
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['chat', +currentChatId],
     queryFn: () => getSingleChat(+currentChatId),
     refetchInterval: 5000,
@@ -34,6 +35,13 @@ export const MessagesList = () => {
         block: 'end',
       });
     }
+
+    const key = `matchId - ${chatId}`;
+    socket.on(key, refetch);
+
+    return () => {
+      socket.off(key, refetch);
+    };
   }, [data?.length]);
 
   return (
