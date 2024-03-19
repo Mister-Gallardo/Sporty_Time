@@ -37,7 +37,7 @@ export function ProfilePage() {
         <Box display="flex" alignItems="end">
           <Avatar
             alt={fullname}
-            src={profile?.user?.avatar}
+            src={profile?.user?.avatar?.formats?.small}
             sx={{ width: 60, height: 60 }}
           />
 

@@ -107,7 +107,7 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
                 mb={3}
               >
                 <Avatar
-                  src={player?.user?.avatar || ''}
+                  src={player?.user?.avatar?.formats?.small || ''}
                   sx={{
                     width: '75px',
                     height: '75px',

@@ -21,7 +21,6 @@ export const MessagesList = () => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['chat', +currentChatId],
     queryFn: () => getSingleChat(+currentChatId),
-    refetchInterval: 5000,
     enabled: !!currentChatId,
   });
 
