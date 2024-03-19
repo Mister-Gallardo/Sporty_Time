@@ -18,11 +18,11 @@ import { useForm } from 'react-hook-form';
 import { useUserInfo } from '../../../../services/api/hooks';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { isPlatform, useIonToast } from '@ionic/react';
-// import { NotFoundPage } from '../../../../components/NotFoundPage';
+import { IonLoading, isPlatform, useIonToast } from '@ionic/react';
+import { NotFoundPage } from '../../../../components/NotFoundPage';
 import { useHistory } from 'react-router';
 import { EGender } from '../../../../services/matches/interface';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { EEditProfileErrors } from '../../../../services/user/interface';
 import { isEmpty } from 'lodash-es';
 
@@ -131,8 +131,8 @@ export const EditProfilePage = () => {
 
   const isSmthChanged = Object.keys(watch()).length > 0;
 
-  // if (!user && !query.isLoading) return <NotFoundPage />;
-  // if (query.isLoading) return <IonOp;
+  if (query.isLoading) return <IonLoading isOpen />;
+  if (!user) return <NotFoundPage />;
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box

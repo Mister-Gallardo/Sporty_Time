@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import { isPlatform } from '@ionic/react';
 import { useQuery } from '@tanstack/react-query';

@@ -18,14 +18,13 @@ export const SelectClubBlock: React.FC<ISelectClubBlockProps> = ({
   onCheck,
 }) => {
   const previewImg =
-    !images || images.length === 0 ? noImage : images[0]?.formats.large;
+    !images || images.length === 0 ? noImage : images[0]?.formats.small;
 
   return (
     <Box
       minWidth={130}
       maxWidth={130}
       position="relative"
-      borderRadius={1.2}
       boxShadow="0 1px 8px #0000000f"
       onClick={onCheck}
     >
@@ -49,11 +48,10 @@ export const SelectClubBlock: React.FC<ISelectClubBlockProps> = ({
         height={60}
         sx={{
           objectFit: 'cover',
-          borderTopLeftRadius: 6,
-          borderTopRightRadius: 6,
           transition: 'opacity .2s ease',
           opacity: isChecked ? 1 : 0.5,
         }}
+        onError={(e) => ((e.target as HTMLImageElement).src = noImage)}
       />
       <Box
         height={55}
