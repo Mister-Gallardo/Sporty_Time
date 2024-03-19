@@ -4,6 +4,8 @@ import {
   CircularProgress,
   Fade,
   Grow,
+  IconButton,
+  InputAdornment,
   Link,
   TextField,
   Typography,
@@ -23,6 +25,8 @@ import useToggle from '../../hooks/useToggle';
 import { RestorePasswordModal } from '../../components/modals/RestorePasswordModal';
 import { AuthErrors } from '../../services/auth/interface';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 enum LoginStates {
   UNDEFINED,
@@ -34,6 +38,7 @@ export function AuthPage() {
   const history = useHistory();
 
   const [authState, setAuthState] = useState(LoginStates.UNDEFINED);
+  const [showPassword, setShowPassword] = useToggle();
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [successMessage, setSuccessMessage] = useState<string | undefined>();
@@ -366,7 +371,20 @@ export function AuthPage() {
                 })}
                 placeholder="Пароль"
                 label="Пароль"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword()}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 fullWidth
                 variant="outlined"
                 required

@@ -29,7 +29,7 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
       initialBreakpoint={0.3}
     >
       <Box py={1} display="flex" justifyContent="space-betweenF" gap={2}>
-        <Box display="flex" justifyContent="space-between" width="100%">
+        <Box display="flex" justifyContent="space-evenly" width="100%">
           <EditPlayerSlot
             player={players[0]}
             sport={sport}
@@ -44,7 +44,7 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
           />
         </Box>
         <Divider orientation="vertical" flexItem variant="middle" />
-        <Box display="flex" justifyContent="space-between" width="100%">
+        <Box display="flex" justifyContent="space-evenly" width="100%">
           <EditPlayerSlot
             player={players[2]}
             sport={sport}
