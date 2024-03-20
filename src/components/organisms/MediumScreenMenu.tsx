@@ -84,7 +84,7 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
       <Link
         onClick={handleMdMenuClose}
         component={RouterNavLink}
-        to="/matches"
+        to="/matches?tab=1"
         underline="none"
         fontWeight={500}
       >

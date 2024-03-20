@@ -225,11 +225,7 @@ export function SingleMatchPage() {
 
               {playerAlreadyInSomeTeam && (
                 <Box maxWidth={125} mx="auto" mb={2}>
-                  <Link
-                    to={
-                      isMobile ? `/chats/${matchId}` : `/chats?chat=${matchId}`
-                    }
-                  >
+                  <Link to={`/chats/${matchId}`}>
                     <ChatBubbleOutlineRounded sx={{ marginRight: '.75rem' }} />
                     <Typography fontWeight={600}>Чат</Typography>
                   </Link>

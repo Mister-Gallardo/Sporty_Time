@@ -49,7 +49,13 @@ function DesktopHeader() {
     return null;
 
   return (
-    <Box width="100%" maxWidth={1280} margin="0 auto" paddingInline="15px">
+    <Box
+      width="100%"
+      maxWidth={1280}
+      margin="0 auto"
+      px={2}
+      borderBottom="1px solid #ebebeb"
+    >
       <AppBar
         position="static"
         sx={{ boxShadow: 'none', backgroundColor: '#fff' }}
@@ -92,7 +98,6 @@ function DesktopHeader() {
                   <Link
                     component={RouterNavLink}
                     to="/book-court"
-                    exact
                     underline="none"
                     color="#333"
                     fontWeight={500}
@@ -102,7 +107,6 @@ function DesktopHeader() {
                   <Link
                     component={RouterNavLink}
                     to="/chats"
-                    exact
                     underline="none"
                     color="#333"
                     fontWeight={500}
@@ -111,8 +115,7 @@ function DesktopHeader() {
                   </Link>
                   <Link
                     component={RouterNavLink}
-                    to="/matches"
-                    exact
+                    to="/matches?tab=1"
                     underline="none"
                     color="#333"
                     fontWeight={500}
@@ -126,7 +129,6 @@ function DesktopHeader() {
                   <Link
                     component={RouterNavLink}
                     to="/profile"
-                    exact
                     color="#333"
                     fontWeight={500}
                   >
@@ -152,7 +154,6 @@ function DesktopHeader() {
                 <Link
                   component={RouterNavLink}
                   to="/auth"
-                  exact
                   color="#333"
                   fontWeight={500}
                 >

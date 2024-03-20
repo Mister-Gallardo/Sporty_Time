@@ -80,7 +80,7 @@ export function SingleCourtPage() {
   );
 
   const renderTopSlot = () => (
-    <Box display="flex" alignItems="center">
+    <Box display="flex" alignItems="center" py={1}>
       <IonBackButton
         text={''}
         style={{
@@ -105,16 +105,7 @@ export function SingleCourtPage() {
   return (
     <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
       <TabContext value={tab}>
-        <Box
-          width="100%"
-          maxWidth={1240}
-          mx="auto"
-          sx={{
-            // position: 'sticky',
-            // top: 'calc(var(--ion-safe-area-top) - 50px)',
-            zIndex: 100,
-          }}
-        >
+        <Box width="100%" maxWidth={1240} mx="auto" zIndex={100}>
           <Box bgcolor="white" pt={2}>
             <Box
               display="flex"
@@ -132,11 +123,6 @@ export function SingleCourtPage() {
                 </Typography>
                 <Typography variant="body2">{data?.city}</Typography>
               </Box>
-              {/* <IconButton>
-                <FavoriteBorderOutlined
-                  sx={{ color: '#011627', fontSize: '1.75rem' }}
-                />
-              </IconButton> */}
             </Box>
             <Box
               width={isMobile ? 'unset' : '100%'}
@@ -157,9 +143,6 @@ export function SingleCourtPage() {
         <TabPanel value="2" sx={{ p: 0 }}>
           <BookTab />
         </TabPanel>
-        {/* <TabPanel value="3" sx={{ p: 0 }}>
-          Something
-        </TabPanel> */}
       </TabContext>
     </SwipeablePage>
   );

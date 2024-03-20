@@ -25,7 +25,7 @@ function PerfectMatch() {
         />
 
         <MatchBlock
-          href="/matches"
+          href="/matches?tab=1"
           img={matchbg}
           title="Сыграйте матч"
           description="Если вы ищете игроков своего уровня"

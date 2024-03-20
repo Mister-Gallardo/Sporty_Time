@@ -68,17 +68,17 @@ export const SwipeablePage: React.FC<ISwipeablePageProps> = (props) => {
 
   return (
     <>
-      {topSlot && (
+      {topSlot && isMobile && (
         <Box
           ref={headerRef}
           position="fixed"
           top={0}
           zIndex={999}
           pt="var(--ion-safe-area-top)"
-          height="calc(30px + var(--ion-safe-area-top))"
+          height="calc(50px + var(--ion-safe-area-top))"
           width="100%"
+          bgcolor="#fff"
           sx={{
-            background: 'white',
             opacity: 0,
             transition: 'all .1s',
           }}
