@@ -1,14 +1,13 @@
-import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
-import { useSearchParam } from '../../hooks/useSearchParams';
 import { MessageTextField } from './components/MessageTextField';
 import { ChatsList } from './components/ChatsList';
 import { MessagesList } from './components/MessagesList';
 import { MatchDataHeader } from './components/MatchDataHeader';
 import emptyImg from '../../images/no-results.svg';
+import { useParams } from 'react-router';
 
 export function ChatsPage() {
-  const [chatId] = useSearchParam('chat', '');
+  const { chatId } = useParams<{ chatId: string }>();
 
   return (
     <Box
@@ -25,7 +24,7 @@ export function ChatsPage() {
           <>
             <MatchDataHeader />
             <MessagesList />
-            <MessageTextField chatId={chatId} />
+            <MessageTextField />
           </>
         ) : (
           <Stack alignItems="center" height="100%" justifyContent="center">

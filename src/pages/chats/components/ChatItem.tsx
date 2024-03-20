@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar, Box, Typography } from '@mui/material';
 import { Chat } from '../../../services/chats/interface';
 import { isToday } from 'date-fns';
-import { useSearchParam } from '../../../hooks/useSearchParams';
+import { useParams } from 'react-router';
 
 interface IChatItemProps extends Chat {}
 
@@ -13,8 +13,8 @@ export const ChatItem: React.FC<IChatItemProps> = ({
   gamedate,
   title,
 }) => {
-  const [chatIdDesktop] = useSearchParam('chat', '');
-  const isActive = id === +chatIdDesktop;
+  const { chatId } = useParams<{ chatId: string }>();
+  const isActive = id === +chatId;
 
   const lastMsgDate = !messagecreatedat
     ? ''
@@ -27,6 +27,9 @@ export const ChatItem: React.FC<IChatItemProps> = ({
       display="flex"
       alignItems="center"
       gap={1.5}
+      bgcolor={isActive ? '#eee' : ''}
+      py={0.5}
+      px={2}
       sx={{ cursor: 'pointer' }}
     >
       <Avatar

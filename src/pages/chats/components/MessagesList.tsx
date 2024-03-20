@@ -1,11 +1,9 @@
-import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { MessageItem } from './MessageItem';
 import { useQuery } from '@tanstack/react-query';
 import { getSingleChat } from '../../../services/chats/service';
-import { useSearchParam } from '../../../hooks/useSearchParams';
 import { isPlatform } from '@ionic/react';
 import { useParams } from 'react-router';
 import { socket } from '../../../utils/socket';
@@ -13,15 +11,12 @@ import { socket } from '../../../utils/socket';
 const isDesktop = isPlatform('desktop');
 
 export const MessagesList = () => {
-  const [chatIdDesktop] = useSearchParam('chat', '');
   const { chatId } = useParams<{ chatId: string }>();
 
-  const currentChatId = isDesktop ? chatIdDesktop : chatId;
-
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['chat', +currentChatId],
-    queryFn: () => getSingleChat(+currentChatId),
-    enabled: !!currentChatId,
+    queryKey: ['chat', +chatId],
+    queryFn: () => getSingleChat(+chatId),
+    enabled: !!chatId,
   });
 
   const ref = useRef<HTMLDivElement>(null);
@@ -78,7 +73,7 @@ export const MessagesList = () => {
           Нет сообщений...
         </Typography>
       )}
-      <div ref={ref} />
+      <Box ref={ref} height={isDesktop ? 'unset' : 50} />
     </Stack>
   );
 };

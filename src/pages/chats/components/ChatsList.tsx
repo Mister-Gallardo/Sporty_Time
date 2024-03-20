@@ -1,9 +1,8 @@
 import { isPlatform } from '@ionic/react';
 import { Box, Stack, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SearchChatField } from './SearchChatField';
 import { ChatItem } from './ChatItem';
-import { useSearchParam } from '../../../hooks/useSearchParams';
 import { useQuery } from '@tanstack/react-query';
 import { getChats } from '../../../services/chats/service';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
@@ -14,8 +13,6 @@ import { Chat } from '../../../services/chats/interface';
 const isMobile = isPlatform('mobile');
 
 export const ChatsList = () => {
-  const [, setChat] = useSearchParam('chat', '');
-
   const { data, isLoading } = useQuery({
     queryKey: ['chat'],
     queryFn: getChats,
@@ -53,27 +50,17 @@ export const ChatsList = () => {
         <LoadingCircle />
       ) : (
         <Stack
-          spacing={2.5}
           height="100%"
           maxHeight={isMobile ? 'unset' : '70vh'}
           overflow={isMobile ? 'unset' : 'auto'}
-          px={2}
           py={1}
         >
           {chatsList && chatsList.length > 0 ? (
             chatsList.map((chat) => {
               return (
-                <React.Fragment key={chat.id}>
-                  {isMobile ? (
-                    <Link to={`/chats/${chat.id}`}>
-                      <ChatItem {...chat} />
-                    </Link>
-                  ) : (
-                    <Box onClick={() => setChat(`${chat.id}`)}>
-                      <ChatItem {...chat} />
-                    </Box>
-                  )}
-                </React.Fragment>
+                <Link key={chat.id} to={`/chats/${chat.id}`}>
+                  <ChatItem {...chat} />
+                </Link>
               );
             })
           ) : (
