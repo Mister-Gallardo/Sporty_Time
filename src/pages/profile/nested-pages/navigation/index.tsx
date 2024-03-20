@@ -48,7 +48,10 @@ export const ProfileNavPage = () => {
             Стандартный аккаунт
           </Typography>
         </Box>
-        <Avatar src={user?.avatar} sx={{ width: 50, height: 50 }} />
+        <Avatar
+          src={user?.avatar?.formats?.small}
+          sx={{ width: 50, height: 50 }}
+        />
       </Box>
 
       <Stack mt={3} gap={1}>

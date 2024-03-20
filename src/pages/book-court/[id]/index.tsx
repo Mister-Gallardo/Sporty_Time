@@ -69,7 +69,7 @@ export function SingleCourtPage() {
                 width="100%"
                 component="img"
                 src={withHostname(
-                  image?.formats?.large || image?.formats?.medium,
+                  image?.formats?.large || image?.formats?.medium || noImg,
                 )}
               />
             );

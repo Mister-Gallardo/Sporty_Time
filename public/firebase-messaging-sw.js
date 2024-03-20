@@ -12,6 +12,7 @@ firebase.initializeApp({
   storageBucket: 'sportytime-d49ed.appspot.com',
   messagingSenderId: '796890637573',
   appId: '1:796890637573:web:146c1cbb9528e6a2ef836c',
+  measurementId: 'G-VC50FBZ5EK',
 });
 
 firebase.messaging();

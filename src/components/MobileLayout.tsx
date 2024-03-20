@@ -32,6 +32,7 @@ import { history } from '../services/history/service';
 import { RouteExtraProps, mobileRoutes } from '../routes';
 import { useCurrentRoute } from '../hooks/useCurrentRoute';
 import DesktopHeader from './organisms/DesktopHeader';
+import AppUrlListener from './AppUrlListener';
 
 export interface IMobileLayoutProps {
   children: React.ReactNode;
@@ -45,6 +46,7 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
   return (
     <IonApp style={{ minHeight: '100dvh' }}>
       <IonReactRouter history={history}>
+        <AppUrlListener />
         <DesktopHeader />
 
         <Box position="relative" height="100%">

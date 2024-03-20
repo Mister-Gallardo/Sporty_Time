@@ -27,7 +27,8 @@ export const useRegisterNotificationsToken = () => {
   const serviceWorkerListener = (event: any) => {
     const notification = new Notification(event.data.notification.title, {
       body: event.data.notification.body,
-      data: event.data.data.redirect,
+      // data: event.data.data.redirect,
+      data: 'https://dev.sportytime.ru/book-court/18?tab=2&day=2024-03-20&time=11%3A30',
     });
 
     notification.onclick = (event: any) => {

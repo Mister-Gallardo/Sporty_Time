@@ -10,10 +10,13 @@ const config: CapacitorConfig = {
   },
   plugins: {
     CapacitorUpdater: {
-      updateUrl: "https://sportytime.ru/api/versions/latest",
-      version
-    }
-  }
+      updateUrl: 'https://sportytime.ru/api/versions/latest',
+      version,
+    },
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
+  },
 };
 
 export default config;
