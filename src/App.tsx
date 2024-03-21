@@ -7,9 +7,6 @@ import { Capacitor } from '@capacitor/core';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from './services/notifications/firebase';
 import { Geolocation } from '@capacitor/geolocation';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useRegisterNotificationsToken } from './hooks/useRegisterNotificationsToken';
 
 setupIonicReact({ mode: 'ios' });
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
@@ -20,8 +17,6 @@ const App: React.FC = () => {
     if (Capacitor.isNativePlatform()) return;
     initializeApp(firebaseConfig);
   }, []);
-
-  useRegisterNotificationsToken();
   return (
     <>
       <Suspense fallback={<LoadingCircle />}>
@@ -32,9 +27,6 @@ const App: React.FC = () => {
           <Redirect to="/" />
         </MobileLayout>
       </Suspense>
-      {Capacitor.getPlatform() === 'android' && (
-        <ToastContainer autoClose={5000} />
-      )}
     </>
   );
 };

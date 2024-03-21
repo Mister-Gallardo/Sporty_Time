@@ -99,11 +99,11 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
         qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
       }
     };
-
-    socket.on(`matchId - ${matchId}`, updateMatchData);
+    const key = `matchId - ${matchId}`;
+    socket.on(key, updateMatchData);
 
     return () => {
-      socket.off(`matchId - ${matchId}`, updateMatchData);
+      socket.off(key, updateMatchData);
     };
   }, []);
 

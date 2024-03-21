@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { isPlatform, useIonToast } from '@ionic/react';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { changePasswordRequest } from '../../services/auth/service';
 import { useMutation } from '@tanstack/react-query';
 import { ModalContainer } from './ModalContainer';
@@ -23,6 +29,7 @@ export const RestorePasswordModal: React.FC<IRestorePasswordModal> = ({
   const changePswrdMutation = useMutation({
     mutationFn: changePasswordRequest,
     onSuccess() {
+      handleModal(false);
       showToast({
         color: 'success',
         message: `Ссылка отправлена на почту ${email}`,
@@ -77,7 +84,10 @@ export const RestorePasswordModal: React.FC<IRestorePasswordModal> = ({
           variant="contained"
           onClick={() => changePswrdMutation.mutate(email)}
           sx={{ borderRadius: 20 }}
-          disabled={!email}
+          disabled={!email || changePswrdMutation.isPending}
+          endIcon={
+            changePswrdMutation.isPending && <CircularProgress size={25} />
+          }
         >
           Отправить ссылку
         </Button>
