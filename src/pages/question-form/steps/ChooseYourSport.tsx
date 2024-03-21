@@ -1,4 +1,11 @@
-import { Avatar, Box, Button, Fade, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Fade,
+  Typography,
+} from '@mui/material';
 import {
   SportsBaseballOutlined,
   SportsBasketballOutlined,
@@ -78,7 +85,7 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
     try {
       const res = await fetch(photo.webPath);
       const imageBlob = await res.blob();
-      formData.append('image', imageBlob);
+      formData.append('avatar', imageBlob);
     } catch (error) {
       console.log(error);
     }
@@ -107,14 +114,21 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
                 mb={3}
               >
                 <Avatar
-                  src={player?.user?.avatar || ''}
+                  src={player?.user?.avatar?.formats?.small}
                   sx={{
                     width: '75px',
                     height: '75px',
                     border: '2px solid #fff',
                   }}
                 />
-                <Button onClick={takePhoto} sx={{ color: '#fff' }}>
+                <Button
+                  onClick={takePhoto}
+                  disabled={addPhotoMutation.isPending}
+                  endIcon={
+                    addPhotoMutation.isPending && <CircularProgress size={25} />
+                  }
+                  sx={{ color: '#fff' }}
+                >
                   Изменить фото
                 </Button>
               </Box>

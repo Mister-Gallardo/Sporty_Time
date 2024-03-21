@@ -138,7 +138,7 @@ export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
         {status === Status.WAITING_FOR_RESULTS ? (
           <Add sx={{ color: '#fff' }} />
         ) : (
-          <Link to={isDesktop ? `/chats?chat=${matchId}` : `/chats/${matchId}`}>
+          <Link to={`/chats/${matchId}`}>
             <ChatBubbleOutlineOutlinedIcon
               fontSize="small"
               sx={{ color: '#fff' }}

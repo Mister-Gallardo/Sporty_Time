@@ -40,7 +40,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           sx={{ opacity: player?.mark ? 0.5 : 1 }}
         >
           <Avatar
-            src={player.user?.avatar}
+            src={player?.user?.avatar?.formats?.small}
             sx={{
               width: '50px',
               height: '50px',

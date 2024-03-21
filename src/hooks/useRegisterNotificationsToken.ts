@@ -19,9 +19,14 @@ export const useRegisterNotificationsToken = () => {
         toast(event.notification.title);
       }
     });
-    FirebaseMessaging.addListener('notificationActionPerformed', (event) => {
-      console.log('notificationActionPerformed: ', { event });
-    });
+
+    FirebaseMessaging.addListener(
+      'notificationActionPerformed',
+      (event: any) => {
+        const link = event?.notification?.data?.redirect;
+        window.location.href = link;
+      },
+    );
   };
 
   const serviceWorkerListener = (event: any) => {
@@ -82,6 +87,8 @@ export const useRegisterNotificationsToken = () => {
           serviceWorkerListener,
         );
       }
+
+      // FirebaseMessaging.removeAllListeners();
     };
   }, []);
 

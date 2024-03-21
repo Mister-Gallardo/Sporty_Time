@@ -168,7 +168,7 @@ export const EditProfilePage = () => {
 
         <Box display="flex" flexDirection="column" alignItems="center">
           <Avatar
-            src={avatar || user?.avatar?.formats?.png || ''}
+            src={(avatar as string) || user?.avatar?.formats?.small}
             sx={{ width: 50, height: 50 }}
           />
           <Button onClick={() => takePhoto()} sx={{ fontSize: 13 }}>

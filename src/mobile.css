@@ -35,7 +35,7 @@ body {
 ion-tab-bar {
   border: none;
   box-shadow: 0 0 10px #3331;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
 }
 
 ion-header {

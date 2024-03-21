@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { TabContext, TabPanel } from '@mui/lab';
-import {
-  Avatar,
-  Box,
-  Button,
-  CircularProgress,
-  Typography,
-} from '@mui/material';
+import { Avatar, Box, Button, Divider, Typography } from '@mui/material';
 import { useFullUserData } from '../../services/api/hooks';
 import ActivitiesTab from './tabs/ActivitiesTab';
 import { IonButton, IonButtons, IonLoading, isPlatform } from '@ionic/react';
@@ -15,9 +9,11 @@ import { useHistory } from 'react-router';
 import { NotFoundPage } from '../../components/NotFoundPage';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import { AccountInfoCount } from './components/AccountInfoCount';
+
+const isMobile = isPlatform('mobile');
 
 export function ProfilePage() {
-  const isMobile = isPlatform('mobile');
   const history = useHistory();
 
   const [tabIndex] = useState<string>('1');
@@ -37,7 +33,7 @@ export function ProfilePage() {
         <Box display="flex" alignItems="end">
           <Avatar
             alt={fullname}
-            src={profile?.user?.avatar}
+            src={profile?.user?.avatar?.formats?.small}
             sx={{ width: 60, height: 60 }}
           />
 
@@ -61,43 +57,18 @@ export function ProfilePage() {
         <Box
           mt={1}
           display="flex"
-          justifyContent={isMobile ? 'space-evenly' : 'center'}
-          gap={isMobile ? 'unset' : 2}
+          justifyContent={isMobile ? 'unset' : 'center'}
           alignItems="center"
         >
-          {['Matches', 'Followers', 'Following'].map((item) => {
-            return (
-              <React.Fragment key={item}>
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  width="100%"
-                  maxWidth={isMobile ? '100%' : '150px'}
-                  color="#333"
-                >
-                  {rest.isLoading ? (
-                    <CircularProgress size={20} />
-                  ) : (
-                    <Typography fontSize={23}>
-                      {item === 'Matches' ? profile?.countMatches : 0}
-                    </Typography>
-                  )}
-
-                  <Typography>{item}</Typography>
-                </Box>
-
-                {item === 'Following' || (
-                  <Box
-                    sx={{
-                      height: isMobile ? 20 : 35,
-                      borderRight: '1px solid #ddd',
-                    }}
-                  ></Box>
-                )}
-              </React.Fragment>
-            );
-          })}
+          <AccountInfoCount
+            title="Матчи"
+            count={profile?.countMatches || 0}
+            navPath="/matches?tab=2"
+          />
+          <Divider flexItem orientation="vertical" variant="middle" />
+          <AccountInfoCount title="Подписчики" count={0} />
+          <Divider flexItem orientation="vertical" variant="middle" />
+          <AccountInfoCount title="Подписки" count={0} />
         </Box>
 
         <Box
@@ -132,10 +103,6 @@ export function ProfilePage() {
 
       <TabContext value={tabIndex}>
         <Box maxWidth={1240} mx="auto">
-          {/* <TabList
-            tabs={['Activities', 'Posts']}
-            onChange={(_, value) => setTabIndex(value)}
-          /> */}
           <TabPanel value="1" sx={{ p: 0 }}>
             <ActivitiesTab />
           </TabPanel>

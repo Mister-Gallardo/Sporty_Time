@@ -6,10 +6,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { sendMessage } from '../../../services/chats/service';
 import { v4 as uuid } from 'uuid';
 import { useUserInfo } from '../../../services/api/hooks';
+import { useParams } from 'react-router';
 
 const isDesktop = isPlatform('desktop');
 
-export const MessageTextField = ({ chatId }: { chatId: string }) => {
+export const MessageTextField = () => {
+  const { chatId } = useParams<{ chatId: string }>();
+
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       message: '',

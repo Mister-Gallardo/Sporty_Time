@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
-import { useSearchParam } from '../../../hooks/useSearchParams';
 import { getOneAvailableMatch } from '../../../services/matches/service';
 import { Box, Typography } from '@mui/material';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
@@ -9,15 +8,12 @@ import { isPlatform } from '@ionic/react';
 const isMobile = isPlatform('mobile');
 
 export const MatchDataHeader = () => {
-  const [chatIdDesktop] = useSearchParam('chat', '');
   const { chatId } = useParams<{ chatId: string }>();
 
-  const currentChatId = isMobile ? chatId : chatIdDesktop;
-
   const { data: matchData, isLoading: isMatchLoading } = useQuery({
-    queryKey: [`match`, +currentChatId],
-    queryFn: () => getOneAvailableMatch(+currentChatId),
-    enabled: !!currentChatId,
+    queryKey: [`match`, +chatId],
+    queryFn: () => getOneAvailableMatch(+chatId),
+    enabled: !!chatId,
   });
 
   const match = matchData?.data;
@@ -47,10 +43,7 @@ export const MatchDataHeader = () => {
           <Typography color="gray">{matchStartsAt.slice(0, 10)}</Typography>
         </Box>
       )}
-      <Link
-        to={`/matches/${currentChatId}`}
-        style={{ fontWeight: 600, fontSize: 14 }}
-      >
+      <Link to={`/matches/${chatId}`} style={{ fontWeight: 600, fontSize: 14 }}>
         Детали
       </Link>
     </Box>

@@ -25,6 +25,20 @@ export interface Player {
   user?: User;
 }
 
+export interface IFormats {
+  png?: string;
+  large?: string;
+  small?: string;
+  medium?: string;
+}
+export interface IMedia {
+  id: number;
+  formats: IFormats;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
 export interface MatchPlayer extends Player {
   mark?: boolean;
   paid?: number;
@@ -38,7 +52,7 @@ export interface User {
   email: string;
   gender: string;
   roles: Role[];
-  avatar: any; // MEDIA
+  avatar: IMedia;
   createdAt: Date;
   updatedAt: Date;
   player: Player;

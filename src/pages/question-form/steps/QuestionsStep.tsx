@@ -60,9 +60,6 @@ export function QuestionsStep({ handleStep }: QuestionsStepProps) {
 
     if (!next) setIsLastQuestion(true);
     const isExist = getValues(questionID);
-    // console.log('isExist: ', isExist);
-    // console.log('getValues: ', getValues());
-    // console.log('watch: ', watch());
     if (isExist === undefined && next) {
       setCurrentQuestions((prev) => [...prev, simpleQuestionsList[next]]);
     }
@@ -82,10 +79,6 @@ export function QuestionsStep({ handleStep }: QuestionsStepProps) {
       removeQuestions.map((q) => unregister(q.id));
     }
     setValue(questionID, { answer, id });
-    console.log('setValue(questionID, { answer, id }): ', questionID, {
-      answer,
-      id,
-    });
   };
 
   // scroll to bottom when new question appears
@@ -129,7 +122,6 @@ export function QuestionsStep({ handleStep }: QuestionsStepProps) {
     for (const key in data) {
       answerI[key] = data[key].id;
     }
-    console.log('answerI: ', answerI);
 
     createRatingMutation.mutate({
       ...answerI,

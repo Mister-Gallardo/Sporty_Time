@@ -8,6 +8,7 @@ import { isPlatform } from '@ionic/react';
 import { useHistory } from 'react-router';
 import { RatingChart } from '../../../components/molecules/RatingChart';
 import { ESport } from '../../../services/matches/interface';
+import { getSportName } from '../../../helpers/getNameOf';
 
 const sports = [
   {
@@ -67,8 +68,10 @@ export default function ActivitiesTab() {
         >
           <Box px={2} py={1}>
             <Box>
-              <Typography color="GrayText">{activeSport}</Typography>
-              <Typography fontSize={25}>Level {sportLevel}</Typography>
+              <Typography color="GrayText">
+                {getSportName(activeSport)}
+              </Typography>
+              <Typography fontSize={25}>Уровень {sportLevel}</Typography>
             </Box>
             <Box>
               <Box display="flex" alignItems="center">

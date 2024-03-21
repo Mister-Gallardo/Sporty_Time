@@ -96,7 +96,7 @@ export const mobileRoutes = [
   {
     path: '/chats/:chatId',
     exact: true,
-    component: MobileSingleChatPage,
+    component: isPlatform('mobile') ? MobileSingleChatPage : MobileChatsPage,
     showTabBar: false,
   },
   {

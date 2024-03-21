@@ -1,4 +1,5 @@
 import { ESport } from '../matches/interface';
+import { IMedia } from '../user/interface';
 
 export enum ECourtType {
   OUTDOOR = 'OUTDOOR',
@@ -27,19 +28,6 @@ export interface IAvailableTime {
   gameDate?: string;
 }
 
-export interface Images {
-  id: number;
-  formats: {
-    png: string;
-    large: string;
-    small: string;
-    medium: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-}
-
 export interface Club {
   id: number;
   title: string;
@@ -60,7 +48,7 @@ export interface Club {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  images: Images[];
+  images: IMedia[];
   sports: string[];
   courts: Court[];
   tags: Tag[];

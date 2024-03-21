@@ -1,18 +1,18 @@
-import { useState } from 'react';
 import { isPlatform } from '@ionic/react';
 import { AvailableMatchesTab } from './tabs/AvailableMatchesTab';
 import { TabList } from '../../components/molecules/TabList';
+import { useSearchParam } from '../../hooks/useSearchParams';
 import { MyMatchesTab } from './tabs/MyMatchesTab';
 import { TabContext, TabPanel } from '@mui/lab';
 import { Box, Button } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useHistory } from 'react-router';
 
-export function MatchesPage() {
-  const isMobile = isPlatform('mobile');
+const isMobile = isPlatform('mobile');
 
+export function MatchesPage() {
   const history = useHistory();
-  const [tabIndex, setTabIndex] = useState<string>('1');
+  const [tabIndex, setTabIndex] = useSearchParam('tab', '1');
 
   return (
     <Box
