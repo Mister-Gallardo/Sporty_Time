@@ -19,16 +19,20 @@ export const useRegisterNotificationsToken = () => {
         toast(event.notification.title);
       }
     });
-    FirebaseMessaging.addListener('notificationActionPerformed', (event) => {
-      console.log('notificationActionPerformed: ', { event });
-    });
+
+    FirebaseMessaging.addListener(
+      'notificationActionPerformed',
+      (event: any) => {
+        const link = event?.notification?.data?.redirect;
+        window.location.href = link;
+      },
+    );
   };
 
   const serviceWorkerListener = (event: any) => {
     const notification = new Notification(event.data.notification.title, {
       body: event.data.notification.body,
-      // data: event.data.data.redirect,
-      data: 'https://dev.sportytime.ru/book-court/18?tab=2&day=2024-03-20&time=11%3A30',
+      data: event.data.data.redirect,
     });
 
     notification.onclick = (event: any) => {
@@ -83,6 +87,8 @@ export const useRegisterNotificationsToken = () => {
           serviceWorkerListener,
         );
       }
+
+      // FirebaseMessaging.removeAllListeners();
     };
   }, []);
 

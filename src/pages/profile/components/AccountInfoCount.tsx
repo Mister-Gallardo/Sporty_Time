@@ -31,10 +31,12 @@ export const AccountInfoCount: React.FC<IAccountInfoCountProps> = ({
       fullWidth
     >
       <Box width="100%">
-        <Typography fontSize={23} textAlign="center">
+        <Typography fontSize={isMobile ? 18 : 23} textAlign="center">
           {count}
         </Typography>
-        <Typography textAlign="center">{title}</Typography>
+        <Typography fontSize={isMobile ? 12 : 15} textAlign="center">
+          {title}
+        </Typography>
       </Box>
     </Button>
   );

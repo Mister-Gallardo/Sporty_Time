@@ -30,7 +30,7 @@ export const MessagesList = () => {
       });
     }
 
-    const key = `matchId - ${chatId}`;
+    const key = `chatId - ${chatId}`;
     socket.on(key, refetch);
 
     return () => {

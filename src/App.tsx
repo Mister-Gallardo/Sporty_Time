@@ -9,6 +9,7 @@ import { firebaseConfig } from './services/notifications/firebase';
 import { Geolocation } from '@capacitor/geolocation';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useRegisterNotificationsToken } from './hooks/useRegisterNotificationsToken';
 
 setupIonicReact({ mode: 'ios' });
 const MobileLayout = React.lazy(() => import('./components/MobileLayout'));
@@ -20,6 +21,7 @@ const App: React.FC = () => {
     initializeApp(firebaseConfig);
   }, []);
 
+  useRegisterNotificationsToken();
   return (
     <>
       <Suspense fallback={<LoadingCircle />}>
