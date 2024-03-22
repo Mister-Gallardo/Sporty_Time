@@ -10,6 +10,7 @@ import { NotFoundPage } from '../../components/NotFoundPage';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import { AccountInfoCount } from './components/AccountInfoCount';
+import { withHostname } from '../../services/api/service';
 
 const isMobile = isPlatform('mobile');
 
@@ -33,7 +34,7 @@ export function ProfilePage() {
         <Box display="flex" alignItems="end">
           <Avatar
             alt={fullname}
-            src={profile?.user?.avatar?.formats?.small}
+            src={withHostname(profile?.user?.avatar?.formats?.small || '')}
             sx={{ width: 60, height: 60 }}
           />
 

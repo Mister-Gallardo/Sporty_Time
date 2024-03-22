@@ -25,6 +25,7 @@ import { ESport } from '../../../services/matches/interface';
 import { useLocalStorage } from 'usehooks-ts';
 import { useEffect } from 'react';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
+import { withHostname } from '../../../services/api/service';
 
 interface ChooseYourSportProps {
   handleStep: (step: number) => void;
@@ -114,7 +115,7 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
                 mb={3}
               >
                 <Avatar
-                  src={player?.user?.avatar?.formats?.small}
+                  src={withHostname(player?.user?.avatar?.formats?.small || '')}
                   sx={{
                     width: '75px',
                     height: '75px',

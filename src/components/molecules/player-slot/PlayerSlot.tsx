@@ -4,6 +4,8 @@ import { Avatar, Box, Typography } from '@mui/material';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { Status } from '../../../services/matches/interface';
+import { isPlatform } from '@ionic/react';
+import { withHostname } from '../../../services/api/service';
 
 interface IPlayerSlotProps {
   player: MatchPlayer;
@@ -13,6 +15,8 @@ interface IPlayerSlotProps {
   playerAlreadyInSomeTeam?: boolean;
   matchStatus?: Status;
 }
+
+const isMobile = isPlatform('mobile');
 
 export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
   player,
@@ -40,10 +44,10 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           sx={{ opacity: player?.mark ? 0.5 : 1 }}
         >
           <Avatar
-            src={player?.user?.avatar?.formats?.small}
+            src={withHostname(player?.user?.avatar?.formats?.small || '')}
             sx={{
-              width: '50px',
-              height: '50px',
+              width: isMobile ? '40px' : '50px',
+              height: isMobile ? '40px' : '50px',
               opacity: player?.mark ? '.7' : 'unset',
             }}
           />
@@ -53,7 +57,11 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           </Typography>
           {isShown && !isHidden ? (
             <Box textAlign="center">
-              <Typography textAlign="center" lineHeight={1.2} fontSize={12}>
+              <Typography
+                textAlign="center"
+                lineHeight={1.2}
+                fontSize={isMobile ? 10 : 12}
+              >
                 {isMatchPaid
                   ? 'Оплачено'
                   : player.paid
@@ -73,10 +81,9 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
         >
           <Box
             onClick={onClick}
-            width={50}
-            height={50}
+            width={isMobile ? 40 : 50}
+            height={isMobile ? 40 : 50}
             border="1.5px dashed #2d5df1"
-            borderRadius={50}
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -84,7 +91,9 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           >
             <AddRoundedIcon sx={{ color: '#2d5df1' }} />
           </Box>
-          {!isHidden && <Typography fontSize={12}>Свободно</Typography>}
+          {!isHidden && (
+            <Typography fontSize={isMobile ? 10 : 12}>Свободно</Typography>
+          )}
         </Box>
       )}
     </Box>

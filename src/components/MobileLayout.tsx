@@ -62,7 +62,7 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
               slot={showTabBar && isPlatform('mobile') ? 'bottom' : undefined}
               style={{
                 borderTop: '1px solid #cdcccc',
-                paddingTop: '0.5rem',
+                paddingTop: '5px',
               }}
             >
               <IonTabButton tab="play" href="/play">

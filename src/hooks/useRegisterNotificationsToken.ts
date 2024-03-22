@@ -4,7 +4,11 @@ import { vapidKey } from '../services/notifications/firebase';
 import { useMutation } from '@tanstack/react-query';
 import { registerDeviceToken } from '../services/notifications/service';
 import { useLocalStorage } from 'usehooks-ts';
-import { PushNotifications } from '@capacitor/push-notifications';
+import {
+  PushNotifications,
+  Token,
+  ActionPerformed,
+} from '@capacitor/push-notifications';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 export const useRegisterNotificationsToken = () => {
@@ -15,14 +19,14 @@ export const useRegisterNotificationsToken = () => {
   });
 
   const addListeners = async () => {
-    await PushNotifications.addListener('registration', (token) => {
+    await PushNotifications.addListener('registration', (token: Token) => {
       setDeviceToken(token.value);
       registerTokenMutation.mutate(token.value);
     });
 
     await PushNotifications.addListener(
       'pushNotificationActionPerformed',
-      (notification) => {
+      (notification: ActionPerformed) => {
         const url = notification?.notification?.data?.redirect;
         window.location.href = url;
       },
