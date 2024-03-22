@@ -31,7 +31,7 @@ export const MessagesList = () => {
     }
 
     const updateChatData = (e: { action: string }) => {
-      if (e.action === 'new message') refetch();
+      if (e.action === 'new-message') refetch();
     };
 
     const key = `matchId - ${chatId}`;

@@ -1,6 +1,7 @@
+import React, { Suspense, useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { setupIonicReact } from '@ionic/react';
-import React, { Suspense, useEffect } from 'react';
+import { useRegisterNotificationsToken } from './hooks/useRegisterNotificationsToken';
 import { mobileRoutes } from './routes';
 import { LoadingCircle } from './components/atoms/LoadingCircle';
 import { Capacitor } from '@capacitor/core';
@@ -17,6 +18,9 @@ const App: React.FC = () => {
     if (Capacitor.isNativePlatform()) return;
     initializeApp(firebaseConfig);
   }, []);
+
+  useRegisterNotificationsToken();
+
   return (
     <>
       <Suspense fallback={<LoadingCircle />}>
