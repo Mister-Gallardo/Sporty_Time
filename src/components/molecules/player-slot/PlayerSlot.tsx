@@ -5,6 +5,7 @@ import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { Status } from '../../../services/matches/interface';
 import { isPlatform } from '@ionic/react';
+import { withHostname } from '../../../services/api/service';
 
 interface IPlayerSlotProps {
   player: MatchPlayer;
@@ -43,7 +44,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           sx={{ opacity: player?.mark ? 0.5 : 1 }}
         >
           <Avatar
-            src={player?.user?.avatar?.formats?.small}
+            src={withHostname(player?.user?.avatar?.formats?.small || '')}
             sx={{
               width: isMobile ? '40px' : '50px',
               height: isMobile ? '40px' : '50px',

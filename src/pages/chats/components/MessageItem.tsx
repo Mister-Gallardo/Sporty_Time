@@ -2,6 +2,7 @@ import React from 'react';
 import { Avatar, Box, Typography } from '@mui/material';
 import { useUserInfo } from '../../../services/api/hooks';
 import { ChatSingleMessage } from '../../../services/chats/interface';
+import { withHostname } from '../../../services/api/service';
 
 const intToRGB = (uid: number) => {
   const valueAsPercentageOfMax = uid / 10;
@@ -29,6 +30,9 @@ export const MessageItem: React.FC<IMessageItemProps> = ({
 }) => {
   const [user] = useUserInfo();
   const isMyUser = userFrom.id === user?.id;
+  const avatar = userFrom?.avatar
+    ? withHostname(userFrom?.avatar?.formats?.small || '')
+    : '';
 
   const msgSentTime = new Date(createdAt).toLocaleTimeString('ru').slice(0, 5);
 
@@ -43,7 +47,7 @@ export const MessageItem: React.FC<IMessageItemProps> = ({
       {!isMyUser && (
         <Box minWidth={40} minHeight={40}>
           {!nextMsgFromSameUser && (
-            <Avatar src="" sx={{ width: 40, height: 40, zIndex: 1 }} />
+            <Avatar src={avatar} sx={{ width: 40, height: 40, zIndex: 1 }} />
           )}
         </Box>
       )}

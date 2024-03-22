@@ -9,9 +9,6 @@ PODS:
   - CapacitorCordova (5.5.1)
   - CapacitorDialog (5.0.6):
     - Capacitor
-  - CapacitorFirebaseMessaging (5.4.1):
-    - Capacitor
-    - FirebaseMessaging (~> 10.8)
   - CapacitorGeolocation (5.0.6):
     - Capacitor
   - CapacitorHaptics (5.0.6):
@@ -27,53 +24,6 @@ PODS:
     - Capacitor
     - SSZipArchive
     - Version
-  - FirebaseCore (10.21.0):
-    - FirebaseCoreInternal (~> 10.0)
-    - GoogleUtilities/Environment (~> 7.12)
-    - GoogleUtilities/Logger (~> 7.12)
-  - FirebaseCoreInternal (10.21.0):
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-  - FirebaseInstallations (10.21.0):
-    - FirebaseCore (~> 10.0)
-    - GoogleUtilities/Environment (~> 7.8)
-    - GoogleUtilities/UserDefaults (~> 7.8)
-    - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (10.21.0):
-    - FirebaseCore (~> 10.0)
-    - FirebaseInstallations (~> 10.0)
-    - GoogleDataTransport (~> 9.3)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/Environment (~> 7.8)
-    - GoogleUtilities/Reachability (~> 7.8)
-    - GoogleUtilities/UserDefaults (~> 7.8)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleDataTransport (9.3.0):
-    - GoogleUtilities/Environment (~> 7.7)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-    - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/AppDelegateSwizzler (7.12.0):
-    - GoogleUtilities/Environment
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Network
-  - GoogleUtilities/Environment (7.12.0):
-    - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.12.0):
-    - GoogleUtilities/Environment
-  - GoogleUtilities/Network (7.12.0):
-    - GoogleUtilities/Logger
-    - "GoogleUtilities/NSData+zlib"
-    - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (7.12.0)"
-  - GoogleUtilities/Reachability (7.12.0):
-    - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (7.12.0):
-    - GoogleUtilities/Logger
-  - nanopb (2.30909.1):
-    - nanopb/decode (= 2.30909.1)
-    - nanopb/encode (= 2.30909.1)
-  - nanopb/decode (2.30909.1)
-  - nanopb/encode (2.30909.1)
-  - PromisesObjC (2.3.1)
   - SSZipArchive (2.4.3)
   - Version (0.8.0)
 
@@ -83,7 +33,6 @@ DEPENDENCIES:
   - "CapacitorCamera (from `../../node_modules/.pnpm/@capacitor+camera@5.0.8_@capacitor+core@5.5.1/node_modules/@capacitor/camera`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@5.5.1_@capacitor+core@5.5.1/node_modules/@capacitor/ios`)"
   - "CapacitorDialog (from `../../node_modules/.pnpm/@capacitor+dialog@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/dialog`)"
-  - "CapacitorFirebaseMessaging (from `../../node_modules/.pnpm/@capacitor-firebase+messaging@5.4.1_@capacitor+core@5.5.1_firebase@10.8.0/node_modules/@capacitor-firebase/messaging`)"
   - "CapacitorGeolocation (from `../../node_modules/.pnpm/@capacitor+geolocation@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/geolocation`)"
   - "CapacitorHaptics (from `../../node_modules/.pnpm/@capacitor+haptics@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/haptics`)"
   - "CapacitorKeyboard (from `../../node_modules/.pnpm/@capacitor+keyboard@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/keyboard`)"
@@ -94,14 +43,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
-    - FirebaseCore
-    - FirebaseCoreInternal
-    - FirebaseInstallations
-    - FirebaseMessaging
-    - GoogleDataTransport
-    - GoogleUtilities
-    - nanopb
-    - PromisesObjC
     - SSZipArchive
     - Version
 
@@ -116,8 +57,6 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/@capacitor+ios@5.5.1_@capacitor+core@5.5.1/node_modules/@capacitor/ios"
   CapacitorDialog:
     :path: "../../node_modules/.pnpm/@capacitor+dialog@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/dialog"
-  CapacitorFirebaseMessaging:
-    :path: "../../node_modules/.pnpm/@capacitor-firebase+messaging@5.4.1_@capacitor+core@5.5.1_firebase@10.8.0/node_modules/@capacitor-firebase/messaging"
   CapacitorGeolocation:
     :path: "../../node_modules/.pnpm/@capacitor+geolocation@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/geolocation"
   CapacitorHaptics:
@@ -138,24 +77,15 @@ SPEC CHECKSUMS:
   CapacitorCamera: 4be26c04b35e01f5e7ceb0fcaeafd7dc19b448e0
   CapacitorCordova: e128cc7688c070ca0bfa439898a5f609da8dbcfe
   CapacitorDialog: 0f3c15dfe9414b83bc64aef4078f1b92bcfead26
-  CapacitorFirebaseMessaging: ff3b2e81e11f1e20e4e349dc9a920516cf649345
   CapacitorGeolocation: 7be5f77abc205c0efe319fff8587a7183e7b0240
   CapacitorHaptics: 1fffc1217c7e64a472d7845be50fb0c2f7d4204c
   CapacitorKeyboard: b978154b024a5f65e044908e37d15b7de58b9d12
   CapacitorPushNotifications: 2327900bc002f5ff49ee6d2231796d0635b4a1b0
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
   CapgoCapacitorUpdater: 0d832332d60735bff93533eda6d2662208737418
-  FirebaseCore: 74f647ad9739ea75112ce6c3b3b91f5488ce1122
-  FirebaseCoreInternal: 43c1788eaeee9d1b97caaa751af567ce11010d00
-  FirebaseInstallations: 390ea1d10a4d02b20c965cbfd527ee9b3b412acb
-  FirebaseMessaging: b285329399cc6edd73b5b32864c68454177bcf3f
-  GoogleDataTransport: 57c22343ab29bc686febbf7cbb13bad167c2d8fe
-  GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
-  nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
-  PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
 
-PODFILE CHECKSUM: dd9e434bedc372f713eb82d5c7e3676a15600645
+PODFILE CHECKSUM: ff415ae26a2f155df37cfc28f5043ff6518c90c5
 
 COCOAPODS: 1.15.2

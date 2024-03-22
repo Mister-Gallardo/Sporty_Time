@@ -9,6 +9,7 @@ import { NotFoundPage } from '../../../../components/NotFoundPage';
 import { Dialog } from '@capacitor/dialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteMe } from '../../../../services/user/service';
+import { withHostname } from '../../../../services/api/service';
 
 const isMobile = isPlatform('mobile');
 
@@ -49,7 +50,7 @@ export const ProfileNavPage = () => {
           </Typography>
         </Box>
         <Avatar
-          src={user?.avatar?.formats?.small}
+          src={withHostname(user?.avatar?.formats?.small || '')}
           sx={{ width: 50, height: 50 }}
         />
       </Box>

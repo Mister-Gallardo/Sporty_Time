@@ -5,6 +5,7 @@ import { Add } from '@mui/icons-material';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
+import { withHostname } from '../../../services/api/service';
 
 interface IEditPlayerSlotProps {
   player?: MatchPlayer;
@@ -58,7 +59,7 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
           )}
 
           <Avatar
-            src={player?.user?.avatar?.formats?.small || ''}
+            src={withHostname(player?.user?.avatar?.formats?.small || '')}
             sx={{ width: 45, height: 45 }}
           />
 
