@@ -9,15 +9,21 @@ export const BASE_URL = isPlatform('mobile')
 
 export const withHostname = (url: string) => {
   try {
-    const urlObj = new URL(url, window.location as unknown as URL);
+    const urlObj = new URL(url);
     if (urlObj.origin === 'capacitor://localhost') {
       urlObj.hostname = 'dev.sportytime.ru';
       urlObj.protocol = 'https';
     }
     return urlObj.toString();
   } catch (e) {
-    console.error(e);
-    return url;
+    if (isPlatform('mobile')) {
+      const urlObj = new URL(url, window.location as unknown as URL);
+      urlObj.hostname = 'dev.sportytime.ru';
+      urlObj.protocol = 'https';
+      return urlObj.toString();
+    } else {
+      return url;
+    }
   }
 };
 
