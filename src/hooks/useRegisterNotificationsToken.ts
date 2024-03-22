@@ -1,95 +1,92 @@
 import { useEffect } from 'react';
-import {
-  FirebaseMessaging,
-  GetTokenOptions,
-} from '@capacitor-firebase/messaging';
 import { Capacitor } from '@capacitor/core';
 import { vapidKey } from '../services/notifications/firebase';
 import { useMutation } from '@tanstack/react-query';
 import { registerDeviceToken } from '../services/notifications/service';
 import { useLocalStorage } from 'usehooks-ts';
-import { toast } from 'react-toastify';
+import { PushNotifications } from '@capacitor/push-notifications';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 export const useRegisterNotificationsToken = () => {
-  const [deviceToken, setDeviceToken] = useLocalStorage('deviceToken', '');
-
-  const addListeners = () => {
-    FirebaseMessaging.addListener('notificationReceived', (event) => {
-      if (Capacitor.getPlatform() === 'android') {
-        toast(event.notification.title);
-      }
-    });
-
-    FirebaseMessaging.addListener(
-      'notificationActionPerformed',
-      (event: any) => {
-        const link = event?.notification?.data?.redirect;
-        window.location.href = link;
-      },
-    );
-  };
-
-  const serviceWorkerListener = (event: any) => {
-    const notification = new Notification(event.data.notification.title, {
-      body: event.data.notification.body,
-      data: event.data.data.redirect,
-    });
-
-    notification.onclick = (event: any) => {
-      window.location.href = event?.target?.data;
-    };
-  };
+  const [, setDeviceToken] = useLocalStorage('deviceToken', '');
 
   const registerTokenMutation = useMutation({
     mutationFn: registerDeviceToken,
   });
 
+  const addListeners = async () => {
+    await PushNotifications.addListener('registration', (token) => {
+      setDeviceToken(token.value);
+      registerTokenMutation.mutate(token.value);
+    });
+
+    await PushNotifications.addListener(
+      'pushNotificationActionPerformed',
+      (notification) => {
+        window.location.href = notification?.notification?.data?.redirect;
+      },
+    );
+  };
+
+  const registerNotifications = async () => {
+    let permStatus = await PushNotifications.checkPermissions();
+
+    if (permStatus.receive === 'prompt') {
+      permStatus = await PushNotifications.requestPermissions();
+    }
+
+    if (permStatus.receive !== 'granted') {
+      throw new Error('User denied permissions!');
+    }
+
+    await PushNotifications.register();
+  };
+
   useEffect(() => {
-    FirebaseMessaging.requestPermissions().then(({ receive }) => {
-      if (receive === 'granted') {
-        addListeners();
+    if (Capacitor.getPlatform() === 'web') {
+      const messaging = getMessaging();
 
-        const options: GetTokenOptions = { vapidKey };
+      const status = Notification.permission;
 
-        if (Capacitor.getPlatform() === 'web') {
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker
-              .register('../firebase-messaging-sw.js', {
-                scope: './',
-              })
-              .then(
-                (registration) =>
-                  (options.serviceWorkerRegistration = registration),
-              )
-              .catch(console.error);
-
-            navigator.serviceWorker.addEventListener(
-              'message',
-              serviceWorkerListener,
-            );
-          }
-        }
-
-        FirebaseMessaging.getToken(options).then(({ token }) => {
+      if (status === 'granted') {
+        getToken(messaging, { vapidKey }).then((token) => {
           setDeviceToken(token);
           registerTokenMutation.mutate(token);
         });
+
+        new Promise((resolve) => {
+          onMessage(messaging, (payload) => resolve(payload));
+        })
+          .then((event: any) => {
+            const notification = new Notification(event?.notification?.title, {
+              body: event?.notification?.body,
+              data: event?.data?.redirect.replace(
+                'sportytime.ru',
+                'dev.sportytime.ru',
+              ),
+            });
+            notification.onclick = (event: any) => {
+              window.location.href = event?.target?.data;
+            };
+          })
+          .catch(console.error);
       } else {
-        if (deviceToken) localStorage.removeItem('deviceToken');
-        FirebaseMessaging.requestPermissions();
+        Notification.requestPermission();
       }
-    });
-
-    return () => {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker?.removeEventListener(
-          'message',
-          serviceWorkerListener,
-        );
-      }
-
-      // FirebaseMessaging.removeAllListeners();
-    };
+    } else {
+      // Request permission to use push notifications
+      // iOS will prompt user and return if they granted permission or not
+      // Android will just grant without prompting
+      PushNotifications.requestPermissions().then((result) => {
+        if (result.receive === 'granted') {
+          // Register with Apple / Google to receive push via APNS/FCM
+          registerNotifications();
+          addListeners();
+        } else {
+          PushNotifications.requestPermissions();
+        }
+      });
+    }
   }, []);
 
   return;

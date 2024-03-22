@@ -30,11 +30,15 @@ export const MessagesList = () => {
       });
     }
 
-    const key = `chatId - ${chatId}`;
-    socket.on(key, refetch);
+    const updateChatData = (e: { action: string }) => {
+      if (e.action === 'new message') refetch();
+    };
+
+    const key = `matchId - ${chatId}`;
+    socket.on(key, updateChatData);
 
     return () => {
-      socket.off(key, refetch);
+      socket.off(key, updateChatData);
     };
   }, [data?.length]);
 

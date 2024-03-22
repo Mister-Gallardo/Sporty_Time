@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSearchParam } from '../../hooks/useSearchParams';
 import { QuestionsStep } from './steps/QuestionsStep';
 import { ChooseYourSport } from './steps/ChooseYourSport';
