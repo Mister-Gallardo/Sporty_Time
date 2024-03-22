@@ -23,7 +23,8 @@ export const useRegisterNotificationsToken = () => {
     await PushNotifications.addListener(
       'pushNotificationActionPerformed',
       (notification) => {
-        window.location.href = notification?.notification?.data?.redirect;
+        const url = notification?.notification?.data?.redirect;
+        window.location.href = url;
       },
     );
   };

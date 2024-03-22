@@ -1,3 +1,4 @@
+import { ELeveling } from '../pages/question-form/questions';
 import { ESport } from './../services/matches/interface';
 
 export const getSportAndLevel = (sport: string, level: string) => {
@@ -10,13 +11,13 @@ export const getSportAndLevel = (sport: string, level: string) => {
       ? 2
       : null;
   const levelIndex =
-    level === 'none' || level === 'beginner'
+    level === ELeveling.NONE || level === ELeveling.BEGINNER
       ? 0
-      : level === 'intermediate'
+      : level === ELeveling.INTERMEDIATE
       ? 1
-      : level === 'intermediate hight'
+      : level === ELeveling.HIGHT_INTERMEDIATE
       ? 2
-      : level === 'advanced'
+      : level === ELeveling.ADVANCED
       ? 3
       : 4;
   return { sportIndex, levelIndex };

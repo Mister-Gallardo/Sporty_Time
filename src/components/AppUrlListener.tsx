@@ -9,11 +9,15 @@ const AppUrlListener: React.FC<any> = () => {
     App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
       const domain = 'sportytime.ru';
       const path = event.url.split(domain).pop();
-
+      console.log(event);
       if (path) {
         history.push(path);
       }
     });
+
+    return () => {
+      App.removeAllListeners();
+    };
   }, []);
 
   return null;

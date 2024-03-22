@@ -69,14 +69,6 @@ export const MobileLayout: React.FC<IMobileLayoutProps> = (props) => {
                 <IonIcon size="medium" icon={tennisball} />
                 <Typography variant="body2">Играть</Typography>
               </IonTabButton>
-              {/* <IonTabButton tab="discovery" href="/" disabled>
-              <IonIcon size="medium" icon={book} />
-              <Typography variant="body2">Исследовать</Typography>
-            </IonTabButton>
-            <IonTabButton tab="community" href="/" disabled>
-              <IonIcon size="medium" icon={home} />
-              <Typography variant="body2">Сообщество</Typography>
-            </IonTabButton> */}
               <IonTabButton tab="profile" href="/profile">
                 <IonIcon size="medium" icon={person} />
                 <Typography variant="body2">Профиль</Typography>
