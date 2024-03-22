@@ -9,6 +9,7 @@ import { useParams } from 'react-router';
 import { socket } from '../../../utils/socket';
 
 const isDesktop = isPlatform('desktop');
+const isIphone = isPlatform('iphone');
 
 export const MessagesList = () => {
   const { chatId } = useParams<{ chatId: string }>();
@@ -77,7 +78,7 @@ export const MessagesList = () => {
           Нет сообщений...
         </Typography>
       )}
-      <Box ref={ref} height={isDesktop ? 'unset' : 50} />
+      <Box ref={ref} height={isDesktop ? 'unset' : isIphone ? 85 : 50} />
     </Stack>
   );
 };
