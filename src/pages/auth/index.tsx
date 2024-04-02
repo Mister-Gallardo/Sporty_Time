@@ -27,6 +27,7 @@ import { AuthErrors } from '../../services/auth/interface';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import MuiPhoneNumber from 'mui-phone-number';
 
 enum LoginStates {
   UNDEFINED,
@@ -45,7 +46,8 @@ export function AuthPage() {
   const [isOpenSuccessToast, setIsOpenSuccessToast] = useState<boolean>(false);
   const [isOpenErrorToast, setIsOpenErrorToast] = useState<boolean>(false);
 
-  const { register, handleSubmit, reset, getValues } = useForm<IAuthForm>();
+  const { register, handleSubmit, reset, getValues, setValue } =
+    useForm<IAuthForm>();
 
   const [openRestorePswrdModal, setOpenRestorePswrdModal] = useToggle();
 
@@ -129,7 +131,6 @@ export function AuthPage() {
   const submitOnInvalid: SubmitErrorHandler<IAuthForm> = (data) => {
     const { email, firstName, lastName, otp, password } = data;
     setIsOpenErrorToast(true);
-
     if (typeof email?.message === 'string')
       return setErrorMessage(AuthErrors.EMAIL);
     if (typeof firstName?.message === 'string')
@@ -326,6 +327,24 @@ export function AuthPage() {
                 variant="outlined"
                 required
               />
+            </Grow>
+          )}
+          {authState === LoginStates.REGISTER && (
+            <Grow in timeout={700}>
+              <Box>
+                <MuiPhoneNumber
+                  onChange={(number) => {
+                    setValue('phoneNumber', number as string);
+                    if (isOpenErrorToast) setIsOpenErrorToast(false);
+                    if (errorMessage) setErrorMessage('');
+                  }}
+                  defaultCountry="ru"
+                  error={errorMessage === AuthErrors.PHONE_NUMBER}
+                  variant="outlined"
+                  label="Номер телефона"
+                  fullWidth
+                />
+              </Box>
             </Grow>
           )}
 

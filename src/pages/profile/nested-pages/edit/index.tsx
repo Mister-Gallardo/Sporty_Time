@@ -25,6 +25,7 @@ import { EGender } from '../../../../services/matches/interface';
 import React, { useState } from 'react';
 import { EEditProfileErrors } from '../../../../services/user/interface';
 import { isEmpty } from 'lodash-es';
+import MuiPhoneNumber from 'mui-phone-number';
 
 const isMobile = isPlatform('mobile');
 const genders = [
@@ -37,6 +38,7 @@ interface FormData {
   firstname?: string;
   lastname?: string;
   email?: string;
+  phoneNumber?: string;
   gender?: string;
   password?: string;
 }
@@ -224,6 +226,17 @@ export const EditProfilePage = () => {
               InputProps={{
                 disableUnderline: true,
               }}
+            />
+
+            <MuiPhoneNumber
+              onChange={(number) => {
+                if (errorMsg) setErrorMsg(null);
+                setValue('phoneNumber', number as string);
+              }}
+              defaultCountry="ru"
+              variant="outlined"
+              label="Номер телефона"
+              fullWidth
             />
 
             <TextField
