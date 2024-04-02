@@ -36,6 +36,7 @@ export interface MatchData {
   minutes: number;
   price: number;
   isPrivate: boolean;
+  isApproved: boolean;
   isCancelled: boolean;
   sport: string;
   matchResults: matchResults;

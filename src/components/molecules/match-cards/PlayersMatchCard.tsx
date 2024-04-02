@@ -41,7 +41,7 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
         <Typography fontSize={15} fontWeight={600}>
           Игроки
         </Typography>
-        {isEditActive && (
+        {!isEditActive && (
           <Button
             onClick={() => handleEditModal()}
             sx={{ fontSize: 13, padding: 0 }}

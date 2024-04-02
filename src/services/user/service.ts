@@ -1,4 +1,4 @@
-import { UserProfile, EditUserProfile } from './interface';
+import { UserProfile, EditUserProfile, User } from './interface';
 import { api } from '../api/service';
 
 export function getUserInfo() {
@@ -11,3 +11,9 @@ export function editUserProfile(data: FormData | EditUserProfile) {
 export const deleteMe = async () => {
   return await api.delete('/users/me');
 };
+
+export function getUsersList(searchTerm: string) {
+  return api.get<User[]>(
+    '/admin/users?s={"$or": [{"firstname": {"$contL": "amir"}}, {"lastname": {"$contL": "musaev2"}}]',
+  );
+}
