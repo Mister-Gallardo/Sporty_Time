@@ -27,13 +27,15 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
 
   const history = useHistory();
 
-  const interval = booking.interval;
+  const interval = booking?.interval;
 
   // match start date + start-end time
-  const matchDate = `${interval.slice(2, 12)} | ${interval.slice(
-    13,
-    18,
-  )}-${interval.slice(-10, -5)}`;
+  const matchDate =
+    interval &&
+    `${interval.slice(2, 12)} | ${interval.slice(13, 18)}-${interval.slice(
+      -10,
+      -5,
+    )}`;
 
   const members = sortTeamMembers(matchBookings);
   const status = getMatchStatus(props);
