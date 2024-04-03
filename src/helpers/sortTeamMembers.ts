@@ -6,7 +6,7 @@ export const sortTeamMembers = (members: MatchMember[]): Array<Member[]> => {
   const teamA: any = [];
   const teamB: any = [];
 
-  members.forEach((member) => {
+  members?.forEach((member) => {
     if (member.team === 'A') teamA.push(member);
     if (member.team === 'B') teamB.push(member);
   });

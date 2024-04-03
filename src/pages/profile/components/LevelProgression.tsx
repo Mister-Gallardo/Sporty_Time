@@ -33,7 +33,7 @@ const results = [
   },
 ];
 
-interface ICurrentMatch extends MatchData {
+export interface ICurrentMatch extends MatchData {
   ratingAfterMatch: number;
   ratingProfit: number;
   match: MatchData;
@@ -114,7 +114,7 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
               justifyContent="space-between"
               mb={2}
             >
-              <Typography>
+              <Typography fontSize={13}>
                 {getMatchTypeName(currentMatch?.match?.type)}
               </Typography>
               <Box display="flex" alignItems="center" gap={0.2}>
