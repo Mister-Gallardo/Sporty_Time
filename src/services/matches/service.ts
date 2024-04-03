@@ -86,6 +86,7 @@ export function getMatchBookings(limit: number) {
       { field: 'match.matchBookings' },
       { field: 'match.matchBookings.player' },
       { field: 'match.matchBookings.player.user' },
+      { field: 'match.matchBookings.player.user.avatar' },
     ])
     .query();
 

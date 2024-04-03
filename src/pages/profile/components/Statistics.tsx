@@ -6,7 +6,7 @@ interface IStatisticsProps {}
 
 export const Statistics: React.FC<IStatisticsProps> = () => {
   return (
-    <Box width="100%">
+    <Box width="100%" maxWidth={370}>
       <SectionTitle title="Статистика" />
       <Box
         display="flex"

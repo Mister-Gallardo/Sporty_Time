@@ -10,7 +10,6 @@ import { isPlatform } from '@ionic/react';
 import { useQuery } from '@tanstack/react-query';
 import { getMatchBookings } from '../../../services/matches/service';
 import { getMatchTypeName } from '../../../helpers/getNameOf';
-import { useUserInfo } from '../../../services/api/hooks';
 import { MatchData } from '../../../services/matches/interface';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { sortTeamMembers } from '../../../helpers/sortTeamMembers';
@@ -46,9 +45,7 @@ const isMobile = isPlatform('mobile');
 export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
   const [matchesLimit, setMatchesLimit] = useState(5);
 
-  const [user] = useUserInfo();
-
-  const { data, isLoading, isError } = useQuery({
+  const { data } = useQuery({
     queryKey: ['match-bookings', matchesLimit],
     queryFn: () => getMatchBookings(matchesLimit),
   });
@@ -61,7 +58,12 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
     setCurrentMatch(bookingsList[0]);
   }, [bookingsList]);
 
-  if (!bookingsList || !currentMatch) return;
+  if (!bookingsList || !currentMatch)
+    return (
+      <Typography pt={5} textAlign="center" minWidth={300} color="gray" noWrap>
+        История матчей пуста
+      </Typography>
+    );
 
   const isWin = currentMatch?.ratingProfit > 0;
   const matchResults = currentMatch?.matchResults;

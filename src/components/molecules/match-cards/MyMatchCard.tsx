@@ -10,7 +10,7 @@ import { ResultsCardSection } from './ResultsCardSection';
 import { withHostname } from '../../../services/api/service';
 
 interface IMyMatchCardProps extends MatchData {
-  uploadResults: (id: number) => void;
+  uploadResults?: (id: number) => void;
 }
 
 const isMobile = isPlatform('mobile');
@@ -64,8 +64,9 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
 
   return (
     <Box
-      width="100%"
-      maxWidth={isMobile ? 'unset' : 325}
+      minWidth={325}
+      // width="100%"
+      // maxWidth={isMobile ? 'unset' : 325}
       bgcolor="#fff"
       border="1px solid #E5E5E5"
       borderRadius={2}
@@ -146,7 +147,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
             courtName={booking?.court?.title}
             status={status}
             uploadResults={
-              status === Status.WAITING_FOR_RESULTS
+              uploadResults && status === Status.WAITING_FOR_RESULTS
                 ? () => uploadResults(id)
                 : null
             }

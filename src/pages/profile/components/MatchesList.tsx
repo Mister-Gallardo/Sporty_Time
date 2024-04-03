@@ -1,34 +1,36 @@
-import { isPlatform } from '@ionic/react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { SectionTitle } from './SectionTitle';
+import { useQuery } from '@tanstack/react-query';
+import { getMyMatches } from '../../../services/matches/service';
+import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
+import { MyMatchCard } from '../../../components/molecules/match-cards/MyMatchCard';
 
 interface IMatchesListProps {}
 
-const isMobile = isPlatform('mobile');
-
 export const MatchesList: React.FC<IMatchesListProps> = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['my-matches'],
+    queryFn: () => getMyMatches(),
+  });
+
+  const myMatchesData = data?.data;
   return (
     <Box>
       <Box display="flex" justifyContent="space-between">
         <SectionTitle title="Матчи" />
         <Link to="/matches?tab=2">Все</Link>
       </Box>
-      <Box
-        display="flex"
-        gap={2}
-        maxWidth={isMobile ? '100%' : '360px'}
-        overflow="auto"
-      >
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map(
-          (match) => {
-            return (
-              <Box>
-                <Typography>{match}</Typography>
-              </Box>
-            );
-          },
+      <Box display="flex" gap={2} overflow="auto">
+        {isLoading ? (
+          <LoadingCircle />
+        ) : (
+          myMatchesData
+            ?.map((card) => {
+              return <MyMatchCard key={card.id} {...card} />;
+            })
+            ?.reverse()
         )}
       </Box>
     </Box>

@@ -20,7 +20,7 @@ export const CurrentSportLevel: React.FC<ICurrentSportLevelProps> = ({
   const sportLevel = player && getSportRating(player, activeSport);
 
   return (
-    <Box>
+    <Box maxWidth={370}>
       <SectionTitle title="Уровень" />
       {sportLevel ? (
         <Box
