@@ -1,5 +1,6 @@
 import { UserProfile, EditUserProfile, User } from './interface';
 import { api } from '../api/service';
+import { RequestQueryBuilder } from '@dataui/crud-request';
 
 export function getUserInfo() {
   return api.get<UserProfile>('/users/me');
@@ -13,7 +14,26 @@ export const deleteMe = async () => {
 };
 
 export function getUsersList(searchTerm: string) {
-  return api.get<User[]>(
-    '/admin/users?s={"$or": [{"firstname": {"$contL": "amir"}}, {"lastname": {"$contL": "musaev2"}}]',
-  );
+  const qb = RequestQueryBuilder.create();
+  qb.search({
+    $or: [
+      {
+        fullname: {
+          $contL: searchTerm,
+        },
+      },
+      {
+        email: {
+          $contL: searchTerm,
+        },
+      },
+      {
+        phone: {
+          $contL: searchTerm,
+        },
+      },
+    ],
+  }).query();
+
+  return api.get<User[]>(`/users?${qb.queryString}`);
 }

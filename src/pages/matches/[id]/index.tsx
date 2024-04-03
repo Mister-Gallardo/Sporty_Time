@@ -31,6 +31,7 @@ import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassD
 import { isAfter } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { AddPlayersToMatchModal } from '../../../components/modals/AddPlayersToMatchModal';
+import { FormProvider, useForm } from 'react-hook-form';
 
 const isMobile = isPlatform('mobile');
 export function SingleMatchPage() {
@@ -43,6 +44,7 @@ export function SingleMatchPage() {
 
   // add new players to match
   const [openAddPlayersModal, setOpenAddPlayersModal] = useToggle();
+  const addUserForm = useForm();
 
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
 
@@ -294,17 +296,19 @@ export function SingleMatchPage() {
         playerInTeam={playerInTeam}
       />
 
-      <EditMatchPlayersModal
-        openState={openEditModal}
-        handleModal={setOpenEditModal}
-        handleAddPlayersModal={setOpenAddPlayersModal}
-        players={players}
-      />
-      <AddPlayersToMatchModal
-        openState={openAddPlayersModal}
-        handleModal={setOpenAddPlayersModal}
-        handleEditPlayersModal={setOpenEditModal}
-      />
+      <FormProvider {...addUserForm}>
+        <EditMatchPlayersModal
+          openState={openEditModal}
+          handleModal={setOpenEditModal}
+          handleAddPlayersModal={setOpenAddPlayersModal}
+          players={players}
+        />
+        <AddPlayersToMatchModal
+          openState={openAddPlayersModal}
+          handleModal={setOpenAddPlayersModal}
+          handleEditPlayersModal={setOpenEditModal}
+        />
+      </FormProvider>
     </>
   );
 }

@@ -5,6 +5,7 @@ import { MatchPlayer } from '../../services/user/interface';
 import { EditPlayerSlot } from '../molecules/player-slot/EditPlayerSlot';
 import { ConfirmationEditMatchDialog } from './ConfirmationEditMatchDialog';
 import useToggle from '../../hooks/useToggle';
+import { useFormContext } from 'react-hook-form';
 
 interface IEditMatchPlayersModal {
   openState: boolean;
@@ -24,6 +25,24 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
     number | undefined
   >();
 
+  const { setValue } = useFormContext();
+
+  const onSlotClick = (index: number) => {
+    let team = '';
+    switch (index) {
+      case 0 || 1:
+        team = 'A';
+      case 2 || 3:
+        team = 'B';
+      default:
+        break;
+    }
+
+    handleModal();
+    handleAddPlayersModal();
+    setValue('team', team);
+  };
+
   return (
     <>
       <ModalContainer
@@ -37,19 +56,13 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
             <EditPlayerSlot
               player={players[0]}
               onCancel={setOpenEditMatchDialog}
-              onAdd={() => {
-                handleModal();
-                handleAddPlayersModal();
-              }}
+              onAdd={() => onSlotClick(0)}
               setPlayerIdToRemove={setPlayerIdToRemove}
             />
             <EditPlayerSlot
               player={players[1]}
               onCancel={setOpenEditMatchDialog}
-              onAdd={() => {
-                handleModal();
-                handleAddPlayersModal();
-              }}
+              onAdd={() => onSlotClick(1)}
               setPlayerIdToRemove={setPlayerIdToRemove}
             />
           </Box>
@@ -58,19 +71,13 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
             <EditPlayerSlot
               player={players[2]}
               onCancel={setOpenEditMatchDialog}
-              onAdd={() => {
-                handleModal();
-                handleAddPlayersModal();
-              }}
+              onAdd={() => onSlotClick(2)}
               setPlayerIdToRemove={setPlayerIdToRemove}
             />
             <EditPlayerSlot
               player={players[3]}
               onCancel={setOpenEditMatchDialog}
-              onAdd={() => {
-                handleModal();
-                handleAddPlayersModal();
-              }}
+              onAdd={() => onSlotClick(3)}
               setPlayerIdToRemove={setPlayerIdToRemove}
             />
           </Box>
