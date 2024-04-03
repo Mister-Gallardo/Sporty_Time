@@ -1,8 +1,8 @@
 export interface IAuthForm {
   email: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
+  firstname: string;
+  lastname: string;
+  phone: string;
   otp: string;
   password: string;
 }

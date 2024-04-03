@@ -50,6 +50,7 @@ export interface User {
   firstname: string;
   lastname: string;
   email: string;
+  phone: null | string;
   gender: string;
   roles: Role[];
   avatar: IMedia;

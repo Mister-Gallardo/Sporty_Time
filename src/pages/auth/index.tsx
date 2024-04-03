@@ -129,13 +129,13 @@ export function AuthPage() {
   });
 
   const submitOnInvalid: SubmitErrorHandler<IAuthForm> = (data) => {
-    const { email, firstName, lastName, otp, password } = data;
+    const { email, firstname, lastname, otp, password } = data;
     setIsOpenErrorToast(true);
     if (typeof email?.message === 'string')
       return setErrorMessage(AuthErrors.EMAIL);
-    if (typeof firstName?.message === 'string')
+    if (typeof firstname?.message === 'string')
       return setErrorMessage(AuthErrors.NAME);
-    if (typeof lastName?.message === 'string')
+    if (typeof lastname?.message === 'string')
       return setErrorMessage(AuthErrors.LASTNAME);
     if (typeof otp?.message === 'string')
       return setErrorMessage(
@@ -148,7 +148,7 @@ export function AuthPage() {
   };
 
   const submitOnValid: SubmitHandler<IAuthForm> = async (data) => {
-    const { email, otp, firstName, lastName, password } = data;
+    const { email, otp, firstname, lastname, password } = data;
 
     if (authState === LoginStates.UNDEFINED) {
       if (!email.trim()) {
@@ -167,11 +167,11 @@ export function AuthPage() {
         setIsOpenErrorToast(true);
         return setErrorMessage(AuthErrors.INVALID_OTP);
       }
-      if (!firstName.trim()) {
+      if (!firstname.trim()) {
         setIsOpenErrorToast(true);
         return setErrorMessage(AuthErrors.NAME);
       }
-      if (!lastName.trim()) {
+      if (!lastname.trim()) {
         setIsOpenErrorToast(true);
         return setErrorMessage(AuthErrors.LASTNAME);
       }
@@ -294,7 +294,7 @@ export function AuthPage() {
           {authState === LoginStates.REGISTER && (
             <Grow in timeout={400}>
               <TextField
-                {...register('firstName', {
+                {...register('firstname', {
                   required: true,
                   onChange: () => {
                     if (isOpenErrorToast) setIsOpenErrorToast(false);
@@ -313,7 +313,7 @@ export function AuthPage() {
           {authState === LoginStates.REGISTER && (
             <Grow in timeout={600}>
               <TextField
-                {...register('lastName', {
+                {...register('lastname', {
                   required: true,
                   onChange: () => {
                     if (isOpenErrorToast) setIsOpenErrorToast(false);
@@ -334,7 +334,7 @@ export function AuthPage() {
               <Box>
                 <MuiPhoneNumber
                   onChange={(number) => {
-                    setValue('phoneNumber', number as string);
+                    setValue('phone', number as string);
                     if (isOpenErrorToast) setIsOpenErrorToast(false);
                     if (errorMessage) setErrorMessage('');
                   }}
@@ -442,38 +442,18 @@ export function AuthPage() {
             )}
           </Button>
           {authState !== LoginStates.REGISTER && (
-            <>
-              {/* <Typography
-                textAlign="center"
-                color="GrayText"
-                fontSize={18}
-                my={1}
-              >
-                или
-              </Typography>
-              <Button
-                variant="contained"
-                sx={{
-                  borderRadius: 20,
-                  fontWeight: 600,
-                }}
-                fullWidth
-              >
-                Войти через VKонтакте
-              </Button> */}
-              <Typography
-                sx={{
-                  fontSize: '.75rem',
-                  fontWeight: '500',
-                  opacity: '.5',
-                  textAlign: 'center',
-                  paddingTop: '.75rem',
-                }}
-              >
-                Регистрируясь, вы принимаете наши условия использования и
-                политику конфиденциальности.
-              </Typography>
-            </>
+            <Typography
+              sx={{
+                fontSize: '.75rem',
+                fontWeight: '500',
+                opacity: '.5',
+                textAlign: 'center',
+                paddingTop: '.75rem',
+              }}
+            >
+              Регистрируясь, вы принимаете наши условия использования и политику
+              конфиденциальности.
+            </Typography>
           )}
           {authState === LoginStates.LOGIN && (
             <Typography mt={4} textAlign="center">
