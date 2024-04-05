@@ -14,6 +14,8 @@ import { MatchData } from '../../../services/matches/interface';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { sortTeamMembers } from '../../../helpers/sortTeamMembers';
 import { withHostname } from '../../../services/api/service';
+import { usePlayerProfile } from '../../../services/api/hooks';
+import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 
 const results = [
   {
@@ -43,9 +45,12 @@ interface ILevelProgressionProps {}
 const isMobile = isPlatform('mobile');
 
 export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
+  const [player] = usePlayerProfile();
+  const myPlayerId = player?.id;
+
   const [matchesLimit, setMatchesLimit] = useState(5);
 
-  const { data } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['match-bookings', matchesLimit],
     queryFn: () => getMatchBookings(matchesLimit),
   });
@@ -58,15 +63,13 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
     setCurrentMatch(bookingsList[0]);
   }, [bookingsList]);
 
-  if (!bookingsList || !currentMatch)
-    return (
-      <Typography pt={5} textAlign="center" minWidth={300} color="gray" noWrap>
-        История матчей пуста
-      </Typography>
-    );
+  const myPlayer = currentMatch?.matchBookings?.find(
+    (booking) => booking?.player?.id === myPlayerId,
+  );
 
-  const isWin = currentMatch?.ratingProfit > 0;
+  const isWin = myPlayer?.team === currentMatch?.winningTeam;
   const matchResults = currentMatch?.matchResults;
+  const matchDate = currentMatch?.match?.booking?.startsAt?.split('T');
 
   const [teamA, teamB] = sortTeamMembers(currentMatch?.match?.matchBookings);
 
@@ -82,6 +85,12 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
           width="100%"
           overflow="auto"
           gap={1}
+          sx={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+            msOverflowStyle: 'none',
+          }}
         >
           {results.map((item) => (
             <ToggleButton
@@ -95,170 +104,189 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
             </ToggleButton>
           ))}
         </Box>
-        <Link
-          to={`matches/${currentMatch?.match?.id}`}
-          style={{
-            display: 'flex',
-            justifyContent: isMobile ? 'unset' : 'center',
-            marginBottom: 30,
-          }}
-        >
+        {isError && (
           <Box
-            border="1px solid #eee"
-            p={1.5}
-            width={isMobile ? '100%' : 'unset'}
+            height={115}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Typography color="gray">Матч не найден</Typography>
+          </Box>
+        )}
+        {isLoading ? (
+          <Box height={115}>
+            <LoadingCircle />
+          </Box>
+        ) : (
+          <Link
+            to={`matches/${currentMatch?.match?.id}`}
+            style={{
+              display: 'flex',
+              justifyContent: isMobile ? 'unset' : 'center',
+              marginBottom: 30,
+            }}
           >
             <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              mb={2}
+              border="1px solid #eee"
+              p={1.5}
+              width={isMobile ? '100%' : 'unset'}
             >
-              <Typography fontSize={13}>
-                {getMatchTypeName(currentMatch?.match?.type)}
-              </Typography>
-              <Box display="flex" alignItems="center" gap={0.2}>
-                <Typography
-                  border="1px solid #eee"
-                  px={0.7}
-                  color="gray"
-                  fontSize={11}
-                >
-                  match date
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                mb={2}
+              >
+                <Typography fontSize={13}>
+                  {currentMatch && getMatchTypeName(currentMatch?.match?.type)}
                 </Typography>
-                <ChevronRightIcon fontSize="small" />
-              </Box>
-            </Box>
-            <Box display="flex">
-              <Box>
-                <Box
-                  display="flex"
-                  gap={0.5}
-                  alignItems="center"
-                  px={1.5}
-                  borderBottom="1px solid #eee"
-                  height={25}
-                >
-                  {teamA.map((member) => (
-                    <Avatar
-                      src={withHostname(
-                        member?.player?.user?.avatar?.formats?.small || '',
-                      )}
-                      sx={{ width: 20, height: 20 }}
-                    />
-                  ))}
-                </Box>
-                <Box
-                  display="flex"
-                  gap={0.5}
-                  alignItems="center"
-                  px={1.5}
-                  height={25}
-                >
-                  {teamB.map((member) => (
-                    <Avatar
-                      src={withHostname(
-                        member?.player?.user?.avatar?.formats?.small || '',
-                      )}
-                      sx={{ width: 20, height: 20 }}
-                    />
-                  ))}
-                </Box>
-              </Box>
-              <Divider orientation="vertical" flexItem />
-              <Box flexGrow={1}>
-                <Box
-                  display="flex"
-                  gap={5}
-                  px={2}
-                  justifyContent="space-between"
-                  borderBottom="1px solid #eee"
-                  height={25}
-                  alignItems="center"
-                >
-                  {matchResults ? (
-                    <>
-                      <Typography>{matchResults[0][0] || '-'}</Typography>
-                      <Typography>{matchResults[0][1] || '-'}</Typography>
-                      <Typography>{matchResults[0][2] || '-'}</Typography>
-                    </>
-                  ) : (
-                    <>
-                      <Typography>-</Typography>
-                      <Typography>-</Typography>
-                      <Typography>-</Typography>
-                    </>
-                  )}
-                </Box>
-                <Box
-                  display="flex"
-                  gap={5}
-                  px={2}
-                  justifyContent="space-between"
-                  height={25}
-                  alignItems="center"
-                >
-                  {matchResults ? (
-                    <>
-                      <Typography>{matchResults[1][0] || '-'}</Typography>
-                      <Typography>{matchResults[1][1] || '-'}</Typography>
-                      <Typography>{matchResults[1][2] || '-'}</Typography>
-                    </>
-                  ) : (
-                    <>
-                      <Typography>-</Typography>
-                      <Typography>-</Typography>
-                      <Typography>-</Typography>
-                    </>
-                  )}
-                </Box>
-              </Box>
-              <Divider orientation="vertical" flexItem />
-              {currentMatch?.matchResults ? (
-                <Box px={2}>
+                <Box display="flex" alignItems="center" gap={0.2}>
                   <Typography
-                    color={isWin ? 'success.main' : 'error.main'}
-                    mb={0.5}
+                    border="1px solid #eee"
+                    px={0.7}
+                    color="gray"
+                    fontSize={11}
                   >
-                    {isWin ? 'Победа' : 'Поражение'}
+                    {matchDate && matchDate[0]}
                   </Typography>
+                  <ChevronRightIcon fontSize="small" />
+                </Box>
+              </Box>
+              <Box display="flex">
+                <Box>
                   <Box
                     display="flex"
+                    gap={0.5}
                     alignItems="center"
-                    justifyContent="space-between"
+                    px={1.5}
+                    borderBottom="1px solid #eee"
+                    height={25}
                   >
-                    {isWin ? (
-                      <TrendingUpIcon color="success" />
-                    ) : (
-                      <TrendingDownIcon color="error" />
-                    )}
-
-                    <Divider orientation="vertical" flexItem />
-
-                    <Typography
-                      color={isWin ? 'success.main' : 'error.main'}
-                      minWidth={25}
-                    >
-                      {isWin || '-'}
-                      {currentMatch?.ratingProfit}
-                    </Typography>
+                    {teamA.map((member, i) => (
+                      <Avatar
+                        key={i}
+                        src={withHostname(
+                          member?.player?.user?.avatar?.formats?.small || '',
+                        )}
+                        sx={{ width: 20, height: 20 }}
+                      />
+                    ))}
+                  </Box>
+                  <Box
+                    display="flex"
+                    gap={0.5}
+                    alignItems="center"
+                    px={1.5}
+                    height={25}
+                  >
+                    {teamB.map((member, i) => (
+                      <Avatar
+                        key={i}
+                        src={withHostname(
+                          member?.player?.user?.avatar?.formats?.small || '',
+                        )}
+                        sx={{ width: 20, height: 20 }}
+                      />
+                    ))}
                   </Box>
                 </Box>
-              ) : (
-                <Box display="flex" alignItems="center" px={2}>
-                  <Typography
-                    fontSize={11}
-                    color="gray"
-                    maxWidth={70}
-                    textAlign="center"
+                <Divider orientation="vertical" flexItem />
+                <Box flexGrow={1}>
+                  <Box
+                    display="flex"
+                    gap={5}
+                    px={2}
+                    justifyContent="space-between"
+                    borderBottom="1px solid #eee"
+                    height={25}
+                    alignItems="center"
                   >
-                    Нет результатов
-                  </Typography>
+                    {matchResults ? (
+                      <>
+                        <Typography>{matchResults[0][0] || '-'}</Typography>
+                        <Typography>{matchResults[1][0] || '-'}</Typography>
+                        <Typography>{matchResults[2][0] || '-'}</Typography>
+                      </>
+                    ) : (
+                      <>
+                        <Typography>-</Typography>
+                        <Typography>-</Typography>
+                        <Typography>-</Typography>
+                      </>
+                    )}
+                  </Box>
+                  <Box
+                    display="flex"
+                    gap={5}
+                    px={2}
+                    justifyContent="space-between"
+                    height={25}
+                    alignItems="center"
+                  >
+                    {matchResults ? (
+                      <>
+                        <Typography>{matchResults[0][1] || '-'}</Typography>
+                        <Typography>{matchResults[1][1] || '-'}</Typography>
+                        <Typography>{matchResults[2][1] || '-'}</Typography>
+                      </>
+                    ) : (
+                      <>
+                        <Typography>-</Typography>
+                        <Typography>-</Typography>
+                        <Typography>-</Typography>
+                      </>
+                    )}
+                  </Box>
                 </Box>
-              )}
+                <Divider orientation="vertical" flexItem />
+                {currentMatch?.matchResults ? (
+                  <Box px={2}>
+                    <Typography
+                      color={isWin ? 'success.main' : 'error.main'}
+                      mb={0.5}
+                    >
+                      {isWin ? 'Победа' : 'Поражение'}
+                    </Typography>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      {isWin ? (
+                        <TrendingUpIcon color="success" />
+                      ) : (
+                        <TrendingDownIcon color="error" />
+                      )}
+
+                      <Divider orientation="vertical" flexItem />
+
+                      <Typography
+                        textAlign="center"
+                        color={isWin ? 'success.main' : 'error.main'}
+                        minWidth={25}
+                      >
+                        {!isWin && '-'}
+                        {currentMatch?.ratingProfit}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box display="flex" alignItems="center" px={2}>
+                    <Typography
+                      fontSize={11}
+                      color="gray"
+                      maxWidth={70}
+                      textAlign="center"
+                    >
+                      Нет результатов
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
             </Box>
-          </Box>
-        </Link>
+          </Link>
+        )}
       </Box>
       <RatingChart
         matchesLimit={matchesLimit}

@@ -38,6 +38,9 @@ export const UserData: React.FC<IUserDataProps> = ({
           {isDesktop && <UserInfoCountBlock />}
         </Box>
       </Box>
+
+      {!isDesktop && <UserInfoCountBlock />}
+
       {!isMyUser ? (
         <Box display="flex" justifyContent="center">
           <Link to="/chats/1">

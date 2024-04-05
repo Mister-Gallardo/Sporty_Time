@@ -23,10 +23,11 @@ export function ProfilePage() {
   if (rest.isError) return <NotFoundPage />;
 
   return (
-    <Box py={isMobile ? 2 : 5} maxWidth={1240} mx="auto" px={2}>
+    <Box py={isMobile ? 3 : 5} maxWidth={1240} mx="auto" px={2}>
       <UserData
         name={fullname}
         avatar={profile?.user?.avatar?.formats?.small}
+        isMyUser
       />
 
       <TabContext value={tabIndex}>

@@ -2,7 +2,15 @@ import { MatchMember, MatchMemberShort } from '../services/matches/interface';
 
 export type Member = MatchMember | MatchMemberShort;
 
-export const sortTeamMembers = (members: MatchMember[]): Array<Member[]> => {
+export const sortTeamMembers = (
+  members?: MatchMember[],
+): Array<(null | Member)[]> => {
+  if (!members)
+    return [
+      [null, null],
+      [null, null],
+    ];
+
   const teamA: any = [];
   const teamB: any = [];
 

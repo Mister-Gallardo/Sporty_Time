@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { SectionTitle } from './SectionTitle';
 import { useQuery } from '@tanstack/react-query';
 import { getMyMatches } from '../../../services/matches/service';
@@ -17,12 +16,19 @@ export const MatchesList: React.FC<IMatchesListProps> = () => {
 
   const myMatchesData = data?.data;
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between">
-        <SectionTitle title="Матчи" />
-        <Link to="/matches?tab=2">Все</Link>
-      </Box>
-      <Box display="flex" gap={2} overflow="auto">
+    <Box mt={4}>
+      <SectionTitle title="Матчи" />
+      <Box
+        display="flex"
+        gap={2}
+        overflow="auto"
+        sx={{
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+          msOverflowStyle: 'none',
+        }}
+      >
         {isLoading ? (
           <LoadingCircle />
         ) : (

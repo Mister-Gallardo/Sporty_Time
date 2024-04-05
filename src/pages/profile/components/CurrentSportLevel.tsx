@@ -7,10 +7,13 @@ import { getSportName } from '../../../helpers/getNameOf';
 import { Box, Button, Typography } from '@mui/material';
 import dummy from '../../../images/home/booking-bg.png';
 import { SectionTitle } from './SectionTitle';
+import { isPlatform } from '@ionic/react';
 
 interface ICurrentSportLevelProps {
   activeSport: ESport;
 }
+
+const isMobile = isPlatform('mobile');
 
 export const CurrentSportLevel: React.FC<ICurrentSportLevelProps> = ({
   activeSport,
@@ -20,7 +23,7 @@ export const CurrentSportLevel: React.FC<ICurrentSportLevelProps> = ({
   const sportLevel = player && getSportRating(player, activeSport);
 
   return (
-    <Box maxWidth={370}>
+    <Box width={isMobile ? '100%' : 400}>
       <SectionTitle title="Уровень" />
       {sportLevel ? (
         <Box

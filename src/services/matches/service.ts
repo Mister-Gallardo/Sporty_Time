@@ -80,9 +80,13 @@ export async function createExtraPaymentYookassaToken(data: {
 // for results chart on 'Profile' page
 export function getMatchBookings(limit: number) {
   const qb = RequestQueryBuilder.create();
-  qb.setLimit(limit)
+
+  qb.setFilter({ field: 'matchBooking.id', operator: '$notnull', value: true })
+    .sortBy({ field: 'matchBooking.startsAt', order: 'DESC' })
+    .setLimit(limit)
     .setJoin([
       { field: 'match' },
+      { field: 'match.booking' },
       { field: 'match.matchBookings' },
       { field: 'match.matchBookings.player' },
       { field: 'match.matchBookings.player.user' },
