@@ -7,6 +7,7 @@ import {
   GetAvailableMatchesAndClubsDTO,
 } from './interface';
 import { api } from '../api/service';
+import { RequestQueryBuilder } from '@dataui/crud-request';
 
 export function getMyMatches(cancelled?: boolean) {
   const res = api.get<MatchData[]>(`/matches/my`, {
@@ -74,4 +75,24 @@ export async function createExtraPaymentYookassaToken(data: {
 }) {
   const res = await api.post('/matches/extra-payment', data);
   return res.data;
+}
+
+// for results chart on 'Profile' page
+export function getMatchBookings(limit: number) {
+  const qb = RequestQueryBuilder.create();
+
+  qb.setFilter({ field: 'matchBooking.id', operator: '$notnull', value: true })
+    .sortBy({ field: 'matchBooking.startsAt', order: 'DESC' })
+    .setLimit(limit)
+    .setJoin([
+      { field: 'match' },
+      { field: 'match.booking' },
+      { field: 'match.matchBookings' },
+      { field: 'match.matchBookings.player' },
+      { field: 'match.matchBookings.player.user' },
+      { field: 'match.matchBookings.player.user.avatar' },
+    ])
+    .query();
+
+  return api.get<any[]>(`/match-bookings?${qb.queryString}`);
 }
