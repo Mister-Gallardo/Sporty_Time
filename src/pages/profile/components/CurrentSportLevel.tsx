@@ -1,13 +1,16 @@
 import React from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { ESport } from '../../../services/matches/interface';
 import { getSportName } from '../../../helpers/getNameOf';
 import { Box, Button, Typography } from '@mui/material';
 import dummy from '../../../images/home/booking-bg.png';
+import noRating from '../../../images/question-form/bg_events_tennis_desktop.png';
 import { SectionTitle } from './SectionTitle';
 import { isPlatform } from '@ionic/react';
+import { getSpecificUser } from '../../../services/user/service';
+import { useQuery } from '@tanstack/react-query';
 
 interface ICurrentSportLevelProps {
   activeSport: ESport;
@@ -19,8 +22,20 @@ export const CurrentSportLevel: React.FC<ICurrentSportLevelProps> = ({
   activeSport,
 }) => {
   const history = useHistory();
+  const { userId } = useParams<{ userId: string }>();
+
   const [player] = usePlayerProfile();
-  const sportLevel = player && getSportRating(player, activeSport);
+
+  const { data: specificUser } = useQuery({
+    queryKey: ['users', userId],
+    queryFn: () => getSpecificUser(+userId),
+    enabled: !!userId,
+  });
+  const playerData = userId ? specificUser?.data?.player : player;
+
+  const sportLevel = playerData && getSportRating(playerData, activeSport);
+
+  const isMyUser = player?.user?.id === +userId;
 
   return (
     <Box width={isMobile ? '100%' : 400}>
@@ -63,9 +78,9 @@ export const CurrentSportLevel: React.FC<ICurrentSportLevelProps> = ({
             src={dummy}
             maxWidth="30%"
             sx={{ objectFit: 'cover' }}
-          ></Box>
+          />
         </Box>
-      ) : (
+      ) : isMyUser ? (
         <Box textAlign="center">
           <Typography fontSize={18} fontWeight={500}>
             Отслеживайте свой прогресс
@@ -81,6 +96,24 @@ export const CurrentSportLevel: React.FC<ICurrentSportLevelProps> = ({
           >
             Начать тестирование
           </Button>
+        </Box>
+      ) : (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="end"
+          px={2}
+          width="100%"
+          height={117}
+          sx={{
+            backgroundImage: `url(${noRating})`,
+            backgroundPosition: 'center',
+            objectFit: 'cover',
+          }}
+        >
+          <Typography color="#fff" fontSize={22}>
+            Нет уровня
+          </Typography>
         </Box>
       )}
     </Box>

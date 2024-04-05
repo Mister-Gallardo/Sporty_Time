@@ -1,21 +1,30 @@
 import React from 'react';
-import { isPlatform } from '@ionic/react';
 import { Box, Divider } from '@mui/material';
 import { UserSingleInfoCount } from './UserSingleInfoCount';
 import { useFullUserData } from '../../../services/api/hooks';
+import { useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getSpecificUserMatchBookings } from '../../../services/matches/service';
 
 interface IUserInfoCountBlockProps {}
 
-const isDesktop = isPlatform('desktop');
-
 export const UserInfoCountBlock: React.FC<IUserInfoCountBlockProps> = () => {
+  const { userId } = useParams<{ userId: string }>();
+  const { data } = useQuery({
+    queryKey: [`match-bookings`, userId],
+    queryFn: () => getSpecificUserMatchBookings(+userId, 0),
+    enabled: !!userId,
+  });
+
   const [profile] = useFullUserData();
+
+  const matchesAmount = userId ? data?.data?.length : profile?.countMatches;
 
   return (
     <Box width="100%" display="flex" alignItems="center">
       <UserSingleInfoCount
         title="Матчи"
-        count={profile?.countMatches || 0}
+        count={matchesAmount}
         navPath="/matches?tab=2"
       />
       <Divider flexItem orientation="vertical" variant="middle" />

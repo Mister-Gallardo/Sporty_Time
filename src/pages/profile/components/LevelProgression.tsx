@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Avatar, Box, Divider, Typography } from '@mui/material';
 import { ToggleButton } from '../../../components/atoms/ToggleButton';
 import { RatingChart } from '../../../components/molecules/RatingChart';
@@ -8,7 +8,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { SectionTitle } from './SectionTitle';
 import { isPlatform } from '@ionic/react';
 import { useQuery } from '@tanstack/react-query';
-import { getMatchBookings } from '../../../services/matches/service';
+import { getSpecificUserMatchBookings } from '../../../services/matches/service';
 import { getMatchTypeName } from '../../../helpers/getNameOf';
 import { MatchData } from '../../../services/matches/interface';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
@@ -16,6 +16,7 @@ import { sortTeamMembers } from '../../../helpers/sortTeamMembers';
 import { withHostname } from '../../../services/api/service';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
+import { getSpecificUser } from '../../../services/user/service';
 
 const results = [
   {
@@ -45,15 +46,29 @@ interface ILevelProgressionProps {}
 const isMobile = isPlatform('mobile');
 
 export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
+  const { userId } = useParams<{ userId: string }>();
+
   const [player] = usePlayerProfile();
+  const myUserId = player?.user?.id;
   const myPlayerId = player?.id;
+
+  const { data: specificUser } = useQuery({
+    queryKey: ['users', userId],
+    queryFn: () => getSpecificUser(+userId),
+    enabled: !!userId,
+  });
+  const playerId = specificUser?.data?.player?.id;
 
   const [matchesLimit, setMatchesLimit] = useState(5);
 
+  const currentUserId = userId ? userId : myUserId || 0;
+  const currentPlayerId = userId ? playerId : myPlayerId || 0;
+
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['match-bookings', matchesLimit],
-    queryFn: () => getMatchBookings(matchesLimit),
+    queryKey: [`match-bookings`, matchesLimit, currentUserId],
+    queryFn: () => getSpecificUserMatchBookings(+currentUserId, matchesLimit),
   });
+
   const bookingsList = data?.data;
 
   const [currentMatch, setCurrentMatch] = useState<ICurrentMatch | null>(null);
@@ -63,11 +78,11 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
     setCurrentMatch(bookingsList[0]);
   }, [bookingsList]);
 
-  const myPlayer = currentMatch?.matchBookings?.find(
-    (booking) => booking?.player?.id === myPlayerId,
+  const myPlayer = currentMatch?.match?.matchBookings?.find(
+    (booking) => booking?.player?.id === currentPlayerId,
   );
 
-  const isWin = myPlayer?.team === currentMatch?.winningTeam;
+  const isWin = myPlayer?.team === currentMatch?.match?.winningTeam;
   const matchResults = currentMatch?.matchResults;
   const matchDate = currentMatch?.match?.booking?.startsAt?.split('T');
 
@@ -120,7 +135,8 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
           </Box>
         ) : (
           <Link
-            to={`matches/${currentMatch?.match?.id}`}
+            to={`/matches/${currentMatch?.match?.id}`}
+            onClick={() => console.log('currentMatch: ', currentMatch)}
             style={{
               display: 'flex',
               justifyContent: isMobile ? 'unset' : 'center',
@@ -204,9 +220,9 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
                   >
                     {matchResults ? (
                       <>
-                        <Typography>{matchResults[0][0] || '-'}</Typography>
-                        <Typography>{matchResults[1][0] || '-'}</Typography>
-                        <Typography>{matchResults[2][0] || '-'}</Typography>
+                        <Typography>{matchResults[0][0]}</Typography>
+                        <Typography>{matchResults[1][0]}</Typography>
+                        <Typography>{matchResults[2][0]}</Typography>
                       </>
                     ) : (
                       <>
@@ -226,9 +242,9 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
                   >
                     {matchResults ? (
                       <>
-                        <Typography>{matchResults[0][1] || '-'}</Typography>
-                        <Typography>{matchResults[1][1] || '-'}</Typography>
-                        <Typography>{matchResults[2][1] || '-'}</Typography>
+                        <Typography>{matchResults[0][1]}</Typography>
+                        <Typography>{matchResults[1][1]}</Typography>
+                        <Typography>{matchResults[2][1]}</Typography>
                       </>
                     ) : (
                       <>
@@ -243,6 +259,7 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
                 {currentMatch?.matchResults ? (
                   <Box px={2}>
                     <Typography
+                      textAlign="center"
                       color={isWin ? 'success.main' : 'error.main'}
                       mb={0.5}
                     >
@@ -252,6 +269,7 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
                       display="flex"
                       alignItems="center"
                       justifyContent="space-between"
+                      gap={1}
                     >
                       {isWin ? (
                         <TrendingUpIcon color="success" />
@@ -266,7 +284,6 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
                         color={isWin ? 'success.main' : 'error.main'}
                         minWidth={25}
                       >
-                        {!isWin && '-'}
                         {currentMatch?.ratingProfit}
                       </Typography>
                     </Box>

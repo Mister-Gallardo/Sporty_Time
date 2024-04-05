@@ -156,7 +156,10 @@ export function SingleMatchPage() {
   if (!booking) return <LoadingCircle />;
 
   const startsAt = new Date(singleMatchData.booking.startsAt);
-
+  console.log('');
+  console.log('startsAt: ', startsAt);
+  console.log('now', new Date());
+  console.log('');
   const onBookPlace = () => {
     //check specific sport rating insted!!!
     const isRating =

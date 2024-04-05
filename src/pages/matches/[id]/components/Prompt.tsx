@@ -22,24 +22,25 @@ export const Prompt = () => {
     (booking) => booking.player?.id === myPlayer?.id,
   );
 
-  if (!matchData) return null;
+  const params =
+    matchData && getPromptParams(matchData, playerAlreadyInSomeTeam);
 
-  const params = getPromptParams(matchData, playerAlreadyInSomeTeam);
+  if (!matchData) return null;
   if (!params) return null;
 
   return (
     <Box
-      bgcolor={params.bgColor}
+      bgcolor={params?.bgColor}
       display="flex"
       gap={1}
       borderRadius={2}
       p={2}
       boxShadow="1px 1px 5px #989898"
     >
-      <InfoIcon fontSize="small" sx={{ color: params.color }} />
+      <InfoIcon fontSize="small" sx={{ color: params?.color }} />
       <Box>
-        <Typography fontWeight={600}>{params.title}</Typography>
-        <Typography>{params.description}</Typography>
+        <Typography fontWeight={600}>{params?.title}</Typography>
+        <Typography>{params?.description}</Typography>
       </Box>
     </Box>
   );

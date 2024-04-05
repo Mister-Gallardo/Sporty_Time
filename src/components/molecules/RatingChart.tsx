@@ -10,9 +10,11 @@ import {
   Tooltip,
   YAxis,
 } from 'recharts';
-import { getMatchBookings } from '../../services/matches/service';
+import { getSpecificUserMatchBookings } from '../../services/matches/service';
 import { ICurrentMatch } from '../../pages/profile/components/LevelProgression';
 import { LoadingCircle } from '../atoms/LoadingCircle';
+import { useParams } from 'react-router';
+import { usePlayerProfile } from '../../services/api/hooks';
 
 interface IRatingChartProps {
   matchesLimit: number;
@@ -23,12 +25,20 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
   matchesLimit,
   setCurrentMatch,
 }) => {
+  const { userId } = useParams<{ userId: string }>();
+
+  const [player] = usePlayerProfile();
+  const myPlayerId = player?.user?.id;
+
+  const currentUserId = userId ? userId : myPlayerId || 0;
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ['match-bookings', matchesLimit],
-    queryFn: () => getMatchBookings(matchesLimit),
+    queryFn: () => getSpecificUserMatchBookings(+currentUserId, matchesLimit),
   });
 
   const bookingsList = data?.data;
+  const reverseBookings = bookingsList && [...bookingsList].reverse();
 
   if (isError) return;
 
@@ -39,7 +49,7 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
       ) : (
         <ResponsiveContainer>
           <AreaChart
-            data={bookingsList}
+            data={reverseBookings}
             margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
           >
             <defs>
@@ -66,8 +76,7 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
               fillOpacity={1}
               fill="url(#colorUv)"
               activeDot={{
-                onClick: (_, data: any) =>
-                  setCurrentMatch(data?.payload?.match),
+                onClick: (_, data: any) => setCurrentMatch(data?.payload),
               }}
             >
               {matchesLimit ? (

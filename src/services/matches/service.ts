@@ -77,11 +77,10 @@ export async function createExtraPaymentYookassaToken(data: {
   return res.data;
 }
 
-// for results chart on 'Profile' page
-export function getMatchBookings(limit: number) {
+const bookingsQuery = (limit: number) => {
   const qb = RequestQueryBuilder.create();
-
-  qb.setFilter({ field: 'matchBooking.id', operator: '$notnull', value: true })
+  qb.setFilter({ field: 'match.isCancelled', operator: '$eq', value: false })
+    .setFilter({ field: 'matchBooking.id', operator: '$notnull', value: true })
     .sortBy({ field: 'matchBooking.startsAt', order: 'DESC' })
     .setLimit(limit)
     .setJoin([
@@ -94,5 +93,17 @@ export function getMatchBookings(limit: number) {
     ])
     .query();
 
-  return api.get<any[]>(`/match-bookings?${qb.queryString}`);
+  return qb.queryString;
+};
+
+export function getMatchBookings(limit: number) {
+  const query = bookingsQuery(limit);
+
+  return api.get<any[]>(`/match-bookings?${query}`);
+}
+
+export function getSpecificUserMatchBookings(id: number, limit: number) {
+  const query = bookingsQuery(limit);
+
+  return api.get<any[]>(`/users/${id}/match-bookings?${query}`);
 }

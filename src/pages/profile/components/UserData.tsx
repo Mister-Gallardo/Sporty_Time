@@ -41,34 +41,17 @@ export const UserData: React.FC<IUserDataProps> = ({
 
       {!isDesktop && <UserInfoCountBlock />}
 
-      {!isMyUser ? (
-        <Box display="flex" justifyContent="center">
-          <Link to="/chats/1">
-            <Typography
-              px={10}
-              my={3}
-              textAlign="center"
-              border="1px solid #333"
-              bgcolor="#fff"
-            >
-              Написать
-            </Typography>
-          </Link>
-        </Box>
-      ) : (
-        isMyUser &&
-        !isDesktop && (
-          <Link to="/profile/edit">
-            <Typography
-              my={3}
-              textAlign="center"
-              border="1px solid #333"
-              bgcolor="#fff"
-            >
-              Изменить профиль
-            </Typography>
-          </Link>
-        )
+      {isMyUser && !isDesktop && (
+        <Link to="/profile/edit">
+          <Typography
+            my={3}
+            textAlign="center"
+            border="1px solid #333"
+            bgcolor="#fff"
+          >
+            Изменить профиль
+          </Typography>
+        </Link>
       )}
     </Box>
   );

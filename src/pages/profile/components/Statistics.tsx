@@ -2,11 +2,13 @@ import { Box, Divider, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { SectionTitle } from './SectionTitle';
 import { useQuery } from '@tanstack/react-query';
-import { getMyMatches } from '../../../services/matches/service';
+import { getSpecificUserMatchBookings } from '../../../services/matches/service';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { MatchData } from '../../../services/matches/interface';
 import { isPlatform } from '@ionic/react';
+import { useParams } from 'react-router';
+import { getSpecificUser } from '../../../services/user/service';
 
 interface IStatisticsProps {}
 
@@ -15,17 +17,17 @@ const isMobile = isPlatform('mobile');
 // variable responsible for the number of last matches to calculate effectiveness
 const matchesAmount = 10;
 
-const countWins = (matches?: MatchData[], playerId?: number) => {
+const countWins = (matches?: { match: MatchData }[], playerId?: number) => {
   if (!matches) return 0;
 
-  const winStatistic = matches?.filter((match) => {
-    const matchBookings = match?.matchBookings;
+  const winStatistic = matches?.filter((data) => {
+    const matchBookings = data?.match?.matchBookings;
     if (matchBookings) {
       const myPlayerBooking = matchBookings.find(
-        (booking) => booking.player.id === playerId,
+        (booking) => booking?.player?.id === playerId,
       );
 
-      if (myPlayerBooking?.team === match.winningTeam) return match;
+      if (myPlayerBooking?.team === data?.match?.winningTeam) return data;
     }
   });
 
@@ -33,18 +35,34 @@ const countWins = (matches?: MatchData[], playerId?: number) => {
 };
 
 export const Statistics: React.FC<IStatisticsProps> = () => {
+  const { userId } = useParams<{ userId: string }>();
+
   const [player] = usePlayerProfile();
+  const myUserId = player?.user?.id;
   const myPlayerId = player?.id;
 
+  const { data: specificUser } = useQuery({
+    queryKey: ['users', userId],
+    queryFn: () => getSpecificUser(+userId),
+    enabled: !!userId,
+  });
+  const playerId = specificUser?.data?.player?.id;
+
+  const currentUserId = userId ? userId : myUserId || 0;
+  const currentPlayerId = userId ? playerId : myPlayerId || 0;
+
   const { data, isLoading } = useQuery({
-    queryKey: ['my-matches', true],
-    queryFn: () => getMyMatches(true),
+    queryKey: [`match-bookings`, currentUserId],
+    queryFn: () => getSpecificUserMatchBookings(+currentUserId, 0),
   });
 
   const myMatches = data?.data;
 
-  const fullWinStatistic = countWins(myMatches, myPlayerId);
-  const lastTenWinStatistic = countWins(myMatches?.slice(0, 10), myPlayerId);
+  const fullWinStatistic = countWins(myMatches, currentPlayerId);
+  const lastTenWinStatistic = countWins(
+    myMatches?.slice(0, 10),
+    currentPlayerId,
+  );
 
   // count effectiveness in percent(%)
   const effectiveness = (100 * lastTenWinStatistic) / matchesAmount;
