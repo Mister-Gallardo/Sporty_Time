@@ -41,6 +41,9 @@ dependencies:
   '@capgo/capacitor-updater':
     specifier: ^5.3.40
     version: 5.3.40(@capacitor/core@5.5.1)
+  '@dataui/crud-request':
+    specifier: ^5.3.3
+    version: 5.3.3
   '@emotion/react':
     specifier: ^11.11.1
     version: 11.11.1(@types/react@18.2.36)(react@18.2.0)
@@ -1664,6 +1667,17 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@dataui/crud-request@5.3.3:
+    resolution: {integrity: sha512-N0+o8JcPlP6BccdRSBlL37BoyY/RGh7boib8VxW3jfa81FlWJSEhnP5DE4OqhCNcRX0bhAwe4+p9+nHm/qtCiA==}
+    dependencies:
+      '@dataui/crud-util': 5.3.3
+      qs: 6.10.4
+    dev: false
+
+  /@dataui/crud-util@5.3.3:
+    resolution: {integrity: sha512-YJ3trQe+PoAi7GswlDdpZ8yvHMMNd2NrFHv39iwPEath76b36EBgqZwCewwX8mnTViIVIorA4Ewtiq76SS3KVg==}
+    dev: false
 
   /@daybrush/utils@1.13.0:
     resolution: {integrity: sha512-ALK12C6SQNNHw1enXK+UO8bdyQ+jaWNQ1Af7Z3FNxeAwjYhQT7do+TRE4RASAJ3ObaS2+TJ7TXR3oz2Gzbw0PQ==}
@@ -9316,7 +9330,6 @@ packages:
 
   /object-inspect@1.13.1:
     resolution: {integrity: sha512-5qoj1RUiKOMsCCNLV1CBiPYE10sziTsnmNxkAI/rZhiD63CF7IqdFGC/XzjWjpSgLf0LxXX3bDFIh0E18f6UhQ==}
-    dev: true
 
   /object-is@1.1.5:
     resolution: {integrity: sha512-3cyDsyHgtmi7I7DfSSI2LDp6SK2lwvtbg0p0R1e0RvTqF5ceGx+K2dfSjm1bKDMVCFEDAQvy+o8c6a7VujOddw==}
@@ -9748,7 +9761,6 @@ packages:
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.0.4
-    dev: true
 
   /querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
@@ -10428,7 +10440,6 @@ packages:
       call-bind: 1.0.5
       get-intrinsic: 1.2.2
       object-inspect: 1.13.1
-    dev: true
 
   /siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}

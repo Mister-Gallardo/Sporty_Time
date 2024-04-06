@@ -33,7 +33,7 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
   const currentUserId = userId ? userId : myPlayerId || 0;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['match-bookings', matchesLimit],
+    queryKey: ['match-bookings', matchesLimit, userId],
     queryFn: () => getSpecificUserMatchBookings(+currentUserId, matchesLimit),
   });
 
