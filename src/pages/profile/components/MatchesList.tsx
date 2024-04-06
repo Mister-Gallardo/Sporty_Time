@@ -16,7 +16,7 @@ export const MatchesList = () => {
   const currentUserId = userId ? userId : myUserId || 0;
 
   const { data, isLoading } = useQuery({
-    queryKey: [`match-bookings`, currentUserId, currentUserId],
+    queryKey: [`match-bookings`, currentUserId],
     queryFn: () => getSpecificUserMatchBookings(+currentUserId, 0),
   });
 
