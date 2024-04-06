@@ -1,3 +1,4 @@
+import { RequestQueryBuilder } from '@dataui/crud-request';
 import { UserProfile, EditUserProfile, User } from './interface';
 import { api } from '../api/service';
 
@@ -14,5 +15,8 @@ export const deleteMe = async () => {
 };
 
 export function getSpecificUser(id: number) {
-  return api.get<User>(`/users/${id}`);
+  const qb = RequestQueryBuilder.create();
+  qb.setJoin([{ field: 'avatar' }, { field: 'player' }]).query();
+
+  return api.get<User>(`/users/${id}?${qb.queryString}`);
 }

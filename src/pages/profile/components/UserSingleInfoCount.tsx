@@ -5,21 +5,20 @@ import { Box, Button, Typography } from '@mui/material';
 
 interface IUserSingleInfoCountProps {
   title: string;
-  count: number;
+  count?: number;
   navPath?: string;
 }
 const isMobile = isPlatform('mobile');
 
 export const UserSingleInfoCount: React.FC<IUserSingleInfoCountProps> = ({
   title,
-  count,
+  count = 0,
   navPath,
 }) => {
   const history = useHistory();
 
   return (
     <Button
-      disabled={!navPath}
       onClick={() => {
         if (navPath) {
           history.push(navPath);

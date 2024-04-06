@@ -1,20 +1,27 @@
-import { Box } from '@mui/material';
-import React from 'react';
+import { Box, Typography } from '@mui/material';
+import { useParams } from 'react-router';
 import { SectionTitle } from './SectionTitle';
 import { useQuery } from '@tanstack/react-query';
-import { getMyMatches } from '../../../services/matches/service';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { MyMatchCard } from '../../../components/molecules/match-cards/MyMatchCard';
+import { getSpecificUserMatchBookings } from '../../../services/matches/service';
+import { useUserInfo } from '../../../services/api/hooks';
 
-interface IMatchesListProps {}
+export const MatchesList = () => {
+  const { userId } = useParams<{ userId: string }>();
 
-export const MatchesList: React.FC<IMatchesListProps> = () => {
+  const [user] = useUserInfo();
+  const myUserId = user?.id;
+
+  const currentUserId = userId ? userId : myUserId || 0;
+
   const { data, isLoading } = useQuery({
-    queryKey: ['my-matches'],
-    queryFn: () => getMyMatches(),
+    queryKey: [`match-bookings`, currentUserId],
+    queryFn: () => getSpecificUserMatchBookings(+currentUserId, 0),
   });
 
-  const myMatchesData = data?.data;
+  const matchesList = data?.data;
+
   return (
     <Box mt={4}>
       <SectionTitle title="Матчи" />
@@ -31,12 +38,14 @@ export const MatchesList: React.FC<IMatchesListProps> = () => {
       >
         {isLoading ? (
           <LoadingCircle />
-        ) : (
-          myMatchesData
-            ?.map((card) => {
-              return <MyMatchCard key={card.id} {...card} />;
+        ) : matchesList && matchesList.length > 0 ? (
+          matchesList
+            .map((card) => {
+              return <MyMatchCard key={card.id} {...card?.match} />;
             })
             ?.reverse()
+        ) : (
+          <Typography color="gray">Пусто...</Typography>
         )}
       </Box>
     </Box>
