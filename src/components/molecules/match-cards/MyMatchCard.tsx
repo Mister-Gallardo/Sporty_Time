@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Box, Divider, Typography } from '@mui/material';
+import { Avatar, Box, Divider, Link, Typography } from '@mui/material';
 import { useHistory } from 'react-router';
 import { isPlatform } from '@ionic/react';
 import { MatchData, Status } from '../../../services/matches/interface';
@@ -8,6 +8,7 @@ import { getMatchStatus } from '../../../helpers/getMatchStatus';
 import { WithoutResultsCardSection } from './WithoutResultsCardSection';
 import { ResultsCardSection } from './ResultsCardSection';
 import { withHostname } from '../../../services/api/service';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 interface IMyMatchCardProps extends MatchData {
   uploadResults?: (id: number) => void;
@@ -65,8 +66,6 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
   return (
     <Box
       minWidth={325}
-      // width="100%"
-      // maxWidth={isMobile ? 'unset' : 325}
       bgcolor="#fff"
       border="1px solid #E5E5E5"
       borderRadius={2}
@@ -97,12 +96,19 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
                         width="50%"
                       >
                         {member ? (
-                          <Avatar
-                            src={withHostname(
-                              member?.player?.user?.avatar?.formats?.small,
-                            )}
-                            sx={{ width: 40, height: 40 }}
-                          />
+                          <Link
+                            component={ReactRouterLink}
+                            to={`/profile/${member?.player?.user?.id}`}
+                            underline="none"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Avatar
+                              src={withHostname(
+                                member?.player?.user?.avatar?.formats?.small,
+                              )}
+                              sx={{ width: 40, height: 40 }}
+                            />
+                          </Link>
                         ) : (
                           <Box
                             width={40}

@@ -19,7 +19,6 @@ export const UserSingleInfoCount: React.FC<IUserSingleInfoCountProps> = ({
 
   return (
     <Button
-      disabled={!navPath}
       onClick={() => {
         if (navPath) {
           history.push(navPath);

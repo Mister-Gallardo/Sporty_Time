@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useParams } from 'react-router';
 import { SectionTitle } from './SectionTitle';
 import { useQuery } from '@tanstack/react-query';
@@ -20,7 +20,7 @@ export const MatchesList = () => {
     queryFn: () => getSpecificUserMatchBookings(+currentUserId, 0),
   });
 
-  const myMatchesData = data?.data;
+  const matchesList = data?.data;
 
   return (
     <Box mt={4}>
@@ -38,12 +38,14 @@ export const MatchesList = () => {
       >
         {isLoading ? (
           <LoadingCircle />
-        ) : (
-          myMatchesData
-            ?.map((card) => {
+        ) : matchesList && matchesList.length > 0 ? (
+          matchesList
+            .map((card) => {
               return <MyMatchCard key={card.id} {...card?.match} />;
             })
             ?.reverse()
+        ) : (
+          <Typography color="gray">Пусто...</Typography>
         )}
       </Box>
     </Box>

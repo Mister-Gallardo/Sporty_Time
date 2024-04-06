@@ -1,11 +1,12 @@
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Link, Typography } from '@mui/material';
 import { MatchPlayer } from '../../../services/user/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { Status } from '../../../services/matches/interface';
 import { isPlatform } from '@ionic/react';
 import { withHostname } from '../../../services/api/service';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 interface IPlayerSlotProps {
   player: MatchPlayer;
@@ -37,41 +38,47 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       {player ? (
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          sx={{ opacity: player?.mark ? 0.5 : 1 }}
+        <Link
+          component={ReactRouterLink}
+          to={`/profile/${player?.user?.id}`}
+          underline="none"
         >
-          <Avatar
-            src={withHostname(player?.user?.avatar?.formats?.small || '')}
-            sx={{
-              width: isMobile ? '40px' : '50px',
-              height: isMobile ? '40px' : '50px',
-              opacity: player?.mark ? '.7' : 'unset',
-            }}
-          />
-          <Typography fontSize={12}>{player?.user?.firstname}</Typography>
-          <Typography fontSize={12} lineHeight={1.1} color="gray">
-            {playerRating}
-          </Typography>
-          {isShown && !isHidden ? (
-            <Box textAlign="center">
-              <Typography
-                textAlign="center"
-                lineHeight={1.2}
-                fontSize={isMobile ? 10 : 12}
-              >
-                {isMatchPaid
-                  ? 'Оплачено'
-                  : player.paid
-                  ? 'Оплачено'
-                  : 'Ожидается оплата'}
-              </Typography>
-              <MonetizationOnOutlinedIcon fontSize="small" />
-            </Box>
-          ) : null}
-        </Box>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            sx={{ opacity: player?.mark ? 0.5 : 1 }}
+          >
+            <Avatar
+              src={withHostname(player?.user?.avatar?.formats?.small || '')}
+              sx={{
+                width: isMobile ? '40px' : '50px',
+                height: isMobile ? '40px' : '50px',
+                opacity: player?.mark ? '.7' : 'unset',
+              }}
+            />
+            <Typography fontSize={12}>{player?.user?.firstname}</Typography>
+            <Typography fontSize={12} lineHeight={1.1} color="gray">
+              {playerRating}
+            </Typography>
+            {isShown && !isHidden ? (
+              <Box textAlign="center">
+                <Typography
+                  textAlign="center"
+                  lineHeight={1.2}
+                  fontSize={isMobile ? 10 : 12}
+                >
+                  {isMatchPaid
+                    ? 'Оплачено'
+                    : player.paid
+                    ? 'Оплачено'
+                    : 'Ожидается оплата'}
+                </Typography>
+                <MonetizationOnOutlinedIcon fontSize="small" />
+              </Box>
+            ) : null}
+          </Box>
+        </Link>
       ) : (
         <Box
           display="flex"

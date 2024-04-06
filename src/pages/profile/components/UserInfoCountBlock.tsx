@@ -10,22 +10,24 @@ interface IUserInfoCountBlockProps {}
 
 export const UserInfoCountBlock: React.FC<IUserInfoCountBlockProps> = () => {
   const { userId } = useParams<{ userId: string }>();
+
   const { data } = useQuery({
     queryKey: [`match-bookings`, userId],
     queryFn: () => getSpecificUserMatchBookings(+userId, 0),
     enabled: !!userId,
   });
 
-  const [profile] = useFullUserData();
+  const [userData] = useFullUserData();
 
-  const matchesAmount = userId ? data?.data?.length : profile?.countMatches;
+  const matchesAmount = userId ? data?.data?.length : userData?.countMatches;
+  const isMyUser = userId ? +userId === userData?.user?.id : true;
 
   return (
     <Box width="100%" display="flex" alignItems="center">
       <UserSingleInfoCount
         title="Матчи"
         count={matchesAmount}
-        navPath="/matches?tab=2"
+        navPath={isMyUser ? '/matches?tab=2' : ''}
       />
       <Divider flexItem orientation="vertical" variant="middle" />
       <UserSingleInfoCount title="Подписчики" count={0} />

@@ -47,44 +47,47 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
       {isLoading ? (
         <LoadingCircle />
       ) : (
-        <ResponsiveContainer>
-          <AreaChart
-            data={reverseBookings}
-            margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
-          >
-            <defs>
-              <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="30%" stopColor="#768EF7" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#768EF7" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip
-              wrapperStyle={{ display: 'none' }}
-              cursor={{
-                stroke: '#768EF7',
-                strokeWidth: 2,
-                strokeDasharray: '8',
-              }}
-            />
-            <YAxis domain={['dataMin', 'dataMax']} axisLine={false} />
-            <Area
-              type="linear"
-              dataKey="ratingAfterMatch"
-              stroke="#768EF7"
-              dot={true}
-              fillOpacity={1}
-              fill="url(#colorUv)"
-              activeDot={{
-                onClick: (_, data: any) => setCurrentMatch(data?.payload),
-              }}
+        bookingsList &&
+        bookingsList.length > 0 && (
+          <ResponsiveContainer>
+            <AreaChart
+              data={reverseBookings}
+              margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
             >
-              {matchesLimit ? (
-                <LabelList dataKey="ratingAfterMatch" position="insideTop" />
-              ) : null}
-            </Area>
-          </AreaChart>
-        </ResponsiveContainer>
+              <defs>
+                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="30%" stopColor="#768EF7" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#768EF7" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" />
+              <Tooltip
+                wrapperStyle={{ display: 'none' }}
+                cursor={{
+                  stroke: '#768EF7',
+                  strokeWidth: 2,
+                  strokeDasharray: '8',
+                }}
+              />
+              <YAxis domain={['dataMin', 'dataMax']} axisLine={false} />
+              <Area
+                type="linear"
+                dataKey="ratingAfterMatch"
+                stroke="#768EF7"
+                dot={true}
+                fillOpacity={1}
+                fill="url(#colorUv)"
+                activeDot={{
+                  onClick: (_, data: any) => setCurrentMatch(data?.payload),
+                }}
+              >
+                {matchesLimit ? (
+                  <LabelList dataKey="ratingAfterMatch" position="insideTop" />
+                ) : null}
+              </Area>
+            </AreaChart>
+          </ResponsiveContainer>
+        )
       )}
     </Box>
   );

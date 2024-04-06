@@ -10,10 +10,13 @@ import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getSpecificUser } from '../../../services/user/service';
 import { withHostname } from '../../../services/api/service';
+import { useUserInfo } from '../../../services/api/hooks';
 
 const isMobile = isPlatform('mobile');
 
 export function SpecificProfilePage() {
+  const [user] = useUserInfo();
+
   const { userId } = useParams<{ userId: string }>();
   const [tabIndex] = useState<string>('1');
 
@@ -22,7 +25,7 @@ export function SpecificProfilePage() {
     queryFn: () => getSpecificUser(+userId),
   });
 
-  const user = data?.data;
+  const userData = data?.data;
 
   if (isLoading) return <IonLoading isOpen />;
   if (isError) return <NotFoundPage />;
@@ -30,8 +33,9 @@ export function SpecificProfilePage() {
   return (
     <Box py={isMobile ? 2 : 5} maxWidth={1240} mx="auto" px={isMobile ? 2 : 10}>
       <UserData
-        name={user?.fullname}
-        avatar={withHostname(user?.avatar?.formats?.small || '')}
+        name={userData?.fullname}
+        avatar={withHostname(userData?.avatar?.formats?.small || '')}
+        isMyUser={+userId === user?.id}
       />
 
       <TabContext value={tabIndex}>
