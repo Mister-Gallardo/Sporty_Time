@@ -6,6 +6,7 @@ import { Box, Button, Typography } from '@mui/material';
 import { SwipeablePage } from '../../../components/SwipeablePage';
 import { IonBackButton, IonLoading, isPlatform } from '@ionic/react';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import match_bg from '../../../images/matches/bgpadel_matchdetail.png';
@@ -26,11 +27,11 @@ import { EditPayment } from './components/EditPayment';
 import { OnJoinCheckoutModal } from '../../../components/modals/OnJoinCheckoutModal';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { ResultsTable } from './components/ResultsTable';
+import { RequestsForPlaces } from './components/RequestsForPlaces';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
 import { isAfter } from 'date-fns';
-import { Link } from 'react-router-dom';
 
 const isMobile = isPlatform('mobile');
 export function SingleMatchPage() {
@@ -156,10 +157,7 @@ export function SingleMatchPage() {
   if (!booking) return <LoadingCircle />;
 
   const startsAt = new Date(singleMatchData.booking.startsAt);
-  console.log('');
-  console.log('startsAt: ', startsAt);
-  console.log('now', new Date());
-  console.log('');
+
   const onBookPlace = () => {
     //check specific sport rating insted!!!
     const isRating =
@@ -201,6 +199,8 @@ export function SingleMatchPage() {
                 <MatchType />
                 <PrivacyType />
               </Box>
+
+              <RequestsForPlaces />
 
               <PlayersMatchCard
                 players={players}

@@ -39,6 +39,7 @@ export interface MatchData {
   isCancelled: boolean;
   sport: string;
   matchResults: matchResults;
+  joinrequests: any[];
   confirmMatchResults: boolean;
   winningTeam: string | null;
   matchBookings: MatchMember[];
