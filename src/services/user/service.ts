@@ -15,6 +15,8 @@ export const deleteMe = async () => {
 
 export function getUsersList(searchTerm: string) {
   const qb = RequestQueryBuilder.create();
+
+  // .setFilter({ field: 'id', operator: '$notin', value: [65, 58] })
   qb.search({
     $or: [
       {
@@ -33,7 +35,9 @@ export function getUsersList(searchTerm: string) {
         },
       },
     ],
-  }).query();
+  })
+    .setJoin([{ field: 'avatar' }, { field: 'player' }])
+    .query();
 
   return api.get<User[]>(`/users?${qb.queryString}`);
 }

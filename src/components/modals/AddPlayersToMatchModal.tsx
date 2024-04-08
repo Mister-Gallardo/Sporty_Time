@@ -12,10 +12,14 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-import { isPlatform } from '@ionic/react';
+import { isPlatform, useIonToast } from '@ionic/react';
 import { debounce } from 'lodash-es';
 import { getUsersList } from '../../services/user/service';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { withHostname } from '../../services/api/service';
+import { addPlayerToMatch } from '../../services/matches/service';
+import { useParams } from 'react-router';
+import { useFormContext } from 'react-hook-form';
 
 interface IAddPlayersToMatchModalProps {
   openState: boolean;
@@ -30,6 +34,9 @@ export const AddPlayersToMatchModal: React.FC<IAddPlayersToMatchModalProps> = ({
   handleModal,
   handleEditPlayersModal,
 }) => {
+  const { matchId } = useParams<{ matchId: string }>();
+  const { watch } = useFormContext();
+
   const [currentSearchTerm, setCurrentSearchTerm] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -44,6 +51,38 @@ export const AddPlayersToMatchModal: React.FC<IAddPlayersToMatchModalProps> = ({
     enabled: searchTerm !== '',
   });
   const usersList = data?.data;
+
+  const [showToast] = useIonToast();
+  const qc = useQueryClient();
+
+  const addPlayerToMatchMutation = useMutation({
+    mutationFn: addPlayerToMatch,
+    onSuccess() {
+      showToast({
+        color: 'success',
+        message: 'Игрок успешно добавлен в матч',
+        mode: 'ios',
+        position: 'bottom',
+        duration: 2000,
+      });
+
+      qc.refetchQueries({ queryKey: ['my-matches', false] });
+      qc.refetchQueries({ queryKey: [`match`, +matchId] });
+    },
+    onError(e: any) {
+      showToast({
+        color: 'danger',
+        message: e?.response?.data?.message,
+        mode: 'ios',
+        position: 'bottom',
+        duration: 2000,
+      });
+    },
+    onSettled() {
+      handleEditPlayersModal(false);
+      handleModal(false);
+    },
+  });
 
   return (
     <ModalContainer
@@ -94,34 +133,47 @@ export const AddPlayersToMatchModal: React.FC<IAddPlayersToMatchModalProps> = ({
         Результаты поиска
       </Typography>
       <Stack spacing={1} height={350} overflow="auto" mb={2}>
-        {usersList &&
-          (usersList.length > 0 ? (
-            usersList?.map((user) => {
-              return (
-                <Box
-                  key={user.id}
-                  width="100%"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Avatar />
-                    <Typography maxWidth={isMobile ? '60vw' : 400} noWrap>
-                      {user.fullname}
-                    </Typography>
-                  </Box>
-                  <IconButton onClick={() => {}}>
-                    <AddIcon sx={{ color: 'blue' }} />
-                  </IconButton>
+        {usersList && usersList.length > 0 ? (
+          usersList?.map((user) => {
+            return (
+              <Box
+                key={user.id}
+                width="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Avatar
+                    src={withHostname(user?.avatar?.formats?.small || '')}
+                  />
+                  <Typography maxWidth={isMobile ? '60vw' : 400} noWrap>
+                    {user.fullname}
+                  </Typography>
                 </Box>
-              );
-            })
-          ) : (
-            <Typography pt={3} textAlign="center" color="gray">
-              Пользователь не найден
-            </Typography>
-          ))}
+                <IconButton
+                  onClick={() =>
+                    addPlayerToMatchMutation.mutate({
+                      matchId: +matchId,
+                      playerId: user?.player?.id,
+                      team: watch('team'),
+                    })
+                  }
+                >
+                  {addPlayerToMatchMutation.isPending ? (
+                    <CircularProgress size={20} sx={{ color: 'blue' }} />
+                  ) : (
+                    <AddIcon sx={{ color: 'blue' }} />
+                  )}
+                </IconButton>
+              </Box>
+            );
+          })
+        ) : (
+          <Typography pt={3} textAlign="center" color="gray">
+            Пусто...
+          </Typography>
+        )}
       </Stack>
     </ModalContainer>
   );

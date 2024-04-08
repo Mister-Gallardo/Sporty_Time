@@ -5,6 +5,7 @@ import {
   MatchData,
   RemovePlayerFromMatch,
   GetAvailableMatchesAndClubsDTO,
+  IAddPlayerToMatchData,
 } from './interface';
 import { api } from '../api/service';
 
@@ -73,5 +74,15 @@ export async function createExtraPaymentYookassaToken(data: {
   matchId: number;
 }) {
   const res = await api.post('/matches/extra-payment', data);
+  return res.data;
+}
+
+export async function addPlayerToMatch(data: IAddPlayerToMatchData) {
+  const { matchId, playerId, team } = data;
+
+  const res = await api.post(`matches/${matchId}/match-bookings`, {
+    playerId,
+    team,
+  });
   return res.data;
 }

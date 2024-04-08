@@ -30,13 +30,16 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
     queryKey: [`match`, +matchId],
     queryFn: () => getOneAvailableMatch(+matchId),
   });
-  const sport = data?.data?.sport || '';
+  const matchData = data?.data;
 
   const [currentPlayer] = usePlayerProfile();
+
   const isUser = currentPlayer?.id === player?.id;
+  const isOwner = matchData?.owner?.id === currentPlayer?.id;
 
   if (isLoading) return <LoadingCircle />;
 
+  const sport = matchData?.sport || '';
   const playerRating = player ? getSportRating(player, sport) : 0;
 
   return (
@@ -86,6 +89,7 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
         </>
       ) : (
         <Button
+          disabled={!isOwner}
           onClick={onAdd}
           sx={{ display: 'flex', flexDirection: 'column', p: 0 }}
         >
@@ -99,9 +103,11 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
           >
             <Add fontSize="small" color="primary" />
           </Box>
-          <Typography mt={1} fontSize={12} fontWeight={600} color="gray">
-            Пригласить
-          </Typography>
+          {isOwner && (
+            <Typography mt={1} fontSize={12} fontWeight={600} color="gray">
+              Пригласить
+            </Typography>
+          )}
         </Button>
       )}
     </Box>

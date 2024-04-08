@@ -124,3 +124,9 @@ export enum Status {
   INCOMPLETE,
   WAITING_FOR_RESULTS,
 }
+
+export interface IAddPlayerToMatchData {
+  playerId: number;
+  team: string;
+  matchId: number;
+}
