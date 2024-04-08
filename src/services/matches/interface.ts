@@ -9,8 +9,8 @@ export interface Booking {
   court: Court | null;
   duration: number;
   interval: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MatchMember {
@@ -18,14 +18,45 @@ export interface MatchMember {
   paid: number;
   confirmMatchResults: boolean;
   team: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   player: Player;
 }
 
 export interface MatchMemberShort {
   team: string;
   paid: number;
+  player: Player;
+}
+
+export interface IJoinApprovals {
+  id: number;
+  approved: boolean;
+  createdAt: string;
+  updatedAt: string;
+  approver: {
+    id: 10207;
+    paid: 1;
+    matchResults: matchResults | null;
+    confirmMatchResults: boolean;
+    team: string;
+    ratingAfterMatch: number;
+    ratingProfit: number;
+    createdAt: string;
+    updatedAt: string;
+    player: Player;
+  };
+}
+
+export type IApproved = boolean | null;
+
+export interface IJoinRequest {
+  id: number;
+  approved: IApproved;
+  team: string;
+  createdAt: string;
+  updatedAt: string;
+  joinapprovals: IJoinApprovals[];
   player: Player;
 }
 
@@ -39,7 +70,7 @@ export interface MatchData {
   isCancelled: boolean;
   sport: string;
   matchResults: matchResults;
-  joinrequests: any[];
+  joinrequests: IJoinRequest[];
   confirmMatchResults: boolean;
   winningTeam: string | null;
   matchBookings: MatchMember[];
@@ -90,6 +121,13 @@ export interface GetAvailableMatchesAndClubsDTO {
   clubs?: string;
   lat?: number;
   long?: number;
+}
+
+export interface IMatchBookingData extends MatchMember {
+  matchResults: null;
+  ratingAfterMatch: number;
+  ratingProfit: number;
+  match: MatchData;
 }
 
 //match enums

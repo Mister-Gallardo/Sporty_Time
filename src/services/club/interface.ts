@@ -71,8 +71,8 @@ export interface Court {
   options: IAvailableTime[];
   tags: Tag[];
   type: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   schedule: Schedule[];
 }
 export interface Schedule {
@@ -93,8 +93,8 @@ export interface Tag {
   id: number;
   title: string;
   courts: Court[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SingleLocationData {

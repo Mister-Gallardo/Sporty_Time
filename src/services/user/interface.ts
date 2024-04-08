@@ -20,8 +20,8 @@ export interface Player {
   ratingPadel: number;
   ratingPickleball: number;
   ratingTennis: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   user?: User;
 }
 
@@ -55,8 +55,8 @@ export interface User {
   gender: string;
   roles: Role[];
   avatar: IMedia;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   player: Player;
   club: Club;
 }

@@ -5,6 +5,7 @@ import {
   MatchData,
   RemovePlayerFromMatch,
   GetAvailableMatchesAndClubsDTO,
+  IMatchBookingData,
 } from './interface';
 import { api } from '../api/service';
 import { RequestQueryBuilder } from '@dataui/crud-request';
@@ -99,11 +100,29 @@ const bookingsQuery = (limit: number) => {
 export function getMatchBookings(limit: number) {
   const query = bookingsQuery(limit);
 
-  return api.get<any[]>(`/match-bookings?${query}`);
+  return api.get<IMatchBookingData[]>(`/match-bookings?${query}`);
 }
 
 export function getSpecificUserMatchBookings(id: number, limit: number) {
   const query = bookingsQuery(limit);
 
-  return api.get<any[]>(`/users/${id}/match-bookings?${query}`);
+  return api.get<IMatchBookingData[]>(`/users/${id}/match-bookings?${query}`);
+}
+
+export function approvePlayersPlace(data: {
+  matchId: number;
+  playerId: number;
+}) {
+  return api.post(
+    `/matches/${data.matchId}/joinrequests/${data.playerId}/approve `,
+  );
+}
+
+export function rejectPlayersPlace(data: {
+  matchId: number;
+  playerId: number;
+}) {
+  return api.post(
+    `/matches/${data.matchId}/joinrequests/${data.playerId}/reject `,
+  );
 }
