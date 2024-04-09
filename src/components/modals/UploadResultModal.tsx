@@ -82,10 +82,11 @@ export function UploadResultModal({
       () => getMyMatches();
     },
     onError(e: any) {
-      setError(e.response.data.message);
+      setError(e?.response?.data?.message);
       showToast({
         message:
-          error || 'Пока матч не начался, загрузка результатов отключена',
+          e?.response?.data?.message ||
+          'Пока матч не начался, загрузка результатов отключена',
         mode: 'ios',
         position: 'bottom',
         duration: 2000,

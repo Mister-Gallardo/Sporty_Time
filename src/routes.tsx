@@ -16,6 +16,7 @@ import { MobileEditProfilePage } from './pages/profile/nested-pages/edit/index.m
 import { MobileProfileNavPage } from './pages/profile/nested-pages/navigation/index.mobile';
 import { MobileAboutPage } from './pages/about/index.mobile';
 import { MobilePrivacyPolicyPage } from './pages/privacy-policy/index.mobile';
+import { MobileSpecificProfilePage } from './pages/profile/[id]/index.mobile';
 
 export interface RouteExtraProps {
   showTabBar: boolean;
@@ -85,6 +86,12 @@ export const mobileRoutes = [
     path: '/profile',
     exact: true,
     component: MobileProfilePage,
+    showTabBar: true,
+  },
+  {
+    path: '/profile/:userId',
+    exact: true,
+    component: MobileSpecificProfilePage,
     showTabBar: true,
   },
   {

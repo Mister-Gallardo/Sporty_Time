@@ -15,16 +15,16 @@ export const currentTimeInCLubTimezone = (timeZone: string) => {
 };
 
 export const getMatchStatus = (match: MatchData) => {
+  // is Cancelled
+  if (match.isCancelled) return Status.CANCELED;
+
   const clubTZ = match?.booking?.court?.club?.timezone;
   const currentTime = clubTZ ? currentTimeInCLubTimezone(clubTZ) : Date.now();
 
-  const expiresTime = getTime(new Date(match.timeExpires));
-  const matchTime = getTime(new Date(match.booking.startsAt.slice(0, -5)));
+  const expiresTime = getTime(new Date(match?.timeExpires));
+  const matchTime = getTime(new Date(match?.booking?.startsAt?.slice(0, -5)));
 
-  const matchEndTime = matchTime + match.booking.duration * 60000;
-
-  // is Cancelled
-  if (match.isCancelled) return Status.CANCELED;
+  const matchEndTime = matchTime + match?.booking?.duration * 60000;
 
   // isUpcomming
   const isUpcomming = currentTime < matchTime;

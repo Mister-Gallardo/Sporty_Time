@@ -35,20 +35,16 @@ export const ProfileNavPage = () => {
   return (
     <Box
       px={2}
+      my={isMobile ? 0 : 4}
       mb={5}
       width="100%"
       maxWidth={isMobile ? 'unset' : 500}
       mx={isMobile ? 'unset' : 'auto'}
     >
       <Box display="flex" justifyContent="space-between" gap={2}>
-        <Box>
-          <Typography fontSize={22} fontWeight={600}>
-            {user?.firstname} {user?.lastname}
-          </Typography>
-          <Typography my={1} fontWeight={500}>
-            Стандартный аккаунт
-          </Typography>
-        </Box>
+        <Typography fontSize={22} fontWeight={600}>
+          {user?.firstname} {user?.lastname}
+        </Typography>
         <Avatar
           src={withHostname(user?.avatar?.formats?.small || '')}
           sx={{ width: 50, height: 50 }}
@@ -62,7 +58,7 @@ export const ProfileNavPage = () => {
         <Box bgcolor="#f7f7f7" borderRadius={3} p={1}>
           <NavButton
             primaryText="Изменить профиль"
-            secondaryText="Имя, Фамилия, почта, пол"
+            secondaryText="Имя, Фамилия, номер телефона, почта, пол"
             startIcon={<PersonOutlinedIcon sx={{ color: '#000' }} />}
             onClick={() => history.push('/profile/edit')}
           />

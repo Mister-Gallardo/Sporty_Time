@@ -42,14 +42,15 @@ export const SelectClubLocationModal: React.FC<
     enabled: searchTerm !== '',
   });
 
-  const locationOptions = data
-    ? data
-        .sort((a, b) => a.properties.name.localeCompare(b.properties.name))
-        .map((b) => ({
-          title: `${b.properties.name} (${b.properties.country})`,
-          coordinates: b.geometry.coordinates,
-        }))
-    : [];
+  const locationOptions =
+    data && Array.isArray(data)
+      ? data
+          .sort((a, b) => a.properties.name.localeCompare(b.properties.name))
+          .map((b) => ({
+            title: `${b.properties.name} (${b.properties.country})`,
+            coordinates: b.geometry.coordinates,
+          }))
+      : [];
 
   const delayedQuery = useCallback(
     debounce((query) => setSearchTerm(transliterate(query)), 300),

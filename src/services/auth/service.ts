@@ -12,24 +12,12 @@ export async function registerRequest(data: IAuthForm) {
 }
 
 export async function registerUser(data: IAuthForm) {
-  const { firstName, lastName, email, otp, password } = data;
-
-  const res = api.post('/auth/register', {
-    firstname: firstName,
-    lastname: lastName,
-    email: email,
-    otp: otp,
-    password: password,
-  });
-
+  const res = api.post('/auth/register', data);
   return res;
 }
 
 export async function loginUser(data: IAuthForm) {
-  const { email, password } = data;
-
-  const res = api.post('/auth/login', { email, password });
-
+  const res = api.post('/auth/login', data);
   return res;
 }
 

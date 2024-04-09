@@ -5,6 +5,7 @@ import { RequestQueryBuilder } from '@dataui/crud-request';
 export function getUserInfo() {
   return api.get<UserProfile>('/users/me');
 }
+
 export function editUserProfile(data: FormData | EditUserProfile) {
   return api.post('/users/me', data);
 }
@@ -12,6 +13,12 @@ export function editUserProfile(data: FormData | EditUserProfile) {
 export const deleteMe = async () => {
   return await api.delete('/users/me');
 };
+export function getSpecificUser(id: number) {
+  const qb = RequestQueryBuilder.create();
+  qb.setJoin([{ field: 'avatar' }, { field: 'player' }]).query();
+
+  return api.get<User>(`/users/${id}?${qb.queryString}`);
+}
 
 export function getUsersList(searchTerm: string) {
   const qb = RequestQueryBuilder.create();

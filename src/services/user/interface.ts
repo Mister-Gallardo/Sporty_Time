@@ -51,6 +51,7 @@ export interface User {
   lastname: string;
   fullname: string;
   email: string;
+  phone: null | string;
   gender: string;
   roles: Role[];
   avatar: IMedia;

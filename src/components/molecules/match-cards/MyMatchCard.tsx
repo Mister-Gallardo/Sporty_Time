@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Box, Divider, Typography } from '@mui/material';
+import { Avatar, Box, Divider, Link, Typography } from '@mui/material';
 import { useHistory } from 'react-router';
 import { isPlatform } from '@ionic/react';
 import { MatchData, Status } from '../../../services/matches/interface';
@@ -8,10 +8,11 @@ import { getMatchStatus } from '../../../helpers/getMatchStatus';
 import { WithoutResultsCardSection } from './WithoutResultsCardSection';
 import { ResultsCardSection } from './ResultsCardSection';
 import { withHostname } from '../../../services/api/service';
+import { Link as ReactRouterLink } from 'react-router-dom';
 import { getSportRating } from '../../../helpers/getSportRating';
 
 interface IMyMatchCardProps extends MatchData {
-  uploadResults: (id: number) => void;
+  uploadResults?: (id: number) => void;
 }
 
 const isMobile = isPlatform('mobile');
@@ -29,13 +30,15 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
 
   const history = useHistory();
 
-  const interval = booking.interval;
+  const interval = booking?.interval;
 
   // match start date + start-end time
-  const matchDate = `${interval.slice(2, 12)} | ${interval.slice(
-    13,
-    18,
-  )}-${interval.slice(-10, -5)}`;
+  const matchDate =
+    interval &&
+    `${interval.slice(2, 12)} | ${interval.slice(13, 18)}-${interval.slice(
+      -10,
+      -5,
+    )}`;
 
   const members = sortTeamMembers(matchBookings);
   const status = getMatchStatus(props);
@@ -64,8 +67,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
 
   return (
     <Box
-      width="100%"
-      maxWidth={isMobile ? 'unset' : 325}
+      minWidth={325}
       bgcolor="#fff"
       border="1px solid #E5E5E5"
       borderRadius={2}
@@ -96,12 +98,19 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
                         width="50%"
                       >
                         {member ? (
-                          <Avatar
-                            src={withHostname(
-                              member?.player?.user?.avatar?.formats?.small,
-                            )}
-                            sx={{ width: 40, height: 40 }}
-                          />
+                          <Link
+                            component={ReactRouterLink}
+                            to={`/profile/${member?.player?.user?.id}`}
+                            underline="none"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Avatar
+                              src={withHostname(
+                                member?.player?.user?.avatar?.formats?.small,
+                              )}
+                              sx={{ width: 40, height: 40 }}
+                            />
+                          </Link>
                         ) : (
                           <Box
                             width={40}
@@ -146,7 +155,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
             courtName={booking?.court?.title}
             status={status}
             uploadResults={
-              status === Status.WAITING_FOR_RESULTS
+              uploadResults && status === Status.WAITING_FOR_RESULTS
                 ? () => uploadResults(id)
                 : null
             }

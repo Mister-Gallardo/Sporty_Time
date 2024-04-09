@@ -13,7 +13,7 @@ interface IWithoutResults {
   clubName?: string;
   courtName?: string;
   status: Status;
-  uploadResults: (() => void) | null;
+  uploadResults?: (() => void) | null;
 }
 
 const isDesktop = isPlatform('desktop');
