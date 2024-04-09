@@ -32,6 +32,7 @@ import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
 import { isAfter } from 'date-fns';
+import { getSportRating } from '../../../helpers/getSportRating';
 
 const isMobile = isPlatform('mobile');
 export function SingleMatchPage() {
@@ -57,6 +58,18 @@ export function SingleMatchPage() {
   });
 
   const singleMatchData = data?.data;
+
+  const currentSportRating = getSportRating(myPlayer, singleMatchData?.sport);
+
+  // check if the player's current level is within the match range
+  const isRatingSufficient =
+    currentSportRating >= (singleMatchData?.ratingFrom || 0) &&
+    currentSportRating <= (singleMatchData?.ratingTo || 0);
+
+  // check if the player made request for place
+  const isRequestedPlace = singleMatchData?.joinrequests.find(
+    (request) => request?.player?.id === myPlayer?.id,
+  );
 
   const [players, setPlayers] = useState<MatchPlayer[]>([]);
   const playerAlreadyInSomeTeam = !!singleMatchData?.matchBookings.find(
@@ -159,13 +172,9 @@ export function SingleMatchPage() {
   const startsAt = new Date(singleMatchData.booking.startsAt);
 
   const onBookPlace = () => {
-    //check specific sport rating insted!!!
-    const isRating =
-      myPlayer?.ratingPadel ||
-      myPlayer?.ratingTennis ||
-      myPlayer?.ratingPickleball;
+    if (!myPlayer) return;
 
-    if (isRating) {
+    if (currentSportRating) {
       setOpenCheckoutModal();
     } else {
       setOpenTestDialog();
@@ -234,14 +243,17 @@ export function SingleMatchPage() {
                   </Link>
                 </Box>
               )}
-              {/* if user isn't the owner, there is empty slot, users isn't in match and match isn't started - show the btn */}
+              {/* if user isn't the match-owner, there is an empty slot, 
+                  user isn't in match or the match wasn't started, 
+                  user with insufficient rating didn't requested for a place yet - show the btn */}
               {!isUserOwner &&
                 singleMatchData.matchBookings.length !== 4 &&
                 !playerAlreadyInSomeTeam &&
                 isAfter(
                   new Date(singleMatchData?.booking?.startsAt),
                   new Date(),
-                ) && (
+                ) &&
+                !isRequestedPlace && (
                   <Box
                     sx={{
                       position: 'fixed',
@@ -272,7 +284,7 @@ export function SingleMatchPage() {
                         },
                       }}
                     >
-                      Забронировать место
+                      {isRatingSufficient ? 'Забронировать' : 'Запросить'} место
                       {singleMatchData.paid
                         ? ''
                         : '- ₽' + singleMatchData.price / 4}

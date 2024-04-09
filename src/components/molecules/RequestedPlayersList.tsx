@@ -64,20 +64,22 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
         position: 'bottom',
         duration: 2000,
       });
-      refetch();
-      qc.refetchQueries({ queryKey: ['my-matches'] });
     },
     onError(e: any) {
+      const message = e?.response?.data?.message;
+      if (!message) return;
       showToast({
         color: 'danger',
-        message: e?.response?.data?.message,
+        message,
         mode: 'ios',
         position: 'bottom',
         duration: 2000,
       });
     },
     onSettled() {
+      refetch();
       handleModal();
+      qc.refetchQueries({ queryKey: ['my-matches'] });
     },
   });
   const rejectPlayerMutation = useMutation({
@@ -90,20 +92,22 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
         position: 'bottom',
         duration: 2000,
       });
-      refetch();
-      qc.refetchQueries({ queryKey: ['my-matches'] });
     },
     onError(e: any) {
+      const message = e?.response?.data?.message;
+      if (!message) return;
       showToast({
         color: 'danger',
-        message: e?.response?.data?.message,
+        message,
         mode: 'ios',
         position: 'bottom',
         duration: 2000,
       });
     },
     onSettled() {
+      refetch();
       handleModal();
+      qc.refetchQueries({ queryKey: ['my-matches'] });
     },
   });
 

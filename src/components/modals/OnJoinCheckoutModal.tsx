@@ -20,6 +20,7 @@ import { renderCheckoutWidget } from '../../helpers/renderCheckoutWidget';
 import { useIonToast } from '@ionic/react';
 import { socket } from '../../utils/socket';
 import { usePlayerProfile } from '../../services/api/hooks';
+import { getSportRating } from '../../helpers/getSportRating';
 
 interface IOnJoinCheckoutModalProps {
   openState: boolean;
@@ -42,6 +43,13 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
 
   const matchData = data?.data;
 
+  const currentSportRating = getSportRating(myPlayer, matchData?.sport);
+
+  // check if the player's current level is within the match range
+  const isRatingSufficient =
+    currentSportRating >= (matchData?.ratingFrom || 0) &&
+    currentSportRating <= (matchData?.ratingTo || 0);
+
   const qc = useQueryClient();
   const [showToast] = useIonToast();
 
@@ -49,14 +57,29 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   const createYookassaMutation = useMutation({
     mutationFn: createJoinMatchYookassaToken,
     onSuccess(token: string) {
-      renderCheckoutWidget(token);
+      if (isRatingSufficient) {
+        renderCheckoutWidget(token);
+      } else {
+        showToast({
+          color: 'success',
+          message:
+            'Вы сделали запрос на присоединение к матчу, ожидайте решения игроков',
+          mode: 'ios',
+          position: 'bottom',
+          duration: 2000,
+        });
+      }
     },
     onError(e: any) {
       handleModal(false);
       setIsDisabled(false);
+
+      const message = e?.response?.data?.message;
+      if (!message) return;
+
       showToast({
         color: 'danger',
-        message: e?.response?.data?.message,
+        message,
         mode: 'ios',
         position: 'bottom',
         duration: 2000,
@@ -195,16 +218,18 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
           }}
           fullWidth
         >
-          Забронировать место
+          {isRatingSufficient ? 'Забронировать' : 'Запросить'} место
         </Button>
       </Box>
-      <Box
-        mt={2}
-        id="payment-form"
-        minHeight={isDisabled ? 550 : 'unset'}
-        position="relative"
-        zIndex={2}
-      />
+      {isRatingSufficient && (
+        <Box
+          mt={2}
+          id="payment-form"
+          minHeight={isDisabled ? 550 : 'unset'}
+          position="relative"
+          zIndex={2}
+        />
+      )}
     </ModalContainer>
   );
 };
