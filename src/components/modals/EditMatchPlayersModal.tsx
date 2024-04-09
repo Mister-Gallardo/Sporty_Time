@@ -76,6 +76,7 @@ export const EditMatchPlayersModal: React.FC<IEditMatchPlayersModal> = ({
       <ConfirmationEditMatchDialog
         openState={openEditMatchDialog}
         handleDialog={setOpenEditMatchDialog}
+        handleModal={handleModal}
         playerIdToRemove={playerIdToRemove}
       />
     </>

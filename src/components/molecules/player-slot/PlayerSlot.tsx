@@ -61,6 +61,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
                 textAlign="center"
                 lineHeight={1.2}
                 fontSize={isMobile ? 10 : 12}
+                maxWidth={116}
               >
                 {isMatchPaid
                   ? 'Оплачено'

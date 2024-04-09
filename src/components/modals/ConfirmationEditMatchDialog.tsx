@@ -19,12 +19,14 @@ import { useIonToast } from '@ionic/react';
 interface IEditMatchDialog {
   openState: boolean;
   handleDialog: (val?: boolean) => void;
+  handleModal: (val?: boolean) => void;
   playerIdToRemove?: number;
 }
 
 // edit match => leave match | remove player(s) or cancel the match
 export const ConfirmationEditMatchDialog: React.FC<IEditMatchDialog> = ({
   handleDialog,
+  handleModal,
   openState,
   playerIdToRemove,
 }) => {
@@ -47,7 +49,6 @@ export const ConfirmationEditMatchDialog: React.FC<IEditMatchDialog> = ({
   const cancelMatchMutation = useMutation({
     mutationFn: cancelMatch,
     onSuccess() {
-      handleDialog();
       showToast({
         color: 'success',
         message: `Ваше бронирование отменено`,
@@ -59,7 +60,6 @@ export const ConfirmationEditMatchDialog: React.FC<IEditMatchDialog> = ({
       qc.resetQueries({ queryKey: ['my-matches', false] });
     },
     onError() {
-      handleDialog();
       showToast({
         color: 'danger',
         message: `Ошибка, попробуйте ещё раз`,
@@ -68,13 +68,16 @@ export const ConfirmationEditMatchDialog: React.FC<IEditMatchDialog> = ({
         duration: 2000,
       });
     },
+    onSettled() {
+      handleDialog();
+      handleModal();
+    },
   });
 
   // Remove Player from match
   const deletePlayerFromMatchMutation = useMutation({
     mutationFn: deletePlayerFromMatch,
     onSuccess() {
-      handleDialog();
       showToast({
         color: 'success',
         message: `Игрок был удалён из матча`,
@@ -86,7 +89,6 @@ export const ConfirmationEditMatchDialog: React.FC<IEditMatchDialog> = ({
       qc.resetQueries({ queryKey: ['my-matches', false] });
     },
     onError() {
-      handleDialog();
       showToast({
         color: 'danger',
         message: `Ошибка, попробуйте ещё раз`,
@@ -94,6 +96,10 @@ export const ConfirmationEditMatchDialog: React.FC<IEditMatchDialog> = ({
         position: 'bottom',
         duration: 2000,
       });
+    },
+    onSettled() {
+      handleDialog();
+      handleModal();
     },
   });
 

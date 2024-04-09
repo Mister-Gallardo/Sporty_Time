@@ -16,7 +16,6 @@ export const deleteMe = async () => {
 export function getUsersList(searchTerm: string) {
   const qb = RequestQueryBuilder.create();
 
-  // .setFilter({ field: 'id', operator: '$notin', value: [65, 58] })
   qb.search({
     $or: [
       {

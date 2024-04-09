@@ -17,7 +17,10 @@ import { debounce } from 'lodash-es';
 import { getUsersList } from '../../services/user/service';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { withHostname } from '../../services/api/service';
-import { addPlayerToMatch } from '../../services/matches/service';
+import {
+  addPlayerToMatch,
+  getOneAvailableMatch,
+} from '../../services/matches/service';
 import { useParams } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 
@@ -35,7 +38,17 @@ export const AddPlayersToMatchModal: React.FC<IAddPlayersToMatchModalProps> = ({
   handleEditPlayersModal,
 }) => {
   const { matchId } = useParams<{ matchId: string }>();
-  const { watch } = useFormContext();
+  const { watch, setValue } = useFormContext();
+
+  const { data: MatchData } = useQuery({
+    queryKey: [`match`, +matchId],
+    queryFn: () => getOneAvailableMatch(+matchId),
+  });
+
+  const matchData = MatchData?.data;
+  const matchBookingPlayersId = matchData?.matchBookings?.map(
+    (user) => user?.player?.id,
+  );
 
   const [currentSearchTerm, setCurrentSearchTerm] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -48,9 +61,13 @@ export const AddPlayersToMatchModal: React.FC<IAddPlayersToMatchModalProps> = ({
   const { data, isLoading } = useQuery({
     queryKey: [searchTerm],
     queryFn: () => getUsersList(searchTerm),
-    enabled: searchTerm !== '',
   });
   const usersList = data?.data;
+  const filteredUsersList = usersList?.map((user) => {
+    const exist = matchBookingPlayersId?.find((id) => id === user?.player?.id);
+
+    if (!exist) return user;
+  });
 
   const [showToast] = useIonToast();
   const qc = useQueryClient();
@@ -81,6 +98,8 @@ export const AddPlayersToMatchModal: React.FC<IAddPlayersToMatchModalProps> = ({
     onSettled() {
       handleEditPlayersModal(false);
       handleModal(false);
+      setCurrentSearchTerm('');
+      setSearchTerm('');
     },
   });
 
@@ -133,8 +152,9 @@ export const AddPlayersToMatchModal: React.FC<IAddPlayersToMatchModalProps> = ({
         Результаты поиска
       </Typography>
       <Stack spacing={1} height={350} overflow="auto" mb={2}>
-        {usersList && usersList.length > 0 ? (
-          usersList?.map((user) => {
+        {filteredUsersList && filteredUsersList.length > 0 ? (
+          filteredUsersList?.map((user) => {
+            if (!user) return;
             return (
               <Box
                 key={user.id}
