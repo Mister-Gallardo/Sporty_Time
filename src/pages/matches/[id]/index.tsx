@@ -72,9 +72,15 @@ export function SingleMatchPage() {
   );
 
   const [players, setPlayers] = useState<MatchPlayer[]>([]);
-  const playerAlreadyInSomeTeam = !!singleMatchData?.matchBookings.find(
+  const playerAlreadyInSomeTeam = singleMatchData?.matchBookings.find(
     (booking) => booking.player?.id === myPlayer?.id,
   );
+
+  const isPlayerInMatchWithoutPayment =
+    playerAlreadyInSomeTeam &&
+    !playerAlreadyInSomeTeam?.paid &&
+    !singleMatchData?.paid;
+
   const [playerInTeam, setPlayerInTeam] = useState<string>('');
 
   useEffect(() => {
@@ -213,7 +219,7 @@ export function SingleMatchPage() {
 
               <PlayersMatchCard
                 players={players}
-                playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
+                playerAlreadyInSomeTeam={!!playerAlreadyInSomeTeam}
                 setPlayerInTeam={(team) => {
                   if (
                     playerAlreadyInSomeTeam ||
@@ -248,7 +254,7 @@ export function SingleMatchPage() {
                   user with insufficient rating didn't requested for a place yet - show the btn */}
               {!isUserOwner &&
                 singleMatchData.matchBookings.length !== 4 &&
-                !playerAlreadyInSomeTeam &&
+                (isPlayerInMatchWithoutPayment || !playerAlreadyInSomeTeam) &&
                 isAfter(
                   new Date(singleMatchData?.booking?.startsAt),
                   new Date(),
@@ -284,7 +290,12 @@ export function SingleMatchPage() {
                         },
                       }}
                     >
-                      {isRatingSufficient ? 'Забронировать' : 'Запросить'} место
+                      {isPlayerInMatchWithoutPayment
+                        ? 'Оплатить'
+                        : isRatingSufficient
+                        ? 'Забронировать'
+                        : 'Запросить'}{' '}
+                      место
                       {singleMatchData.paid
                         ? ''
                         : '- ₽' + singleMatchData.price / 4}

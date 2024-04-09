@@ -38,7 +38,9 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
   handleModal,
 }) => {
   const { matchId } = useParams<{ matchId: string }>();
+
   const [myPlayer] = usePlayerProfile();
+  const myPlayerId = myPlayer?.id;
 
   const { data, refetch } = useQuery({
     queryKey: [`match`, +matchId],
@@ -48,7 +50,7 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
   const matchData = data?.data;
 
   const isPlayerInMatch = matchData?.matchBookings?.find(
-    (booking) => booking?.player?.id === myPlayer?.id,
+    (booking) => booking?.player?.id === myPlayerId,
   );
 
   const [showToast] = useIonToast();
@@ -137,6 +139,14 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
       </Box>
       <Box>
         {playersList.map((user, i) => {
+          const didCurrentUserVoted = user?.joinapprovals.find(
+            (vote) => vote?.approver?.player?.id === myPlayerId,
+          );
+          console.log('');
+          console.log('approved: ', approved);
+          console.log('didCurrentUserVoted: ', !!didCurrentUserVoted);
+          console.log('');
+
           const mutationData = {
             matchId: +matchId,
             playerId: user.id,
@@ -168,23 +178,25 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
 
               {isPlayerInMatch && !approved && (
                 <Box display="flex" gap={1}>
-                  <IconButton
-                    disabled={approvePlayerMutation.isPending}
-                    onClick={() => approvePlayerMutation.mutate(mutationData)}
-                    sx={{
-                      backgroundColor: 'success.main',
-                      '&:hover': {
-                        backgroundColor: 'primary.main',
-                      },
-                    }}
-                  >
-                    {approvePlayerMutation.isPending ? (
-                      <CircularProgress size={20} />
-                    ) : (
-                      <DoneIcon sx={{ color: '#fff' }} />
-                    )}
-                  </IconButton>
-                  {approved !== false && (
+                  {!didCurrentUserVoted && (
+                    <IconButton
+                      disabled={approvePlayerMutation.isPending}
+                      onClick={() => approvePlayerMutation.mutate(mutationData)}
+                      sx={{
+                        backgroundColor: 'success.main',
+                        '&:hover': {
+                          backgroundColor: 'primary.main',
+                        },
+                      }}
+                    >
+                      {approvePlayerMutation.isPending ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        <DoneIcon sx={{ color: '#fff' }} />
+                      )}
+                    </IconButton>
+                  )}
+                  {approved !== false && !didCurrentUserVoted && (
                     <IconButton
                       disabled={rejectPlayerMutation.isPending}
                       onClick={() => rejectPlayerMutation.mutate(mutationData)}

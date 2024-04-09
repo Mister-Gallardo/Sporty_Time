@@ -36,12 +36,20 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   const { matchId } = useParams<{ matchId: string }>();
   const [myPlayer] = usePlayerProfile();
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: [`match`, Number(matchId)],
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
 
   const matchData = data?.data;
+  const playerAlreadyInSomeTeam = matchData?.matchBookings.find(
+    (booking) => booking.player?.id === myPlayer?.id,
+  );
+
+  const isPlayerInMatchWithoutPayment =
+    playerAlreadyInSomeTeam &&
+    !playerAlreadyInSomeTeam?.paid &&
+    !matchData?.paid;
 
   const currentSportRating = getSportRating(myPlayer, matchData?.sport);
 
@@ -57,9 +65,11 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   const createYookassaMutation = useMutation({
     mutationFn: createJoinMatchYookassaToken,
     onSuccess(token: string) {
-      if (isRatingSufficient) {
+      if (isRatingSufficient || isPlayerInMatchWithoutPayment) {
         renderCheckoutWidget(token);
       } else {
+        refetch();
+        handleModal(false);
         showToast({
           color: 'success',
           message:
@@ -91,10 +101,14 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   const onMatchJoin = () => {
     if (!myPlayer?.user || !matchData) return;
 
-    if (matchId && playerInTeam) {
+    if (isPlayerInMatchWithoutPayment || (matchId && playerInTeam)) {
+      const team = isPlayerInMatchWithoutPayment
+        ? playerAlreadyInSomeTeam?.team
+        : playerInTeam;
+
       createYookassaMutation.mutate({
         matchId: Number(matchId),
-        team: playerInTeam,
+        team,
         money: matchData.paid ? 0 : matchData.price / 4,
       });
     } else {
@@ -205,7 +219,9 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
           disabled={isDisabled}
           endIcon={createYookassaMutation.isPending && <CircularProgress />}
           onClick={() => {
-            setIsDisabled();
+            if (!isRatingSufficient && isPlayerInMatchWithoutPayment) {
+              setIsDisabled();
+            }
             onMatchJoin();
           }}
           variant="contained"
@@ -218,7 +234,12 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
           }}
           fullWidth
         >
-          {isRatingSufficient ? 'Забронировать' : 'Запросить'} место
+          {isPlayerInMatchWithoutPayment
+            ? 'Оплатить'
+            : isRatingSufficient
+            ? 'Забронировать'
+            : 'Запросить'}{' '}
+          место
         </Button>
       </Box>
       {isRatingSufficient && (

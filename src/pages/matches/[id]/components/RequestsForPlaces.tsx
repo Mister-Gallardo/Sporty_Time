@@ -23,7 +23,7 @@ export const RequestsForPlaces = () => {
   const joinrequests = data?.data?.joinrequests;
 
   if (!joinrequests || isError) return;
-
+  if (joinrequests.length === 0) return;
   return (
     <>
       <Button
