@@ -2,7 +2,7 @@ import {
   ArrowBackIosNewOutlined,
   ChatBubbleOutlineRounded,
 } from '@mui/icons-material';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { SwipeablePage } from '../../../components/SwipeablePage';
 import { IonBackButton, IonLoading, isPlatform } from '@ionic/react';
 import { useEffect, useState } from 'react';
@@ -23,17 +23,15 @@ import { MatchDataBlock } from './components/MatchDataBlock';
 import { EditMatchPlayersModal } from '../../../components/modals/EditMatchPlayersModal';
 import useToggle from '../../../hooks/useToggle';
 import { EditPayment } from './components/EditPayment';
-import { OnJoinCheckoutModal } from '../../../components/modals/OnJoinCheckoutModal';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { ResultsTable } from './components/ResultsTable';
 import { RequestsForPlaces } from './components/RequestsForPlaces';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { UploadResultsBlock } from './components/UploadResultsBlock';
-import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
 import { isAfter } from 'date-fns';
 import { AddPlayersToMatchModal } from '../../../components/modals/AddPlayersToMatchModal';
 import { FormProvider, useForm } from 'react-hook-form';
-import { getSportRating } from '../../../helpers/getSportRating';
+import { MatchBookingButton } from './components/MatchBookingButton';
 
 const isMobile = isPlatform('mobile');
 export function SingleMatchPage() {
@@ -47,11 +45,7 @@ export function SingleMatchPage() {
   // add new players to match
   const [openAddPlayersModal, setOpenAddPlayersModal] = useToggle();
   const addUserForm = useForm();
-
-  const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
-
-  //if user has no rating
-  const [openTestDialog, setOpenTestDialog] = useToggle();
+  const { watch, setValue } = addUserForm;
 
   // Get Particular Match Request
   const { data, isLoading, isError } = useQuery({
@@ -61,29 +55,12 @@ export function SingleMatchPage() {
 
   const singleMatchData = data?.data;
 
-  const currentSportRating = getSportRating(myPlayer, singleMatchData?.sport);
-
-  // check if the player's current level is within the match range
-  const isRatingSufficient =
-    currentSportRating >= (singleMatchData?.ratingFrom || 0) &&
-    currentSportRating <= (singleMatchData?.ratingTo || 0);
-
-  // check if the player made request for place
-  const isRequestedPlace = singleMatchData?.joinrequests.find(
-    (request) => request?.player?.id === myPlayer?.id,
-  );
-
   const [players, setPlayers] = useState<MatchPlayer[]>([]);
   const playerAlreadyInSomeTeam = singleMatchData?.matchBookings.find(
     (booking) => booking.player?.id === myPlayer?.id,
   );
 
-  const isPlayerInMatchWithoutPayment =
-    playerAlreadyInSomeTeam &&
-    !playerAlreadyInSomeTeam?.paid &&
-    !singleMatchData?.paid;
-
-  const [playerInTeam, setPlayerInTeam] = useState<string>('');
+  // const [playerInTeam, setPlayerInTeam] = useState<string>('');
 
   useEffect(() => {
     if (!singleMatchData) return;
@@ -91,7 +68,7 @@ export function SingleMatchPage() {
     if (isAfter(new Date(), new Date(singleMatchData?.booking?.startsAt)))
       return;
 
-    setPlayerInTeam(playerAlreadyInSomeTeam ? '' : 'B');
+    setValue('team', playerAlreadyInSomeTeam ? '' : 'B');
   }, [playerAlreadyInSomeTeam, singleMatchData]);
 
   const isUserOwner = singleMatchData?.owner?.id === myPlayer?.id;
@@ -117,14 +94,14 @@ export function SingleMatchPage() {
           ...booking.player,
         })) || [];
 
-    if (playerInTeam === 'A' && myPlayer)
+    if (watch('team') === 'A' && myPlayer)
       teamAPlayers.push({
         ...myPlayer,
         mark: !playerAlreadyInSomeTeam,
         paid: 0,
         isOwner: isUserOwner,
       });
-    if (playerInTeam === 'B' && myPlayer)
+    if (watch('team') === 'B' && myPlayer)
       teamBPlayers.push({
         ...myPlayer,
         mark: !playerAlreadyInSomeTeam,
@@ -135,7 +112,7 @@ export function SingleMatchPage() {
     teamBPlayers.length = 2;
 
     setPlayers([...Array.from(teamAPlayers), ...Array.from(teamBPlayers)]);
-  }, [singleMatchData, playerInTeam, myPlayer]);
+  }, [singleMatchData, watch('team'), myPlayer]);
 
   if (isLoading) return <IonLoading isOpen />;
   if (!singleMatchData || isError) return <NotFoundPage />;
@@ -179,16 +156,6 @@ export function SingleMatchPage() {
 
   const startsAt = new Date(singleMatchData.booking.startsAt);
 
-  const onBookPlace = () => {
-    if (!myPlayer) return;
-
-    if (currentSportRating) {
-      setOpenCheckoutModal();
-    } else {
-      setOpenTestDialog();
-    }
-  };
-
   return (
     <>
       <SwipeablePage imageSlot={renderImageSlot()} topSlot={renderTopSlot()}>
@@ -231,10 +198,9 @@ export function SingleMatchPage() {
                     )
                   )
                     return;
-                  setPlayerInTeam(team);
+                  setValue('team', team);
                 }}
                 handleEditModal={setOpenEditModal}
-                matchData={singleMatchData}
               />
 
               <ResultsTable />
@@ -251,78 +217,17 @@ export function SingleMatchPage() {
                   </Link>
                 </Box>
               )}
-              {/* if user isn't the match-owner, there is an empty slot, 
-                  user isn't in match or the match wasn't started, 
-                  user with insufficient rating requested for a place and must pay 
-                  or didn't requested for a place yet - show the btn */}
-              {!isUserOwner &&
-                singleMatchData.matchBookings.length !== 4 &&
-                (isPlayerInMatchWithoutPayment || !playerAlreadyInSomeTeam) &&
-                isAfter(
-                  new Date(singleMatchData?.booking?.startsAt),
-                  new Date(),
-                ) &&
-                ((isPlayerInMatchWithoutPayment && isRequestedPlace) ||
-                  !isRequestedPlace) && (
-                  <Box
-                    sx={{
-                      position: 'fixed',
-                      zIndex: 1,
-                      left: '0',
-                      right: '0',
-                      bottom: '1.5rem',
-                      width: '100%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Button
-                      onClick={onBookPlace}
-                      sx={{
-                        paddingX: 2,
-                        background: '#0D2432',
-                        color: '#fff',
-                        boxShadow:
-                          'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-                        '&:hover': {
-                          background: '#0D2432',
-                        },
-                        '&:disabled': {
-                          background: '#777',
-                          color: '#eee',
-                        },
-                      }}
-                    >
-                      {isPlayerInMatchWithoutPayment
-                        ? 'Оплатить'
-                        : isRatingSufficient
-                        ? 'Забронировать'
-                        : 'Запросить'}{' '}
-                      место
-                      {singleMatchData.paid
-                        ? ''
-                        : '- ₽' + singleMatchData.price / 4}
-                    </Button>
-                  </Box>
-                )}
+
+              <FormProvider {...addUserForm}>
+                <MatchBookingButton />
+              </FormProvider>
+
               <ClubInfoBlock />
               <MatchInfoBlock />
             </Box>
           </Box>
         </>
       </SwipeablePage>
-
-      <AskForTestPassDialog
-        open={openTestDialog}
-        handleOpen={setOpenTestDialog}
-      />
-
-      <OnJoinCheckoutModal
-        openState={openCheckoutModal}
-        handleModal={setOpenCheckoutModal}
-        playerInTeam={playerInTeam}
-      />
 
       <FormProvider {...addUserForm}>
         <EditMatchPlayersModal
