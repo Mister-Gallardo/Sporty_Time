@@ -23,7 +23,7 @@ export function MobileSingleChatPage() {
         <IonHeader style={{ boxShadow: '0px 1px 4px #0000001a' }}>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonBackButton text="" color="dark">
+              <IonBackButton defaultHref="/chats" text="" color="dark">
                 <ArrowBackIosNewOutlined />
               </IonBackButton>
             </IonButtons>

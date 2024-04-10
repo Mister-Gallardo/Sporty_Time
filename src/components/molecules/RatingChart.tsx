@@ -43,13 +43,13 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
   if (isError) return;
 
   return (
-    <Box minWidth={350} width="100%" height={250} ml={-4}>
+    <Box minWidth={350} width="100%" height={250}>
       {isLoading ? (
         <LoadingCircle />
       ) : (
         bookingsList &&
         bookingsList.length > 0 && (
-          <ResponsiveContainer>
+          <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={reverseBookings}
               margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
@@ -69,8 +69,13 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
                   strokeDasharray: '8',
                 }}
               />
-              <YAxis domain={['dataMin', 'dataMax']} axisLine={false} />
+              <YAxis
+                domain={['dataMin', 'dataMax']}
+                axisLine={false}
+                onClick={() => console.log('YAxis')}
+              />
               <Area
+                onClick={() => console.log('Area')}
                 type="linear"
                 dataKey="ratingAfterMatch"
                 stroke="#768EF7"
@@ -78,11 +83,16 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
                 fillOpacity={1}
                 fill="url(#colorUv)"
                 activeDot={{
+                  style: { position: 'relative', zIndex: 10000000 },
                   onClick: (_, data: any) => setCurrentMatch(data?.payload),
                 }}
               >
                 {matchesLimit ? (
-                  <LabelList dataKey="ratingAfterMatch" position="insideTop" />
+                  <LabelList
+                    dataKey="ratingAfterMatch"
+                    position="insideTop"
+                    onClick={() => console.log('LabelList')}
+                  />
                 ) : null}
               </Area>
             </AreaChart>

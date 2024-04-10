@@ -69,7 +69,21 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
     onSuccess(token: string) {
       renderCheckoutWidget(token);
     },
-    onError(e: any) {},
+    onError(e: any) {
+      handleModal(false);
+      setIsDisabled(false);
+      refetch();
+      const message = e?.response?.data?.message;
+      if (!message) return;
+
+      showToast({
+        color: 'danger',
+        message,
+        mode: 'ios',
+        position: 'bottom',
+        duration: 2000,
+      });
+    },
   });
 
   // Join Match / Book a Place Request
