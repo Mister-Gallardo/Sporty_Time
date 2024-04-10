@@ -13,7 +13,7 @@ import {
 } from '../../../components/molecules/RadioLabel';
 import { QuestionTitle } from '../components/QuestionTitle';
 import { isPlatform, useIonToast } from '@ionic/react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createSportRating } from '../../../services/rating';
 import { QuestionsContainer } from '../components/QuestionsContainer';
 import { useSearchParam } from '../../../hooks/useSearchParams';
@@ -94,10 +94,12 @@ export function QuestionsStep({ handleStep }: QuestionsStepProps) {
   }, [currentQuestions.length]);
 
   const [showToast] = useIonToast();
+  const qc = useQueryClient();
 
   const createRatingMutation = useMutation({
     mutationFn: createSportRating,
     onSuccess() {
+      qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
       if (isPrev === 'filter') return history.push('/matches?q=2');
       if (isPrev === 'match') return history.goBack();
       handleStep(1);

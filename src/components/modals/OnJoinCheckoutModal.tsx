@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import {
-  createJoinMatchYookassaToken,
+  joinMatch,
   getOneAvailableMatch,
 } from '../../services/matches/service';
 import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
@@ -20,6 +20,7 @@ import { renderCheckoutWidget } from '../../helpers/renderCheckoutWidget';
 import { useIonToast } from '@ionic/react';
 import { socket } from '../../utils/socket';
 import { usePlayerProfile } from '../../services/api/hooks';
+import { getSportRating } from '../../helpers/getSportRating';
 
 interface IOnJoinCheckoutModalProps {
   openState: boolean;
@@ -35,28 +36,60 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   const { matchId } = useParams<{ matchId: string }>();
   const [myPlayer] = usePlayerProfile();
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: [`match`, Number(matchId)],
     queryFn: () => getOneAvailableMatch(Number(matchId)),
   });
 
   const matchData = data?.data;
+  const playerAlreadyInSomeTeam = matchData?.matchBookings.find(
+    (booking) => booking.player?.id === myPlayer?.id,
+  );
+
+  const isPlayerInMatchWithoutPayment =
+    playerAlreadyInSomeTeam &&
+    !playerAlreadyInSomeTeam?.paid &&
+    !matchData?.paid;
+
+  const currentSportRating = getSportRating(myPlayer, matchData?.sport);
+
+  // check if the player's current level is within the match range
+  const isRatingSufficient =
+    currentSportRating >= (matchData?.ratingFrom || 0) &&
+    currentSportRating <= (matchData?.ratingTo || 0);
 
   const qc = useQueryClient();
   const [showToast] = useIonToast();
 
   // Join Match / Book a Place Request
-  const createYookassaMutation = useMutation({
-    mutationFn: createJoinMatchYookassaToken,
+  const joinMatchMutation = useMutation({
+    mutationFn: joinMatch,
     onSuccess(token: string) {
-      renderCheckoutWidget(token);
+      if (isRatingSufficient || isPlayerInMatchWithoutPayment) {
+        renderCheckoutWidget(token);
+      } else {
+        refetch();
+        handleModal(false);
+        showToast({
+          color: 'success',
+          message:
+            'Вы сделали запрос на присоединение к матчу, ожидайте решения игроков',
+          mode: 'ios',
+          position: 'bottom',
+          duration: 2000,
+        });
+      }
     },
     onError(e: any) {
       handleModal(false);
       setIsDisabled(false);
+      refetch();
+      const message = e?.response?.data?.message;
+      if (!message) return;
+
       showToast({
         color: 'danger',
-        message: e?.response?.data?.message,
+        message,
         mode: 'ios',
         position: 'bottom',
         duration: 2000,
@@ -68,10 +101,14 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   const onMatchJoin = () => {
     if (!myPlayer?.user || !matchData) return;
 
-    if (matchId && playerInTeam) {
-      createYookassaMutation.mutate({
+    if (isPlayerInMatchWithoutPayment || (matchId && playerInTeam)) {
+      const team = isPlayerInMatchWithoutPayment
+        ? playerAlreadyInSomeTeam?.team
+        : playerInTeam;
+
+      joinMatchMutation.mutate({
         matchId: Number(matchId),
-        team: playerInTeam,
+        team,
         money: matchData.paid ? 0 : matchData.price / 4,
       });
     } else {
@@ -180,9 +217,11 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
       <Box py={1.5} px={2} borderTop="1px solid #ddd">
         <Button
           disabled={isDisabled}
-          endIcon={createYookassaMutation.isPending && <CircularProgress />}
+          endIcon={joinMatchMutation.isPending && <CircularProgress />}
           onClick={() => {
-            setIsDisabled();
+            if (!isRatingSufficient && isPlayerInMatchWithoutPayment) {
+              setIsDisabled();
+            }
             onMatchJoin();
           }}
           variant="contained"
@@ -195,16 +234,23 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
           }}
           fullWidth
         >
-          Забронировать место
+          {isPlayerInMatchWithoutPayment
+            ? 'Оплатить'
+            : isRatingSufficient
+            ? 'Забронировать'
+            : 'Запросить'}{' '}
+          место
         </Button>
       </Box>
-      <Box
-        mt={2}
-        id="payment-form"
-        minHeight={isDisabled ? 550 : 'unset'}
-        position="relative"
-        zIndex={2}
-      />
+      {isRatingSufficient && (
+        <Box
+          mt={2}
+          id="payment-form"
+          minHeight={isDisabled ? 550 : 'unset'}
+          position="relative"
+          zIndex={2}
+        />
+      )}
     </ModalContainer>
   );
 };

@@ -6,6 +6,7 @@ import {
   RemovePlayerFromMatch,
   GetAvailableMatchesAndClubsDTO,
   IAddPlayerToMatchData,
+  IMatchBookingData,
 } from './interface';
 import { api } from '../api/service';
 import { RequestQueryBuilder } from '@dataui/crud-request';
@@ -64,7 +65,7 @@ export async function createBookingYookassaToken(data: CreateMatchDTO) {
 }
 
 // get Yookassa's token for join match payment
-export async function createJoinMatchYookassaToken(data: JoinMatchDTO) {
+export async function joinMatch(data: JoinMatchDTO) {
   const res = await api.post('/matches/join-payment', data);
   return res.data;
 }
@@ -82,6 +83,11 @@ const bookingsQuery = (limit: number) => {
   const qb = RequestQueryBuilder.create();
   qb.setFilter({ field: 'match.isCancelled', operator: '$eq', value: false })
     .setFilter({ field: 'matchBooking.id', operator: '$notnull', value: true })
+    .setFilter({
+      field: 'match.confirmMatchResults',
+      operator: '$eq',
+      value: true,
+    })
     .sortBy({ field: 'matchBooking.startsAt', order: 'DESC' })
     .setLimit(limit)
     .setJoin([
@@ -100,13 +106,31 @@ const bookingsQuery = (limit: number) => {
 export function getMatchBookings(limit: number) {
   const query = bookingsQuery(limit);
 
-  return api.get<any[]>(`/match-bookings?${query}`);
+  return api.get<IMatchBookingData[]>(`/match-bookings?${query}`);
 }
 
 export function getSpecificUserMatchBookings(id: number, limit: number) {
   const query = bookingsQuery(limit);
 
-  return api.get<any[]>(`/users/${id}/match-bookings?${query}`);
+  return api.get<IMatchBookingData[]>(`/users/${id}/match-bookings?${query}`);
+}
+
+export function approvePlayersPlace(data: {
+  matchId: number;
+  playerId: number;
+}) {
+  return api.post(
+    `/matches/${data.matchId}/joinrequests/${data.playerId}/approve `,
+  );
+}
+
+export function rejectPlayersPlace(data: {
+  matchId: number;
+  playerId: number;
+}) {
+  return api.post(
+    `/matches/${data.matchId}/joinrequests/${data.playerId}/reject `,
+  );
 }
 
 export async function addPlayerToMatch(data: IAddPlayerToMatchData) {
