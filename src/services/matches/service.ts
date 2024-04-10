@@ -5,6 +5,7 @@ import {
   MatchData,
   RemovePlayerFromMatch,
   GetAvailableMatchesAndClubsDTO,
+  IAddPlayerToMatchData,
   IMatchBookingData,
 } from './interface';
 import { api } from '../api/service';
@@ -130,4 +131,14 @@ export function rejectPlayersPlace(data: {
   return api.post(
     `/matches/${data.matchId}/joinrequests/${data.playerId}/reject `,
   );
+}
+
+export async function addPlayerToMatch(data: IAddPlayerToMatchData) {
+  const { matchId, playerId, team } = data;
+
+  const res = await api.post(`matches/${matchId}/match-bookings`, {
+    playerId,
+    team,
+  });
+  return res.data;
 }

@@ -147,7 +147,7 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
             matchId: +matchId,
             playerId: user.id,
           };
-          console.log('didCurrentUserVoted: ', didCurrentUserVoted);
+
           return (
             <Box
               key={user.id}
