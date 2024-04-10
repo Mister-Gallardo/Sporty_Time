@@ -17,6 +17,7 @@ import { MobileProfileNavPage } from './pages/profile/nested-pages/navigation/in
 import { MobileAboutPage } from './pages/about/index.mobile';
 import { MobilePrivacyPolicyPage } from './pages/privacy-policy/index.mobile';
 import { MobileSpecificProfilePage } from './pages/profile/[id]/index.mobile';
+import { MobileNotificationsPage } from './pages/notifications/index.mobile';
 
 export interface RouteExtraProps {
   showTabBar: boolean;
@@ -127,5 +128,11 @@ export const mobileRoutes = [
     path: '/privacy-policy',
     exact: true,
     component: MobilePrivacyPolicyPage,
+  },
+  {
+    path: '/notifications',
+    exact: true,
+    component: MobileNotificationsPage,
+    showTabBar: true,
   },
 ].filter(Boolean) as React.ComponentProps<typeof Route<RouteExtraProps>>[];
