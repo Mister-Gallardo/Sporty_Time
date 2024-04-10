@@ -107,10 +107,10 @@ export const AddPlayersToMatchModal: React.FC<IAddPlayersToMatchModalProps> = ({
     <ModalContainer
       openState={openState}
       handleModal={() => {
-        handleEditPlayersModal();
-        handleModal();
+        handleEditPlayersModal(false);
+        handleModal(false);
       }}
-      headerTitle="Добавить игроков"
+      headerTitle="Добавить игрока"
     >
       <Typography mt={2} mb={0.5} fontSize={isMobile ? 12 : 15}></Typography>
       <TextField

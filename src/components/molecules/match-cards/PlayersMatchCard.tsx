@@ -2,15 +2,17 @@ import { isPlatform } from '@ionic/react';
 import { MatchPlayer } from '../../../services/user/interface';
 import { Box, Button, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from '../player-slot/PlayerSlot';
-import { MatchData, Status } from '../../../services/matches/interface';
+import { Status } from '../../../services/matches/interface';
 import { getMatchStatus } from '../../../helpers/getMatchStatus';
+import { useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getOneAvailableMatch } from '../../../services/matches/service';
 
 interface IPlayersMatchCardProps {
   players: MatchPlayer[];
   playerAlreadyInSomeTeam: boolean;
   setPlayerInTeam: (team: string) => void;
   handleEditModal: (val?: boolean) => void;
-  matchData: MatchData;
 }
 const isMobile = isPlatform('mobile');
 
@@ -19,8 +21,17 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
   playerAlreadyInSomeTeam,
   setPlayerInTeam,
   handleEditModal,
-  matchData,
 }) => {
+  const { matchId } = useParams<{ matchId: string }>();
+
+  const { data } = useQuery({
+    queryKey: [`match`, +matchId],
+    queryFn: () => getOneAvailableMatch(+matchId),
+  });
+
+  const matchData = data?.data;
+  if (!matchData) return;
+
   const { sport, paid } = matchData;
 
   const matchStatus = getMatchStatus(matchData);

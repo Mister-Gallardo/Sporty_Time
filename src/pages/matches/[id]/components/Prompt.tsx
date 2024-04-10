@@ -15,7 +15,6 @@ export const Prompt = () => {
   });
 
   const matchData = data?.data;
-  if (matchData?.confirmMatchResults) return null;
 
   const [myPlayer] = usePlayerProfile();
   const playerAlreadyInSomeTeam = !!matchData?.matchBookings.find(
@@ -25,7 +24,7 @@ export const Prompt = () => {
   const params =
     matchData && getPromptParams(matchData, playerAlreadyInSomeTeam);
 
-  if (!matchData) return null;
+  if (!matchData || matchData?.confirmMatchResults) return null;
   if (!params) return null;
 
   return (

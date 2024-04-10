@@ -11,6 +11,7 @@ import {
 import {
   joinMatch,
   getOneAvailableMatch,
+  createExtraPaymentYookassaToken,
 } from '../../services/matches/service';
 import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
 import { ModalContainer } from './ModalContainer';
@@ -21,20 +22,21 @@ import { useIonToast } from '@ionic/react';
 import { socket } from '../../utils/socket';
 import { usePlayerProfile } from '../../services/api/hooks';
 import { getSportRating } from '../../helpers/getSportRating';
+import { useFormContext } from 'react-hook-form';
 
 interface IOnJoinCheckoutModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  playerInTeam: string;
 }
 
 export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   openState,
   handleModal,
-  playerInTeam,
 }) => {
   const { matchId } = useParams<{ matchId: string }>();
   const [myPlayer] = usePlayerProfile();
+
+  const { watch } = useFormContext();
 
   const { data, refetch } = useQuery({
     queryKey: [`match`, Number(matchId)],
@@ -61,11 +63,34 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   const qc = useQueryClient();
   const [showToast] = useIonToast();
 
+  // when new player has to pay after join
+  const editPaymentMutation = useMutation({
+    mutationFn: createExtraPaymentYookassaToken,
+    onSuccess(token: string) {
+      renderCheckoutWidget(token);
+    },
+    onError(e: any) {
+      handleModal(false);
+      setIsDisabled(false);
+      refetch();
+      const message = e?.response?.data?.message;
+      if (!message) return;
+
+      showToast({
+        color: 'danger',
+        message,
+        mode: 'ios',
+        position: 'bottom',
+        duration: 2000,
+      });
+    },
+  });
+
   // Join Match / Book a Place Request
   const joinMatchMutation = useMutation({
     mutationFn: joinMatch,
     onSuccess(token: string) {
-      if (isRatingSufficient || isPlayerInMatchWithoutPayment) {
+      if (isRatingSufficient) {
         renderCheckoutWidget(token);
       } else {
         refetch();
@@ -101,14 +126,15 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   const onMatchJoin = () => {
     if (!myPlayer?.user || !matchData) return;
 
-    if (isPlayerInMatchWithoutPayment || (matchId && playerInTeam)) {
-      const team = isPlayerInMatchWithoutPayment
-        ? playerAlreadyInSomeTeam?.team
-        : playerInTeam;
-
+    if (isPlayerInMatchWithoutPayment) {
+      editPaymentMutation.mutate({
+        matchId: +matchId,
+        money: matchData.paid ? 0 : matchData.price / 4,
+      });
+    } else if (watch('team')) {
       joinMatchMutation.mutate({
-        matchId: Number(matchId),
-        team,
+        matchId: +matchId,
+        team: watch('team'),
         money: matchData.paid ? 0 : matchData.price / 4,
       });
     } else {
@@ -242,15 +268,14 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
           место
         </Button>
       </Box>
-      {isRatingSufficient && (
-        <Box
-          mt={2}
-          id="payment-form"
-          minHeight={isDisabled ? 550 : 'unset'}
-          position="relative"
-          zIndex={2}
-        />
-      )}
+
+      <Box
+        mt={2}
+        id="payment-form"
+        minHeight={isDisabled ? 550 : 'unset'}
+        position="relative"
+        zIndex={2}
+      />
     </ModalContainer>
   );
 };

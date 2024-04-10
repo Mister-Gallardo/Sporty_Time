@@ -38,7 +38,7 @@ export function MobileBookCourt() {
                 fontSize: '1.25rem',
               }}
             >
-              Search
+              Поиск
             </IonTitle>
           </IonToolbar>
         </IonHeader>
