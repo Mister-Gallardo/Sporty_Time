@@ -142,15 +142,12 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
           const didCurrentUserVoted = user?.joinapprovals.find(
             (vote) => vote?.approver?.player?.id === myPlayerId,
           );
-          console.log('');
-          console.log('approved: ', approved);
-          console.log('didCurrentUserVoted: ', !!didCurrentUserVoted);
-          console.log('');
 
           const mutationData = {
             matchId: +matchId,
             playerId: user.id,
           };
+          console.log('didCurrentUserVoted: ', didCurrentUserVoted);
           return (
             <Box
               key={user.id}
@@ -178,7 +175,9 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
 
               {isPlayerInMatch && !approved && (
                 <Box display="flex" gap={1}>
-                  {!didCurrentUserVoted && (
+                  {((didCurrentUserVoted &&
+                    didCurrentUserVoted.approved === false) ||
+                    !didCurrentUserVoted) && (
                     <IconButton
                       disabled={approvePlayerMutation.isPending}
                       onClick={() => approvePlayerMutation.mutate(mutationData)}

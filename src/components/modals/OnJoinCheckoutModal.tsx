@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import {
-  createJoinMatchYookassaToken,
+  joinMatch,
   getOneAvailableMatch,
 } from '../../services/matches/service';
 import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
@@ -62,8 +62,8 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   const [showToast] = useIonToast();
 
   // Join Match / Book a Place Request
-  const createYookassaMutation = useMutation({
-    mutationFn: createJoinMatchYookassaToken,
+  const joinMatchMutation = useMutation({
+    mutationFn: joinMatch,
     onSuccess(token: string) {
       if (isRatingSufficient || isPlayerInMatchWithoutPayment) {
         renderCheckoutWidget(token);
@@ -83,7 +83,7 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
     onError(e: any) {
       handleModal(false);
       setIsDisabled(false);
-
+      refetch();
       const message = e?.response?.data?.message;
       if (!message) return;
 
@@ -106,7 +106,7 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
         ? playerAlreadyInSomeTeam?.team
         : playerInTeam;
 
-      createYookassaMutation.mutate({
+      joinMatchMutation.mutate({
         matchId: Number(matchId),
         team,
         money: matchData.paid ? 0 : matchData.price / 4,
@@ -217,7 +217,7 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
       <Box py={1.5} px={2} borderTop="1px solid #ddd">
         <Button
           disabled={isDisabled}
-          endIcon={createYookassaMutation.isPending && <CircularProgress />}
+          endIcon={joinMatchMutation.isPending && <CircularProgress />}
           onClick={() => {
             if (!isRatingSufficient && isPlayerInMatchWithoutPayment) {
               setIsDisabled();

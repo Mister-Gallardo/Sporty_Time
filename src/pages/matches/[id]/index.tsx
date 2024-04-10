@@ -251,7 +251,8 @@ export function SingleMatchPage() {
               )}
               {/* if user isn't the match-owner, there is an empty slot, 
                   user isn't in match or the match wasn't started, 
-                  user with insufficient rating didn't requested for a place yet - show the btn */}
+                  user with insufficient rating requested for a place and must pay 
+                  or didn't requested for a place yet - show the btn */}
               {!isUserOwner &&
                 singleMatchData.matchBookings.length !== 4 &&
                 (isPlayerInMatchWithoutPayment || !playerAlreadyInSomeTeam) &&
@@ -259,7 +260,8 @@ export function SingleMatchPage() {
                   new Date(singleMatchData?.booking?.startsAt),
                   new Date(),
                 ) &&
-                !isRequestedPlace && (
+                ((isPlayerInMatchWithoutPayment && isRequestedPlace) ||
+                  !isRequestedPlace) && (
                   <Box
                     sx={{
                       position: 'fixed',
