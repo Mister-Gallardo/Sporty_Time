@@ -9,6 +9,7 @@ import { WithoutResultsCardSection } from './WithoutResultsCardSection';
 import { ResultsCardSection } from './ResultsCardSection';
 import { withHostname } from '../../../services/api/service';
 import { Link as ReactRouterLink } from 'react-router-dom';
+import { getSportRating } from '../../../helpers/getSportRating';
 
 interface IMyMatchCardProps extends MatchData {
   uploadResults?: (id: number) => void;
@@ -19,6 +20,7 @@ const isMobile = isPlatform('mobile');
 export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
   const {
     id,
+    sport,
     booking,
     matchBookings,
     matchResults,
@@ -134,7 +136,7 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
                           height={10}
                           lineHeight={1}
                         >
-                          {member?.player.ratingTennis}
+                          {member ? getSportRating(member.player, sport) : 0}
                         </Typography>
                       </Box>
                     );

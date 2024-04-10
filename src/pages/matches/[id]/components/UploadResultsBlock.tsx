@@ -98,7 +98,9 @@ export const UploadResultsBlock = () => {
             Подтвердить
           </Button>
         )}
-        {!myBooking?.confirmMatchResults && (
+        {!(
+          singleMatchData?.confirmMatchResults || myBooking?.confirmMatchResults
+        ) && (
           <Button
             onClick={() => setOpenUploadModal(true)}
             sx={{ fontSize: '.95rem', fontWeight: '600' }}

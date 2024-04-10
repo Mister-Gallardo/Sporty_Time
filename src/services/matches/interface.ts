@@ -36,6 +36,7 @@ export interface MatchData {
   minutes: number;
   price: number;
   isPrivate: boolean;
+  isApproved: boolean;
   isCancelled: boolean;
   sport: string;
   matchResults: matchResults;
@@ -122,4 +123,10 @@ export enum Status {
   INVALID_RESULT,
   INCOMPLETE,
   WAITING_FOR_RESULTS,
+}
+
+export interface IAddPlayerToMatchData {
+  playerId: number;
+  team: string;
+  matchId: number;
 }

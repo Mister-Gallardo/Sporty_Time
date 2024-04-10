@@ -5,6 +5,7 @@ import {
   MatchData,
   RemovePlayerFromMatch,
   GetAvailableMatchesAndClubsDTO,
+  IAddPlayerToMatchData,
 } from './interface';
 import { api } from '../api/service';
 import { RequestQueryBuilder } from '@dataui/crud-request';
@@ -106,4 +107,14 @@ export function getSpecificUserMatchBookings(id: number, limit: number) {
   const query = bookingsQuery(limit);
 
   return api.get<any[]>(`/users/${id}/match-bookings?${query}`);
+}
+
+export async function addPlayerToMatch(data: IAddPlayerToMatchData) {
+  const { matchId, playerId, team } = data;
+
+  const res = await api.post(`matches/${matchId}/match-bookings`, {
+    playerId,
+    team,
+  });
+  return res.data;
 }

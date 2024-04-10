@@ -27,9 +27,10 @@ export const EditPayment = () => {
   if (!matchData) return null;
 
   const matchStatus = getMatchStatus(matchData);
-  const { paid, matchBookings, price, booking } = matchData;
+  const { isApproved, paid, matchBookings, price, booking } = matchData;
 
-  if (paid || !isUserOwner || matchStatus === Status.CANCELED) return null;
+  if (isApproved || paid || !isUserOwner || matchStatus === Status.CANCELED)
+    return null;
 
   const currentPaidAmount = matchBookings.reduce(
     (acc, member) => acc + member.paid,

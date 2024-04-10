@@ -20,7 +20,6 @@ import { PrivacyType } from './components/PrivacyType';
 import { MatchType } from './components/MatchType';
 import { MatchDataBlock } from './components/MatchDataBlock';
 import { EditMatchPlayersModal } from '../../../components/modals/EditMatchPlayersModal';
-import { ConfirmationEditMatchDialog } from '../../../components/modals/ConfirmationEditMatchDialog';
 import useToggle from '../../../hooks/useToggle';
 import { EditPayment } from './components/EditPayment';
 import { OnJoinCheckoutModal } from '../../../components/modals/OnJoinCheckoutModal';
@@ -31,6 +30,8 @@ import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { AskForTestPassDialog } from '../../../components/modals/AskForTestPassDialog';
 import { isAfter } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { AddPlayersToMatchModal } from '../../../components/modals/AddPlayersToMatchModal';
+import { FormProvider, useForm } from 'react-hook-form';
 
 const isMobile = isPlatform('mobile');
 export function SingleMatchPage() {
@@ -38,16 +39,17 @@ export function SingleMatchPage() {
 
   const [myPlayer] = usePlayerProfile();
 
-  const [openEditModal, setOpenEditModal] = useToggle();
-  const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   // remove player | cancel match
-  const [openEditMatchDialog, setOpenEditMatchDialog] = useToggle();
+  const [openEditModal, setOpenEditModal] = useToggle();
+
+  // add new players to match
+  const [openAddPlayersModal, setOpenAddPlayersModal] = useToggle();
+  const addUserForm = useForm();
+
+  const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
+
   //if user has no rating
   const [openTestDialog, setOpenTestDialog] = useToggle();
-
-  const [playerToRemoveId, setPlayerToRemoveId] = useState<
-    number | undefined
-  >();
 
   // Get Particular Match Request
   const { data, isLoading, isError } = useQuery({
@@ -156,10 +158,7 @@ export function SingleMatchPage() {
   if (!booking) return <LoadingCircle />;
 
   const startsAt = new Date(singleMatchData.booking.startsAt);
-  console.log('');
-  console.log('startsAt: ', startsAt);
-  console.log('now', new Date());
-  console.log('');
+
   const onBookPlace = () => {
     //check specific sport rating insted!!!
     const isRating =
@@ -297,22 +296,19 @@ export function SingleMatchPage() {
         playerInTeam={playerInTeam}
       />
 
-      <EditMatchPlayersModal
-        openState={openEditModal}
-        handleModal={setOpenEditModal}
-        players={players}
-        setPlayerToRemoveId={setPlayerToRemoveId}
-        onCancel={() => {
-          setOpenEditModal();
-          setOpenEditMatchDialog();
-        }}
-        sport={singleMatchData.sport}
-      />
-      <ConfirmationEditMatchDialog
-        openState={openEditMatchDialog}
-        handleDialog={setOpenEditMatchDialog}
-        playerToRemoveId={playerToRemoveId}
-      />
+      <FormProvider {...addUserForm}>
+        <EditMatchPlayersModal
+          openState={openEditModal}
+          handleModal={setOpenEditModal}
+          handleAddPlayersModal={setOpenAddPlayersModal}
+          players={players}
+        />
+        <AddPlayersToMatchModal
+          openState={openAddPlayersModal}
+          handleModal={setOpenAddPlayersModal}
+          handleEditPlayersModal={setOpenEditModal}
+        />
+      </FormProvider>
     </>
   );
 }
