@@ -7,10 +7,10 @@ import { SectionTitle } from './SectionTitle';
 import { isPlatform } from '@ionic/react';
 import { useQuery } from '@tanstack/react-query';
 import { getSpecificUserMatchBookings } from '../../../services/matches/service';
-import { MatchData } from '../../../services/matches/interface';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { MatchHistoryCard } from './MatchHistoryCard';
+import { IMatchBookingData } from '../../../services/matches/interface';
 
 const results = [
   {
@@ -30,11 +30,6 @@ const results = [
   },
 ];
 
-export interface ICurrentMatch extends MatchData {
-  ratingAfterMatch: number;
-  ratingProfit: number;
-  match: MatchData;
-}
 interface ILevelProgressionProps {}
 
 const isMobile = isPlatform('mobile');
@@ -55,7 +50,9 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
   });
   const bookingsList = data?.data;
 
-  const [currentMatch, setCurrentMatch] = useState<ICurrentMatch | null>(null);
+  const [currentMatch, setCurrentMatch] = useState<IMatchBookingData | null>(
+    null,
+  );
 
   // set the first match to chart by default
   useEffect(() => {

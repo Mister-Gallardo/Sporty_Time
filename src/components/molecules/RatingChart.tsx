@@ -11,14 +11,14 @@ import {
   YAxis,
 } from 'recharts';
 import { getSpecificUserMatchBookings } from '../../services/matches/service';
-import { ICurrentMatch } from '../../pages/profile/components/LevelProgression';
 import { LoadingCircle } from '../atoms/LoadingCircle';
 import { useParams } from 'react-router';
 import { usePlayerProfile } from '../../services/api/hooks';
+import { IMatchBookingData } from '../../services/matches/interface';
 
 interface IRatingChartProps {
   matchesLimit: number;
-  setCurrentMatch: (match: ICurrentMatch) => void;
+  setCurrentMatch: (matchBooking: IMatchBookingData) => void;
 }
 
 export const RatingChart: React.FC<IRatingChartProps> = ({
