@@ -122,6 +122,15 @@ function DesktopHeader() {
                   >
                     Матчи
                   </Link>
+                  <Link
+                    component={RouterNavLink}
+                    to="/notifications"
+                    underline="none"
+                    color="#333"
+                    fontWeight={500}
+                  >
+                    Уведомления
+                  </Link>
                 </>
               )}
               {isAuthorized ? (

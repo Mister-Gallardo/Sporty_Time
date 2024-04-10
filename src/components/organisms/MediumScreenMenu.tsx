@@ -13,6 +13,7 @@ import SportsTennisRoundedIcon from '@mui/icons-material/SportsTennisRounded';
 import { useLocalStorage } from 'usehooks-ts';
 import { useMutation } from '@tanstack/react-query';
 import { removeDeviceToken } from '../../services/notifications/service';
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 
 interface IMediumScreenMenuProps {
   mdMoreAnchorEl: HTMLElement | null;
@@ -92,6 +93,22 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
           <SportsTennisRoundedIcon sx={{ fontSize: 27, color: '#575757' }} />
           <Typography fontWeight={600} fontSize={15}>
             Матчи
+          </Typography>
+        </MenuItem>
+      </Link>
+      <Link
+        onClick={handleMdMenuClose}
+        component={RouterNavLink}
+        to="/notifications"
+        underline="none"
+        fontWeight={500}
+      >
+        <MenuItem sx={{ gap: 1.5 }}>
+          <NotificationsNoneOutlinedIcon
+            sx={{ fontSize: 27, color: '#575757' }}
+          />
+          <Typography fontWeight={600} fontSize={15}>
+            Уведомления
           </Typography>
         </MenuItem>
       </Link>
