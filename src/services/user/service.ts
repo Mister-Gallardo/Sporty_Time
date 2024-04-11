@@ -15,7 +15,11 @@ export const deleteMe = async () => {
 };
 export function getSpecificUser(id: number) {
   const qb = RequestQueryBuilder.create();
-  qb.setJoin([{ field: 'avatar' }, { field: 'player' }]).query();
+  qb.setJoin([
+    { field: 'avatar' },
+    { field: 'player' },
+    { field: 'player.matchBookings' },
+  ]).query();
 
   return api.get<User>(`/users/${id}?${qb.queryString}`);
 }

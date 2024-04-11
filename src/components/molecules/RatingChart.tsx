@@ -46,6 +46,39 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
 
   if (isError) return;
 
+  const CustomizedDot = (props: any) => {
+    if (!bookingsList) return;
+
+    const { cx, cy, payload, index } = props;
+    const isLast = index === bookingsList?.length - 1;
+
+    const rating = payload?.ratingAfterMatch;
+
+    const textX = rating.toString().length > 1 ? 5 : 10;
+    return (
+      <svg
+        x={isLast ? cx - 30 : cx - 15}
+        y={cy - 15}
+        width={30}
+        height={30}
+        onClick={() => {
+          if (setCurrentMatch) {
+            setCurrentMatch(payload);
+          }
+        }}
+        cursor="pointer"
+      >
+        <g>
+          <rect x="0" y="0" width={30} height={30} fill="yellow"></rect>
+
+          <text x={textX} y={19} fontSize="13" fill="black">
+            {rating}
+          </text>
+        </g>
+      </svg>
+    );
+  };
+
   return (
     <Box minWidth={350} width="100%" height={250}>
       {isLoading ? (
@@ -55,7 +88,6 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
         bookingsList.length > 0 && (
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
-              style={{ padding: 15 }}
               data={reverseBookings}
               margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
             >
@@ -80,37 +112,15 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
                 type="linear"
                 dataKey="ratingAfterMatch"
                 stroke="#768EF7"
-                dot
+                dot={matchesLimit !== 0 && <CustomizedDot />}
                 fillOpacity={1}
                 fill="url(#colorUv)"
-                activeDot={{
-                  stroke: 'transparent',
-                  fill: 'transparent',
-                  cursor: 'pointer',
-                  onClick: (_, data: any) => setCurrentMatch(data?.payload),
-                }}
-                label={matchesLimit !== 0 && <CustomizedLabel />}
+                activeDot={matchesLimit === 0 && <CustomizedDot />}
               />
             </AreaChart>
           </ResponsiveContainer>
         )
       )}
     </Box>
-  );
-};
-
-const CustomizedLabel = (props: any) => {
-  const { x, y, value } = props;
-
-  const textX = value.toString().length > 1 ? 5 : 10;
-  return (
-    <svg x={x - 15} y={y - 15} width={30} height={30}>
-      <g>
-        <rect x="0" y="0" width="100" height="100" fill="yellow"></rect>
-        <text x={textX} y={19} font-size="13" fill="black">
-          {value}
-        </text>
-      </g>
-    </svg>
   );
 };

@@ -80,16 +80,18 @@ export async function createExtraPaymentYookassaToken(data: {
   return res.data;
 }
 
-const bookingsQuery = (limit: number, sport: ESport) => {
+const bookingsQuery = (limit: number, sport?: ESport) => {
   const qb = RequestQueryBuilder.create();
-  qb.setFilter({ field: 'match.isCancelled', operator: '$eq', value: false })
-    .setFilter({ field: 'match.sport', operator: '$eq', value: sport })
-    .setFilter({ field: 'matchBooking.id', operator: '$notnull', value: true })
-    .setFilter({
+  qb.setFilter([
+    { field: 'match.isCancelled', operator: '$eq', value: false },
+    { field: 'matchBooking.id', operator: '$notnull', value: true },
+    { field: 'match.sport', operator: '$eq', value: sport },
+    {
       field: 'match.confirmMatchResults',
       operator: '$eq',
       value: true,
-    })
+    },
+  ])
     .sortBy({ field: 'matchBooking.startsAt', order: 'DESC' })
     .setLimit(limit)
     .setJoin([
@@ -114,7 +116,7 @@ export function getMatchBookings(limit: number, sport: ESport) {
 export function getSpecificUserMatchBookings(
   id: number,
   limit: number,
-  sport: ESport,
+  sport?: ESport,
 ) {
   const query = bookingsQuery(limit, sport);
 

@@ -12,6 +12,7 @@ import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { MatchHistoryCard } from './MatchHistoryCard';
 import { IMatchBookingData } from '../../../services/matches/interface';
 import { useFormContext } from 'react-hook-form';
+import { AllResultsProgressCard } from './AllResultsProgressCard';
 
 const results = [
   {
@@ -112,6 +113,8 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
           <Box height={115}>
             <LoadingCircle />
           </Box>
+        ) : matchesLimit === 0 ? (
+          <AllResultsProgressCard />
         ) : currentMatch ? (
           <MatchHistoryCard {...currentMatch} />
         ) : (
