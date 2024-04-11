@@ -20,30 +20,31 @@ export function NotificationsPage() {
       {isLoading ? (
         <LoadingCircle />
       ) : notifications && notifications.length > 0 ? (
-        notifications?.map((notification) => {
-          const notificationDate = new Date(
-            notification?.createdAt,
-          ).toLocaleDateString('ru-RU', {
-            month: 'long',
-            day: 'numeric',
-          });
-
-          return (
-            <Link to={notification?.data?.url}>
-              <Box key={notification.id} borderBottom="1px solid #eee">
-                <Box display="flex" alignItems="center" gap={1}>
-                  <Typography fontWeight={600}>
-                    {notification?.title}
-                  </Typography>
-                  <Typography color="gray" fontSize={12}>
-                    {notificationDate}
-                  </Typography>
+        notifications
+          ?.map((notification) => {
+            const notificationDate = new Date(
+              notification?.createdAt,
+            ).toLocaleDateString('ru-RU', {
+              month: 'long',
+              day: 'numeric',
+            });
+            return (
+              <Link to={notification?.data?.url}>
+                <Box key={notification.id} borderBottom="1px solid #eee" py={1}>
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Typography fontWeight={600}>
+                      {notification?.title}
+                    </Typography>
+                    <Typography color="gray" fontSize={12}>
+                      {notificationDate}
+                    </Typography>
+                  </Box>
+                  <Typography>{notification?.body}</Typography>
                 </Box>
-                <Typography>{notification?.body}</Typography>
-              </Box>
-            </Link>
-          );
-        })
+              </Link>
+            );
+          })
+          .reverse()
       ) : (
         <Typography textAlign="center" color="gray" mt={10}>
           Уведомлений нет

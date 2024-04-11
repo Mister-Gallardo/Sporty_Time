@@ -1,8 +1,6 @@
-import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { usePlayerProfile } from '../../../services/api/hooks';
-import { ESport } from '../../../services/matches/interface';
 import { getSportName } from '../../../helpers/getNameOf';
 import { Box, Button, Typography } from '@mui/material';
 import dummy from '../../../images/home/booking-bg.png';
@@ -11,18 +9,16 @@ import { SectionTitle } from './SectionTitle';
 import { isPlatform } from '@ionic/react';
 import { getSpecificUser } from '../../../services/user/service';
 import { useQuery } from '@tanstack/react-query';
-
-interface ICurrentSportLevelProps {
-  activeSport: ESport;
-}
+import { useFormContext } from 'react-hook-form';
 
 const isMobile = isPlatform('mobile');
 
-export const CurrentSportLevel: React.FC<ICurrentSportLevelProps> = ({
-  activeSport,
-}) => {
+export const CurrentSportLevel = () => {
   const history = useHistory();
   const { userId } = useParams<{ userId: string }>();
+
+  const { watch } = useFormContext();
+  const activeSport = watch('sport');
 
   const [player] = usePlayerProfile();
 

@@ -5,7 +5,6 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
-  LabelList,
   ResponsiveContainer,
   Tooltip,
   YAxis,
@@ -15,6 +14,7 @@ import { LoadingCircle } from '../atoms/LoadingCircle';
 import { useParams } from 'react-router';
 import { usePlayerProfile } from '../../services/api/hooks';
 import { IMatchBookingData } from '../../services/matches/interface';
+import { useFormContext } from 'react-hook-form';
 
 interface IRatingChartProps {
   matchesLimit: number;
@@ -27,14 +27,18 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
 }) => {
   const { userId } = useParams<{ userId: string }>();
 
+  const { watch } = useFormContext();
+  const sport = watch('sport');
+
   const [player] = usePlayerProfile();
   const myPlayerId = player?.user?.id;
 
   const currentUserId = userId ? userId : myPlayerId || 0;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['match-bookings', matchesLimit, userId],
-    queryFn: () => getSpecificUserMatchBookings(+currentUserId, matchesLimit),
+    queryKey: ['match-bookings', matchesLimit, userId, sport],
+    queryFn: () =>
+      getSpecificUserMatchBookings(+currentUserId, matchesLimit, sport),
   });
 
   const bookingsList = data?.data;
@@ -51,6 +55,7 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
         bookingsList.length > 0 && (
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
+              style={{ padding: 15 }}
               data={reverseBookings}
               margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
             >
@@ -69,36 +74,43 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
                   strokeDasharray: '8',
                 }}
               />
-              <YAxis
-                domain={['dataMin', 'dataMax']}
-                axisLine={false}
-                onClick={() => console.log('YAxis')}
-              />
+              <YAxis domain={['dataMin-0.2', 'dataMax+0.2']} axisLine={false} />
+
               <Area
-                onClick={() => console.log('Area')}
                 type="linear"
                 dataKey="ratingAfterMatch"
                 stroke="#768EF7"
-                dot={true}
+                dot
                 fillOpacity={1}
                 fill="url(#colorUv)"
                 activeDot={{
-                  style: { position: 'relative', zIndex: 10000000 },
+                  stroke: 'transparent',
+                  fill: 'transparent',
+                  cursor: 'pointer',
                   onClick: (_, data: any) => setCurrentMatch(data?.payload),
                 }}
-              >
-                {matchesLimit ? (
-                  <LabelList
-                    dataKey="ratingAfterMatch"
-                    position="insideTop"
-                    onClick={() => console.log('LabelList')}
-                  />
-                ) : null}
-              </Area>
+                label={matchesLimit !== 0 && <CustomizedLabel />}
+              />
             </AreaChart>
           </ResponsiveContainer>
         )
       )}
     </Box>
+  );
+};
+
+const CustomizedLabel = (props: any) => {
+  const { x, y, value } = props;
+
+  const textX = value.toString().length > 1 ? 5 : 10;
+  return (
+    <svg x={x - 15} y={y - 15} width={30} height={30}>
+      <g>
+        <rect x="0" y="0" width="100" height="100" fill="yellow"></rect>
+        <text x={textX} y={19} font-size="13" fill="black">
+          {value}
+        </text>
+      </g>
+    </svg>
   );
 };
