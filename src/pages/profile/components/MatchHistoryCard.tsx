@@ -12,7 +12,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getSpecificUser } from '../../../services/user/service';
 import { withHostname } from '../../../services/api/service';
 import { MatchData, matchResults } from '../../../services/matches/interface';
-
+import PersonOffOutlinedIcon from '@mui/icons-material/PersonOffOutlined';
 const isMobile = isPlatform('mobile');
 
 interface IMatchHistoryCardProps {
@@ -92,15 +92,34 @@ export const MatchHistoryCard: React.FC<IMatchHistoryCardProps> = ({
               borderBottom="1px solid #eee"
               height={25}
             >
-              {teamA.map((member, i) => (
-                <Avatar
-                  key={i}
-                  src={withHostname(
-                    member?.player?.user?.avatar?.formats?.small || '',
-                  )}
-                  sx={{ width: 20, height: 20 }}
-                />
-              ))}
+              {teamA.map((member, i) => {
+                return (
+                  <React.Fragment key={i}>
+                    {member ? (
+                      <Avatar
+                        src={withHostname(
+                          member?.player?.user?.avatar?.formats?.small || '',
+                        )}
+                        sx={{ width: 20, height: 20 }}
+                      />
+                    ) : (
+                      <Box
+                        width={20}
+                        height={20}
+                        border="1px dashed blue"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <PersonOffOutlinedIcon
+                          fontSize="small"
+                          color="disabled"
+                        />
+                      </Box>
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </Box>
             <Box
               display="flex"
@@ -109,15 +128,34 @@ export const MatchHistoryCard: React.FC<IMatchHistoryCardProps> = ({
               px={1.5}
               height={25}
             >
-              {teamB.map((member, i) => (
-                <Avatar
-                  key={i}
-                  src={withHostname(
-                    member?.player?.user?.avatar?.formats?.small || '',
-                  )}
-                  sx={{ width: 20, height: 20 }}
-                />
-              ))}
+              {teamB.map((member, i) => {
+                return (
+                  <React.Fragment key={i}>
+                    {member ? (
+                      <Avatar
+                        src={withHostname(
+                          member?.player?.user?.avatar?.formats?.small || '',
+                        )}
+                        sx={{ width: 20, height: 20 }}
+                      />
+                    ) : (
+                      <Box
+                        width={20}
+                        height={20}
+                        border="1px dashed blue"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <PersonOffOutlinedIcon
+                          fontSize="small"
+                          color="disabled"
+                        />
+                      </Box>
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </Box>
           </Box>
           <Divider orientation="vertical" flexItem />

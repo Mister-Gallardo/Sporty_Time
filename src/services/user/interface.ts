@@ -1,4 +1,5 @@
 import { Club } from '../club/interface';
+import { IMatchBookingData } from '../matches/interface';
 
 export enum EEditProfileErrors {
   FIRSTNAME = 'Укажите имя',
@@ -20,6 +21,10 @@ export interface Player {
   ratingPadel: number;
   ratingPickleball: number;
   ratingTennis: number;
+  initialPadelRating: number;
+  initialPickleballRating: number;
+  initialTennisRating: number;
+  matchBookings: IMatchBookingData[];
   createdAt: string;
   updatedAt: string;
   user?: User;
@@ -47,6 +52,7 @@ export interface MatchPlayer extends Player {
 
 export interface User {
   id: number;
+  countMatches?: number;
   firstname: string;
   lastname: string;
   fullname: string;

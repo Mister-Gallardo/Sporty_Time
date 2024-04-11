@@ -9,6 +9,7 @@ import { MatchData } from '../../../services/matches/interface';
 import { isPlatform } from '@ionic/react';
 import { useParams } from 'react-router';
 import { getSpecificUser } from '../../../services/user/service';
+import { useFormContext } from 'react-hook-form';
 
 interface IStatisticsProps {}
 
@@ -37,6 +38,9 @@ const countWins = (matches?: { match: MatchData }[], playerId?: number) => {
 export const Statistics: React.FC<IStatisticsProps> = () => {
   const { userId } = useParams<{ userId: string }>();
 
+  const { watch } = useFormContext();
+  const sport = watch('sport');
+
   const [player] = usePlayerProfile();
   const myUserId = player?.user?.id;
   const myPlayerId = player?.id;
@@ -52,15 +56,16 @@ export const Statistics: React.FC<IStatisticsProps> = () => {
   const currentPlayerId = userId ? playerId : myPlayerId || 0;
 
   const { data, isLoading } = useQuery({
-    queryKey: [`match-bookings`, currentUserId],
-    queryFn: () => getSpecificUserMatchBookings(+currentUserId, 0),
+    queryKey: [`match-bookings`, currentUserId, sport],
+    queryFn: () => getSpecificUserMatchBookings(+currentUserId, 0, sport),
   });
 
-  const myMatches = data?.data;
+  const matchesList = data?.data;
+  if (matchesList && matchesList.length === 0) return;
 
-  const fullWinStatistic = countWins(myMatches, currentPlayerId);
+  const fullWinStatistic = countWins(matchesList, currentPlayerId);
   const lastTenWinStatistic = countWins(
-    myMatches?.slice(0, 10),
+    matchesList?.slice(0, 10),
     currentPlayerId,
   );
 
@@ -69,69 +74,78 @@ export const Statistics: React.FC<IStatisticsProps> = () => {
 
   return (
     <Box width={isMobile ? '100%' : 400}>
-      <SectionTitle title="Статистика" />
-      {isLoading ? (
-        <LoadingCircle />
-      ) : (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          border="1px solid #eee"
-          p={1.5}
-        >
-          <Box>
-            <Box display="flex" mb={2}>
-              <Stack alignItems="center" width={100}>
-                <Typography fontSize={25} fontWeight={400}>
-                  {myMatches?.length}
-                </Typography>
-                <Typography fontSize={12}>Всего</Typography>
-              </Stack>
-              <Divider variant="middle" flexItem orientation="vertical" />
-              <Stack alignItems="center" width={100}>
-                <Typography fontSize={25} fontWeight={400} color="success.main">
-                  {fullWinStatistic}
-                </Typography>
-                <Typography fontSize={12} color="success.main">
-                  Побед
-                </Typography>
-              </Stack>
+      {isLoading && <LoadingCircle />}
+      {matchesList && (
+        <>
+          <SectionTitle title="Статистика" />
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            border="1px solid #eee"
+            p={1.5}
+          >
+            <Box>
+              <Box display="flex" mb={2}>
+                <Stack alignItems="center" width={100}>
+                  <Typography fontSize={25} fontWeight={400}>
+                    {matchesList?.length}
+                  </Typography>
+                  <Typography fontSize={12}>Всего</Typography>
+                </Stack>
+                <Divider variant="middle" flexItem orientation="vertical" />
+                <Stack alignItems="center" width={100}>
+                  <Typography
+                    fontSize={25}
+                    fontWeight={400}
+                    color="success.main"
+                  >
+                    {fullWinStatistic}
+                  </Typography>
+                  <Typography fontSize={12} color="success.main">
+                    Побед
+                  </Typography>
+                </Stack>
+              </Box>
+              <Box display="flex">
+                <Stack alignItems="center" width={100}>
+                  <Typography fontSize={25} fontWeight={400}>
+                    {matchesAmount}
+                  </Typography>
+                  <Typography fontSize={12}>Последние</Typography>
+                </Stack>
+                <Divider variant="middle" flexItem orientation="vertical" />
+                <Stack alignItems="center" width={100}>
+                  <Typography
+                    fontSize={25}
+                    fontWeight={400}
+                    color="success.main"
+                  >
+                    {lastTenWinStatistic}
+                  </Typography>
+                  <Typography fontSize={12} color="success.main">
+                    Побед
+                  </Typography>
+                </Stack>
+              </Box>
             </Box>
-            <Box display="flex">
-              <Stack alignItems="center" width={100}>
-                <Typography fontSize={25} fontWeight={400}>
-                  {matchesAmount}
+            <Box>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                border="3px solid #333"
+                p={2}
+              >
+                <Typography fontSize={35} fontWeight={500}>
+                  {effectiveness}%
                 </Typography>
-                <Typography fontSize={12}>Последние</Typography>
-              </Stack>
-              <Divider variant="middle" flexItem orientation="vertical" />
-              <Stack alignItems="center" width={100}>
-                <Typography fontSize={25} fontWeight={400} color="success.main">
-                  {lastTenWinStatistic}
-                </Typography>
-                <Typography fontSize={12} color="success.main">
-                  Побед
-                </Typography>
-              </Stack>
+                <Typography fontSize={10}>Эффективность</Typography>
+                <Typography fontSize={10}>Последние {matchesAmount}</Typography>
+              </Box>
             </Box>
           </Box>
-          <Box>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              border="3px solid #333"
-              p={2}
-            >
-              <Typography fontSize={35} fontWeight={500}>
-                {effectiveness}%
-              </Typography>
-              <Typography fontSize={10}>Эффективность</Typography>
-              <Typography fontSize={10}>Последние {matchesAmount}</Typography>
-            </Box>
-          </Box>
-        </Box>
+        </>
       )}
     </Box>
   );

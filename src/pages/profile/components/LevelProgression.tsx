@@ -11,6 +11,8 @@ import { usePlayerProfile } from '../../../services/api/hooks';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { MatchHistoryCard } from './MatchHistoryCard';
 import { IMatchBookingData } from '../../../services/matches/interface';
+import { useFormContext } from 'react-hook-form';
+import { AllResultsProgressCard } from './AllResultsProgressCard';
 
 const results = [
   {
@@ -37,6 +39,9 @@ const isMobile = isPlatform('mobile');
 export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
   const { userId } = useParams<{ userId: string }>();
 
+  const { watch } = useFormContext();
+  const sport = watch('sport');
+
   const [player] = usePlayerProfile();
   const myUserId = player?.user?.id;
 
@@ -45,8 +50,9 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
   const [matchesLimit, setMatchesLimit] = useState(5);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: [`match-bookings`, matchesLimit, currentUserId],
-    queryFn: () => getSpecificUserMatchBookings(+currentUserId, matchesLimit),
+    queryKey: [`match-bookings`, matchesLimit, currentUserId, sport],
+    queryFn: () =>
+      getSpecificUserMatchBookings(+currentUserId, matchesLimit, sport),
   });
   const bookingsList = data?.data;
 
@@ -56,7 +62,7 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
 
   // set the first match to chart by default
   useEffect(() => {
-    if (!bookingsList || bookingsList.length < 1) return;
+    if (!bookingsList || bookingsList.length < 1) return setCurrentMatch(null);
     setCurrentMatch(bookingsList[0]);
   }, [bookingsList]);
 
@@ -87,6 +93,7 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
               aria-label={item.title}
               onClick={() => setMatchesLimit(item.limit)}
               selected={matchesLimit === item.limit}
+              disabled={bookingsList?.length === 0}
             >
               {item.title}
             </ToggleButton>
@@ -106,6 +113,8 @@ export const LevelProgression: React.FC<ILevelProgressionProps> = () => {
           <Box height={115}>
             <LoadingCircle />
           </Box>
+        ) : matchesLimit === 0 ? (
+          <AllResultsProgressCard />
         ) : currentMatch ? (
           <MatchHistoryCard {...currentMatch} />
         ) : (

@@ -4,6 +4,9 @@ import { getNotifications } from '../../services/notifications/service';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 import { NotFoundPage } from '../../components/NotFoundPage';
 import { Link } from 'react-router-dom';
+import { isPlatform } from '@ionic/react';
+
+const isMobile = isPlatform('mobile');
 
 export function NotificationsPage() {
   const { data, isLoading, isError } = useQuery({
@@ -20,30 +23,36 @@ export function NotificationsPage() {
       {isLoading ? (
         <LoadingCircle />
       ) : notifications && notifications.length > 0 ? (
-        notifications?.map((notification) => {
-          const notificationDate = new Date(
-            notification?.createdAt,
-          ).toLocaleDateString('ru-RU', {
-            month: 'long',
-            day: 'numeric',
-          });
-
-          return (
-            <Link to={notification?.data?.url}>
-              <Box key={notification.id} borderBottom="1px solid #eee">
-                <Box display="flex" alignItems="center" gap={1}>
-                  <Typography fontWeight={600}>
-                    {notification?.title}
-                  </Typography>
-                  <Typography color="gray" fontSize={12}>
-                    {notificationDate}
-                  </Typography>
+        notifications
+          ?.map((notification) => {
+            const notificationDate = new Date(
+              notification?.createdAt,
+            ).toLocaleDateString('ru-RU', {
+              month: 'long',
+              day: 'numeric',
+            });
+            return (
+              <Link to={notification?.data?.url}>
+                <Box key={notification.id} borderBottom="1px solid #eee" py={1}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent={isMobile ? 'space-between' : 'unset'}
+                    gap={1}
+                  >
+                    <Typography fontWeight={600}>
+                      {notification?.title}
+                    </Typography>
+                    <Typography color="gray" fontSize={12} whiteSpace="nowrap">
+                      {notificationDate}
+                    </Typography>
+                  </Box>
+                  <Typography>{notification?.body}</Typography>
                 </Box>
-                <Typography>{notification?.body}</Typography>
-              </Box>
-            </Link>
-          );
-        })
+              </Link>
+            );
+          })
+          .reverse()
       ) : (
         <Typography textAlign="center" color="gray" mt={10}>
           Уведомлений нет

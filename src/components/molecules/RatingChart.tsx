@@ -5,7 +5,6 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
-  LabelList,
   ResponsiveContainer,
   Tooltip,
   YAxis,
@@ -15,6 +14,7 @@ import { LoadingCircle } from '../atoms/LoadingCircle';
 import { useParams } from 'react-router';
 import { usePlayerProfile } from '../../services/api/hooks';
 import { IMatchBookingData } from '../../services/matches/interface';
+import { useFormContext } from 'react-hook-form';
 
 interface IRatingChartProps {
   matchesLimit: number;
@@ -27,20 +27,57 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
 }) => {
   const { userId } = useParams<{ userId: string }>();
 
+  const { watch } = useFormContext();
+  const sport = watch('sport');
+
   const [player] = usePlayerProfile();
   const myPlayerId = player?.user?.id;
 
   const currentUserId = userId ? userId : myPlayerId || 0;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['match-bookings', matchesLimit, userId],
-    queryFn: () => getSpecificUserMatchBookings(+currentUserId, matchesLimit),
+    queryKey: ['match-bookings', matchesLimit, userId, sport],
+    queryFn: () =>
+      getSpecificUserMatchBookings(+currentUserId, matchesLimit, sport),
   });
 
   const bookingsList = data?.data;
   const reverseBookings = bookingsList && [...bookingsList].reverse();
 
   if (isError) return;
+
+  const CustomizedDot = (props: any) => {
+    if (!bookingsList) return;
+
+    const { cx, cy, payload, index } = props;
+    const isLast = index === bookingsList?.length - 1;
+
+    const rating = payload?.ratingAfterMatch;
+
+    const textX = rating.toString().length > 1 ? 5 : 10;
+    return (
+      <svg
+        x={isLast ? cx - 30 : cx - 15}
+        y={cy - 15}
+        width={30}
+        height={30}
+        onClick={() => {
+          if (setCurrentMatch) {
+            setCurrentMatch(payload);
+          }
+        }}
+        cursor="pointer"
+      >
+        <g>
+          <rect x="0" y="0" width={30} height={30} fill="yellow"></rect>
+
+          <text x={textX} y={19} fontSize="13" fill="black">
+            {rating}
+          </text>
+        </g>
+      </svg>
+    );
+  };
 
   return (
     <Box minWidth={350} width="100%" height={250}>
@@ -69,32 +106,17 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
                   strokeDasharray: '8',
                 }}
               />
-              <YAxis
-                domain={['dataMin', 'dataMax']}
-                axisLine={false}
-                onClick={() => console.log('YAxis')}
-              />
+              <YAxis domain={['dataMin-0.2', 'dataMax+0.2']} axisLine={false} />
+
               <Area
-                onClick={() => console.log('Area')}
                 type="linear"
                 dataKey="ratingAfterMatch"
                 stroke="#768EF7"
-                dot={true}
+                dot={matchesLimit !== 0 && <CustomizedDot />}
                 fillOpacity={1}
                 fill="url(#colorUv)"
-                activeDot={{
-                  style: { position: 'relative', zIndex: 10000000 },
-                  onClick: (_, data: any) => setCurrentMatch(data?.payload),
-                }}
-              >
-                {matchesLimit ? (
-                  <LabelList
-                    dataKey="ratingAfterMatch"
-                    position="insideTop"
-                    onClick={() => console.log('LabelList')}
-                  />
-                ) : null}
-              </Area>
+                activeDot={matchesLimit === 0 && <CustomizedDot />}
+              />
             </AreaChart>
           </ResponsiveContainer>
         )
