@@ -1,10 +1,11 @@
-import { IonBackButton, IonContent, IonPage } from '@ionic/react';
+import { IonBackButton, IonContent, IonPage, isPlatform } from '@ionic/react';
 import { Box } from '@mui/material';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 import React, { Suspense } from 'react';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 
 const SingleCourtPage = React.lazy(() => import('.'));
+const isIphone = isPlatform('iphone');
 
 export function MobileSingleCourtPage() {
   return (
@@ -17,7 +18,7 @@ export function MobileSingleCourtPage() {
             justifyContent: 'space-between',
             position: 'absolute',
             zIndex: 1,
-            top: '1.5rem',
+            top: isIphone ? '4.5rem' : '1.5rem',
             px: 2,
           }}
         >
