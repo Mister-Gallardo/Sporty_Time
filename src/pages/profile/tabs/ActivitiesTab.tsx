@@ -26,7 +26,6 @@ const sports = [
 const isMobile = isPlatform('mobile');
 
 export default function ActivitiesTab() {
-  // const [activeSport, setActiveSport] = useState<ESport>(ESport.PADEL);
   const sportForm = useForm({
     defaultValues: {
       sport: ESport.PADEL,
@@ -37,7 +36,7 @@ export default function ActivitiesTab() {
   return (
     <Box width="100%">
       <Box>
-        <Box mb={4} display="flex" justifyContent="center" gap={1}>
+        <Box mt={2} mb={4} display="flex" justifyContent="center" gap={1}>
           {sports.map((item) => (
             <ToggleButton
               key={item.id}

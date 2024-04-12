@@ -86,7 +86,10 @@ export const MessageTextField = () => {
               {...field}
               placeholder="Напишите сообщение..."
               autoComplete="off"
-              InputProps={{ disableUnderline: true, sx: { color: '#000' } }}
+              InputProps={{
+                disableUnderline: true,
+                sx: { '& > .MuiInputBase-input': { color: '#000 !important' } },
+              }}
               fullWidth
               sx={{ paddingX: 1 }}
             />
