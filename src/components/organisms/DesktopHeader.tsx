@@ -4,6 +4,8 @@ import { SportsBaseballOutlined } from '@mui/icons-material';
 import {
   AppBar,
   Box,
+  Button,
+  CircularProgress,
   IconButton,
   Link,
   Toolbar,
@@ -17,6 +19,7 @@ import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import { useMutation } from '@tanstack/react-query';
 import { removeDeviceToken } from '../../services/notifications/service';
 import { useLocalStorage } from 'usehooks-ts';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 function DesktopHeader() {
   const [mdMoreAnchorEl, setMdMoreAnchorEl] = useState<null | HTMLElement>(
@@ -82,7 +85,7 @@ function DesktopHeader() {
           <Box flexGrow={1} />
 
           <Box ml={3} display={{ xs: 'none', md: 'flex' }}>
-            <Box sx={{ display: 'flex', gap: '10px' }}>
+            <Box display="flex" alignItems="center" gap={1.5}>
               {isAuthorized && (
                 <>
                   <Link
@@ -143,21 +146,25 @@ function DesktopHeader() {
                   >
                     {firstName} {lastName}
                   </Link>
-                  <Typography
+                  <Button
+                    disabled={removeTokenMutation?.isPending}
                     onClick={() => {
                       if (deviceToken)
                         return removeTokenMutation.mutate(deviceToken);
                       history.go(0);
                       localStorage.removeItem('jwtToken');
                     }}
-                    sx={{
-                      textDecoration: 'underline',
-                      cursor: 'pointer',
-                      color: 'primary.main',
-                    }}
+                    sx={{ p: 0 }}
+                    endIcon={
+                      removeTokenMutation?.isPending ? (
+                        <CircularProgress size={18} />
+                      ) : (
+                        <LogoutIcon />
+                      )
+                    }
                   >
                     Выход
-                  </Typography>
+                  </Button>
                 </>
               ) : (
                 <Link

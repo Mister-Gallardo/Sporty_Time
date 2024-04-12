@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { IAuthForm } from '../../services/api/interface';
 import { useMutation } from '@tanstack/react-query';
@@ -37,6 +37,10 @@ enum LoginStates {
 
 export function AuthPage() {
   const history = useHistory();
+
+  useEffect(() => {
+    if (localStorage.getItem('jwtToken')) return history.push('/');
+  }, []);
 
   const [authState, setAuthState] = useState(LoginStates.UNDEFINED);
   const [showPassword, setShowPassword] = useToggle();
