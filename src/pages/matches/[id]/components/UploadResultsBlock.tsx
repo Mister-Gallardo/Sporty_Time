@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import {
@@ -77,8 +77,10 @@ export const UploadResultsBlock = () => {
           !singleMatchData.confirmMatchResults && (
             <Typography>Ожидание подтверждения...</Typography>
           )}
-        {singleMatchData?.matchResults && !myBooking?.confirmMatchResults && (
+        {(!myBooking?.confirmMatchResults ||
+          !singleMatchData.confirmMatchResults) && (
           <Button
+            disabled={uploadMatchReslultsMutation.isPending}
             onClick={() =>
               uploadMatchReslultsMutation.mutate({
                 matchId: +matchId,
@@ -89,17 +91,25 @@ export const UploadResultsBlock = () => {
                 ],
               })
             }
+            endIcon={
+              uploadMatchReslultsMutation.isPending && (
+                <CircularProgress size={20} color="inherit" />
+              )
+            }
             sx={{
-              backgroundColor: '#28a11e',
-              fontSize: '.95rem',
-              fontWeight: '600',
+              backgroundColor: 'success.main',
+              color: '#fff',
+              px: 2,
+              '&:hover': {
+                backgroundColor: 'primary.main',
+              },
             }}
           >
             Подтвердить
           </Button>
         )}
         {!(
-          singleMatchData?.confirmMatchResults || myBooking?.confirmMatchResults
+          singleMatchData.confirmMatchResults || myBooking?.confirmMatchResults
         ) && (
           <Button
             onClick={() => setOpenUploadModal(true)}

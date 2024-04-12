@@ -87,14 +87,14 @@ export const Statistics: React.FC<IStatisticsProps> = () => {
           >
             <Box>
               <Box display="flex" mb={2}>
-                <Stack alignItems="center" width={100}>
+                <Stack alignItems="center" width={90}>
                   <Typography fontSize={25} fontWeight={400}>
                     {matchesList?.length}
                   </Typography>
                   <Typography fontSize={12}>Всего</Typography>
                 </Stack>
                 <Divider variant="middle" flexItem orientation="vertical" />
-                <Stack alignItems="center" width={100}>
+                <Stack alignItems="center" width={90}>
                   <Typography
                     fontSize={25}
                     fontWeight={400}
@@ -108,14 +108,14 @@ export const Statistics: React.FC<IStatisticsProps> = () => {
                 </Stack>
               </Box>
               <Box display="flex">
-                <Stack alignItems="center" width={100}>
+                <Stack alignItems="center" width={90}>
                   <Typography fontSize={25} fontWeight={400}>
                     {matchesAmount}
                   </Typography>
                   <Typography fontSize={12}>Последние</Typography>
                 </Stack>
                 <Divider variant="middle" flexItem orientation="vertical" />
-                <Stack alignItems="center" width={100}>
+                <Stack alignItems="center" width={90}>
                   <Typography
                     fontSize={25}
                     fontWeight={400}
