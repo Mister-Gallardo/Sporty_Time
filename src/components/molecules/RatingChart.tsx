@@ -56,18 +56,7 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
 
     const textX = rating.toString().length > 1 ? 5 : 10;
     return (
-      <svg
-        x={isLast ? cx - 30 : cx - 15}
-        y={cy - 15}
-        width={30}
-        height={30}
-        onClick={() => {
-          if (setCurrentMatch) {
-            setCurrentMatch(payload);
-          }
-        }}
-        cursor="pointer"
-      >
+      <svg x={isLast ? cx - 30 : cx - 15} y={cy - 15} width={30} height={30}>
         <g>
           <rect x="0" y="0" width={30} height={30} fill="yellow"></rect>
 
@@ -77,6 +66,14 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
         </g>
       </svg>
     );
+  };
+
+  const CustomTooltip = (props: any) => {
+    const { active, label } = props;
+    if (!reverseBookings) return null;
+
+    if (active) setCurrentMatch(reverseBookings[label]);
+    return null;
   };
 
   return (
@@ -105,6 +102,7 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
                   strokeWidth: 2,
                   strokeDasharray: '8',
                 }}
+                content={<CustomTooltip />}
               />
               <YAxis domain={['dataMin-0.2', 'dataMax+0.2']} axisLine={false} />
 
