@@ -40,10 +40,12 @@ export const RestorePasswordModal: React.FC<IRestorePasswordModal> = ({
     },
     onError(e: any) {
       const message = e.response.data.message;
-      if (message[0] === 'email must be an email')
-        setErrorMsg('Некорректный Email');
-      if (message === 'Email does not exist')
-        setErrorMsg('Такой Email не существует');
+
+      if (Array.isArray(message)) {
+        setErrorMsg(message[0]);
+      } else {
+        setErrorMsg(message);
+      }
     },
   });
 
@@ -68,6 +70,7 @@ export const RestorePasswordModal: React.FC<IRestorePasswordModal> = ({
         <TextField
           error={!!errorMsg}
           value={email}
+          autoComplete="off"
           onChange={(e) => {
             if (errorMsg) setErrorMsg('');
             setEmail(e.target.value);

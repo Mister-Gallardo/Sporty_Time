@@ -51,46 +51,51 @@ export const useRegisterNotificationsToken = () => {
     if (Capacitor.getPlatform() === 'web') {
       const messaging = getMessaging();
 
-      const status = Notification.permission;
+      if ('Notification' in window) {
+        const status = Notification.permission;
 
-      if (status === 'granted') {
-        getToken(messaging, { vapidKey }).then((token) => {
-          setDeviceToken(token);
-          registerTokenMutation.mutate(token);
-        });
+        if (status === 'granted') {
+          getToken(messaging, { vapidKey }).then((token) => {
+            setDeviceToken(token);
+            registerTokenMutation.mutate(token);
+          });
 
-        new Promise((resolve) => {
-          onMessage(messaging, (payload) => resolve(payload));
-        })
-          .then((event: any) => {
-            const notification = new Notification(event?.notification?.title, {
-              body: event?.notification?.body,
-              data: event?.data?.redirect.replace(
-                'sportytime.ru',
-                'dev.sportytime.ru',
-              ),
-            });
-            notification.onclick = (event: any) => {
-              window.location.href = event?.target?.data;
-            };
+          new Promise((resolve) => {
+            onMessage(messaging, (payload) => resolve(payload));
           })
-          .catch(console.error);
-      } else {
-        Notification.requestPermission();
-      }
-    } else {
-      // Request permission to use push notifications
-      // iOS will prompt user and return if they granted permission or not
-      // Android will just grant without prompting
-      PushNotifications.requestPermissions().then((result) => {
-        if (result.receive === 'granted') {
-          // Register with Apple / Google to receive push via APNS/FCM
-          registerNotifications();
-          addListeners();
+            .then((event: any) => {
+              const notification = new Notification(
+                event?.notification?.title,
+                {
+                  body: event?.notification?.body,
+                  data: event?.data?.redirect.replace(
+                    'sportytime.ru',
+                    'dev.sportytime.ru',
+                  ),
+                },
+              );
+              notification.onclick = (event: any) => {
+                window.location.href = event?.target?.data;
+              };
+            })
+            .catch(console.error);
         } else {
-          PushNotifications.requestPermissions();
+          Notification.requestPermission();
         }
-      });
+      } else {
+        // Request permission to use push notifications
+        // iOS will prompt user and return if they granted permission or not
+        // Android will just grant without prompting
+        PushNotifications.requestPermissions().then((result) => {
+          if (result.receive === 'granted') {
+            // Register with Apple / Google to receive push via APNS/FCM
+            registerNotifications();
+            addListeners();
+          } else {
+            PushNotifications.requestPermissions();
+          }
+        });
+      }
     }
   }, []);
 

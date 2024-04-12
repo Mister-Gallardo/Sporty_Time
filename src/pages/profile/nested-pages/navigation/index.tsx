@@ -1,4 +1,11 @@
-import { Avatar, Box, Button, Stack, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from '@mui/material';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import Delete from '@mui/icons-material/Delete';
 import { NavButton } from '../../components/NavButton';
@@ -10,6 +17,9 @@ import { Dialog } from '@capacitor/dialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteMe } from '../../../../services/user/service';
 import { withHostname } from '../../../../services/api/service';
+import { useLocalStorage } from 'usehooks-ts';
+import { removeDeviceToken } from '../../../../services/notifications/service';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const isMobile = isPlatform('mobile');
 
@@ -27,6 +37,17 @@ export const ProfileNavPage = () => {
     },
     onError(e: Error) {
       console.log(e);
+    },
+  });
+
+  const [deviceToken] = useLocalStorage('deviceToken', '');
+
+  const removeTokenMutation = useMutation({
+    mutationFn: removeDeviceToken,
+    onSuccess() {
+      localStorage.removeItem('deviceToken');
+      localStorage.removeItem('jwtToken');
+      history.push('/auth');
     },
   });
 
@@ -82,11 +103,21 @@ export const ProfileNavPage = () => {
       </Stack>
 
       <Button
+        disabled={removeTokenMutation?.isPending}
         onClick={() => {
+          if (deviceToken) return removeTokenMutation.mutate(deviceToken);
+
           history.push('/auth');
           localStorage.removeItem('jwtToken');
         }}
         sx={{ mt: 5, fontWeight: 600 }}
+        endIcon={
+          removeTokenMutation?.isPending ? (
+            <CircularProgress size={18} />
+          ) : (
+            <LogoutIcon />
+          )
+        }
       >
         Выход
       </Button>
