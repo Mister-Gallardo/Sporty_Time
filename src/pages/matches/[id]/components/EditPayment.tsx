@@ -32,10 +32,10 @@ export const EditPayment = () => {
   if (isApproved || paid || !isUserOwner || matchStatus === Status.CANCELED)
     return null;
 
-  const currentPaidAmount = matchBookings.reduce(
-    (acc, member) => acc + member.paid,
-    0,
-  );
+  const currentPaidAmount =
+    matchBookings.length > 0
+      ? matchBookings.reduce((acc, member) => acc + member.paid, 0)
+      : 0;
 
   const matchStartDate = new Date(booking.startsAt);
   const mustBePaidDate = new Date(matchStartDate.getTime() - 12 * 3600 * 1000);

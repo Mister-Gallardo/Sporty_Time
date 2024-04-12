@@ -39,7 +39,7 @@ export const AllResultsProgressCard = () => {
   });
   const bookingsList = data?.data;
 
-  if (!bookingsList) return;
+  if (!bookingsList || bookingsList.length === 0) return;
 
   const min = bookingsList?.reduce((a, b) => {
     return a.ratingAfterMatch < b.ratingAfterMatch ? a : b;
