@@ -11,19 +11,17 @@ import { usePlayerProfile } from '../../../services/api/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { getSpecificUser } from '../../../services/user/service';
 import { withHostname } from '../../../services/api/service';
-import { MatchData, matchResults } from '../../../services/matches/interface';
+import { MatchData } from '../../../services/matches/interface';
 import PersonOffOutlinedIcon from '@mui/icons-material/PersonOffOutlined';
 const isMobile = isPlatform('mobile');
 
 interface IMatchHistoryCardProps {
   match: MatchData;
-  matchResults: matchResults;
   ratingProfit: number;
 }
 
 export const MatchHistoryCard: React.FC<IMatchHistoryCardProps> = ({
   match,
-  matchResults,
   ratingProfit,
 }) => {
   const { userId } = useParams<{ userId: string }>();
@@ -169,11 +167,17 @@ export const MatchHistoryCard: React.FC<IMatchHistoryCardProps> = ({
               height={25}
               alignItems="center"
             >
-              {matchResults ? (
+              {match?.matchResults ? (
                 <>
-                  <Typography>{matchResults[0][0]}</Typography>
-                  <Typography>{matchResults[1][0]}</Typography>
-                  <Typography>{matchResults[2][0]}</Typography>
+                  <Typography width={15} textAlign="center">
+                    {match.matchResults[0][0]}
+                  </Typography>
+                  <Typography width={15} textAlign="center">
+                    {match.matchResults[1][0]}
+                  </Typography>
+                  <Typography width={15} textAlign="center">
+                    {match.matchResults[2][0]}
+                  </Typography>
                 </>
               ) : (
                 <>
@@ -191,11 +195,17 @@ export const MatchHistoryCard: React.FC<IMatchHistoryCardProps> = ({
               height={25}
               alignItems="center"
             >
-              {matchResults ? (
+              {match?.matchResults ? (
                 <>
-                  <Typography>{matchResults[0][1]}</Typography>
-                  <Typography>{matchResults[1][1]}</Typography>
-                  <Typography>{matchResults[2][1]}</Typography>
+                  <Typography width={15} textAlign="center">
+                    {match.matchResults[0][1]}
+                  </Typography>
+                  <Typography width={15} textAlign="center">
+                    {match.matchResults[1][1]}
+                  </Typography>
+                  <Typography width={15} textAlign="center">
+                    {match.matchResults[2][1]}
+                  </Typography>
                 </>
               ) : (
                 <>
@@ -207,10 +217,11 @@ export const MatchHistoryCard: React.FC<IMatchHistoryCardProps> = ({
             </Box>
           </Box>
           <Divider orientation="vertical" flexItem />
-          {matchResults ? (
+          {match?.matchResults ? (
             <Box px={2}>
               <Typography
                 textAlign="center"
+                minWidth={87}
                 color={isWin ? 'success.main' : 'error.main'}
                 mb={0.5}
               >
