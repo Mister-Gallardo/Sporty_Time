@@ -82,20 +82,20 @@ export const useRegisterNotificationsToken = () => {
         } else {
           Notification.requestPermission();
         }
-      } else {
-        // Request permission to use push notifications
-        // iOS will prompt user and return if they granted permission or not
-        // Android will just grant without prompting
-        PushNotifications.requestPermissions().then((result) => {
-          if (result.receive === 'granted') {
-            // Register with Apple / Google to receive push via APNS/FCM
-            registerNotifications();
-            addListeners();
-          } else {
-            PushNotifications.requestPermissions();
-          }
-        });
       }
+    } else {
+      // Request permission to use push notifications
+      // iOS will prompt user and return if they granted permission or not
+      // Android will just grant without prompting
+      PushNotifications.requestPermissions().then((result) => {
+        if (result.receive === 'granted') {
+          // Register with Apple / Google to receive push via APNS/FCM
+          registerNotifications();
+          addListeners();
+        } else {
+          PushNotifications.requestPermissions();
+        }
+      });
     }
   }, []);
 

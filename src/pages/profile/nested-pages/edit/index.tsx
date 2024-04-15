@@ -26,6 +26,7 @@ import React, { useState } from 'react';
 import { EEditProfileErrors } from '../../../../services/user/interface';
 import { isEmpty } from 'lodash-es';
 import MuiPhoneNumber from 'mui-phone-number';
+import { withHostname } from '../../../../services/api/service';
 
 const isMobile = isPlatform('mobile');
 const genders = [
@@ -171,7 +172,9 @@ export const EditProfilePage = () => {
 
         <Box display="flex" flexDirection="column" alignItems="center">
           <Avatar
-            src={(avatar as string) || user?.avatar?.formats?.small}
+            src={withHostname(
+              (avatar as string) || user?.avatar?.formats?.small || '',
+            )}
             sx={{ width: 50, height: 50 }}
           />
           <Button onClick={() => takePhoto()} sx={{ fontSize: 13 }}>
@@ -239,6 +242,14 @@ export const EditProfilePage = () => {
               variant="outlined"
               label="Номер телефона"
               fullWidth
+              sx={{
+                '& > .MuiInputBase-root': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.06)',
+                  '& > fieldset': {
+                    border: 'none',
+                  },
+                },
+              }}
             />
 
             <TextField

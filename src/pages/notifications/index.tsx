@@ -32,8 +32,8 @@ export function NotificationsPage() {
               day: 'numeric',
             });
             return (
-              <Link to={notification?.data?.url}>
-                <Box key={notification.id} borderBottom="1px solid #eee" py={1}>
+              <Link key={notification.id} to={notification?.data?.url}>
+                <Box borderBottom="1px solid #eee" py={1}>
                   <Box
                     display="flex"
                     alignItems="center"
