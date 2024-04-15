@@ -347,6 +347,7 @@ export function AuthPage() {
                   variant="outlined"
                   label="Номер телефона"
                   fullWidth
+                  sx={{ '& svg': { height: '1em' } }}
                 />
               </Box>
             </Grow>

@@ -16,13 +16,18 @@ import {
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import PersonRemoveOutlinedIcon from '@mui/icons-material/PersonRemoveOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
-import { IApproved, IJoinRequest } from '../../services/matches/interface';
+import {
+  IApproved,
+  IJoinRequest,
+  Status,
+} from '../../services/matches/interface';
 import { usePlayerProfile } from '../../services/api/hooks';
 import { withHostname } from '../../services/api/service';
 import { getSportRating } from '../../helpers/getSportRating';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { useIonToast } from '@ionic/react';
+import { getMatchStatus } from '../../helpers/getMatchStatus';
 
 interface IRequestedPlayersListProps {
   playersList: IJoinRequest[];
@@ -115,6 +120,10 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
 
   if (!matchData) return;
 
+  const matchSatus = getMatchStatus(matchData);
+  const showButtons =
+    matchSatus === Status.UPCOMING || matchSatus === Status.PENDING;
+
   return (
     <Box
       border={`1px solid ${
@@ -173,7 +182,7 @@ export const RequestedPlayersList: React.FC<IRequestedPlayersListProps> = ({
                 </Box>
               </Box>
 
-              {isPlayerInMatch && !approved && (
+              {showButtons && isPlayerInMatch && !approved && (
                 <Box display="flex" gap={1}>
                   {((didCurrentUserVoted &&
                     didCurrentUserVoted.approved === false) ||

@@ -1,6 +1,5 @@
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import React from 'react';
 import {
   getOneAvailableMatch,
   uploadResults,
@@ -56,7 +55,7 @@ export const UploadResultsBlock = () => {
     },
   });
 
-  if (!singleMatchData) return null;
+  if (!singleMatchData || singleMatchData.confirmMatchResults) return null;
 
   return (
     <>
@@ -73,12 +72,10 @@ export const UploadResultsBlock = () => {
         }}
       >
         {/* Confirm / Upload Result */}
-        {singleMatchData.matchResults &&
-          !singleMatchData.confirmMatchResults && (
-            <Typography>Ожидание подтверждения...</Typography>
-          )}
-        {(!myBooking?.confirmMatchResults ||
-          !singleMatchData.confirmMatchResults) && (
+        {singleMatchData.matchResults && (
+          <Typography>Ожидание подтверждения...</Typography>
+        )}
+        {!myBooking?.confirmMatchResults && (
           <Button
             disabled={uploadMatchReslultsMutation.isPending}
             onClick={() =>
@@ -108,9 +105,7 @@ export const UploadResultsBlock = () => {
             Подтвердить
           </Button>
         )}
-        {!(
-          singleMatchData.confirmMatchResults || myBooking?.confirmMatchResults
-        ) && (
+        {!myBooking?.confirmMatchResults && (
           <Button
             onClick={() => setOpenUploadModal(true)}
             sx={{ fontSize: '.95rem', fontWeight: '600' }}

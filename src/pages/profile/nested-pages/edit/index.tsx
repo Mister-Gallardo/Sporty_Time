@@ -243,6 +243,7 @@ export const EditProfilePage = () => {
               label="Номер телефона"
               fullWidth
               sx={{
+                '& svg': { height: '1em' },
                 '& > .MuiInputBase-root': {
                   backgroundColor: 'rgba(0, 0, 0, 0.06)',
                   '& > fieldset': {
