@@ -94,14 +94,14 @@ export function SingleMatchPage() {
           ...booking.player,
         })) || [];
 
-    if (watch('team') === 'A' && myPlayer)
+    if (watch('team') === 'A' && myPlayer && !isUserOwner)
       teamAPlayers.push({
         ...myPlayer,
         mark: !playerAlreadyInSomeTeam,
         paid: 0,
         isOwner: isUserOwner,
       });
-    if (watch('team') === 'B' && myPlayer)
+    if (watch('team') === 'B' && myPlayer && !isUserOwner)
       teamBPlayers.push({
         ...myPlayer,
         mark: !playerAlreadyInSomeTeam,

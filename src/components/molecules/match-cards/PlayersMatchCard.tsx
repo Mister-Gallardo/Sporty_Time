@@ -7,6 +7,7 @@ import { getMatchStatus } from '../../../helpers/getMatchStatus';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getOneAvailableMatch } from '../../../services/matches/service';
+import { usePlayerProfile } from '../../../services/api/hooks';
 
 interface IPlayersMatchCardProps {
   players: MatchPlayer[];
@@ -23,6 +24,7 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
   handleEditModal,
 }) => {
   const { matchId } = useParams<{ matchId: string }>();
+  const [muPlayer] = usePlayerProfile();
 
   const { data } = useQuery({
     queryKey: [`match`, +matchId],
@@ -32,12 +34,22 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
   const matchData = data?.data;
   if (!matchData) return;
 
+  const isMatchOwner = matchData.owner?.id === muPlayer?.id;
+
   const { sport, paid } = matchData;
 
   const matchStatus = getMatchStatus(matchData);
   const isEditActive =
     playerAlreadyInSomeTeam &&
     (matchStatus === Status.PENDING || matchStatus === Status.UPCOMING);
+
+  const onPlayerSlotClick = (team: string) => {
+    if (isMatchOwner) {
+      handleEditModal();
+    } else {
+      setPlayerInTeam(team);
+    }
+  };
 
   return (
     <Box
@@ -66,7 +78,7 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
         <Box display="flex" justifyContent="space-between" gap={2} width="100%">
           <PlayerSlot
             player={players[0]}
-            onClick={() => setPlayerInTeam('A')}
+            onClick={() => onPlayerSlotClick('A')}
             sport={sport}
             isMatchPaid={paid}
             playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
@@ -74,7 +86,7 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
           />
           <PlayerSlot
             player={players[1]}
-            onClick={() => setPlayerInTeam('A')}
+            onClick={() => onPlayerSlotClick('A')}
             sport={sport}
             isMatchPaid={paid}
             playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
@@ -85,7 +97,7 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
         <Box display="flex" justifyContent="space-between" gap={2} width="100%">
           <PlayerSlot
             player={players[2]}
-            onClick={() => setPlayerInTeam('B')}
+            onClick={() => onPlayerSlotClick('B')}
             sport={sport}
             isMatchPaid={paid}
             playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}
@@ -93,7 +105,7 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
           />
           <PlayerSlot
             player={players[3]}
-            onClick={() => setPlayerInTeam('B')}
+            onClick={() => onPlayerSlotClick('B')}
             sport={sport}
             isMatchPaid={paid}
             playerAlreadyInSomeTeam={playerAlreadyInSomeTeam}

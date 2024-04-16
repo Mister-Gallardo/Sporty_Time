@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Slider, { SliderThumb } from '@mui/material/Slider';
-import { Box, Typography } from '@mui/material';
+import { Avatar, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { IonAvatar, isPlatform } from '@ionic/react';
+import { isPlatform } from '@ionic/react';
 import { useFormContext } from 'react-hook-form';
 
 interface ThumbComponentProps extends React.HTMLAttributes<unknown> {}
@@ -35,12 +35,13 @@ export const MultiThumbSlider: React.FC<IMultiThumbSlider> = ({
       mt={-11}
       sx={{ cursor: isMobile ? 'unset' : 'pointer' }}
     >
-      <IonAvatar style={{ width: 30, height: 30 }}>
-        <img
-          alt="Silhouette of a person's head"
-          src="https://ionicframework.com/docs/img/demos/avatar.svg"
-        />
-      </IonAvatar>
+      <Avatar
+        sx={{
+          width: 30,
+          height: 30,
+          backgroundColor: 'primary.main',
+        }}
+      />
       <Typography color="#000">{rating}</Typography>
       <Box
         sx={{
