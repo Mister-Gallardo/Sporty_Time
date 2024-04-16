@@ -60,10 +60,13 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
       });
       query.refetch();
     },
-    onError() {
+    onError(e: any) {
+      const message = e?.response?.data?.message;
+      if (!message) return;
+
       showToast({
         color: 'danger',
-        message: 'Произошла ошибка! Попробуйте ещё раз.',
+        message,
         mode: 'ios',
         position: 'bottom',
         duration: 2000,

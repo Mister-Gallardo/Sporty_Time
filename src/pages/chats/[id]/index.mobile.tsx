@@ -2,6 +2,7 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
+  IonFooter,
   IonHeader,
   IonPage,
   IonTitle,
@@ -40,20 +41,14 @@ export function MobileSingleChatPage() {
             <Box pt={8}>
               <MessagesList />
             </Box>
-
-            <Box
-              position="fixed"
-              zIndex={1}
-              bottom={0}
-              right={0}
-              left={0}
-              bgcolor="#fff"
-            >
-              <MessageTextField />
-            </Box>
           </Box>
         </Suspense>
       </IonContent>
+      <IonFooter>
+        <IonToolbar style={{ paddingBottom: 0 }}>
+          <MessageTextField />
+        </IonToolbar>
+      </IonFooter>
     </IonPage>
   );
 }

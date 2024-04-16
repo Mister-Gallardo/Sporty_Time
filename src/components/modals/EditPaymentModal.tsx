@@ -30,11 +30,15 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
     onSuccess(token: string) {
       renderCheckoutWidget(token);
     },
-    onError() {
+    onError(e: any) {
       handleModal(false);
+
+      const message = e?.response?.data?.message;
+      if (!message) return;
+
       showToast({
         color: 'danger',
-        message: 'Ошибка! Попробуйте ещё раз!',
+        message,
         mode: 'ios',
         position: 'bottom',
         duration: 2000,

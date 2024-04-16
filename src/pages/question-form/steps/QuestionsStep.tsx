@@ -104,10 +104,13 @@ export function QuestionsStep({ handleStep }: QuestionsStepProps) {
       if (isPrev === 'match') return history.goBack();
       handleStep(1);
     },
-    onError() {
+    onError(e: any) {
+      const message = e?.response?.data?.message;
+      if (!message) return;
+
       showToast({
         color: 'danger',
-        message: `Произошла ошибка, попробуйте ещё раз`,
+        message,
         mode: 'ios',
         position: 'bottom',
         duration: 2000,
@@ -131,24 +134,6 @@ export function QuestionsStep({ handleStep }: QuestionsStepProps) {
       level: levelIndex,
     });
   };
-
-  // if (!allQuestions) {
-  //   return (
-  //     <Box marginTop={5}>
-  //       <Typography
-  //         textAlign="center"
-  //         marginBottom={2}
-  //         fontSize={20}
-  //         fontWeight={500}
-  //       >
-  //         Что-то пошло не так, вернуться на стартовую страницу
-  //       </Typography>
-  //       <Button onClick={() => handleStep(-2)} variant="contained">
-  //         Вернуться
-  //       </Button>
-  //     </Box>
-  //   );
-  // }
 
   return (
     <QuestionsContainer>
