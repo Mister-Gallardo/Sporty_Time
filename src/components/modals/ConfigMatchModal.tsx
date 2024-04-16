@@ -1,5 +1,11 @@
-import { IonAvatar } from '@ionic/react';
-import { Box, Button, RadioGroup, Switch, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  RadioGroup,
+  Switch,
+  Typography,
+} from '@mui/material';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import {
   ERadioLabelType,
@@ -93,12 +99,13 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
                       borderBottom="1px solid #eee"
                     >
                       <Box borderRight="1px solid #eee" pr={1.5} mr={1.5}>
-                        <IonAvatar style={{ width: 30, height: 30 }}>
-                          <img
-                            alt="Silhouette of a person's head"
-                            src="https://ionicframework.com/docs/img/demos/avatar.svg"
-                          />
-                        </IonAvatar>
+                        <Avatar
+                          sx={{
+                            width: 30,
+                            height: 30,
+                            backgroundColor: 'primary.main',
+                          }}
+                        />
                         <Typography align="center">{rating}</Typography>
                       </Box>
                       <Box>
@@ -109,7 +116,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
                       </Box>
                     </Box>
                     <Typography>
-                      Игроки с более высоким уровнем могут запросить доступ
+                      Игроки с несоответствующим уровнем могут запросить доступ
                     </Typography>
                   </Box>
                 </Box>

@@ -40,14 +40,15 @@ export const PlayLocation: React.FC<IPlayLocationProps> = ({ handleStep }) => {
   });
 
   // sort and format reseived locations
-  const locationOptions = searchLocations
-    ? searchLocations
-        .sort((a, b) => a.properties.name.localeCompare(b.properties.name))
-        .map((b) => ({
-          title: `${b.properties.name} (${b.properties.country})`,
-          coordinates: b.geometry.coordinates,
-        }))
-    : [];
+  const locationOptions =
+    searchLocations && Array.isArray(searchLocations)
+      ? searchLocations
+          .sort((a, b) => a.properties.name.localeCompare(b.properties.name))
+          .map((b) => ({
+            title: `${b.properties.name} (${b.properties.country})`,
+            coordinates: b.geometry.coordinates,
+          }))
+      : [];
 
   const delayedQuery = useCallback(
     debounce((query) => setSearchTerm(transliterate(query)), 300),

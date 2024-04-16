@@ -9,6 +9,7 @@ import { currentTimeInCLubTimezone } from '../../helpers/getMatchStatus';
 import { Court } from '../../services/club/interface';
 import { differenceInHours, format, parseISO } from 'date-fns';
 import useToggle from '../../hooks/useToggle';
+import { getSportName } from '../../helpers/getNameOf';
 
 interface ICheckoutModal {
   price: number;
@@ -81,7 +82,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
                     {matchDate}
                   </Typography>
                   <Typography>
-                    {court.sport}, {court.title}
+                    {getSportName(court.sport)}, {court.title}
                   </Typography>
                   <Typography color="gray" fontSize={12}>
                     {tags}
