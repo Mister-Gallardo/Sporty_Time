@@ -94,7 +94,7 @@ export const AllResultsProgressCard = () => {
 
           <Stack alignItems="center">
             <Typography color="#d3d3d3">Макс.</Typography>
-            <Typography>{max?.ratingAfterMatch}</Typography>
+            <Typography>{max?.ratingAfterMatch || currentRating}</Typography>
           </Stack>
 
           <Divider

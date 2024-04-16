@@ -105,7 +105,7 @@ export const MatchBookingButton = () => {
                 ? 'Забронировать'
                 : 'Запросить'}{' '}
               место
-              {matchData.paid ? '' : '- ₽' + matchData.price / 4}
+              {matchData.paid ? '' : ' - ₽' + matchData.price / 4}
             </Button>
           </Box>
         )}

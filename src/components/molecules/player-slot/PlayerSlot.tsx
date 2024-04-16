@@ -36,13 +36,7 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
   const isHidden = matchStatus === Status.CANCELED;
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      width="100%"
-      sx={{ cursor: 'pointer' }}
-    >
+    <Box display="flex" flexDirection="column" alignItems="center" width="100%">
       {player ? (
         <Link
           component={ReactRouterLink}
@@ -91,7 +85,9 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
           display="flex"
           flexDirection="column"
           alignItems="center"
-          sx={{ opacity: isHidden ? 0.3 : 1 }}
+          sx={{
+            opacity: isHidden ? 0.3 : 1,
+          }}
         >
           <Box
             onClick={onClick}
