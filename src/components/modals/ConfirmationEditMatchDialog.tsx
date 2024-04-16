@@ -59,10 +59,13 @@ export const ConfirmationEditMatchDialog: React.FC<IEditMatchDialog> = ({
       refetch();
       qc.resetQueries({ queryKey: ['my-matches', false] });
     },
-    onError() {
+    onError(e: any) {
+      const message = e?.response?.data?.message;
+      if (!message) return;
+
       showToast({
         color: 'danger',
-        message: `Ошибка, попробуйте ещё раз`,
+        message,
         mode: 'ios',
         position: 'bottom',
         duration: 2000,
@@ -88,10 +91,13 @@ export const ConfirmationEditMatchDialog: React.FC<IEditMatchDialog> = ({
       refetch();
       qc.resetQueries({ queryKey: ['my-matches', false] });
     },
-    onError() {
+    onError(e: any) {
+      const message = e?.response?.data?.message;
+      if (!message) return;
+
       showToast({
         color: 'danger',
-        message: `Ошибка, попробуйте ещё раз`,
+        message,
         mode: 'ios',
         position: 'bottom',
         duration: 2000,
