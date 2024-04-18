@@ -1,5 +1,6 @@
 import React from 'react';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import SchoolIcon from '@mui/icons-material/School';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
@@ -66,18 +67,17 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
           </Typography>
         </MenuItem>
       </Link>
-
       <Link
         onClick={handleMdMenuClose}
         component={RouterNavLink}
-        to="/chats"
+        to="/classes"
         underline="none"
         fontWeight={500}
       >
         <MenuItem sx={{ gap: 1.5 }}>
-          <ChatBubbleOutlineIcon sx={{ fontSize: 27, color: '#575757' }} />
+          <SchoolIcon sx={{ fontSize: 27, color: '#575757' }} />
           <Typography fontWeight={600} fontSize={15}>
-            Чаты
+            Занятия
           </Typography>
         </MenuItem>
       </Link>
@@ -93,6 +93,21 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
           <SportsTennisRoundedIcon sx={{ fontSize: 27, color: '#575757' }} />
           <Typography fontWeight={600} fontSize={15}>
             Матчи
+          </Typography>
+        </MenuItem>
+      </Link>
+
+      <Link
+        onClick={handleMdMenuClose}
+        component={RouterNavLink}
+        to="/chats"
+        underline="none"
+        fontWeight={500}
+      >
+        <MenuItem sx={{ gap: 1.5 }}>
+          <ChatBubbleOutlineIcon sx={{ fontSize: 27, color: '#575757' }} />
+          <Typography fontWeight={600} fontSize={15}>
+            Чаты
           </Typography>
         </MenuItem>
       </Link>

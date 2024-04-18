@@ -109,13 +109,14 @@ function DesktopHeader() {
                   </Link>
                   <Link
                     component={RouterNavLink}
-                    to="/chats"
+                    to="/classes"
                     underline="none"
                     color="#333"
                     fontWeight={500}
                   >
-                    Чаты
+                    Занятия
                   </Link>
+
                   <Link
                     component={RouterNavLink}
                     to="/matches?tab=1"
@@ -125,6 +126,17 @@ function DesktopHeader() {
                   >
                     Матчи
                   </Link>
+
+                  <Link
+                    component={RouterNavLink}
+                    to="/chats"
+                    underline="none"
+                    color="#333"
+                    fontWeight={500}
+                  >
+                    Чаты
+                  </Link>
+
                   <Link
                     component={RouterNavLink}
                     to="/notifications"
