@@ -109,7 +109,7 @@ function DesktopHeader() {
                   </Link>
                   <Link
                     component={RouterNavLink}
-                    to="/classes"
+                    to="/classes?tab=1"
                     underline="none"
                     color="#333"
                     fontWeight={500}
