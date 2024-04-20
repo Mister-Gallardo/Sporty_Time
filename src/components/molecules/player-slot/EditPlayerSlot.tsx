@@ -81,7 +81,7 @@ export const EditPlayerSlot: React.FC<IEditPlayerSlotProps> = ({
           />
 
           <Typography mt={1} fontSize={12}>
-            {player.user?.firstname}
+            {player?.user?.firstname}
           </Typography>
           <Typography fontSize={12} color="gray">
             {playerRating}

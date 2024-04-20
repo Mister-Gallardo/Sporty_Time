@@ -64,12 +64,12 @@ export const MessagesList = () => {
       ) : data && data.length > 0 ? (
         data.map((message, i) => {
           const nextUserId =
-            i === data.length - 1 ? null : data[i + 1].userFrom.id;
+            i === data.length - 1 ? null : data[i + 1]?.userFrom?.id;
           return (
             <MessageItem
               key={message.id}
               {...message}
-              nextMsgFromSameUser={nextUserId === message.userFrom.id}
+              nextMsgFromSameUser={nextUserId === message?.userFrom?.id}
             />
           );
         })

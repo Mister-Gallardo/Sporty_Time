@@ -3,6 +3,7 @@ import { useHistory, useLocation } from 'react-router';
 import { SportsBaseballOutlined } from '@mui/icons-material';
 import {
   AppBar,
+  Badge,
   Box,
   Button,
   CircularProgress,
@@ -16,8 +17,11 @@ import { NavLink as RouterNavLink } from 'react-router-dom';
 import { isPlatform } from '@ionic/react';
 import { MediumScreenMenu } from './MediumScreenMenu';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import { useMutation } from '@tanstack/react-query';
-import { removeDeviceToken } from '../../services/notifications/service';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  getNotifications,
+  removeDeviceToken,
+} from '../../services/notifications/service';
 import { useLocalStorage } from 'usehooks-ts';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -43,6 +47,15 @@ function DesktopHeader() {
       localStorage.removeItem('jwtToken');
     },
   });
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['notification'],
+    queryFn: getNotifications,
+  });
+  const notifications = data?.data;
+  const unreadNotifications = notifications?.filter(
+    (notification) => !notification?.read,
+  );
 
   if (
     pathname.startsWith('/auth') ||
@@ -81,11 +94,11 @@ function DesktopHeader() {
             sx={{ display: { xs: 'none', md: 'flex' } }}
             alignItems="center"
             gap={2}
-          ></Box>
+          />
           <Box flexGrow={1} />
 
           <Box ml={3} display={{ xs: 'none', md: 'flex' }}>
-            <Box display="flex" alignItems="center" gap={1.5}>
+            <Box display="flex" alignItems="center" gap={2}>
               {isAuthorized && (
                 <>
                   <Link
@@ -133,6 +146,18 @@ function DesktopHeader() {
                     fontWeight={500}
                   >
                     Уведомления
+                    {isLoading ? (
+                      <CircularProgress size={27} />
+                    ) : (
+                      unreadNotifications && (
+                        <Badge
+                          badgeContent={unreadNotifications.length}
+                          color="error"
+                          max={99}
+                          sx={{ top: -13 }}
+                        />
+                      )
+                    )}
                   </Link>
                 </>
               )}

@@ -128,7 +128,9 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
                           noWrap
                           textOverflow="ellipsis"
                         >
-                          {member ? member.player.user.firstname : 'Свободно'}
+                          {member
+                            ? member?.player?.user?.firstname || 'Пусто'
+                            : 'Свободно'}
                         </Typography>
                         <Typography
                           color="gray"
