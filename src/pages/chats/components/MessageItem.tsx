@@ -29,7 +29,7 @@ export const MessageItem: React.FC<IMessageItemProps> = ({
   nextMsgFromSameUser,
 }) => {
   const [user] = useUserInfo();
-  const isMyUser = userFrom.id === user?.id;
+  const isMyUser = userFrom?.id === user?.id;
   const avatar = userFrom?.avatar
     ? withHostname(userFrom?.avatar?.formats?.small || '')
     : '';
@@ -64,8 +64,8 @@ export const MessageItem: React.FC<IMessageItemProps> = ({
         }
       >
         {!isMyUser && (
-          <Typography color={intToRGB(userFrom.id)}>
-            {userFrom.firstname} {userFrom.lastname}
+          <Typography color={intToRGB(userFrom?.id)}>
+            {userFrom?.firstname} {userFrom?.lastname}
           </Typography>
         )}
         <Typography fontSize={14} maxWidth="100%">

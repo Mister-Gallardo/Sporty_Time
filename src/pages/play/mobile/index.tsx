@@ -27,7 +27,11 @@ export function MobilePlayPage() {
     queryKey: ['notification'],
     queryFn: getNotifications,
   });
+
   const notifications = data?.data;
+  const unreadNotifications = notifications?.filter(
+    (notification) => !notification?.read,
+  );
 
   return (
     <IonPage>
@@ -55,14 +59,14 @@ export function MobilePlayPage() {
               {isLoading ? (
                 <CircularProgress size={20} />
               ) : (
-                notifications && (
+                unreadNotifications && (
                   <Badge
-                    badgeContent={notifications.length}
+                    badgeContent={unreadNotifications.length}
                     color="error"
                     max={99}
                     anchorOrigin={{
                       vertical: 'top',
-                      horizontal: 'left',
+                      horizontal: 'right',
                     }}
                   >
                     <NotificationsNoneOutlinedIcon sx={{ color: '#000' }} />

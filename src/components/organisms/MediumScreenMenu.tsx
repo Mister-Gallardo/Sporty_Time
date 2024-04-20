@@ -43,7 +43,11 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
     queryKey: ['notification'],
     queryFn: getNotifications,
   });
+
   const notifications = data?.data;
+  const unreadNotifications = notifications?.filter(
+    (notification) => !notification?.read,
+  );
 
   return (
     <Menu
@@ -116,8 +120,12 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
           {isLoading ? (
             <CircularProgress size={27} />
           ) : (
-            notifications && (
-              <Badge badgeContent={notifications.length} color="error" max={99}>
+            unreadNotifications && (
+              <Badge
+                badgeContent={unreadNotifications.length}
+                color="error"
+                max={99}
+              >
                 <NotificationsNoneOutlinedIcon
                   sx={{ fontSize: 27, color: '#575757' }}
                 />

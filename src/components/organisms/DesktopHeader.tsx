@@ -53,6 +53,9 @@ function DesktopHeader() {
     queryFn: getNotifications,
   });
   const notifications = data?.data;
+  const unreadNotifications = notifications?.filter(
+    (notification) => !notification?.read,
+  );
 
   if (
     pathname.startsWith('/auth') ||
@@ -146,9 +149,9 @@ function DesktopHeader() {
                     {isLoading ? (
                       <CircularProgress size={27} />
                     ) : (
-                      notifications && (
+                      unreadNotifications && (
                         <Badge
-                          badgeContent={notifications.length}
+                          badgeContent={unreadNotifications.length}
                           color="error"
                           max={99}
                           sx={{ top: -13 }}
