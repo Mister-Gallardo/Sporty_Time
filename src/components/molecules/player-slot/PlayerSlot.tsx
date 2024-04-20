@@ -57,7 +57,9 @@ export const PlayerSlot: React.FC<IPlayerSlotProps> = ({
                 opacity: player?.mark ? '.7' : 'unset',
               }}
             />
-            <Typography fontSize={12}>{player?.user?.firstname}</Typography>
+            <Typography fontSize={12}>
+              {player?.user?.firstname || 'Пусто'}
+            </Typography>
             <Typography fontSize={12} lineHeight={1.1} color="gray">
               {playerRating}
             </Typography>

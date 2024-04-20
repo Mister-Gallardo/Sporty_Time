@@ -16,7 +16,7 @@ export function ProfilePage() {
   const [profile, rest] = useFullUserData();
 
   const fullname = profile
-    ? profile.user.firstname + ' ' + profile.user.lastname
+    ? profile?.user?.firstname + ' ' + profile?.user?.lastname
     : '';
 
   if (rest.isLoading) return <IonLoading isOpen />;
