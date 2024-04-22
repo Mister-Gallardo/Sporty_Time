@@ -60,55 +60,55 @@ export const MatchBookingButton = () => {
 
   return (
     <>
-      {/* if user isn't the match-owner, there is an empty slot, 
-        user isn't in match or the match wasn't started, 
+      {/* if there is an empty slot or user isn't the match-owner, 
+        user isn't in the match, the match wasn't started, 
         user with insufficient rating requested for a place and must pay 
         or didn't requested for a place yet - show the btn */}
-      {!isUserOwner &&
-        matchData.matchBookings.length !== 4 &&
-        (isPlayerInMatchWithoutPayment || !playerAlreadyInSomeTeam) &&
-        isAfter(new Date(matchData?.booking?.startsAt), new Date()) &&
-        (isPlayerInMatchWithoutPayment || !isRequestedPlace) && (
-          <Box
-            sx={{
-              position: 'fixed',
-              zIndex: 1,
-              left: '0',
-              right: '0',
-              bottom: '1.5rem',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Button
-              onClick={onBookPlace}
+      {matchData.matchBookings.length !== 4 ||
+        (!isUserOwner &&
+          (isPlayerInMatchWithoutPayment || !playerAlreadyInSomeTeam) &&
+          isAfter(new Date(matchData?.booking?.startsAt), new Date()) &&
+          (isPlayerInMatchWithoutPayment || !isRequestedPlace) && (
+            <Box
               sx={{
-                paddingX: 2,
-                background: '#0D2432',
-                color: '#fff',
-                boxShadow:
-                  'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-                '&:hover': {
-                  background: '#0D2432',
-                },
-                '&:disabled': {
-                  background: '#777',
-                  color: '#eee',
-                },
+                position: 'fixed',
+                zIndex: 1,
+                left: '0',
+                right: '0',
+                bottom: '1.5rem',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              {isPlayerInMatchWithoutPayment
-                ? 'Оплатить'
-                : isRatingSufficient
-                ? 'Забронировать'
-                : 'Запросить'}{' '}
-              место
-              {matchData.paid ? '' : ' - ₽' + matchData.price / 4}
-            </Button>
-          </Box>
-        )}
+              <Button
+                onClick={onBookPlace}
+                sx={{
+                  paddingX: 2,
+                  background: '#0D2432',
+                  color: '#fff',
+                  boxShadow:
+                    'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                  '&:hover': {
+                    background: '#0D2432',
+                  },
+                  '&:disabled': {
+                    background: '#777',
+                    color: '#eee',
+                  },
+                }}
+              >
+                {isPlayerInMatchWithoutPayment
+                  ? 'Оплатить'
+                  : isRatingSufficient
+                  ? 'Забронировать'
+                  : 'Запросить'}{' '}
+                место
+                {matchData.paid ? '' : ' - ₽' + matchData.price / 4}
+              </Button>
+            </Box>
+          ))}
 
       <AskForTestPassDialog
         open={openTestDialog}

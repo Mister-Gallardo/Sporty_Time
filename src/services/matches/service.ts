@@ -86,6 +86,7 @@ const bookingsQuery = (limit: number, sport?: ESport) => {
     { field: 'match.isCancelled', operator: '$eq', value: false },
     { field: 'matchBooking.id', operator: '$notnull', value: true },
     { field: 'match.sport', operator: '$eq', value: sport },
+    { field: 'match.winningTeam', operator: '$in', value: ['A', 'B'] },
     {
       field: 'match.confirmMatchResults',
       operator: '$eq',
