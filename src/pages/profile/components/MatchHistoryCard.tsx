@@ -160,7 +160,7 @@ export const MatchHistoryCard: React.FC<IMatchHistoryCardProps> = ({
           <Box flexGrow={1}>
             <Box
               display="flex"
-              gap={5}
+              gap={4}
               px={2}
               justifyContent="space-between"
               borderBottom="1px solid #eee"
