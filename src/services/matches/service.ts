@@ -8,6 +8,7 @@ import {
   IAddPlayerToMatchData,
   IMatchBookingData,
   ESport,
+  CreateClassDTO,
 } from './interface';
 import { api } from '../api/service';
 import { RequestQueryBuilder } from '@dataui/crud-request';
@@ -59,9 +60,15 @@ export function deletePlayerFromMatch(data: RemovePlayerFromMatch) {
   return res;
 }
 
-// get Yookassa's token for creating new match payment
-export async function createBookingYookassaToken(data: CreateMatchDTO) {
+// get Yookassa's token for new match court booking
+export async function getMatchBookingYookassaToken(data: CreateMatchDTO) {
   const res = await api.post('/matches/new-match-payment', data);
+  return res.data;
+}
+
+// get Yookassa's token for class court booking
+export async function getClassBookingYookassaToken(data: CreateClassDTO) {
+  const res = await api.post('/', data);
   return res.data;
 }
 
