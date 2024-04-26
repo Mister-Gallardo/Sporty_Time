@@ -91,7 +91,7 @@ export function BookTab() {
     },
   });
 
-  const onCheckout = () => {
+  const onCheckout = (onlyMyPart: boolean) => {
     if (!user || !selectedOption) return;
 
     const gameDate = `${format(
@@ -138,6 +138,7 @@ export function BookTab() {
         ratingFrom,
         ratingTo,
         gender,
+        onlyMyPart,
       });
     }
   };

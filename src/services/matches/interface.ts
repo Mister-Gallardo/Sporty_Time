@@ -94,6 +94,7 @@ export interface CreateMatchDTO {
   ratingTo: number;
   gender: EGender;
   isPrivate: boolean;
+  onlyMyPart: boolean;
 }
 
 export interface CreateClassDTO {
@@ -113,7 +114,6 @@ export interface CreateClassDTO {
 export interface JoinMatchDTO {
   matchId: number;
   team: string;
-  money?: number;
 }
 
 export interface UploadResultsDTO {

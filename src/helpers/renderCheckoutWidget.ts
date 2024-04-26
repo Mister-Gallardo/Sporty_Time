@@ -24,6 +24,8 @@ export const renderCheckoutWidget = (token: string) => {
     },
   });
 
+  checkout.on('success', () => {});
+
   checkout.on('complete', () => {
     checkout.destroy();
   });

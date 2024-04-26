@@ -46,23 +46,28 @@ export function getOneAvailableMatch(id: number) {
 }
 
 export function uploadResults(data: UploadResultsDTO) {
-  const res = api.post('/matches/upload-results', data);
+  const { matchId, matchResults } = data;
+  const res = api.post(`/matches/${matchId}/results`, {
+    matchResults,
+  });
   return res;
 }
 
 export function cancelMatch(matchId: number) {
-  const res = api.delete('/matches/cancel', { data: { matchId } });
+  const res = api.delete(`/matches/${matchId}/cancel`);
   return res;
 }
 
 export function deletePlayerFromMatch(data: RemovePlayerFromMatch) {
-  const res = api.delete('/matches/delete-player', { data });
+  const res = api.delete(
+    `/matches/${data.matchId}/kick/${data.deletePlayerId}`,
+  );
   return res;
 }
 
 // get Yookassa's token for new match court booking
 export async function getMatchBookingYookassaToken(data: CreateMatchDTO) {
-  const res = await api.post('/matches/new-match-payment', data);
+  const res = await api.post('/matches/new', data);
   return res.data;
 }
 
@@ -74,16 +79,14 @@ export async function getClassBookingYookassaToken(data: CreateClassDTO) {
 
 // get Yookassa's token for join match payment
 export async function joinMatch(data: JoinMatchDTO) {
-  const res = await api.post('/matches/join-payment', data);
+  const { matchId, team } = data;
+  const res = await api.post(`/matches/${matchId}/join`, { team });
   return res.data;
 }
 
 // get Yookassa's token for the rest of the booking price payment
-export async function createExtraPaymentYookassaToken(data: {
-  money: number;
-  matchId: number;
-}) {
-  const res = await api.post('/matches/extra-payment', data);
+export async function createExtraPaymentYookassaToken(matchId: number) {
+  const res = await api.post(`/matches/${matchId}/pay`);
   return res.data;
 }
 

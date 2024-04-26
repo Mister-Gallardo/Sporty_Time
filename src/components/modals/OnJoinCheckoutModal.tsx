@@ -127,15 +127,11 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
     if (!myPlayer?.user || !matchData) return;
 
     if (isPlayerInMatchWithoutPayment) {
-      editPaymentMutation.mutate({
-        matchId: +matchId,
-        money: matchData.paid ? 0 : matchData.price / 4,
-      });
+      editPaymentMutation.mutate(+matchId);
     } else if (watch('team')) {
       joinMatchMutation.mutate({
         matchId: +matchId,
         team: watch('team'),
-        money: matchData.paid ? 0 : matchData.price / 4,
       });
     } else {
       showToast({

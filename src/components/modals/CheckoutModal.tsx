@@ -20,7 +20,7 @@ interface ICheckoutModal {
   timezone: string;
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  handleCheckout: (total: number) => void;
+  handleCheckout: (isOnlyMyPart: boolean) => void;
 }
 
 export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
@@ -36,8 +36,8 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
     handleCheckout,
   } = props;
 
-  const [payFor, setPayFor] = useState('0');
-  const selectedPayment = payFor === '0' ? price / 4 : price;
+  const [payFor, setPayFor] = useState('MY_PART');
+  const selectedPayment = payFor === 'MY_PART' ? price / 4 : price;
 
   const matchDate = getDayFormat(
     date,
@@ -75,7 +75,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
       <>
         <Box display="flex" flexDirection="column" gap={4} mb={4}>
           {court && (
-            <Box border="1px solid #ddd" borderRadius={2} py={1} px={2}>
+            <Box border="1px solid #ddd" py={1} px={2}>
               <Box display="flex" justifyContent="space-between" py={1}>
                 <Box flexGrow={1} pr={1}>
                   <Typography textTransform="capitalize">
@@ -118,7 +118,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
                         gap={1}
                       >
                         <RadioLabel
-                          value="0"
+                          value="MY_PART"
                           labelType={ERadioLabelType.WITH_ICON_AND_DESCRIPTION}
                           icon={<CreditCardOutlinedIcon />}
                           title="Оплатить свою часть"
@@ -135,7 +135,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
                         gap={1}
                       >
                         <RadioLabel
-                          value="1"
+                          value="ALL"
                           labelType={ERadioLabelType.WITH_ICON_AND_DESCRIPTION}
                           icon={<CreditCardOutlinedIcon />}
                           title="Оплатить полностью"
@@ -170,13 +170,14 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
           <Button
             disabled={isDisabled}
             onClick={() => {
+              const isOnlyMyPart = !isPayingFullPrice && payFor === 'MY_PART';
+
               setIsDisabled();
-              handleCheckout(total);
+              handleCheckout(isOnlyMyPart);
             }}
             variant="contained"
             sx={{
               backgroundColor: '#0d2432',
-              borderRadius: 10,
               '&:hover': {
                 backgroundColor: '#123347',
               },

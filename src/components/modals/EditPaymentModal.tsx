@@ -87,10 +87,7 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
           disabled={isDisabled}
           onClick={() => {
             setIsDisabled();
-            extraPaymentMutation.mutate({
-              matchId: +matchId,
-              money,
-            });
+            extraPaymentMutation.mutate(+matchId);
           }}
           fullWidth
           sx={{
