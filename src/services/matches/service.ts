@@ -73,7 +73,7 @@ export async function getMatchBookingYookassaToken(data: CreateMatchDTO) {
 
 // get Yookassa's token for class court booking
 export async function getClassBookingYookassaToken(data: CreateClassDTO) {
-  const res = await api.post('/', data);
+  const res = await api.post('/classes/new', data);
   return res.data;
 }
 

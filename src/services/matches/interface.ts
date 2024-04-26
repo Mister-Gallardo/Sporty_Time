@@ -102,8 +102,8 @@ export interface CreateClassDTO {
   gameDate: Date | string;
   playTime: number;
   ratingFrom: number;
-  maxStudentsAmount: number;
-  priceForSpot: number;
+  playersCount: number;
+  price: number;
   ratingTo: number;
   gender: EGender;
   isPrivate: boolean;

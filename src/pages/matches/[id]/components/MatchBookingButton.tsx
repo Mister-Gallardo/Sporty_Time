@@ -7,7 +7,8 @@ import { getOneAvailableMatch } from '../../../../services/matches/service';
 import { usePlayerProfile } from '../../../../services/api/hooks';
 import { getSportRating } from '../../../../helpers/getSportRating';
 import useToggle from '../../../../hooks/useToggle';
-import { isAfter } from 'date-fns';
+import { getMatchStatus } from '../../../../helpers/getMatchStatus';
+import { Status } from '../../../../services/matches/interface';
 
 export const MatchBookingButton = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -19,7 +20,6 @@ export const MatchBookingButton = () => {
   });
 
   const matchData = data?.data;
-  const isUserOwner = matchData?.owner?.id === myPlayer?.id;
 
   const playerAlreadyInSomeTeam = matchData?.matchBookings.find(
     (booking) => booking.player?.id === myPlayer?.id,
@@ -58,57 +58,55 @@ export const MatchBookingButton = () => {
 
   if (!matchData) return;
 
+  const matchStatus = getMatchStatus(matchData);
+  const isUpcomming =
+    matchStatus === Status.PENDING || matchStatus === Status.UPCOMING;
+
   return (
     <>
-      {/* if there is an empty slot or user isn't the match-owner, 
-        user isn't in the match, the match wasn't started, 
-        user with insufficient rating requested for a place and must pay 
-        or didn't requested for a place yet - show the btn */}
-      {matchData.matchBookings.length !== 4 ||
-        (!isUserOwner &&
-          (isPlayerInMatchWithoutPayment || !playerAlreadyInSomeTeam) &&
-          isAfter(new Date(matchData?.booking?.startsAt), new Date()) &&
-          (isPlayerInMatchWithoutPayment || !isRequestedPlace) && (
-            <Box
+      {isUpcomming &&
+        (!playerAlreadyInSomeTeam || isPlayerInMatchWithoutPayment) && (
+          <Box
+            sx={{
+              position: 'fixed',
+              zIndex: 1,
+              left: '0',
+              right: '0',
+              bottom: '1.5rem',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              disabled={isRequestedPlace && !playerAlreadyInSomeTeam}
+              onClick={onBookPlace}
               sx={{
-                position: 'fixed',
-                zIndex: 1,
-                left: '0',
-                right: '0',
-                bottom: '1.5rem',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                paddingX: 2,
+                background: '#0D2432',
+                color: '#fff',
+                boxShadow:
+                  'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                '&:hover': {
+                  background: '#0D2432',
+                },
+                '&:disabled': {
+                  background: '#777',
+                  color: '#eee',
+                },
               }}
             >
-              <Button
-                onClick={onBookPlace}
-                sx={{
-                  paddingX: 2,
-                  background: '#0D2432',
-                  color: '#fff',
-                  boxShadow:
-                    'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-                  '&:hover': {
-                    background: '#0D2432',
-                  },
-                  '&:disabled': {
-                    background: '#777',
-                    color: '#eee',
-                  },
-                }}
-              >
-                {isPlayerInMatchWithoutPayment
-                  ? 'Оплатить'
-                  : isRatingSufficient
-                  ? 'Забронировать'
-                  : 'Запросить'}{' '}
-                место
-                {matchData.paid ? '' : ' - ₽' + matchData.price / 4}
-              </Button>
-            </Box>
-          ))}
+              {isPlayerInMatchWithoutPayment
+                ? 'Оплатить'
+                : isRatingSufficient
+                ? 'Забронировать'
+                : 'Запросить'}{' '}
+              место
+              {matchData.paid ? '' : ' - ₽' + matchData.price / 4}
+            </Button>
+          </Box>
+        )}
 
       <AskForTestPassDialog
         open={openTestDialog}

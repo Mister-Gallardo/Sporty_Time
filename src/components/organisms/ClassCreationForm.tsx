@@ -22,8 +22,16 @@ enum ELeveType {
 
 export const ClassCreationForm = () => {
   const { setValue, watch } = useFormContext();
-  const { isPrivate, maxStudentsAmount, ratingFrom, ratingTo, gender } =
-    watch();
+  const {
+    isPrivate,
+    playersCount,
+    ratingFrom,
+    ratingTo,
+    gender,
+    title,
+    description,
+    price,
+  } = watch();
 
   const [levelType, setLevelType] = useState<ELeveType>(ELeveType.ANY);
   const [levelRange, setLevelRange] = useState<number[]>([0, 7]);
@@ -45,9 +53,9 @@ export const ClassCreationForm = () => {
           Количество участников
         </Typography>
         <ToggleButtonGroup
-          value={maxStudentsAmount}
+          value={playersCount}
           exclusive
-          onChange={(_, val) => setValue('maxStudentsAmount', val)}
+          onChange={(_, val) => setValue('playersCount', val)}
           aria-label="students-amount"
           color="primary"
         >
@@ -171,14 +179,23 @@ export const ClassCreationForm = () => {
         <Typography fontWeight={700} mb={1}>
           Заголовок
         </Typography>
-        <TextField fullWidth placeholder="Заголовок занятия" />
+        <TextField
+          value={title}
+          onChange={(e) => setValue('title', e.target.value)}
+          placeholder="Заголовок занятия"
+          autoComplete="off"
+          fullWidth
+        />
       </Box>
       <Box>
         <Typography fontWeight={700} mb={1}>
           Описание
         </Typography>
         <TextField
+          value={description}
+          onChange={(e) => setValue('description', e.target.value)}
           placeholder="Описание занятия"
+          autoComplete="off"
           multiline
           rows={2}
           variant="outlined"
@@ -193,6 +210,8 @@ export const ClassCreationForm = () => {
 
         <Box display="flex" alignItems="end" gap={1}>
           <TextField
+            value={price}
+            onChange={(e) => setValue('price', e.target.value)}
             autoComplete="off"
             type="number"
             placeholder="0"

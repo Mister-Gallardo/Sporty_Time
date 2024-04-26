@@ -47,11 +47,11 @@ export function BookTab() {
       type: EMatchType.COMPETITIVE,
       ratingFrom: 0,
       ratingTo: 7,
-      maxStudentsAmount: 4,
+      playersCount: 4,
       gender: EGender.ALL,
       title: '',
       description: '',
-      priceForSpot: '',
+      price: '',
     },
   });
 
@@ -110,10 +110,10 @@ export function BookTab() {
       ratingFrom,
       ratingTo,
       gender,
-      maxStudentsAmount,
+      playersCount,
       title,
       description,
-      priceForSpot,
+      price,
     } = getValues();
 
     const bookingData = { courtId, gameDate, playTime };
@@ -122,12 +122,12 @@ export function BookTab() {
       classBookingMutation.mutate({
         ...bookingData,
         isPrivate,
-        maxStudentsAmount,
+        playersCount,
         ratingFrom,
         ratingTo,
         title,
         description,
-        priceForSpot: +priceForSpot,
+        price: +price,
         gender,
       });
     } else {
@@ -274,15 +274,17 @@ export function BookTab() {
         </FormProvider>
       )}
       {selectedOption && data?.timezone && (
-        <CheckoutModal
-          {...selectedOption}
-          date={selectedDate}
-          startTime={selectedTime}
-          timezone={data?.timezone}
-          openState={openCheckoutModal}
-          handleModal={setOpenCheckoutModal}
-          handleCheckout={onCheckout}
-        />
+        <FormProvider {...configBookingForm}>
+          <CheckoutModal
+            {...selectedOption}
+            date={selectedDate}
+            startTime={selectedTime}
+            timezone={data?.timezone}
+            openState={openCheckoutModal}
+            handleModal={setOpenCheckoutModal}
+            handleCheckout={onCheckout}
+          />
+        </FormProvider>
       )}
     </>
   );

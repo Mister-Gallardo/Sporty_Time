@@ -10,6 +10,7 @@ import { Court } from '../../services/club/interface';
 import { differenceInHours, format, parseISO } from 'date-fns';
 import useToggle from '../../hooks/useToggle';
 import { getSportName } from '../../helpers/getNameOf';
+import { useFormContext } from 'react-hook-form';
 
 interface ICheckoutModal {
   price: number;
@@ -35,6 +36,9 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
     handleModal,
     handleCheckout,
   } = props;
+
+  const { watch } = useFormContext();
+  const { isClass } = watch();
 
   const [payFor, setPayFor] = useState('MY_PART');
   const selectedPayment = payFor === 'MY_PART' ? price / 4 : price;
@@ -102,7 +106,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
                   <Typography noWrap>{playTime} мин</Typography>
                 </Box>
               </Box>
-              {!isPayingFullPrice && (
+              {!isPayingFullPrice && !isClass && (
                 <>
                   <Divider />
                   <Box my={2}>
@@ -161,7 +165,7 @@ export const CheckoutModal: React.FC<ICheckoutModal> = (props) => {
               </Typography>
             </Box>
             <Typography color="primary.main" whiteSpace="nowrap" fontSize={20}>
-              {total} RUB
+              {isClass ? price : total} RUB
             </Typography>
           </Box>
         </Box>
