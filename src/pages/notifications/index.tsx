@@ -41,6 +41,11 @@ export function NotificationsPage() {
         <LoadingCircle />
       ) : notifications && notifications.length > 0 ? (
         notifications
+          ?.sort((a, b) => {
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          })
           ?.map((notification) => {
             const notificationDate = new Date(
               notification?.createdAt,
@@ -90,7 +95,6 @@ export function NotificationsPage() {
               </Link>
             );
           })
-          .reverse()
       ) : (
         <Typography textAlign="center" color="gray" mt={10}>
           Уведомлений нет

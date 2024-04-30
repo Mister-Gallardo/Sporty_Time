@@ -86,7 +86,6 @@ export interface MatchData {
 [];
 
 export interface CreateMatchDTO {
-  money: number;
   courtId: number;
   gameDate: Date | string;
   type: EMatchType;
@@ -95,12 +94,26 @@ export interface CreateMatchDTO {
   ratingTo: number;
   gender: EGender;
   isPrivate: boolean;
+  onlyMyPart: boolean;
+}
+
+export interface CreateClassDTO {
+  courtId: number;
+  gameDate: Date | string;
+  playTime: number;
+  ratingFrom: number;
+  playersCount: number;
+  price: number;
+  ratingTo: number;
+  gender: EGender;
+  isPrivate: boolean;
+  title: string;
+  description: string;
 }
 
 export interface JoinMatchDTO {
   matchId: number;
   team: string;
-  money?: number;
 }
 
 export interface UploadResultsDTO {

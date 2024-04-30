@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getSpecificUser } from '../../../services/user/service';
 import { withHostname } from '../../../services/api/service';
 import { useUserInfo } from '../../../services/api/hooks';
+import { Role } from '../../../services/user/interface';
 
 const isMobile = isPlatform('mobile');
 
@@ -28,6 +29,7 @@ export function SpecificProfilePage() {
   });
 
   const userData = data?.data;
+  const isTrainer = userData?.roles?.find((role) => role === Role.TRAINER);
 
   if (isLoading) return <IonLoading isOpen />;
   if (userId === 'undefined')
@@ -55,6 +57,7 @@ export function SpecificProfilePage() {
         name={userData?.fullname}
         avatar={withHostname(userData?.avatar?.formats?.small || '')}
         isMyUser={+userId === user?.id}
+        isTrainer={!!isTrainer}
       />
 
       <TabContext value={tabIndex}>

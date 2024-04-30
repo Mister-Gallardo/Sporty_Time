@@ -44,9 +44,7 @@ export const PlayersMatchCard: React.FC<IPlayersMatchCardProps> = ({
     (matchStatus === Status.PENDING || matchStatus === Status.UPCOMING);
 
   const onPlayerSlotClick = (team: string) => {
-    if (!isEditActive) return;
-
-    if (isMatchOwner) {
+    if (isMatchOwner && isEditActive) {
       handleEditModal();
     } else {
       setPlayerInTeam(team);
