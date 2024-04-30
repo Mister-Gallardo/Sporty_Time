@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { IonSpinner, IonToggle, isPlatform, useIonToast } from '@ionic/react';
 import { Box, Typography, Divider, Stack } from '@mui/material';
@@ -18,10 +18,10 @@ import { Court, IAvailableTime } from '../../../../services/club/interface';
 import { EGender, EMatchType } from '../../../../services/matches/interface';
 import { format } from 'date-fns';
 import { useUserInfo } from '../../../../services/api/hooks';
-import { socket } from '../../../../utils/socket';
 import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
 import { TimesList } from '../components/TimesList';
 import { DatesList } from '../components/DatesList';
+import { SuccessfulBookingModal } from '../../../../components/modals/SuccessfulBookingModal';
 
 export function BookTab() {
   const { clubId } = useParams<{ clubId: string }>();
@@ -29,6 +29,7 @@ export function BookTab() {
 
   const [openConfigMatchModal, setOpenConfigMatchModal] = useToggle();
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
+  const [openSuccessfulModal, setOpenSuccessfulModal] = useToggle();
 
   const [date] = useSearchParam('day', format(new Date(), 'yyyy-MM-dd'));
   const selectedDate = new Date(date);
@@ -71,23 +72,52 @@ export function BookTab() {
 
   const [user] = useUserInfo();
 
+  const [showToast] = useIonToast();
+  const qc = useQueryClient();
+
+  const [token, setToken] = useState<string>('');
+
+  const onSuccess = () => {
+    setOpenCheckoutModal(false);
+    setOpenSuccessfulModal(true);
+    qc.refetchQueries({ queryKey: ['my-matches', false] });
+  };
+
   const matchBookingMutation = useMutation({
     mutationFn: getMatchBookingYookassaToken,
     onSuccess(token: string) {
-      renderCheckoutWidget(token);
+      setToken(token);
+      renderCheckoutWidget(token, onSuccess);
     },
-    onError(error: any) {
-      console.log(error);
+    onError(e: any) {
+      const message = e?.response?.data?.message;
+      showToast({
+        color: 'danger',
+        message,
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
+      setOpenCheckoutModal(false);
     },
   });
 
   const classBookingMutation = useMutation({
     mutationFn: getClassBookingYookassaToken,
     onSuccess(token: string) {
-      renderCheckoutWidget(token);
+      setToken(token);
+      renderCheckoutWidget(token, onSuccess);
     },
-    onError(error: any) {
-      console.log(error);
+    onError(e: any) {
+      const message = e?.response?.data?.message;
+      showToast({
+        color: 'danger',
+        message,
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
+      setOpenCheckoutModal(false);
     },
   });
 
@@ -142,37 +172,6 @@ export function BookTab() {
       });
     }
   };
-
-  const qc = useQueryClient();
-  const [showToast] = useIonToast();
-
-  useEffect(() => {
-    const redirectOnSuccessPayment = (e: {
-      action: string;
-      matchId: number;
-    }) => {
-      if (!e.matchId) return;
-      if (e.action === 'create') {
-        setOpenCheckoutModal(false);
-        showToast({
-          color: 'success',
-          message: 'Оплата проведена успешно',
-          mode: 'ios',
-          position: 'top',
-          duration: 2000,
-        });
-        qc.refetchQueries({ queryKey: ['my-matches'] });
-        history.push(`/matches/${e.matchId}`);
-        return null;
-      }
-    };
-
-    socket.on('newMatch', redirectOnSuccessPayment);
-
-    return () => {
-      socket.off('newMatch', redirectOnSuccessPayment);
-    };
-  }, []);
 
   if (isError) {
     history.push('/book-court');
@@ -285,6 +284,13 @@ export function BookTab() {
             handleCheckout={onCheckout}
           />
         </FormProvider>
+      )}
+      {token && (
+        <SuccessfulBookingModal
+          openState={openSuccessfulModal}
+          handleModal={setOpenSuccessfulModal}
+          token={token}
+        />
       )}
     </>
   );

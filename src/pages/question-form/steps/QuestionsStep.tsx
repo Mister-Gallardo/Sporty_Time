@@ -99,7 +99,7 @@ export function QuestionsStep({ handleStep }: QuestionsStepProps) {
   const createRatingMutation = useMutation({
     mutationFn: createSportRating,
     onSuccess() {
-      qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
+      qc.refetchQueries({ queryKey: ['my-matches', 'matches'] });
       if (isPrev === 'filter') return history.push('/matches?q=2');
       if (isPrev === 'match') return history.goBack();
       handleStep(1);

@@ -1,10 +1,14 @@
 import { useUserInfo } from '../../services/api/hooks';
 import { ModalContainer } from './ModalContainer';
 import { Role } from '../../services/user/interface';
-import { Box, Typography, Switch, Button } from '@mui/material';
+import {
+  Box,
+  //  Typography, Switch,
+  Button,
+} from '@mui/material';
 import { ClassCreationForm } from '../organisms/ClassCreationForm';
 import { MatchCreationForm } from '../organisms/MatchCreationForm';
-import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+// import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import { useFormContext } from 'react-hook-form';
 import { getSportRating } from '../../helpers/getSportRating';
 import { useEffect } from 'react';
@@ -46,7 +50,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
       headerTitle="Настройте свой матч"
     >
       <Box>
-        {isTrainer && (
+        {/* {isTrainer && (
           <Box
             display="flex"
             justifyContent="space-between"
@@ -64,7 +68,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
               }}
             />
           </Box>
-        )}
+        )} */}
 
         {isClass ? (
           <ClassCreationForm />

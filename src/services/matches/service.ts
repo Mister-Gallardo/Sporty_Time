@@ -40,7 +40,7 @@ export function getAvailableNoRatingMatches(
   return res;
 }
 
-export function getOneAvailableMatch(id: number) {
+export function getOneAvailableMatch(id: number | string) {
   const res = api.get<MatchData>(`/matches/${id}`);
   return res;
 }
