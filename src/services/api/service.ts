@@ -3,27 +3,20 @@ import { isAuthorized } from '../auth/service';
 import { history } from '../history/service';
 import { isPlatform } from '@ionic/react';
 
-export const BASE_URL = isPlatform('mobile')
-  ? 'https://dev.sportytime.ru/api'
-  : '/api';
+export const BASE_URL =
+  !isPlatform('mobileweb') && isPlatform('mobile')
+    ? 'https://sportytime.ru/api'
+    : '/api';
 
 export const withHostname = (url: string) => {
   try {
-    const urlObj = new URL(url);
-    if (urlObj.origin === 'capacitor://localhost') {
-      urlObj.hostname = 'dev.sportytime.ru';
-      urlObj.protocol = 'https';
-    }
+    const urlObj = new URL(url, window.location as unknown as URL);
+    urlObj.hostname = 'dev.sportytime.ru';
+    urlObj.protocol = 'https';
+    urlObj.port = '';
     return urlObj.toString();
   } catch (e) {
-    if (isPlatform('mobile')) {
-      const urlObj = new URL(url, window.location as unknown as URL);
-      urlObj.hostname = 'dev.sportytime.ru';
-      urlObj.protocol = 'https';
-      return urlObj.toString();
-    } else {
-      return url;
-    }
+    return url;
   }
 };
 

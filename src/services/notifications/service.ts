@@ -15,3 +15,8 @@ export function getNotifications() {
   const res = api.get<INotification[]>('/notification');
   return res;
 }
+
+export function markNotificationAsRead(id: number) {
+  const res = api.post(`notification/${id}/markasread`);
+  return res;
+}

@@ -7,7 +7,8 @@ import { getOneAvailableMatch } from '../../../../services/matches/service';
 import { usePlayerProfile } from '../../../../services/api/hooks';
 import { getSportRating } from '../../../../helpers/getSportRating';
 import useToggle from '../../../../hooks/useToggle';
-import { isAfter } from 'date-fns';
+import { getMatchStatus } from '../../../../helpers/getMatchStatus';
+import { Status } from '../../../../services/matches/interface';
 
 export const MatchBookingButton = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -19,7 +20,6 @@ export const MatchBookingButton = () => {
   });
 
   const matchData = data?.data;
-  const isUserOwner = matchData?.owner?.id === myPlayer?.id;
 
   const playerAlreadyInSomeTeam = matchData?.matchBookings.find(
     (booking) => booking.player?.id === myPlayer?.id,
@@ -58,17 +58,14 @@ export const MatchBookingButton = () => {
 
   if (!matchData) return;
 
+  const matchStatus = getMatchStatus(matchData);
+  const isUpcomming =
+    matchStatus === Status.PENDING || matchStatus === Status.UPCOMING;
+
   return (
     <>
-      {/* if user isn't the match-owner, there is an empty slot, 
-        user isn't in match or the match wasn't started, 
-        user with insufficient rating requested for a place and must pay 
-        or didn't requested for a place yet - show the btn */}
-      {!isUserOwner &&
-        matchData.matchBookings.length !== 4 &&
-        (isPlayerInMatchWithoutPayment || !playerAlreadyInSomeTeam) &&
-        isAfter(new Date(matchData?.booking?.startsAt), new Date()) &&
-        (isPlayerInMatchWithoutPayment || !isRequestedPlace) && (
+      {isUpcomming &&
+        (!playerAlreadyInSomeTeam || isPlayerInMatchWithoutPayment) && (
           <Box
             sx={{
               position: 'fixed',
@@ -83,6 +80,7 @@ export const MatchBookingButton = () => {
             }}
           >
             <Button
+              disabled={isRequestedPlace && !playerAlreadyInSomeTeam}
               onClick={onBookPlace}
               sx={{
                 paddingX: 2,

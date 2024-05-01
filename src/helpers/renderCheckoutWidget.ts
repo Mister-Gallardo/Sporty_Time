@@ -16,12 +16,16 @@ if (!script) {
   document.body.appendChild(script);
 }
 
-export const renderCheckoutWidget = (token: string) => {
+export const renderCheckoutWidget = (token: string, onSuccess: () => void) => {
   const checkout = new window.YooMoneyCheckoutWidget({
     confirmation_token: token, //Token that must be obtained from YooMoney before the payment process
     error_callback: function (error: any) {
       console.log('widget error: ', error);
     },
+  });
+
+  checkout.on('success', () => {
+    if (onSuccess) onSuccess();
   });
 
   checkout.on('complete', () => {

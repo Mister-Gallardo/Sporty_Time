@@ -5,15 +5,18 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { Link } from '@mui/material';
+import { Badge, CircularProgress, Link } from '@mui/material';
 import { NavLink as RouterNavLink } from 'react-router-dom';
 import { isAuthorized } from '../../services/auth/service';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import SportsTennisRoundedIcon from '@mui/icons-material/SportsTennisRounded';
 import { useLocalStorage } from 'usehooks-ts';
-import { useMutation } from '@tanstack/react-query';
-import { removeDeviceToken } from '../../services/notifications/service';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  getNotifications,
+  removeDeviceToken,
+} from '../../services/notifications/service';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 
 interface IMediumScreenMenuProps {
@@ -36,6 +39,16 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
       localStorage.removeItem('jwtToken');
     },
   });
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['notification'],
+    queryFn: getNotifications,
+  });
+
+  const notifications = data?.data;
+  const unreadNotifications = notifications?.filter(
+    (notification) => !notification?.read,
+  );
 
   return (
     <Menu
@@ -119,9 +132,22 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
         fontWeight={500}
       >
         <MenuItem sx={{ gap: 1.5 }}>
-          <NotificationsNoneOutlinedIcon
-            sx={{ fontSize: 27, color: '#575757' }}
-          />
+          {isLoading ? (
+            <CircularProgress size={27} />
+          ) : (
+            unreadNotifications && (
+              <Badge
+                badgeContent={unreadNotifications.length}
+                color="error"
+                max={99}
+              >
+                <NotificationsNoneOutlinedIcon
+                  sx={{ fontSize: 27, color: '#575757' }}
+                />
+              </Badge>
+            )
+          )}
+
           <Typography fontWeight={600} fontSize={15}>
             Уведомления
           </Typography>

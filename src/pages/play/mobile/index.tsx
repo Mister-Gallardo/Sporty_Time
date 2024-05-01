@@ -2,7 +2,13 @@ import { useHistory } from 'react-router';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import SportsBaseballOutlinedIcon from '@mui/icons-material/SportsBaseballOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import { Box, IconButton, Typography } from '@mui/material';
+import {
+  Badge,
+  Box,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import { PerfectMatch } from './sections/PerfectMatch';
 import {
   IonButtons,
@@ -11,9 +17,21 @@ import {
   IonPage,
   IonToolbar,
 } from '@ionic/react';
+import { useQuery } from '@tanstack/react-query';
+import { getNotifications } from '../../../services/notifications/service';
 
 export function MobilePlayPage() {
   const history = useHistory();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['notification'],
+    queryFn: getNotifications,
+  });
+
+  const notifications = data?.data;
+  const unreadNotifications = notifications?.filter(
+    (notification) => !notification?.read,
+  );
 
   return (
     <IonPage>
@@ -38,7 +56,23 @@ export function MobilePlayPage() {
               />
             </IconButton>
             <IconButton onClick={() => history.push('/notifications')}>
-              <NotificationsNoneOutlinedIcon sx={{ color: '#000' }} />
+              {isLoading ? (
+                <CircularProgress size={20} />
+              ) : (
+                unreadNotifications && (
+                  <Badge
+                    badgeContent={unreadNotifications.length}
+                    color="error"
+                    max={99}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                  >
+                    <NotificationsNoneOutlinedIcon sx={{ color: '#000' }} />
+                  </Badge>
+                )
+              )}
             </IconButton>
           </IonButtons>
         </IonToolbar>

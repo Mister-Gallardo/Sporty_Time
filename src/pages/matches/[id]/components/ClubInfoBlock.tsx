@@ -5,6 +5,7 @@ import { Link as RouterLink, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getOneAvailableMatch } from '../../../../services/matches/service';
 import noImg from '../../../../images/no-image.jpg';
+import { withHostname } from '../../../../services/api/service';
 
 export const ClubInfoBlock = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -37,7 +38,7 @@ export const ClubInfoBlock = () => {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <Box
           component="img"
-          src={previewImg}
+          src={withHostname(previewImg || '')}
           width={64}
           height={64}
           sx={{

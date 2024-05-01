@@ -8,6 +8,7 @@ import {
   IAddPlayerToMatchData,
   IMatchBookingData,
   ESport,
+  CreateClassDTO,
 } from './interface';
 import { api } from '../api/service';
 import { RequestQueryBuilder } from '@dataui/crud-request';
@@ -39,44 +40,53 @@ export function getAvailableNoRatingMatches(
   return res;
 }
 
-export function getOneAvailableMatch(id: number) {
+export function getOneAvailableMatch(id: number | string) {
   const res = api.get<MatchData>(`/matches/${id}`);
   return res;
 }
 
 export function uploadResults(data: UploadResultsDTO) {
-  const res = api.post('/matches/upload-results', data);
+  const { matchId, matchResults } = data;
+  const res = api.post(`/matches/${matchId}/results`, {
+    matchResults,
+  });
   return res;
 }
 
 export function cancelMatch(matchId: number) {
-  const res = api.delete('/matches/cancel', { data: { matchId } });
+  const res = api.delete(`/matches/${matchId}/cancel`);
   return res;
 }
 
 export function deletePlayerFromMatch(data: RemovePlayerFromMatch) {
-  const res = api.delete('/matches/delete-player', { data });
+  const res = api.delete(
+    `/matches/${data.matchId}/kick/${data.deletePlayerId}`,
+  );
   return res;
 }
 
-// get Yookassa's token for creating new match payment
-export async function createBookingYookassaToken(data: CreateMatchDTO) {
-  const res = await api.post('/matches/new-match-payment', data);
+// get Yookassa's token for new match court booking
+export async function getMatchBookingYookassaToken(data: CreateMatchDTO) {
+  const res = await api.post('/matches/new', data);
+  return res.data;
+}
+
+// get Yookassa's token for class court booking
+export async function getClassBookingYookassaToken(data: CreateClassDTO) {
+  const res = await api.post('/classes/new', data);
   return res.data;
 }
 
 // get Yookassa's token for join match payment
 export async function joinMatch(data: JoinMatchDTO) {
-  const res = await api.post('/matches/join-payment', data);
+  const { matchId, team } = data;
+  const res = await api.post(`/matches/${matchId}/join`, { team });
   return res.data;
 }
 
 // get Yookassa's token for the rest of the booking price payment
-export async function createExtraPaymentYookassaToken(data: {
-  money: number;
-  matchId: number;
-}) {
-  const res = await api.post('/matches/extra-payment', data);
+export async function createExtraPaymentYookassaToken(matchId: number) {
+  const res = await api.post(`/matches/${matchId}/pay`);
   return res.data;
 }
 
@@ -86,6 +96,7 @@ const bookingsQuery = (limit: number, sport?: ESport) => {
     { field: 'match.isCancelled', operator: '$eq', value: false },
     { field: 'matchBooking.id', operator: '$notnull', value: true },
     { field: 'match.sport', operator: '$eq', value: sport },
+    { field: 'match.winningTeam', operator: '$in', value: ['A', 'B'] },
     {
       field: 'match.confirmMatchResults',
       operator: '$eq',

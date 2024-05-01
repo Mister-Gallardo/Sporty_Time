@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ModalContainer } from './ModalContainer';
 import { Box, Button, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createExtraPaymentYookassaToken } from '../../services/matches/service';
 import { renderCheckoutWidget } from '../../helpers/renderCheckoutWidget';
-import { socket } from '../../utils/socket';
 import { useParams } from 'react-router';
 import { useIonToast } from '@ionic/react';
 import useToggle from '../../hooks/useToggle';
@@ -25,10 +24,23 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
   const [showToast] = useIonToast();
   const qc = useQueryClient();
 
+  const onSuccess = () => {
+    handleModal(false);
+    showToast({
+      color: 'success',
+      message: 'Оплата проведена успешно',
+      mode: 'ios',
+      position: 'top',
+      duration: 2000,
+    });
+    qc.refetchQueries({ queryKey: ['my-matches', false] });
+    qc.refetchQueries({ queryKey: [`match`, +matchId] });
+  };
+
   const extraPaymentMutation = useMutation({
     mutationFn: createExtraPaymentYookassaToken,
     onSuccess(token: string) {
-      renderCheckoutWidget(token);
+      renderCheckoutWidget(token, onSuccess);
     },
     onError(e: any) {
       handleModal(false);
@@ -45,28 +57,6 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
       });
     },
   });
-
-  useEffect(() => {
-    const updateMatchData = (e: { action: string }) => {
-      if (e.action === 'update') {
-        handleModal(false);
-        showToast({
-          color: 'success',
-          message: 'Оплата проведена успешно',
-          mode: 'ios',
-          position: 'top',
-          duration: 2000,
-        });
-        qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
-      }
-    };
-
-    socket.on(`matchId - ${matchId}`, updateMatchData);
-
-    return () => {
-      socket.off(`matchId - ${matchId}`, updateMatchData);
-    };
-  }, []);
 
   const [isDisabled, setIsDisabled] = useToggle();
 
@@ -87,10 +77,7 @@ export const EditPaymentModal: React.FC<IEditPaymentModalProps> = ({
           disabled={isDisabled}
           onClick={() => {
             setIsDisabled();
-            extraPaymentMutation.mutate({
-              matchId: +matchId,
-              money,
-            });
+            extraPaymentMutation.mutate(+matchId);
           }}
           fullWidth
           sx={{

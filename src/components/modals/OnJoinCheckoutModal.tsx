@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -19,7 +19,6 @@ import { getMatchTypeName, getSportName } from '../../helpers/getNameOf';
 import useToggle from '../../hooks/useToggle';
 import { renderCheckoutWidget } from '../../helpers/renderCheckoutWidget';
 import { useIonToast } from '@ionic/react';
-import { socket } from '../../utils/socket';
 import { usePlayerProfile } from '../../services/api/hooks';
 import { getSportRating } from '../../helpers/getSportRating';
 import { useFormContext } from 'react-hook-form';
@@ -63,11 +62,26 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   const qc = useQueryClient();
   const [showToast] = useIonToast();
 
+  const onSuccess = () => {
+    handleModal(false);
+    showToast({
+      color: 'success',
+      message: matchData?.paid
+        ? 'Вы присоединились к матчу!'
+        : 'Оплата проведена успешно',
+      mode: 'ios',
+      position: 'top',
+      duration: 2000,
+    });
+    qc.refetchQueries({ queryKey: ['my-matches', false] });
+    qc.refetchQueries({ queryKey: [`match`, +matchId] });
+  };
+
   // when new player has to pay after join
   const editPaymentMutation = useMutation({
     mutationFn: createExtraPaymentYookassaToken,
     onSuccess(token: string) {
-      renderCheckoutWidget(token);
+      renderCheckoutWidget(token, onSuccess);
     },
     onError(e: any) {
       handleModal(false);
@@ -91,7 +105,7 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
     mutationFn: joinMatch,
     onSuccess(token: string) {
       if (isRatingSufficient) {
-        renderCheckoutWidget(token);
+        renderCheckoutWidget(token, onSuccess);
       } else {
         refetch();
         handleModal(false);
@@ -127,15 +141,11 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
     if (!myPlayer?.user || !matchData) return;
 
     if (isPlayerInMatchWithoutPayment) {
-      editPaymentMutation.mutate({
-        matchId: +matchId,
-        money: matchData.paid ? 0 : matchData.price / 4,
-      });
+      editPaymentMutation.mutate(+matchId);
     } else if (watch('team')) {
       joinMatchMutation.mutate({
         matchId: +matchId,
         team: watch('team'),
-        money: matchData.paid ? 0 : matchData.price / 4,
       });
     } else {
       showToast({
@@ -145,30 +155,6 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
       });
     }
   };
-
-  useEffect(() => {
-    const updateMatchData = (e: { action: string }) => {
-      if (e.action === 'update') {
-        handleModal(false);
-        showToast({
-          color: 'success',
-          message: matchData?.paid
-            ? 'Вы присоединились к матчу!'
-            : 'Оплата проведена успешно',
-          mode: 'ios',
-          position: 'top',
-          duration: 2000,
-        });
-        qc.refetchQueries({ queryKey: ['my-matches', 'match'] });
-      }
-    };
-    const key = `matchId - ${matchId}`;
-    socket.on(key, updateMatchData);
-
-    return () => {
-      socket.off(key, updateMatchData);
-    };
-  }, []);
 
   if (!matchData) return null;
 
