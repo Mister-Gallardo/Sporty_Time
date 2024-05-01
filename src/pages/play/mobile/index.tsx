@@ -9,7 +9,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import PerfectMatch from './sections/PerfectMatch';
+import { PerfectMatch } from './sections/PerfectMatch';
 import {
   IonButtons,
   IonContent,
@@ -88,12 +88,7 @@ export function MobilePlayPage() {
             paddingInline: '15px',
           }}
         >
-          <Box>
-            {/* <RememberSection /> */}
-            <PerfectMatch />
-            {/* <YourClubs /> */}
-            {/* <GetTheMost /> */}
-          </Box>
+          <PerfectMatch />
         </Box>
       </IonContent>
     </IonPage>

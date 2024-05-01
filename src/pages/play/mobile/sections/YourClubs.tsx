@@ -1,7 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import { Block } from '../../../../components/molecules/Block';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
-import { DummyCurtain } from './DummyCurtain';
 
 function YourClubs() {
   return (
@@ -10,7 +9,6 @@ function YourClubs() {
       <Block
         sx={{ maxWidth: '160px', position: 'relative', overflow: 'hidden' }}
       >
-        <DummyCurtain />
         <Box
           width={50}
           height={50}
