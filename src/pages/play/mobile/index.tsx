@@ -3,7 +3,7 @@ import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineR
 import SportsBaseballOutlinedIcon from '@mui/icons-material/SportsBaseballOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import { Box, IconButton, Typography } from '@mui/material';
-import PerfectMatch from './sections/PerfectMatch';
+import { PerfectMatch } from './sections/PerfectMatch';
 import {
   IonButtons,
   IonContent,
@@ -54,12 +54,7 @@ export function MobilePlayPage() {
             paddingInline: '15px',
           }}
         >
-          <Box>
-            {/* <RememberSection /> */}
-            <PerfectMatch />
-            {/* <YourClubs /> */}
-            {/* <GetTheMost /> */}
-          </Box>
+          <PerfectMatch />
         </Box>
       </IonContent>
     </IonPage>

@@ -1,14 +1,15 @@
 import {
+  IonBackButton,
   IonButtons,
   IonContent,
   IonHeader,
   IonPage,
-  IonTitle,
   IonToolbar,
   isPlatform,
 } from '@ionic/react';
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
+import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 import { SingleClassesPage } from '.';
 
 export function MobileSingleClassesPage() {
@@ -17,15 +18,10 @@ export function MobileSingleClassesPage() {
       {isPlatform('mobile') && (
         <IonHeader>
           <IonToolbar>
-            <IonTitle style={{ fontSize: '1.2rem' }}>Профиль</IonTitle>
-
-            <IonButtons slot="end">
-              {/* <IonButton onClick={() => history.push('/chats')}>
-                <ChatBubbleOutlineRoundedIcon sx={{ color: '#000' }} />
-              </IonButton>
-              <IonButton onClick={() => history.push('/profile/navigation')}>
-                <MenuRoundedIcon sx={{ color: '#000' }} />
-              </IonButton> */}
+            <IonButtons slot="start">
+              <IonBackButton defaultHref="/classes" text="" color="dark">
+                <ArrowBackIosNewOutlined />
+              </IonBackButton>
             </IonButtons>
           </IonToolbar>
         </IonHeader>

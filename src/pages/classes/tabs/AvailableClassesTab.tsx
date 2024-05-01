@@ -1,9 +1,12 @@
 import { isPlatform } from '@ionic/react';
-import { Box, IconButton, Typography } from '@mui/material';
-import React from 'react';
+import {
+  Box,
+  //  IconButton,
+  Typography,
+} from '@mui/material';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { ClassCard } from '../../../components/molecules/ClassCard';
-import TuneIcon from '@mui/icons-material/Tune';
+// import TuneIcon from '@mui/icons-material/Tune';
 
 const isMobile = isPlatform('mobile');
 
@@ -15,7 +18,7 @@ export const AvailableClassesTab = () => {
 
   return (
     <Box position="relative">
-      <Box
+      {/* <Box
         position={isMobile ? 'fixed' : 'unset'}
         left={0}
         zIndex={1}
@@ -30,10 +33,11 @@ export const AvailableClassesTab = () => {
         <IconButton sx={{ p: 0 }}>
           <TuneIcon />
         </IconButton>
-      </Box>
+      </Box> */}
 
       <Box
-        pt={7}
+        // pt={7}
+        pt={3}
         display="flex"
         flexDirection={isMobile ? 'column' : 'unset'}
         justifyContent="center"

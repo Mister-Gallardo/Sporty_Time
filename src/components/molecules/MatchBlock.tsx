@@ -1,32 +1,33 @@
 import { Box, Typography } from '@mui/material';
 import { Block } from './Block';
 import { useHistory } from 'react-router';
-import { DummyCurtain } from '../../pages/play/mobile/sections/DummyCurtain';
 
 interface IMatchBlockProps {
-  disabled?: boolean;
   img?: string;
-  icon: any;
+  icon?: any;
   title: string;
   description?: string;
-  onClick?: () => void;
-  href?: string;
+  href: string;
 }
 
-export const MatchBlock = (props: IMatchBlockProps) => {
+export const MatchBlock: React.FC<IMatchBlockProps> = ({
+  img,
+  icon,
+  title,
+  description,
+  href,
+}) => {
   const history = useHistory();
 
   return (
     <Block
-      onClick={() => history.push(props.href || '/')}
+      onClick={() => history.push(href)}
       sx={{
-        paddingTop: props.img ? '45%' : '10px',
+        paddingTop: img ? '45%' : '10px',
         position: 'relative',
       }}
     >
-      {props.disabled && <DummyCurtain />}
-
-      {props.img && (
+      {img && (
         <Box
           component="img"
           sx={{
@@ -38,31 +39,29 @@ export const MatchBlock = (props: IMatchBlockProps) => {
             aspectRatio: '16 / 9',
             objectFit: 'cover',
           }}
-          src={props.img}
+          src={img}
         />
       )}
 
-      {/* <Box
-        sx={{
-          position: 'relative',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '40px',
-          aspectRatio: '1 / 1',
-          background: '#0D2437',
-          borderRadius: '5px',
-        }}
-      >
-        {props?.icon}
-      </Box> */}
-      <Typography
-        sx={{ padding: '8px 0 5px 0', mt: 4, fontWeight: '600' }}
-        variant="body1"
-      >
-        {props?.title}
+      {icon && (
+        <Box
+          sx={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '40px',
+            aspectRatio: '1 / 1',
+            background: '#0D2437',
+          }}
+        >
+          {icon}
+        </Box>
+      )}
+      <Typography mt={1} fontWeight={600} fontSize={13}>
+        {title}
       </Typography>
-      <Typography variant="body2">{props?.description}</Typography>
+      {description && <Typography variant="body2">{description}</Typography>}
     </Block>
   );
 };

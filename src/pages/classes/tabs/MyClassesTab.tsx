@@ -1,5 +1,5 @@
 import { isPlatform } from '@ionic/react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { ClassCard } from '../../../components/molecules/ClassCard';
 
@@ -13,7 +13,7 @@ export const MyClassesTab = () => {
 
   return (
     <Box position="relative">
-      <Box
+      {/* <Box
         position={isMobile ? 'fixed' : 'unset'}
         left={0}
         zIndex={1}
@@ -70,10 +70,11 @@ export const MyClassesTab = () => {
         >
           status
         </Button>
-      </Box>
+      </Box> */}
 
       <Box
-        pt={7}
+        // pt={7}
+        pt={3}
         display="flex"
         flexDirection={isMobile ? 'column' : 'unset'}
         justifyContent="center"
