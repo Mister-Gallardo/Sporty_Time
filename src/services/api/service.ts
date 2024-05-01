@@ -11,7 +11,7 @@ export const BASE_URL =
 export const withHostname = (url: string) => {
   try {
     const urlObj = new URL(url, window.location as unknown as URL);
-    urlObj.hostname = 'sportytime.ru';
+    urlObj.hostname = 'dev.sportytime.ru';
     urlObj.protocol = 'https';
     urlObj.port = '';
     return urlObj.toString();
