@@ -1,7 +1,7 @@
 import React from 'react';
 import { isPlatform } from '@ionic/react';
 import { Redirect, Route } from 'react-router';
-import { MobilePlayPage } from './pages/play/mobile';
+import { MobilePlayPage } from './pages/play';
 import { MobileBookCourt } from './pages/book-court/index.mobile';
 import { MobileAuthPage } from './pages/auth/index.mobile';
 import { MobileSingleCourtPage } from './pages/book-court/[id]/index.mobile';

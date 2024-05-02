@@ -9,7 +9,6 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import { PerfectMatch } from './sections/PerfectMatch';
 import {
   IonButtons,
   IonContent,
@@ -18,7 +17,12 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { useQuery } from '@tanstack/react-query';
-import { getNotifications } from '../../../services/notifications/service';
+import { getNotifications } from '../../services/notifications/service';
+import { NavBlock } from '../../components/molecules/NavBlock';
+import booking from '../../images/home/booking-bg.png';
+import matchbg from '../../images/home/match-bg.png';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 
 export function MobilePlayPage() {
   const history = useHistory();
@@ -79,16 +83,54 @@ export function MobilePlayPage() {
       </IonHeader>
 
       <IonContent fullscreen>
-        <Box
-          pb={10}
-          sx={{
-            width: '100%',
-            maxWidth: '450px',
-            margin: '0 auto',
-            paddingInline: '15px',
-          }}
-        >
-          <PerfectMatch />
+        <Box px={2}>
+          <Box>
+            <Typography variant="h2">
+              Находите открытые матчи по теннису, падел и пиклбол в вашем
+              городе, подключайтесь к ним и играйте в дружеские и
+              соревновательные матчи!
+            </Typography>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '12px',
+              }}
+            >
+              <NavBlock
+                href="/book-court"
+                img={booking}
+                title="Забронируйте корт"
+                description="Если вы уже знаете, с кем играете"
+                icon={
+                  <SearchOutlinedIcon
+                    sx={{ fontSize: '1.5rem', color: '#fff' }}
+                  />
+                }
+              />
+
+              <NavBlock
+                href="/matches?tab=1"
+                img={matchbg}
+                title="Сыграйте матч"
+                description="Если вы ищете игроков своего уровня"
+                icon={
+                  <SportsBaseballOutlinedIcon
+                    sx={{ fontSize: '1.5rem', color: '#fff' }}
+                  />
+                }
+              />
+              <NavBlock
+                href="/classes?tab=1"
+                title="Занятия"
+                icon={
+                  <SchoolOutlinedIcon
+                    sx={{ fontSize: '1.5rem', color: '#fff' }}
+                  />
+                }
+              />
+            </Box>
+          </Box>
         </Box>
       </IonContent>
     </IonPage>
