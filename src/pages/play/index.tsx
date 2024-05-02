@@ -7,6 +7,7 @@ import {
   Box,
   CircularProgress,
   IconButton,
+  Stack,
   Typography,
 } from '@mui/material';
 import {
@@ -23,6 +24,10 @@ import booking from '../../images/home/booking-bg.png';
 import matchbg from '../../images/home/match-bg.png';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import { Link } from 'react-router-dom';
+import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
+import EastOutlinedIcon from '@mui/icons-material/EastOutlined';
+import { getUnpaidMatchesList } from '../../services/payments';
 
 export function MobilePlayPage() {
   const history = useHistory();
@@ -36,6 +41,12 @@ export function MobilePlayPage() {
   const unreadNotifications = notifications?.filter(
     (notification) => !notification?.read,
   );
+
+  const { data: unpaidMatches } = useQuery({
+    queryKey: ['unpaid'],
+    queryFn: getUnpaidMatchesList,
+  });
+  const debtsList = unpaidMatches?.data;
 
   return (
     <IonPage>
@@ -83,9 +94,36 @@ export function MobilePlayPage() {
       </IonHeader>
 
       <IonContent fullscreen>
-        <Box px={2}>
+        <Box mt={3} px={2}>
           <Box>
-            <Typography variant="h2">
+            {debtsList && debtsList?.length > 0 && (
+              <Link to="/profile/payments">
+                <Box
+                  border="1px solid #eee"
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  gap={1.5}
+                  py={1}
+                  px={1.5}
+                >
+                  <CreditCardOutlinedIcon
+                    fontSize="large"
+                    sx={{ backgroundColor: '#eee', p: 1 }}
+                  />
+
+                  <Stack>
+                    <Typography lineHeight={1.2}>Неоплаченные матчи</Typography>
+                    <Typography lineHeight={1.2} color="gray" fontSize={11}>
+                      Посмотреть информацию о задолженностях
+                    </Typography>
+                  </Stack>
+
+                  <EastOutlinedIcon />
+                </Box>
+              </Link>
+            )}
+            <Typography variant="h2" pt={2}>
               Находите открытые матчи по теннису, падел и пиклбол в вашем
               городе, подключайтесь к ним и играйте в дружеские и
               соревновательные матчи!

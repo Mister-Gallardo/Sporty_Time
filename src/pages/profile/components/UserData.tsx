@@ -5,6 +5,7 @@ import { withHostname } from '../../../services/api/service';
 import { Link } from 'react-router-dom';
 import { UserInfoCountBlock } from './UserInfoCountBlock';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 interface IUserDataProps {
   name?: string;
@@ -56,7 +57,12 @@ export const UserData: React.FC<IUserDataProps> = ({
               {name}
             </Typography>
             {isDesktop && isMyUser && (
-              <Link to="/profile/navigation">Изменить профиль</Link>
+              <Link to="/profile/navigation">
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Typography>Настройки</Typography>
+                  <SettingsOutlinedIcon sx={{ color: '#777' }} />
+                </Box>
+              </Link>
             )}
           </Box>
           {isDesktop && <UserInfoCountBlock />}
