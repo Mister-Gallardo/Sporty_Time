@@ -83,6 +83,7 @@ export interface MatchData {
   type: string;
   timeExpires: string;
   totalPaid: number;
+  gender: string;
 }
 [];
 

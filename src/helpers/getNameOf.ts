@@ -1,5 +1,5 @@
 import { ECourtType } from '../services/club/interface';
-import { ESport, EMatchType } from '../services/matches/interface';
+import { ESport, EMatchType, EGender } from '../services/matches/interface';
 
 export const getMatchTypeName = (type: string | EMatchType) => {
   switch (type) {
@@ -33,6 +33,22 @@ export const getCourtTypeName = (type: string | ECourtType) => {
       return 'Внутри';
     case ECourtType.OUTDOOR:
       return 'Снаружи';
+
+    default:
+      return '';
+  }
+};
+
+export const getGenderName = (type: string | EGender) => {
+  switch (type) {
+    case EGender.ALL:
+      return 'Любой';
+    case EGender.MIXED:
+      return 'Смешанный';
+    case EGender.WOMEN:
+      return 'Только женщины';
+    case EGender.MEN:
+      return 'Только мужчины';
 
     default:
       return '';

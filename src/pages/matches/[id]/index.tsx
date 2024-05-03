@@ -26,7 +26,6 @@ import { EditPayment } from './components/EditPayment';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { ResultsTable } from './components/ResultsTable';
 import { RequestsForPlaces } from './components/RequestsForPlaces';
-import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { UploadResultsBlock } from './components/UploadResultsBlock';
 import { isAfter } from 'date-fns';
 import { AddPlayersToMatchModal } from '../../../components/modals/AddPlayersToMatchModal';
@@ -152,9 +151,7 @@ export function SingleMatchPage() {
   );
 
   const booking = singleMatchData.booking;
-  if (!booking) return <LoadingCircle />;
-
-  const startsAt = new Date(singleMatchData.booking.startsAt);
+  const startsAt = booking && new Date(singleMatchData.booking.startsAt);
 
   return (
     <>
@@ -190,12 +187,10 @@ export function SingleMatchPage() {
                 players={players}
                 playerAlreadyInSomeTeam={!!playerAlreadyInSomeTeam}
                 setPlayerInTeam={(team) => {
+                  if (!booking) return;
                   if (
                     playerAlreadyInSomeTeam ||
-                    isAfter(
-                      new Date(),
-                      new Date(singleMatchData?.booking?.startsAt),
-                    )
+                    isAfter(new Date(), new Date(booking?.startsAt))
                   )
                     return;
                   setValue('team', team);
@@ -205,7 +200,7 @@ export function SingleMatchPage() {
 
               <ResultsTable />
 
-              {Date.now() > startsAt.getTime() && playerAlreadyInSomeTeam && (
+              {Date.now() > startsAt?.getTime() && playerAlreadyInSomeTeam && (
                 <UploadResultsBlock />
               )}
 

@@ -4,7 +4,7 @@ import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import { Box, Divider, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
-import { getSportName } from '../../../../helpers/getNameOf';
+import { getGenderName, getSportName } from '../../../../helpers/getNameOf';
 
 export const MatchDataBlock = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -17,16 +17,19 @@ export const MatchDataBlock = () => {
   const singleMatchData = data?.data;
   if (!singleMatchData) return null;
 
-  const { sport, ratingFrom, ratingTo, price, paid, booking } = singleMatchData;
+  const { sport, ratingFrom, ratingTo, price, paid, booking, gender } =
+    singleMatchData;
 
   const isPremium = true;
-  const interval = booking.interval;
+  const interval = booking?.interval;
 
   // match start date + start-end time
-  const matchDate = `${interval.slice(2, 12)} | ${interval.slice(
-    13,
-    18,
-  )}-${interval.slice(-10, -5)}`;
+  const matchDate = interval
+    ? `${interval.slice(2, 12)} | ${interval.slice(13, 18)}-${interval.slice(
+        -10,
+        -5,
+      )}`
+    : 'Матч отменён';
 
   return (
     <Box
@@ -77,8 +80,7 @@ export const MatchDataBlock = () => {
         <Box textAlign="center">
           <Typography color="gray">Пол</Typography>
           <Typography fontSize={16} fontWeight={600}>
-            {/* {gender} */}
-            Любой
+            {getGenderName(gender)}
           </Typography>
         </Box>
         <Box textAlign="center">
