@@ -82,6 +82,7 @@ export interface MatchData {
   updatedAt: string;
   type: string;
   timeExpires: string;
+  totalPaid: number;
 }
 [];
 

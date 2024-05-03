@@ -1,7 +1,7 @@
 import React from 'react';
 import { isPlatform } from '@ionic/react';
 import { Redirect, Route } from 'react-router';
-import { MobilePlayPage } from './pages/play/mobile';
+import { MobilePlayPage } from './pages/play';
 import { MobileBookCourt } from './pages/book-court/index.mobile';
 import { MobileAuthPage } from './pages/auth/index.mobile';
 import { MobileSingleCourtPage } from './pages/book-court/[id]/index.mobile';
@@ -20,6 +20,7 @@ import { MobileSpecificProfilePage } from './pages/profile/[id]/index.mobile';
 import { MobileNotificationsPage } from './pages/notifications/index.mobile';
 import { MobileClassesPage } from './pages/classes/index.mobile';
 import { MobileSingleClassesPage } from './pages/classes/[id]/index.mobile';
+import { MobilePaymentsPage } from './pages/profile/nested-pages/payments/index.mobile';
 
 export interface RouteExtraProps {
   showTabBar: boolean;
@@ -119,6 +120,12 @@ export const mobileRoutes = [
     path: '/profile/navigation',
     exact: true,
     component: MobileProfileNavPage,
+    showTabBar: true,
+  },
+  {
+    path: '/profile/payments',
+    exact: true,
+    component: MobilePaymentsPage,
     showTabBar: true,
   },
   {

@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { Block } from './Block';
 import { useHistory } from 'react-router';
 
-interface IMatchBlockProps {
+interface INavBlockProps {
   img?: string;
   icon?: any;
   title: string;
@@ -10,7 +10,7 @@ interface IMatchBlockProps {
   href: string;
 }
 
-export const MatchBlock: React.FC<IMatchBlockProps> = ({
+export const NavBlock: React.FC<INavBlockProps> = ({
   img,
   icon,
   title,

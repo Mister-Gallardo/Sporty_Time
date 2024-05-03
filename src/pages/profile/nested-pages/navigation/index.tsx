@@ -20,6 +20,7 @@ import { withHostname } from '../../../../services/api/service';
 import { useLocalStorage } from 'usehooks-ts';
 import { removeDeviceToken } from '../../../../services/notifications/service';
 import LogoutIcon from '@mui/icons-material/Logout';
+import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
 
 const isMobile = isPlatform('mobile');
 
@@ -82,6 +83,14 @@ export const ProfileNavPage = () => {
             secondaryText="Имя, Фамилия, номер телефона, почта, пол"
             startIcon={<PersonOutlinedIcon sx={{ color: '#000' }} />}
             onClick={() => history.push('/profile/edit')}
+          />
+        </Box>
+        <Box bgcolor="#f7f7f7" borderRadius={3} p={1}>
+          <NavButton
+            primaryText="Ваши платежи"
+            secondaryText="Матчи"
+            startIcon={<CreditCardOutlinedIcon sx={{ color: '#000' }} />}
+            onClick={() => history.push('/profile/payments')}
           />
         </Box>
         <Box bgcolor="#f7f7f7" borderRadius={3} p={1}>
