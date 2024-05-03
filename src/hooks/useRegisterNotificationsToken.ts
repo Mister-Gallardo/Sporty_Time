@@ -10,6 +10,7 @@ import {
   ActionPerformed,
 } from '@capacitor/push-notifications';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { useIsAuthorized } from '../services/api/hooks';
 
 export const useRegisterNotificationsToken = () => {
   const [, setDeviceToken] = useLocalStorage('deviceToken', '');
@@ -47,7 +48,9 @@ export const useRegisterNotificationsToken = () => {
     await PushNotifications.register();
   };
 
+  const isAuthorized = useIsAuthorized();
   useEffect(() => {
+    if (!isAuthorized) return;
     if (Capacitor.getPlatform() === 'web') {
       const messaging = getMessaging();
 

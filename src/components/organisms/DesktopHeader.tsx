@@ -51,6 +51,7 @@ function DesktopHeader() {
   const { data, isLoading } = useQuery({
     queryKey: ['notification'],
     queryFn: getNotifications,
+    enabled: isAuthorized,
   });
   const notifications = data?.data;
   const unreadNotifications = notifications?.filter(

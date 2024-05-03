@@ -43,6 +43,7 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
   const { data, isLoading } = useQuery({
     queryKey: ['notification'],
     queryFn: getNotifications,
+    enabled: isAuth,
   });
 
   const notifications = data?.data;
