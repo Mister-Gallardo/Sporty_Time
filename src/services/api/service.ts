@@ -1,19 +1,18 @@
 import axios from 'axios';
 import { isAuthorized } from '../auth/service';
 import { history } from '../history/service';
-import { isPlatform } from '@ionic/react';
+import { isMobile } from '../helper';
 
-export const BASE_URL =
-  !isPlatform('mobileweb') && isPlatform('mobile')
-    ? 'https://app.sportytime.ru/api'
-    : '/api';
+export const BASE_URL = isMobile() ? 'https://app.sportytime.ru/api' : '/api';
 
 export const withHostname = (url: string) => {
   try {
     const urlObj = new URL(url, window.location as unknown as URL);
-    urlObj.hostname = 'dev.sportytime.ru';
-    urlObj.protocol = 'https';
-    urlObj.port = '';
+    if (urlObj.host === 'localhost') {
+      urlObj.hostname = 'app.sportytime.ru';
+      urlObj.protocol = 'https';
+      urlObj.port = '';
+    }
     return urlObj.toString();
   } catch (e) {
     return url;

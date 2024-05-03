@@ -209,4 +209,4 @@
 
 Актуальная версия Политики конфиденциальности находится в свободном
 доступе в сети Интернет по адресу
-«https://sportytime.ru/privacy-policy».
+«https://app.sportytime.ru/privacy-policy».
