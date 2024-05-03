@@ -5,7 +5,7 @@ import { isPlatform } from '@ionic/react';
 
 export const BASE_URL =
   !isPlatform('mobileweb') && isPlatform('mobile')
-    ? 'https://sportytime.ru/api'
+    ? 'https://app.sportytime.ru/api'
     : '/api';
 
 export const withHostname = (url: string) => {

@@ -120,7 +120,7 @@ function DesktopHeader() {
                   >
                     Клубы
                   </Link>
-                  <Link
+                  {/* <Link
                     component={RouterNavLink}
                     to="/classes?tab=1"
                     underline="none"
@@ -128,7 +128,7 @@ function DesktopHeader() {
                     fontWeight={500}
                   >
                     Занятия
-                  </Link>
+                  </Link> */}
 
                   <Link
                     component={RouterNavLink}

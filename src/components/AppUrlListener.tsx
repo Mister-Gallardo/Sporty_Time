@@ -7,7 +7,7 @@ const AppUrlListener: React.FC<any> = () => {
 
   useEffect(() => {
     App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
-      const domain = 'sportytime.ru';
+      const domain = 'app.sportytime.ru';
       const path = event.url.split(domain).pop();
 
       if (path) {

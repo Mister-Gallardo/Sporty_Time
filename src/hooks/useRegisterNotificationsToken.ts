@@ -69,7 +69,7 @@ export const useRegisterNotificationsToken = () => {
                 {
                   body: event?.notification?.body,
                   data: event?.data?.redirect.replace(
-                    'sportytime.ru',
+                    'app.sportytime.ru',
                     'dev.sportytime.ru',
                   ),
                 },

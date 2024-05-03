@@ -24,7 +24,7 @@ export default defineConfig({
         output: './builds/latest.json',
         data: {
           version,
-          url: 'https://sportytime.ru/builds/latest.zip',
+          url: 'https://app.sportytime.ru/builds/latest.zip',
         },
       },
     ]),
