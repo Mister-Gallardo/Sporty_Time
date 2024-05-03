@@ -157,8 +157,11 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
   };
 
   if (!matchData) return null;
-
+  const [isDisabled, setIsDisabled] = useToggle();
   const { booking, type, sport, paid, price } = matchData;
+
+  if (!booking) return null;
+
   const interval = booking.interval;
 
   // match start date + start-end time
@@ -169,8 +172,6 @@ export const OnJoinCheckoutModal: React.FC<IOnJoinCheckoutModalProps> = ({
 
   const total = paid ? 0 : price / 4;
   const tags = booking?.court?.tags.map((tag) => tag.title).join(' | ');
-
-  const [isDisabled, setIsDisabled] = useToggle();
 
   return (
     <ModalContainer

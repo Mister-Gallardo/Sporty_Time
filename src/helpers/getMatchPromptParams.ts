@@ -17,10 +17,9 @@ export const getPromptParams = (
   matchData: MatchData,
   playerAlreadyInSomeTeam: boolean,
 ) => {
-  const status = getMatchStatus(matchData);
-  const matchDate = new Date(matchData.booking.startsAt);
+  const booking = matchData.booking;
 
-  if (status === Status.CANCELED) {
+  if (!booking || matchData.isCancelled) {
     return {
       color: PromptIconColor.DANGER,
       bgColor: PromptBGColor.DANGER,
@@ -28,6 +27,9 @@ export const getPromptParams = (
       description: '',
     };
   }
+
+  const status = getMatchStatus(matchData);
+  const matchDate = new Date(booking.startsAt);
 
   if (status === Status.IN_PROGRESS) {
     return {
