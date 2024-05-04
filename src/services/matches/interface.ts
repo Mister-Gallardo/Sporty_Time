@@ -82,8 +82,6 @@ export interface MatchData {
   updatedAt: string;
   type: string;
   timeExpires: string;
-  totalPaid: number;
-  gender: string;
 }
 [];
 
@@ -97,20 +95,6 @@ export interface CreateMatchDTO {
   gender: EGender;
   isPrivate: boolean;
   onlyMyPart: boolean;
-}
-
-export interface CreateClassDTO {
-  courtId: number;
-  gameDate: Date | string;
-  playTime: number;
-  ratingFrom: number;
-  playersCount: number;
-  price: number;
-  ratingTo: number;
-  gender: EGender;
-  isPrivate: boolean;
-  title: string;
-  description: string;
 }
 
 export interface JoinMatchDTO {

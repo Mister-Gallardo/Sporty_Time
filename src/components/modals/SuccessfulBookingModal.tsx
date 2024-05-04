@@ -4,25 +4,36 @@ import { Link, Stack, Typography } from '@mui/material';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { getOneAvailableMatch } from '../../services/matches/service';
 import { useQuery } from '@tanstack/react-query';
+import { getClass } from '../../services/classes';
 interface ISuccessfulBookingModal {
   openState: boolean;
   handleModal: (val?: boolean) => void;
   token: string;
+  isClass: boolean;
 }
 export const SuccessfulBookingModal: React.FC<ISuccessfulBookingModal> = ({
   openState,
   handleModal,
   token,
+  isClass,
 }) => {
   const id = token?.slice(3, token?.length);
 
-  const { data } = useQuery({
+  const { data: matchData } = useQuery({
     queryKey: ['matches', id],
     queryFn: () => getOneAvailableMatch(id),
-    enabled: !!token && openState,
+    enabled: !!token && openState && !isClass,
   });
 
-  const matchId = data?.data?.id;
+  const matchId = matchData?.data?.id;
+
+  const { data: classData } = useQuery({
+    queryKey: ['classes', id],
+    queryFn: () => getClass(id),
+    enabled: !!token && openState && isClass,
+  });
+
+  const classId = classData?.data?.id;
 
   return (
     <ModalContainer
@@ -42,7 +53,7 @@ export const SuccessfulBookingModal: React.FC<ISuccessfulBookingModal> = ({
         </svg>
         <Link
           component={ReactRouterLink}
-          to={`/matches/${matchId}`}
+          to={isClass ? `/classes/${classId}` : `/matches/${matchId}`}
           underline="none"
           bgcolor="primary.main"
           color="#fff !important"

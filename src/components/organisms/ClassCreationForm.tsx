@@ -176,9 +176,12 @@ export const ClassCreationForm = () => {
       </Box>
 
       <Box>
-        <Typography fontWeight={700} mb={1}>
-          Заголовок
-        </Typography>
+        <Box display="flex">
+          <Typography fontWeight={700} mb={1} mr={0.5}>
+            Заголовок
+          </Typography>
+          <Typography color="gray">(минимум 5 символов)</Typography>
+        </Box>
         <TextField
           value={title}
           onChange={(e) => setValue('title', e.target.value)}

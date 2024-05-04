@@ -5,10 +5,11 @@ import TransgenderOutlinedIcon from '@mui/icons-material/TransgenderOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from 'react-router-dom';
 import { isPlatform } from '@ionic/react';
+import { IClass } from '../../services/classes/service';
 
 const isMobile = isPlatform('mobile');
 
-export const ClassCard = () => {
+export const ClassCard: React.FC<IClass> = ({ title, playersCount, price }) => {
   return (
     <Box
       border="1px solid #eee"
@@ -45,7 +46,7 @@ export const ClassCard = () => {
               <Typography fontSize={10}>time</Typography>
             </Box>
             <Typography mb={2} fontSize={16} fontWeight={600}>
-              Title Title Title
+              {title}
             </Typography>
             <Box
               mb={1}
@@ -102,11 +103,14 @@ export const ClassCard = () => {
               })}
             </Box>
             <Typography color="gray" fontSize={13}>
-              0/4
+              0/{playersCount}
             </Typography>
           </Box>
-          <Button variant="contained" sx={{ fontSize: 13, px: 1, py: 0.2 }}>
-            Присоединиться - $30
+          <Button variant="contained" sx={{ fontSize: 13, px: 2, py: 0.2 }}>
+            <Stack>
+              <Typography>Присоединиться</Typography>
+              <Typography>{price}руб.</Typography>
+            </Stack>
           </Button>
         </Box>
       </Link>

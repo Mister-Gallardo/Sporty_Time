@@ -18,8 +18,8 @@ import { MobileAboutPage } from './pages/about/index.mobile';
 import { MobilePrivacyPolicyPage } from './pages/privacy-policy/index.mobile';
 import { MobileSpecificProfilePage } from './pages/profile/[id]/index.mobile';
 import { MobileNotificationsPage } from './pages/notifications/index.mobile';
-// import { MobileClassesPage } from './pages/classes/index.mobile';
-// import { MobileSingleClassesPage } from './pages/classes/[id]/index.mobile';
+import { MobileClassesPage } from './pages/classes/index.mobile';
+import { MobileSingleClassesPage } from './pages/classes/[id]/index.mobile';
 import { MobilePaymentsPage } from './pages/profile/nested-pages/payments/index.mobile';
 
 export interface RouteExtraProps {
@@ -144,16 +144,16 @@ export const mobileRoutes = [
     component: MobileNotificationsPage,
     showTabBar: true,
   },
-  // {
-  //   path: '/classes',
-  //   exact: true,
-  //   component: MobileClassesPage,
-  //   showTabBar: true,
-  // },
-  // {
-  //   path: '/classes/:classId',
-  //   exact: true,
-  //   component: MobileSingleClassesPage,
-  //   showTabBar: true,
-  // },
+  {
+    path: '/classes',
+    exact: true,
+    component: MobileClassesPage,
+    showTabBar: true,
+  },
+  {
+    path: '/classes/:classId',
+    exact: true,
+    component: MobileSingleClassesPage,
+    showTabBar: true,
+  },
 ].filter(Boolean) as React.ComponentProps<typeof Route<RouteExtraProps>>[];

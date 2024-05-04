@@ -7,10 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CourtAccordion } from '../../../../components/molecules/CourtAccordion';
 import { ConfigMatchModal } from '../../../../components/modals/ConfigMatchModal';
 import { CheckoutModal } from '../../../../components/modals/CheckoutModal';
-import {
-  getMatchBookingYookassaToken,
-  getClassBookingYookassaToken,
-} from '../../../../services/matches/service';
+import { getMatchBookingYookassaToken } from '../../../../services/matches/service';
 import { useSearchParam } from '../../../../hooks/useSearchParams';
 import useToggle from '../../../../hooks/useToggle';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -22,6 +19,7 @@ import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
 import { TimesList } from '../components/TimesList';
 import { DatesList } from '../components/DatesList';
 import { SuccessfulBookingModal } from '../../../../components/modals/SuccessfulBookingModal';
+import { getClassBookingYookassaToken } from '../../../../services/classes';
 
 export function BookTab() {
   const { clubId } = useParams<{ clubId: string }>();
@@ -55,6 +53,7 @@ export function BookTab() {
       price: '',
     },
   });
+  const { getValues, reset } = configBookingForm;
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['club', selectedDate, clubId],
@@ -90,6 +89,7 @@ export function BookTab() {
       renderCheckoutWidget(token, onSuccess);
     },
     onError(e: any) {
+      reset();
       const message = e?.response?.data?.message;
       showToast({
         color: 'danger',
@@ -109,6 +109,7 @@ export function BookTab() {
       renderCheckoutWidget(token, onSuccess);
     },
     onError(e: any) {
+      reset();
       const message = e?.response?.data?.message;
       showToast({
         color: 'danger',
@@ -130,8 +131,6 @@ export function BookTab() {
     )}T${selectedTime}:00.00Z`;
     const courtId = selectedOption.court.id;
     const playTime = selectedOption.playTime;
-
-    const { getValues } = configBookingForm;
 
     const {
       isClass,
@@ -290,6 +289,7 @@ export function BookTab() {
           openState={openSuccessfulModal}
           handleModal={setOpenSuccessfulModal}
           token={token}
+          isClass={getValues('isClass')}
         />
       )}
     </>
