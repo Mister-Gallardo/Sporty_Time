@@ -46,9 +46,9 @@ export const getGenderName = (type: string | EGender) => {
     case EGender.MIXED:
       return 'Смешанный';
     case EGender.WOMEN:
-      return 'Только женщины';
+      return 'Женщины';
     case EGender.MEN:
-      return 'Только мужчины';
+      return 'Мужчины';
 
     default:
       return '';

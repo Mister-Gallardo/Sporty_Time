@@ -1,26 +1,22 @@
 import { useUserInfo } from '../../services/api/hooks';
 import { ModalContainer } from './ModalContainer';
 import { Role } from '../../services/user/interface';
-import {
-  Box,
-  //  Typography, Switch,
-  Button,
-} from '@mui/material';
+import { Box, Typography, Switch, Button } from '@mui/material';
 import { ClassCreationForm } from '../organisms/ClassCreationForm';
 import { MatchCreationForm } from '../organisms/MatchCreationForm';
-// import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import { useFormContext } from 'react-hook-form';
 import { getSportRating } from '../../helpers/getSportRating';
 import { useEffect } from 'react';
 
-interface IConfigMatchModal {
+interface IConfigBookingModal {
   sport: string;
   openState: boolean;
   handleModal: (val?: boolean) => void;
   handleNext: () => void;
 }
 
-export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
+export const ConfigBookingModal: React.FC<IConfigBookingModal> = ({
   sport,
   openState,
   handleModal,
@@ -50,7 +46,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
       headerTitle="Настройте свой матч"
     >
       <Box>
-        {/* {isTrainer && (
+        {isTrainer && (
           <Box
             display="flex"
             justifyContent="space-between"
@@ -68,7 +64,7 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
               }}
             />
           </Box>
-        )} */}
+        )}
 
         {isClass ? (
           <ClassCreationForm />
@@ -76,6 +72,9 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
           <MatchCreationForm rating={rating} />
         )}
         <Button
+          disabled={
+            isClass && (watch('title').length < 5 || !watch('priceForSpot'))
+          }
           onClick={() => {
             handleModal();
             handleNext();

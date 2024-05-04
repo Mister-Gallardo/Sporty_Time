@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-// import SchoolIcon from '@mui/icons-material/School';
+import SchoolIcon from '@mui/icons-material/School';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
@@ -81,7 +81,7 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
           </Typography>
         </MenuItem>
       </Link>
-      {/* <Link
+      <Link
         onClick={handleMdMenuClose}
         component={RouterNavLink}
         to="/classes?tab=1"
@@ -94,7 +94,7 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
             Занятия
           </Typography>
         </MenuItem>
-      </Link> */}
+      </Link>
 
       <Link
         onClick={handleMdMenuClose}
