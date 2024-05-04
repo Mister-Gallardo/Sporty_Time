@@ -56,3 +56,16 @@ export async function kickPlayerFromClass(data: {
   const res = await api.delete(`classes/${classId}/kick/${playerId}`);
   return res?.data;
 }
+
+export async function getClassByOrderId(orderId: string) {
+  const qb = RequestQueryBuilder.create();
+  qb.setJoin([{ field: 'classBookings' }, { field: 'classBookings.payments' }])
+    .setFilter({
+      field: 'classBookings.payments.orderId',
+      operator: '$eq',
+      value: orderId,
+    })
+    .query();
+  const res = await api.get<any>(`classes?${qb.queryString}`);
+  return res?.data;
+}
