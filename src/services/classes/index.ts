@@ -25,6 +25,7 @@ export async function getClass(classId: number | string) {
     { field: 'booking' },
     { field: 'booking.court' },
     { field: 'booking.court.club' },
+    { field: 'booking.court.club.images' },
   ]).query();
   const res = await api.get<IClass>(`classes/${classId}?${qb.queryString}`);
   return res;
