@@ -63,6 +63,7 @@ export interface IJoinRequest {
 export interface MatchData {
   booking: Booking;
   paid: boolean;
+  totalPaid: number;
   id: number;
   minutes: number;
   price: number;
@@ -82,6 +83,7 @@ export interface MatchData {
   updatedAt: string;
   type: string;
   timeExpires: string;
+  gender: EGender;
 }
 [];
 
