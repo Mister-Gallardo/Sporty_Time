@@ -64,17 +64,9 @@ export function SingleClassesPage() {
             endIcon={
               isLoading && <CircularProgress size={20} color="inherit" />
             }
+            variant="contained"
             sx={{
-              bgcolor: 'primary.main',
-              color: '#fff',
               px: 2,
-              '&:hover': {
-                background: '#0D2432',
-              },
-              '&:disabled': {
-                background: '#777',
-                color: '#eee',
-              },
             }}
           >
             Забронировать место - {classData?.price} руб.

@@ -4,20 +4,59 @@ import { ModalContainer } from './ModalContainer';
 import { ClassPlayerSlot } from '../../pages/classes/[id]/components/ClassPlayerSlot';
 import CloseIcon from '@mui/icons-material/Close';
 import useToggle from '../../hooks/useToggle';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { kickPlayerFromClass } from '../../services/classes';
+import { useParams } from 'react-router';
+import { useIonToast } from '@ionic/react';
 
 interface IEditClassPlayersModal {
   openState: boolean;
   handleModal: (val?: boolean) => void;
-  // players: MatchPlayer[];
+  players: any[];
 }
 
 export const EditClassPlayersModal: React.FC<IEditClassPlayersModal> = ({
   openState,
   handleModal,
-  // players,
+  players,
 }) => {
+  const { classId } = useParams<{ classId: string }>();
+
   const [openConfirmation, setOpenConfirmation] = useToggle();
   const isTrainer = true;
+
+  const qc = useQueryClient();
+  const [showToast] = useIonToast();
+
+  const kickPlayerFromClassMutation = useMutation({
+    mutationFn: kickPlayerFromClass,
+    onSuccess() {
+      qc.refetchQueries({ queryKey: ['/classes', classId] });
+      qc.refetchQueries({ queryKey: ['/classes/my'] });
+      showToast({
+        color: 'success',
+        message: 'Пользователен удалён из занятия!',
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
+    },
+    onError(e: any) {
+      const message = e?.response?.data?.message;
+      if (!message) return;
+
+      showToast({
+        color: 'danger',
+        message,
+        mode: 'ios',
+        position: 'top',
+        duration: 2000,
+      });
+    },
+    onSettled() {
+      handleModal(false);
+    },
+  });
   return (
     <>
       <ModalContainer
@@ -26,7 +65,7 @@ export const EditClassPlayersModal: React.FC<IEditClassPlayersModal> = ({
         headerTitle="Изменить"
       >
         <Box display="flex" justifyContent="space-evenly" gap={1}>
-          {[1, 2, 3, 4].map((player) => {
+          {players.map((player) => {
             return (
               <Box key={player} position="relative">
                 <IconButton
@@ -69,7 +108,12 @@ export const EditClassPlayersModal: React.FC<IEditClassPlayersModal> = ({
             <Button
               variant="contained"
               color="success"
-              onClick={() => console.log('agreed')}
+              onClick={() => {
+                // kickPlayerFromClassMutation.mutate({
+                //   classId,
+                //   playerId: 0,
+                // })
+              }}
               sx={{ color: '#fff' }}
               fullWidth
             >

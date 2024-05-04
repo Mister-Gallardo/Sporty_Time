@@ -36,10 +36,23 @@ export async function getClass(classId: number | string) {
 
 export async function getMyClasses() {
   const res = await api.get<IClassData>('/classes/my');
-  return res;
+  return res?.data;
 }
 
 export async function joinClass(classId: string) {
   const res = await api.post(`classes/${classId}/join`);
+  return res?.data;
+}
+
+export async function cancelClass(classId: string) {
+  const res = await api.delete(`classes/${classId}/cancel`);
+  return res?.data;
+}
+export async function kickPlayerFromClass(data: {
+  classId: string;
+  playerId: number;
+}) {
+  const { classId, playerId } = data;
+  const res = await api.delete(`classes/${classId}/kick/${playerId}`);
   return res?.data;
 }

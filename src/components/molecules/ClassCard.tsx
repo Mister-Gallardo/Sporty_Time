@@ -60,19 +60,21 @@ export const ClassCard: React.FC<IClass> = ({
           </Stack>
           <Divider flexItem variant="fullWidth" orientation="vertical" />
           <Box px={1}>
-            <Box
-              display="flex"
-              alignItems="center"
-              gap={0.5}
-              color="gray"
-              textTransform="uppercase"
-            >
-              <Typography fontSize={10}>{day}</Typography>
-              <span>&#183;</span>
-              <Typography fontSize={10}>{date}</Typography>
-              <span>&#183;</span>
-              <Typography fontSize={10}>{time[1]?.slice(0, 5)}</Typography>
-            </Box>
+            {booking && (
+              <Box
+                display="flex"
+                alignItems="center"
+                gap={0.5}
+                color="gray"
+                textTransform="uppercase"
+              >
+                <Typography fontSize={10}>{day}</Typography>
+                <span>&#183;</span>
+                <Typography fontSize={10}>{date}</Typography>
+                <span>&#183;</span>
+                <Typography fontSize={10}>{time[1]?.slice(0, 5)}</Typography>
+              </Box>
+            )}
             <Typography mb={2} fontSize={16} fontWeight={600}>
               {title}
             </Typography>

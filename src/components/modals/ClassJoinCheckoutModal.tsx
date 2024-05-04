@@ -68,23 +68,17 @@ export const ClassJoinCheckoutModal: React.FC<IClassJoinCheckoutModalProps> = ({
       }}
       headerTitle="Оплата"
     >
-      <Button
-        onClick={() => joinClassMutation.mutate(classId)}
-        sx={{
-          bgcolor: 'primary.main',
-          color: '#fff',
-          px: 2,
-          '&:hover': {
-            background: '#0D2432',
-          },
-          '&:disabled': {
-            background: '#777',
-            color: '#eee',
-          },
-        }}
-      >
-        Pay
-      </Button>
+      <Box display="flex" justifyContent="center">
+        <Button
+          onClick={() => joinClassMutation.mutate(classId)}
+          variant="contained"
+          sx={{
+            px: 2,
+          }}
+        >
+          Pay
+        </Button>
+      </Box>
 
       <Box
         mt={2}

@@ -29,6 +29,7 @@ export interface IClass {
   id: number;
   title: string;
   booking: Booking;
+  classBookings: any;
   owner: Player;
   description?: string;
   price: number;
