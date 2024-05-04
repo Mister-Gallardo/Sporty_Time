@@ -5,14 +5,17 @@ import { Box, Typography, Divider, Stack } from '@mui/material';
 import { getClub } from '../../../../services/club/service';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CourtAccordion } from '../../../../components/molecules/CourtAccordion';
-import { ConfigMatchModal } from '../../../../components/modals/ConfigMatchModal';
 import { CheckoutModal } from '../../../../components/modals/CheckoutModal';
 import { getMatchBookingYookassaToken } from '../../../../services/matches/service';
 import { useSearchParam } from '../../../../hooks/useSearchParams';
 import useToggle from '../../../../hooks/useToggle';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Court, IAvailableTime } from '../../../../services/club/interface';
-import { EGender, EMatchType } from '../../../../services/matches/interface';
+import {
+  EGender,
+  EMatchType,
+  ESport,
+} from '../../../../services/matches/interface';
 import { format } from 'date-fns';
 import { useUserInfo } from '../../../../services/api/hooks';
 import { renderCheckoutWidget } from '../../../../helpers/renderCheckoutWidget';
@@ -20,12 +23,13 @@ import { TimesList } from '../components/TimesList';
 import { DatesList } from '../components/DatesList';
 import { SuccessfulBookingModal } from '../../../../components/modals/SuccessfulBookingModal';
 import { getClassBookingYookassaToken } from '../../../../services/classes';
+import { ConfigBookingModal } from '../../../../components/modals/ConfigBookingModal';
 
 export function BookTab() {
   const { clubId } = useParams<{ clubId: string }>();
   const history = useHistory();
 
-  const [openConfigMatchModal, setOpenConfigMatchModal] = useToggle();
+  const [openConfigBookingModal, setOpenConfigBookingModal] = useToggle();
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
   const [openSuccessfulModal, setOpenSuccessfulModal] = useToggle();
 
@@ -48,9 +52,11 @@ export function BookTab() {
       ratingTo: 7,
       playersCount: 4,
       gender: EGender.ALL,
+      sport: ESport.PADEL,
       title: '',
       description: '',
       price: '',
+      priceForSpot: '',
     },
   });
   const { getValues, reset } = configBookingForm;
@@ -142,7 +148,8 @@ export function BookTab() {
       playersCount,
       title,
       description,
-      price,
+      priceForSpot,
+      sport,
     } = getValues();
 
     const bookingData = { courtId, gameDate, playTime };
@@ -156,8 +163,9 @@ export function BookTab() {
         ratingTo,
         title,
         description,
-        price: +price,
+        price: +priceForSpot,
         gender,
+        sport,
       });
     } else {
       matchBookingMutation.mutate({
@@ -232,7 +240,7 @@ export function BookTab() {
                     <CourtAccordion
                       court={court}
                       handleSelect={(option) => {
-                        setOpenConfigMatchModal();
+                        setOpenConfigBookingModal();
                         setSelectedOption({
                           court,
                           playTime: option.playTime,
@@ -263,10 +271,10 @@ export function BookTab() {
 
       {selectedOption?.court && (
         <FormProvider {...configBookingForm}>
-          <ConfigMatchModal
+          <ConfigBookingModal
             sport={selectedOption.court.sport}
-            openState={openConfigMatchModal}
-            handleModal={setOpenConfigMatchModal}
+            openState={openConfigBookingModal}
+            handleModal={setOpenConfigBookingModal}
             handleNext={setOpenCheckoutModal}
           />
         </FormProvider>

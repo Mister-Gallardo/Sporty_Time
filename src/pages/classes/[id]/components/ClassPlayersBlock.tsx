@@ -1,18 +1,33 @@
 import { Box, Button, Typography } from '@mui/material';
 import AccessibilityOutlinedIcon from '@mui/icons-material/AccessibilityOutlined';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { isPlatform } from '@ionic/react';
 import { EditClassPlayersModal } from '../../../../components/modals/EditClassPlayersModal';
 import useToggle from '../../../../hooks/useToggle';
 import { ClassPlayerSlot } from './ClassPlayerSlot';
+import { LoadingCircle } from '../../../../components/atoms/LoadingCircle';
+import { useQuery } from '@tanstack/react-query';
+import { getClass } from '../../../../services/classes';
 
 const isDesktop = isPlatform('desktop');
 
 export const ClassPlayersBlock = () => {
-  const playersList = true;
-  const isEditVisible = true;
+  const { classId } = useParams<{ classId: string }>();
 
   const [openEdit, setOpenEdit] = useToggle();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['classes', classId],
+    queryFn: () => getClass(classId),
+  });
+
+  const classData = data?.data;
+
+  if (isLoading) return <LoadingCircle />;
+  if (!classData) return null;
+
+  const playersList = true;
+  const isEditVisible = true;
 
   return (
     <>
@@ -28,7 +43,7 @@ export const ClassPlayersBlock = () => {
             alignItems="center"
           >
             <Typography fontSize={17} fontWeight={600}>
-              Игроки (x/x)
+              Игроки (x/{classData?.playersCount})
             </Typography>
             {isEditVisible && (
               <Button onClick={() => setOpenEdit(true)} sx={{ fontSize: 14 }}>

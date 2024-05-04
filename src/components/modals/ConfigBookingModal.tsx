@@ -9,14 +9,14 @@ import { useFormContext } from 'react-hook-form';
 import { getSportRating } from '../../helpers/getSportRating';
 import { useEffect } from 'react';
 
-interface IConfigMatchModal {
+interface IConfigBookingModal {
   sport: string;
   openState: boolean;
   handleModal: (val?: boolean) => void;
   handleNext: () => void;
 }
 
-export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
+export const ConfigBookingModal: React.FC<IConfigBookingModal> = ({
   sport,
   openState,
   handleModal,
@@ -72,7 +72,9 @@ export const ConfigMatchModal: React.FC<IConfigMatchModal> = ({
           <MatchCreationForm rating={rating} />
         )}
         <Button
-          disabled={isClass && (watch('title').length < 5 || !watch('price'))}
+          disabled={
+            isClass && (watch('title').length < 5 || !watch('priceForSpot'))
+          }
           onClick={() => {
             handleModal();
             handleNext();

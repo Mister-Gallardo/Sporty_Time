@@ -1,3 +1,4 @@
+import { RequestQueryBuilder } from '@dataui/crud-request';
 import { api } from '../api/service';
 import { CreateClassDTO, IClass, IClassData } from './service';
 
@@ -7,12 +8,25 @@ export async function getClassBookingYookassaToken(data: CreateClassDTO) {
 }
 
 export async function getClasses() {
-  const { data } = await api.get<IClassData>('/classes');
+  const qb = RequestQueryBuilder.create();
+  qb.setJoin([
+    { field: 'booking' },
+    { field: 'booking.court' },
+    { field: 'booking.court.club' },
+  ]).query();
+
+  const { data } = await api.get<IClassData>(`/classes?${qb.queryString}`);
   return data;
 }
 
 export async function getClass(classId: number | string) {
-  const res = await api.get<IClass>(`classes/${classId}`);
+  const qb = RequestQueryBuilder.create();
+  qb.setJoin([
+    { field: 'booking' },
+    { field: 'booking.court' },
+    { field: 'booking.court.club' },
+  ]).query();
+  const res = await api.get<IClass>(`classes/${classId}?${qb.queryString}`);
   return res;
 }
 

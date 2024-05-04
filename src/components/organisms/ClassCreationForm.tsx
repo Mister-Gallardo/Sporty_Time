@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import { useFormContext } from 'react-hook-form';
-import { EGender } from '../../services/matches/interface';
+import { EGender, ESport } from '../../services/matches/interface';
 import { ERadioLabelType, RadioLabel } from '../molecules/RadioLabel';
 
 enum ELeveType {
@@ -30,7 +30,8 @@ export const ClassCreationForm = () => {
     gender,
     title,
     description,
-    price,
+    sport,
+    priceForSpot,
   } = watch();
 
   const [levelType, setLevelType] = useState<ELeveType>(ELeveType.ANY);
@@ -48,6 +49,34 @@ export const ClassCreationForm = () => {
           onChange={(_, val) => setValue('isPrivate', val)}
         />
       </Box>
+      <Box>
+        <Typography fontWeight={700} mb={1}>
+          Вид спорта
+        </Typography>
+        <RadioGroup
+          name="select sport"
+          sx={{ gap: 1 }}
+          value={sport}
+          onChange={(e) => setValue('sport', e.target.value)}
+        >
+          <RadioLabel
+            value={ESport.PADEL}
+            labelType={ERadioLabelType.TITLE_ONLY}
+            title="Падел"
+          />
+          <RadioLabel
+            value={ESport.TENNIS}
+            labelType={ERadioLabelType.TITLE_ONLY}
+            title="Теннис"
+          />
+          <RadioLabel
+            value={ESport.PICKLEBALL}
+            labelType={ERadioLabelType.TITLE_ONLY}
+            title="Пиклбол"
+          />
+        </RadioGroup>
+      </Box>
+
       <Box>
         <Typography fontWeight={700} mb={1}>
           Количество участников
@@ -213,8 +242,8 @@ export const ClassCreationForm = () => {
 
         <Box display="flex" alignItems="end" gap={1}>
           <TextField
-            value={price}
-            onChange={(e) => setValue('price', e.target.value)}
+            value={priceForSpot}
+            onChange={(e) => setValue('priceForSpot', e.target.value)}
             autoComplete="off"
             type="number"
             placeholder="0"

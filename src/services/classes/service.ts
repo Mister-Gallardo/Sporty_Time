@@ -1,3 +1,4 @@
+import { Booking, ESport } from './../matches/interface';
 import { EGender } from '../matches/interface';
 
 export interface CreateClassDTO {
@@ -9,6 +10,7 @@ export interface CreateClassDTO {
   price: number;
   ratingTo: number;
   gender: EGender;
+  sport: ESport;
   isPrivate: boolean;
   title: string;
   description?: string;
@@ -25,6 +27,7 @@ export interface IClassData {
 export interface IClass {
   id: number;
   title: string;
+  booking: Booking;
   description?: string;
   price: number;
   ratingFrom: number;
@@ -34,4 +37,6 @@ export interface IClass {
   courtId: number;
   gameDate: string;
   playTime: number;
+  gender: EGender;
+  sport: ESport;
 }
