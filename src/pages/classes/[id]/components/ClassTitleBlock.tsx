@@ -38,7 +38,7 @@ export const ClassTitleBlock = () => {
         position: 'top',
         duration: 2000,
       });
-      qc.refetchQueries({ queryKey: [`classes`, +classId] });
+      qc.refetchQueries({ queryKey: [`classes`, classId] });
       qc.refetchQueries({ queryKey: ['classes/my'] });
     },
     onError(e: any) {

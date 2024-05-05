@@ -46,8 +46,8 @@ export const EditClassPlayersModal: React.FC<IEditClassPlayersModal> = ({
   const kickPlayerFromClassMutation = useMutation({
     mutationFn: kickPlayerFromClass,
     onSuccess() {
-      qc.refetchQueries({ queryKey: ['/classes', classId] });
-      qc.refetchQueries({ queryKey: ['/classes/my'] });
+      qc.refetchQueries({ queryKey: ['classes', classId] });
+      qc.refetchQueries({ queryKey: ['classes/my'] });
       showToast({
         color: 'success',
         message: 'Пользователен удалён из занятия!',

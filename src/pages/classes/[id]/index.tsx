@@ -32,6 +32,9 @@ export function SingleClassesPage() {
     (booking) => booking?.player?.id === player?.id,
   );
 
+  const isFillfilled =
+    classData?.classBookings?.length === classData?.playersCount;
+
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
 
   if (isError) return <NotFoundPage />;
@@ -50,35 +53,38 @@ export function SingleClassesPage() {
         <ClubInfoBlock />
       </Stack>
 
-      {!isOwner && !classData?.booking.cancelled && !isStudentInClass && (
-        <Box
-          sx={{
-            position: 'fixed',
-            zIndex: 1,
-            left: '0',
-            right: '0',
-            bottom: '1.5rem',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Button
-            onClick={() => setOpenCheckoutModal(true)}
-            disabled={isLoading}
-            endIcon={
-              isLoading && <CircularProgress size={20} color="inherit" />
-            }
-            variant="contained"
+      {!isOwner &&
+        !classData?.booking.cancelled &&
+        !isStudentInClass &&
+        !isFillfilled && (
+          <Box
             sx={{
-              px: 2,
+              position: 'fixed',
+              zIndex: 1,
+              left: '0',
+              right: '0',
+              bottom: '1.5rem',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
-            Забронировать место - {classData?.price} руб.
-          </Button>
-        </Box>
-      )}
+            <Button
+              onClick={() => setOpenCheckoutModal(true)}
+              disabled={isLoading}
+              endIcon={
+                isLoading && <CircularProgress size={20} color="inherit" />
+              }
+              variant="contained"
+              sx={{
+                px: 2,
+              }}
+            >
+              Забронировать место - {classData?.price} руб.
+            </Button>
+          </Box>
+        )}
 
       <ClassJoinCheckoutModal
         openState={openCheckoutModal}

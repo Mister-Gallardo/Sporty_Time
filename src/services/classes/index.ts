@@ -16,7 +16,7 @@ export async function getClasses() {
     { field: 'classBookings' },
     { field: 'classBookings.player' },
     { field: 'classBookings.player.user' },
-    // { field: 'classBookings.player.user.avatar' },
+    { field: 'classBookings.player.user.avatar' },
   ])
     .setFilter({ field: 'booking.cancelled', operator: '$ne', value: true })
     .query();
@@ -32,11 +32,12 @@ export async function getClass(classId: number | string) {
     { field: 'booking.court' },
     { field: 'booking.court.club' },
     { field: 'booking.court.club.images' },
+    { field: 'booking.court.tags' },
     { field: 'owner' },
     { field: 'classBookings' },
     { field: 'classBookings.player' },
     { field: 'classBookings.player.user' },
-    // { field: 'classBookings.player.user.avatar' },
+    { field: 'classBookings.player.user.avatar' },
   ]).query();
   const res = await api.get<IClass>(`classes/${classId}?${qb.queryString}`);
   return res;
@@ -51,7 +52,7 @@ export async function getMyClasses() {
     { field: 'classBookings' },
     { field: 'classBookings.player' },
     { field: 'classBookings.player.user' },
-    // { field: 'classBookings.player.user.avatar' },
+    { field: 'classBookings.player.user.avatar' },
   ]).query();
 
   const { data } = await api.get<IClassData>(`/classes/my?${qb.queryString}`);
@@ -79,13 +80,11 @@ export async function kickPlayerFromClass(data: {
 
 export async function getClassByOrderId(orderId: string) {
   const qb = RequestQueryBuilder.create();
-  qb.setJoin([{ field: 'classBookings' }, { field: 'classBookings.payments' }])
-    .setFilter({
-      field: 'classBookings.payments.orderId',
-      operator: '$eq',
-      value: orderId,
-    })
-    .query();
+  qb.setFilter({
+    field: 'bookingPayment.orderId',
+    operator: '$eq',
+    value: orderId,
+  }).query();
   const res = await api.get<any>(`classes?${qb.queryString}`);
   return res?.data;
 }

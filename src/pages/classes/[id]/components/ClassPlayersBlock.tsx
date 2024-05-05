@@ -57,6 +57,7 @@ export const ClassPlayersBlock = () => {
               {classData?.playersCount})
             </Typography>
             {!classData?.booking?.cancelled &&
+              playersList.length > 0 &&
               (isStudentInClass || isOwner) && (
                 <Button onClick={() => setOpenEdit(true)} sx={{ fontSize: 14 }}>
                   Изменить
