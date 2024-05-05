@@ -9,6 +9,7 @@ import { LoadingCircle } from '../../../../components/atoms/LoadingCircle';
 import { useQuery } from '@tanstack/react-query';
 import { getClass } from '../../../../services/classes';
 import { usePlayerProfile } from '../../../../services/api/hooks';
+import { differenceInHours } from 'date-fns';
 
 const isDesktop = isPlatform('desktop');
 
@@ -38,6 +39,12 @@ export const ClassPlayersBlock = () => {
     (booking) => booking?.player?.id === player?.id,
   );
 
+  const classStartsAt = new Date(classData?.booking?.startsAt);
+  const timeDifference =
+    classStartsAt && differenceInHours(classStartsAt, Date.now());
+
+  const cancelAllowed = timeDifference > 12;
+
   return (
     <>
       <Box
@@ -58,7 +65,7 @@ export const ClassPlayersBlock = () => {
             </Typography>
             {!classData?.booking?.cancelled &&
               playersList.length > 0 &&
-              (isStudentInClass || isOwner) && (
+              ((isStudentInClass && cancelAllowed) || isOwner) && (
                 <Button onClick={() => setOpenEdit(true)} sx={{ fontSize: 14 }}>
                   Изменить
                 </Button>

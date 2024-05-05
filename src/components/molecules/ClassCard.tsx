@@ -8,6 +8,7 @@ import { IClass } from '../../services/classes/service';
 import { getGenderName, getSportName } from '../../helpers/getNameOf';
 import classImage from '../../images/matches/bgpadel_matchdetail.png';
 import { withHostname } from '../../services/api/service';
+import { differenceInHours } from 'date-fns';
 
 const isMobile = isPlatform('mobile');
 
@@ -37,6 +38,12 @@ export const ClassCard: React.FC<IClass> = ({
 
   const bookedPlacesAmount = classBookings?.length || 0;
   const isFillfilled = bookedPlacesAmount === playersCount;
+
+  const classStartsAt = new Date(booking?.startsAt);
+  const timeDifference =
+    classStartsAt && differenceInHours(classStartsAt, Date.now());
+
+  const isRegistrationEnded = timeDifference <= 12;
 
   return (
     <Box
@@ -161,7 +168,9 @@ export const ClassCard: React.FC<IClass> = ({
               {classBookings?.length}/{playersCount}
             </Typography>
           </Box>
-          {isFillfilled ? (
+          {isRegistrationEnded ? (
+            <Typography>Регистрация закончена</Typography>
+          ) : isFillfilled ? (
             <Typography>Мест нет</Typography>
           ) : booking?.cancelled ? (
             <Typography color="error">Отменено</Typography>

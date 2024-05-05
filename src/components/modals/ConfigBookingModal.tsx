@@ -1,13 +1,17 @@
 import { useUserInfo } from '../../services/api/hooks';
 import { ModalContainer } from './ModalContainer';
 import { Role } from '../../services/user/interface';
-import { Box, Typography, Switch, Button } from '@mui/material';
+import { Box, Typography, Switch, Button, Link } from '@mui/material';
 import { ClassCreationForm } from '../organisms/ClassCreationForm';
 import { MatchCreationForm } from '../organisms/MatchCreationForm';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import { useFormContext } from 'react-hook-form';
 import { getSportRating } from '../../helpers/getSportRating';
 import { useEffect } from 'react';
+import { isAuthorized } from '../../services/auth/service';
+import { useQuery } from '@tanstack/react-query';
+import { getUnpaidMatchesList } from '../../services/payments';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 interface IConfigBookingModal {
   sport: string;
@@ -22,6 +26,15 @@ export const ConfigBookingModal: React.FC<IConfigBookingModal> = ({
   handleModal,
   handleNext,
 }) => {
+  const isAuth = isAuthorized();
+
+  const { data } = useQuery({
+    queryKey: ['unpaid'],
+    queryFn: getUnpaidMatchesList,
+    enabled: isAuth,
+  });
+  const debtsAmount = data?.data?.length;
+
   const { watch, setValue, reset } = useFormContext();
   const { isClass, title, description } = watch();
 
@@ -46,6 +59,25 @@ export const ConfigBookingModal: React.FC<IConfigBookingModal> = ({
       headerTitle="Настройте свой матч"
     >
       <Box>
+        {!!debtsAmount && (
+          <Typography
+            color="error"
+            fontSize={16}
+            fontWeight={600}
+            textAlign="center"
+            mb={2}
+          >
+            Пока у Вас есть{' '}
+            <Link
+              component={ReactRouterLink}
+              to="/profile/payments"
+              color="error"
+            >
+              задолженности
+            </Link>{' '}
+            по оплатам, забронировать корт невозможно!
+          </Typography>
+        )}
         {isTrainer && (
           <Box
             display="flex"
@@ -73,10 +105,11 @@ export const ConfigBookingModal: React.FC<IConfigBookingModal> = ({
         )}
         <Button
           disabled={
-            isClass &&
-            (title.length < 5 ||
-              !watch('priceForSpot') ||
-              description.length < 5)
+            !!debtsAmount ||
+            (isClass &&
+              (title.length < 5 ||
+                !watch('priceForSpot') ||
+                description.length < 5))
           }
           onClick={() => {
             handleModal();

@@ -9,6 +9,7 @@ import { getSportName } from '../../../../helpers/getNameOf';
 import { ConfirmationDialog } from '../../../../components/modals/ConfirmationDialog';
 import useToggle from '../../../../hooks/useToggle';
 import { usePlayerProfile } from '../../../../services/api/hooks';
+import { differenceInHours } from 'date-fns';
 const isDesktop = isPlatform('desktop');
 
 export const ClassTitleBlock = () => {
@@ -65,6 +66,13 @@ export const ClassTitleBlock = () => {
     (classData.playersCount || 0) - (classData.classBookings?.length || 0);
 
   const { title, description, sport, isPrivate, booking } = classData;
+
+  const classStartsAt = new Date(booking?.startsAt);
+  const timeDifference =
+    classStartsAt && differenceInHours(classStartsAt, Date.now());
+
+  const isRegistrationEnded = timeDifference <= 12;
+
   return (
     <>
       <Box>
@@ -81,6 +89,14 @@ export const ClassTitleBlock = () => {
             flexShrink={0}
           />
           <Box>
+            {isRegistrationEnded && (
+              <Typography
+                textAlign={isDesktop ? 'center' : 'unset'}
+                color="error.main"
+              >
+                Регистрация на занятие завершена!
+              </Typography>
+            )}
             {!booking.cancelled && availableSportAmount === 1 && (
               <Typography
                 textAlign={isDesktop ? 'center' : 'unset'}

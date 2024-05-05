@@ -12,6 +12,7 @@ import { usePlayerProfile } from '../../../services/api/hooks';
 import { ClassJoinCheckoutModal } from '../../../components/modals/ClassJoinCheckoutModal';
 import useToggle from '../../../hooks/useToggle';
 import { NotFoundPage } from '../../../components/NotFoundPage';
+import { differenceInHours } from 'date-fns';
 
 const isDesktop = isPlatform('desktop');
 
@@ -19,6 +20,8 @@ export function SingleClassesPage() {
   const { classId } = useParams<{ classId: string }>();
 
   const [player] = usePlayerProfile();
+
+  const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['classes', classId],
@@ -35,7 +38,11 @@ export function SingleClassesPage() {
   const isFillfilled =
     classData?.classBookings?.length === classData?.playersCount;
 
-  const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
+  const classStartsAt = classData && new Date(classData?.booking?.startsAt);
+  const timeDifference =
+    classStartsAt && differenceInHours(classStartsAt, Date.now());
+
+  const isRegistrationEnded = timeDifference && timeDifference <= 12;
 
   if (isError) return <NotFoundPage />;
 
@@ -54,6 +61,7 @@ export function SingleClassesPage() {
       </Stack>
 
       {!isOwner &&
+        !isRegistrationEnded &&
         !classData?.booking.cancelled &&
         !isStudentInClass &&
         !isFillfilled && (
