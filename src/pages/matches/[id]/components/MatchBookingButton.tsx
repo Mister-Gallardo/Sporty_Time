@@ -82,19 +82,11 @@ export const MatchBookingButton = () => {
             <Button
               disabled={isRequestedPlace && !playerAlreadyInSomeTeam}
               onClick={onBookPlace}
+              variant="contained"
               sx={{
                 paddingX: 2,
-                background: '#0D2432',
-                color: '#fff',
                 boxShadow:
                   'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
-                '&:hover': {
-                  background: '#0D2432',
-                },
-                '&:disabled': {
-                  background: '#777',
-                  color: '#eee',
-                },
               }}
             >
               {isPlayerInMatchWithoutPayment

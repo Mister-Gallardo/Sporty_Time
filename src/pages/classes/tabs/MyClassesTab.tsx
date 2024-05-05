@@ -4,20 +4,22 @@ import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { ClassCard } from '../../../components/molecules/ClassCard';
 import { useQuery } from '@tanstack/react-query';
 import { getMyClasses } from '../../../services/classes';
+import { NotFoundPage } from '../../../components/NotFoundPage';
 
 const isMobile = isPlatform('mobile');
 
 export const MyClassesTab = () => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['classes/my'],
     queryFn: getMyClasses,
   });
   const classesList = data?.data;
 
+  if (isError) return <NotFoundPage />;
+
   return (
     <Box position="relative">
       <Box
-        // pt={7}
         pt={3}
         display="flex"
         flexDirection={isMobile ? 'column' : 'unset'}

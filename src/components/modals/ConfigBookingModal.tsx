@@ -23,7 +23,7 @@ export const ConfigBookingModal: React.FC<IConfigBookingModal> = ({
   handleNext,
 }) => {
   const { watch, setValue, reset } = useFormContext();
-  const { isClass } = watch();
+  const { isClass, title, description } = watch();
 
   const [user] = useUserInfo();
   const isTrainer = user?.roles?.find((role) => role === Role.TRAINER);
@@ -73,7 +73,10 @@ export const ConfigBookingModal: React.FC<IConfigBookingModal> = ({
         )}
         <Button
           disabled={
-            isClass && (watch('title').length < 5 || !watch('priceForSpot'))
+            isClass &&
+            (title.length < 5 ||
+              !watch('priceForSpot') ||
+              description.length < 5)
           }
           onClick={() => {
             handleModal();

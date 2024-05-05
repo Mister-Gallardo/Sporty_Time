@@ -1,5 +1,6 @@
 import { Booking, ESport } from './../matches/interface';
 import { EGender } from '../matches/interface';
+import { Player } from '../user/interface';
 
 export interface CreateClassDTO {
   courtId: number;
@@ -28,6 +29,8 @@ export interface IClass {
   id: number;
   title: string;
   booking: Booking;
+  classBookings: IClassBooking[];
+  owner: Player;
   description?: string;
   price: number;
   ratingFrom: number;
@@ -39,4 +42,11 @@ export interface IClass {
   playTime: number;
   gender: EGender;
   sport: ESport;
+}
+
+export interface IClassBooking {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  player: Player;
 }

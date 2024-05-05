@@ -4,13 +4,17 @@ import { Player } from '../user/interface';
 export type matchResults = Array<number[]> | null;
 
 export interface Booking {
+  id: number;
   startsAt: string;
   endsAt: string;
-  court: Court | null;
-  duration: number;
   interval: string;
+  duration: number;
+  series: string[];
+  cancelled: boolean;
   createdAt: string;
   updatedAt: string;
+  deletedAt: string | null;
+  court: Court | null;
 }
 
 export interface MatchMember {

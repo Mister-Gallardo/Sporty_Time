@@ -9,13 +9,17 @@ import { NotFoundPage } from '../../components/NotFoundPage';
 import { Link } from 'react-router-dom';
 import { isPlatform } from '@ionic/react';
 import CircleIcon from '@mui/icons-material/Circle';
+import { isAuthorized } from '../../services/auth/service';
 
 const isMobile = isPlatform('mobile');
 
 export function NotificationsPage() {
+  const isAuth = isAuthorized();
+
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['notifications'],
     queryFn: getNotifications,
+    enabled: isAuth,
   });
 
   const notifications = data?.data;

@@ -4,7 +4,7 @@ import { Link, Stack, Typography } from '@mui/material';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { getOneAvailableMatch } from '../../services/matches/service';
 import { useQuery } from '@tanstack/react-query';
-import { getClass } from '../../services/classes';
+import { getClassByOrderId } from '../../services/classes';
 interface ISuccessfulBookingModal {
   openState: boolean;
   handleModal: (val?: boolean) => void;
@@ -29,11 +29,11 @@ export const SuccessfulBookingModal: React.FC<ISuccessfulBookingModal> = ({
 
   const { data: classData } = useQuery({
     queryKey: ['classes', id],
-    queryFn: () => getClass(id),
+    queryFn: () => getClassByOrderId(id),
     enabled: !!token && openState && isClass,
   });
 
-  const classId = classData?.data?.id;
+  const classId = classData?.data[0]?.id;
 
   return (
     <ModalContainer

@@ -47,7 +47,7 @@ export const MainClassInfoBlock = () => {
         <Stack alignItems="center">
           <Typography color="#696969">Дата:</Typography>
           <Typography fontWeight={600} fontSize={16}>
-            {classDate?.toLocaleDateString()}
+            {classTime[0]}
           </Typography>
         </Stack>
 

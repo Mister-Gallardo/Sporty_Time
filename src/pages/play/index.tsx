@@ -28,13 +28,16 @@ import { Link } from 'react-router-dom';
 import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
 import EastOutlinedIcon from '@mui/icons-material/EastOutlined';
 import { getUnpaidMatchesList } from '../../services/payments';
+import { isAuthorized } from '../../services/auth/service';
 
 export function MobilePlayPage() {
   const history = useHistory();
+  const isAuth = isAuthorized();
 
   const { data, isLoading } = useQuery({
     queryKey: ['notification'],
     queryFn: getNotifications,
+    enabled: isAuth,
   });
 
   const notifications = data?.data;
@@ -45,6 +48,7 @@ export function MobilePlayPage() {
   const { data: unpaidMatches } = useQuery({
     queryKey: ['unpaid'],
     queryFn: getUnpaidMatchesList,
+    enabled: isAuth,
   });
   const debtsList = unpaidMatches?.data;
 

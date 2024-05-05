@@ -8,11 +8,14 @@ import { ClassPlayerSlot } from './ClassPlayerSlot';
 import { LoadingCircle } from '../../../../components/atoms/LoadingCircle';
 import { useQuery } from '@tanstack/react-query';
 import { getClass } from '../../../../services/classes';
+import { usePlayerProfile } from '../../../../services/api/hooks';
 
 const isDesktop = isPlatform('desktop');
 
 export const ClassPlayersBlock = () => {
   const { classId } = useParams<{ classId: string }>();
+
+  const [player] = usePlayerProfile();
 
   const [openEdit, setOpenEdit] = useToggle();
 
@@ -22,18 +25,25 @@ export const ClassPlayersBlock = () => {
   });
 
   const classData = data?.data;
+  const ownerId = classData?.owner?.id;
+
+  const isOwner = player?.id === ownerId;
 
   if (isLoading) return <LoadingCircle />;
   if (!classData) return null;
 
-  const playersList = true;
-  const isEditVisible = true;
+  const playersList = classData?.classBookings;
+
+  const isStudentInClass = playersList?.find(
+    (booking) => booking?.player?.id === player?.id,
+  );
 
   return (
     <>
       <Box
         display={isDesktop ? 'flex' : 'unset'}
         justifyContent={isDesktop ? 'center' : 'unset'}
+        pb={5}
       >
         <Box width="100%" maxWidth={isDesktop ? 400 : 'unset'}>
           <Box
@@ -43,20 +53,29 @@ export const ClassPlayersBlock = () => {
             alignItems="center"
           >
             <Typography fontSize={17} fontWeight={600}>
-              Игроки (x/{classData?.playersCount})
+              Игроки ({classData?.classBookings?.length}/
+              {classData?.playersCount})
             </Typography>
-            {isEditVisible && (
-              <Button onClick={() => setOpenEdit(true)} sx={{ fontSize: 14 }}>
-                Изменить
-              </Button>
-            )}
+            {!classData?.booking?.cancelled &&
+              playersList.length > 0 &&
+              (isStudentInClass || isOwner) && (
+                <Button onClick={() => setOpenEdit(true)} sx={{ fontSize: 14 }}>
+                  Изменить
+                </Button>
+              )}
           </Box>
-          {playersList ? (
+          {playersList && playersList.length > 0 ? (
             <Box display="flex" justifyContent="space-evenly">
-              {[1, 2, 3, 4].map((player) => {
+              {playersList.map((booking) => {
                 return (
-                  <Link to={`/profile/58`} key={player}>
-                    <ClassPlayerSlot />
+                  <Link
+                    to={`/profile/${booking?.player?.user?.id}`}
+                    key={booking.id}
+                  >
+                    <ClassPlayerSlot
+                      {...booking?.player}
+                      sport={classData?.sport}
+                    />
                   </Link>
                 );
               })}

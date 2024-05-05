@@ -13,7 +13,13 @@ export async function getClasses() {
     { field: 'booking' },
     { field: 'booking.court' },
     { field: 'booking.court.club' },
-  ]).query();
+    { field: 'classBookings' },
+    { field: 'classBookings.player' },
+    { field: 'classBookings.player.user' },
+    { field: 'classBookings.player.user.avatar' },
+  ])
+    .setFilter({ field: 'booking.cancelled', operator: '$ne', value: true })
+    .query();
 
   const { data } = await api.get<IClassData>(`/classes?${qb.queryString}`);
   return data;
@@ -26,17 +32,59 @@ export async function getClass(classId: number | string) {
     { field: 'booking.court' },
     { field: 'booking.court.club' },
     { field: 'booking.court.club.images' },
+    { field: 'booking.court.tags' },
+    { field: 'owner' },
+    { field: 'classBookings' },
+    { field: 'classBookings.player' },
+    { field: 'classBookings.player.user' },
+    { field: 'classBookings.player.user.avatar' },
   ]).query();
   const res = await api.get<IClass>(`classes/${classId}?${qb.queryString}`);
   return res;
 }
 
 export async function getMyClasses() {
-  const { data } = await api.get<IClassData>('/classes/my');
+  const qb = RequestQueryBuilder.create();
+  qb.setJoin([
+    { field: 'booking' },
+    { field: 'booking.court' },
+    { field: 'booking.court.club' },
+    { field: 'classBookings' },
+    { field: 'classBookings.player' },
+    { field: 'classBookings.player.user' },
+    { field: 'classBookings.player.user.avatar' },
+  ]).query();
+
+  const { data } = await api.get<IClassData>(`/classes/my?${qb.queryString}`);
   return data;
 }
 
-export async function joinClass(classId: number) {
-  const { data } = await api.post(`classes/${classId}/join`);
-  return data;
+export async function joinClass(classId: string) {
+  const res = await api.post(`classes/${classId}/join`);
+  return res?.data;
+}
+
+export async function cancelClass(classId: string) {
+  const res = await api.delete(`classes/${classId}/cancel`);
+  return res?.data;
+}
+
+export async function kickPlayerFromClass(data: {
+  classId: string;
+  playerId: number;
+}) {
+  const { classId, playerId } = data;
+  const res = await api.delete(`classes/${classId}/kick/${playerId}`);
+  return res?.data;
+}
+
+export async function getClassByOrderId(orderId: string) {
+  const qb = RequestQueryBuilder.create();
+  qb.setFilter({
+    field: 'bookingPayment.orderId',
+    operator: '$eq',
+    value: orderId,
+  }).query();
+  const res = await api.get<any>(`classes?${qb.queryString}`);
+  return res?.data;
 }
