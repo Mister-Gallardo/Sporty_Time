@@ -95,6 +95,7 @@ export function BookTab() {
       renderCheckoutWidget(token, onSuccess);
     },
     onError(e: any) {
+      reset();
       const message = e?.response?.data?.message;
       showToast({
         color: 'danger',
@@ -104,9 +105,6 @@ export function BookTab() {
         duration: 2000,
       });
       setOpenCheckoutModal(false);
-    },
-    onSettled() {
-      reset();
     },
   });
 
@@ -117,6 +115,7 @@ export function BookTab() {
       renderCheckoutWidget(token, onSuccess);
     },
     onError(e: any) {
+      reset();
       const message = e?.response?.data?.message;
       showToast({
         color: 'danger',
@@ -126,9 +125,6 @@ export function BookTab() {
         duration: 2000,
       });
       setOpenCheckoutModal(false);
-    },
-    onSettled() {
-      reset();
     },
   });
 
