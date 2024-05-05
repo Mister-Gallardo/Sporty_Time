@@ -25,19 +25,25 @@ export const ClassPlayersBlock = () => {
   });
 
   const classData = data?.data;
+  const ownerId = classData?.owner?.id;
 
-  const isOwner = player?.id === classData?.owner?.id;
+  const isOwner = player?.id === ownerId;
 
   if (isLoading) return <LoadingCircle />;
   if (!classData) return null;
 
   const playersList = classData?.classBookings;
 
+  const isStudentInClass = playersList?.find(
+    (booking) => booking?.player?.id === player?.id,
+  );
+
   return (
     <>
       <Box
         display={isDesktop ? 'flex' : 'unset'}
         justifyContent={isDesktop ? 'center' : 'unset'}
+        pb={5}
       >
         <Box width="100%" maxWidth={isDesktop ? 400 : 'unset'}>
           <Box
@@ -50,18 +56,25 @@ export const ClassPlayersBlock = () => {
               Игроки ({classData?.classBookings?.length}/
               {classData?.playersCount})
             </Typography>
-            {isOwner && (
-              <Button onClick={() => setOpenEdit(true)} sx={{ fontSize: 14 }}>
-                Изменить
-              </Button>
-            )}
+            {!classData?.booking?.cancelled &&
+              (isStudentInClass || isOwner) && (
+                <Button onClick={() => setOpenEdit(true)} sx={{ fontSize: 14 }}>
+                  Изменить
+                </Button>
+              )}
           </Box>
           {playersList && playersList.length > 0 ? (
             <Box display="flex" justifyContent="space-evenly">
-              {playersList.map((player: any) => {
+              {playersList.map((booking) => {
                 return (
-                  <Link to={`/profile/58`} key={player.id}>
-                    <ClassPlayerSlot />
+                  <Link
+                    to={`/profile/${booking?.player?.user?.id}`}
+                    key={booking.id}
+                  >
+                    <ClassPlayerSlot
+                      {...booking?.player}
+                      sport={classData?.sport}
+                    />
                   </Link>
                 );
               })}
@@ -81,11 +94,7 @@ export const ClassPlayersBlock = () => {
           )}
         </Box>
       </Box>
-      <EditClassPlayersModal
-        openState={openEdit}
-        handleModal={setOpenEdit}
-        players={playersList}
-      />
+      <EditClassPlayersModal openState={openEdit} handleModal={setOpenEdit} />
     </>
   );
 };

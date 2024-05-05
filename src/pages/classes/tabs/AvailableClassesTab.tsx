@@ -1,22 +1,21 @@
 import { isPlatform } from '@ionic/react';
-import {
-  Box,
-  //  IconButton,
-  Typography,
-} from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { ClassCard } from '../../../components/molecules/ClassCard';
 import { useQuery } from '@tanstack/react-query';
 import { getClasses } from '../../../services/classes';
+import { NotFoundPage } from '../../../components/NotFoundPage';
 
 const isMobile = isPlatform('mobile');
 
 export const AvailableClassesTab = () => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['classes'],
     queryFn: getClasses,
   });
   const classesList = data?.data;
+
+  if (isError) return <NotFoundPage />;
 
   return (
     <Box position="relative">

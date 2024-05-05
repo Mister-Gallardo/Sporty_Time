@@ -29,7 +29,7 @@ export interface IClass {
   id: number;
   title: string;
   booking: Booking;
-  classBookings: any;
+  classBookings: IClassBooking[];
   owner: Player;
   description?: string;
   price: number;
@@ -42,4 +42,11 @@ export interface IClass {
   playTime: number;
   gender: EGender;
   sport: ESport;
+}
+
+export interface IClassBooking {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  player: Player;
 }

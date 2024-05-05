@@ -6,13 +6,17 @@ import { EType, getDayFormat } from '../../../../helpers/getTimeDateString';
 import { Link } from 'react-router-dom';
 import { isPlatform } from '@ionic/react';
 import { LoadingCircle } from '../../../../components/atoms/LoadingCircle';
+import { isAuthorized } from '../../../../services/auth/service';
 
 const isMobile = isPlatform('mobile');
 
 export function PaymentsPage() {
+  const isAuth = isAuthorized();
+
   const { data, isLoading } = useQuery({
     queryKey: ['unpaid'],
     queryFn: getUnpaidMatchesList,
+    enabled: isAuth,
   });
   const debtsList = data?.data;
 

@@ -11,6 +11,7 @@ import { getClass } from '../../../services/classes';
 import { usePlayerProfile } from '../../../services/api/hooks';
 import { ClassJoinCheckoutModal } from '../../../components/modals/ClassJoinCheckoutModal';
 import useToggle from '../../../hooks/useToggle';
+import { NotFoundPage } from '../../../components/NotFoundPage';
 
 const isDesktop = isPlatform('desktop');
 
@@ -19,7 +20,7 @@ export function SingleClassesPage() {
 
   const [player] = usePlayerProfile();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['classes', classId],
     queryFn: () => getClass(classId),
   });
@@ -27,8 +28,13 @@ export function SingleClassesPage() {
   const classData = data?.data;
 
   const isOwner = player?.id === classData?.owner?.id;
+  const isStudentInClass = classData?.classBookings?.find(
+    (booking) => booking?.player?.id === player?.id,
+  );
 
   const [openCheckoutModal, setOpenCheckoutModal] = useToggle();
+
+  if (isError) return <NotFoundPage />;
 
   return (
     <Box width="100%" maxWidth={1240} m="0 auto" px={2} mt={2} mb={4}>
@@ -44,7 +50,7 @@ export function SingleClassesPage() {
         <ClubInfoBlock />
       </Stack>
 
-      {!isOwner && (
+      {!isOwner && !classData?.booking.cancelled && !isStudentInClass && (
         <Box
           sx={{
             position: 'fixed',

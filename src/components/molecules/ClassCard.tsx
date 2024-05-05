@@ -136,12 +136,16 @@ export const ClassCard: React.FC<IClass> = ({
               0/{playersCount}
             </Typography>
           </Box>
-          <Button variant="contained" sx={{ fontSize: 13, px: 2, py: 0.2 }}>
-            <Stack>
-              <Typography>Присоединиться</Typography>
-              <Typography>{price}руб.</Typography>
-            </Stack>
-          </Button>
+          {booking?.cancelled ? (
+            <Typography color="error">Отменено</Typography>
+          ) : (
+            <Button variant="contained" sx={{ fontSize: 13, px: 2, py: 0.2 }}>
+              <Stack>
+                <Typography>Присоединиться</Typography>
+                <Typography>{price}руб.</Typography>
+              </Stack>
+            </Button>
+          )}
         </Box>
       </Link>
     </Box>

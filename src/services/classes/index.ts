@@ -13,7 +13,13 @@ export async function getClasses() {
     { field: 'booking' },
     { field: 'booking.court' },
     { field: 'booking.court.club' },
-  ]).query();
+    { field: 'classBookings' },
+    { field: 'classBookings.player' },
+    { field: 'classBookings.player.user' },
+    // { field: 'classBookings.player.user.avatar' },
+  ])
+    .setFilter({ field: 'booking.cancelled', operator: '$ne', value: true })
+    .query();
 
   const { data } = await api.get<IClassData>(`/classes?${qb.queryString}`);
   return data;
@@ -29,14 +35,27 @@ export async function getClass(classId: number | string) {
     { field: 'owner' },
     { field: 'classBookings' },
     { field: 'classBookings.player' },
+    { field: 'classBookings.player.user' },
+    // { field: 'classBookings.player.user.avatar' },
   ]).query();
   const res = await api.get<IClass>(`classes/${classId}?${qb.queryString}`);
   return res;
 }
 
 export async function getMyClasses() {
-  const res = await api.get<IClassData>('/classes/my');
-  return res?.data;
+  const qb = RequestQueryBuilder.create();
+  qb.setJoin([
+    { field: 'booking' },
+    { field: 'booking.court' },
+    { field: 'booking.court.club' },
+    { field: 'classBookings' },
+    { field: 'classBookings.player' },
+    { field: 'classBookings.player.user' },
+    // { field: 'classBookings.player.user.avatar' },
+  ]).query();
+
+  const { data } = await api.get<IClassData>(`/classes/my?${qb.queryString}`);
+  return data;
 }
 
 export async function joinClass(classId: string) {
@@ -48,6 +67,7 @@ export async function cancelClass(classId: string) {
   const res = await api.delete(`classes/${classId}/cancel`);
   return res?.data;
 }
+
 export async function kickPlayerFromClass(data: {
   classId: string;
   playerId: number;

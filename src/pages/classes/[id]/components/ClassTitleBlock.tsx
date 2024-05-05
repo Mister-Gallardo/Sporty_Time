@@ -64,7 +64,7 @@ export const ClassTitleBlock = () => {
   const availableSportAmount =
     (classData.playersCount || 0) - (classData.classBookings?.length || 0);
 
-  const { title, description, sport, isPrivate } = classData;
+  const { title, description, sport, isPrivate, booking } = classData;
   return (
     <>
       <Box>
@@ -81,7 +81,7 @@ export const ClassTitleBlock = () => {
             flexShrink={0}
           />
           <Box>
-            {availableSportAmount === 1 && (
+            {!booking.cancelled && availableSportAmount === 1 && (
               <Typography
                 textAlign={isDesktop ? 'center' : 'unset'}
                 color="error.main"
@@ -133,17 +133,29 @@ export const ClassTitleBlock = () => {
             {isPrivate ? 'Приватное' : 'Открытое'} занятие
           </Typography>
         </Box>
-        {isOwner && (
-          <Box mt={2} display="flex" justifyContent="center">
-            <Button
-              onClick={() => setOpenCancelConfirm()}
-              variant="contained"
-              color="error"
-              sx={{ px: 2 }}
-            >
-              Отменить занятие
-            </Button>
-          </Box>
+        {booking.cancelled ? (
+          <Typography
+            mt={2}
+            fontWeight={600}
+            fontSize={16}
+            textAlign="center"
+            color="error"
+          >
+            Занятие отменено
+          </Typography>
+        ) : (
+          isOwner && (
+            <Box mt={2} display="flex" justifyContent="center">
+              <Button
+                onClick={() => setOpenCancelConfirm()}
+                variant="contained"
+                color="error"
+                sx={{ px: 2 }}
+              >
+                Отменить занятие
+              </Button>
+            </Box>
+          )
         )}
       </Box>
 

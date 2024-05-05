@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
@@ -14,6 +13,11 @@ export const AdditionalClassInfoBlock = () => {
   });
 
   const classData = data?.data;
+  const classStartsAt = classData && new Date(classData?.booking?.startsAt);
+  const registrationEndsAt =
+    classStartsAt && new Date(classStartsAt.getTime() - 12 * 3600 * 1000);
+
+  const registrationEndsDate = registrationEndsAt?.toISOString().split('T');
 
   if (isLoading) return <LoadingCircle />;
   if (!classData) return null;
@@ -21,14 +25,16 @@ export const AdditionalClassInfoBlock = () => {
   return (
     <Box width="100%" border="1px solid #eee" p={1.5}>
       <Typography color="#696969">Конец регистрации</Typography>
-      <Typography
-        mb={2}
-        textTransform="uppercase"
-        fontWeight={600}
-        flexGrow={1}
-      >
-        day and time
-      </Typography>
+      {registrationEndsDate && (
+        <Typography
+          mb={2}
+          textTransform="uppercase"
+          fontWeight={600}
+          flexGrow={1}
+        >
+          {registrationEndsDate[0]} | {registrationEndsDate[1].slice(0, 5)}
+        </Typography>
+      )}
 
       <Box display="flex" justifyContent="space-between" gap={2}>
         <Box>

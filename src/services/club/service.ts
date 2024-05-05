@@ -15,6 +15,7 @@ export async function getClubs(data: GetAvailableMatchesAndClubsDTO) {
   );
   return res;
 }
+
 export async function getClub(id: number, params: any) {
   const { data } = await api.get<Club>('/clubs/' + id, { params });
   return data;
