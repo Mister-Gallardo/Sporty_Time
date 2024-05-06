@@ -1,5 +1,5 @@
 import { isPlatform, useIonToast } from '@ionic/react';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Link, Stack, Typography } from '@mui/material';
 import classImage from '../../../../images/matches/bgpadel_matchdetail.png';
 import { useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -10,7 +10,10 @@ import { ConfirmationDialog } from '../../../../components/modals/ConfirmationDi
 import useToggle from '../../../../hooks/useToggle';
 import { usePlayerProfile } from '../../../../services/api/hooks';
 import { differenceInHours } from 'date-fns';
+import { Link as ReactRouterLink } from 'react-router-dom';
+
 const isDesktop = isPlatform('desktop');
+const maxDescriptionLength = isDesktop ? 200 : 100;
 
 export const ClassTitleBlock = () => {
   const { classId } = useParams<{ classId: string }>();
@@ -59,13 +62,27 @@ export const ClassTitleBlock = () => {
     },
   });
 
+  const [isExpanded, setIsExpanded] = useToggle();
+
   if (isLoading) return <LoadingCircle />;
   if (!classData) return null;
 
   const availableSportAmount =
     (classData.playersCount || 0) - (classData.classBookings?.length || 0);
 
-  const { title, description, sport, isPrivate, booking } = classData;
+  const {
+    title,
+    description = '',
+    sport,
+    isPrivate,
+    booking,
+    owner,
+  } = classData;
+
+  const isLongDescription = description?.length > maxDescriptionLength;
+  const reviewText = isLongDescription
+    ? `${description.slice(0, maxDescriptionLength)}...`
+    : description;
 
   const classStartsAt = new Date(booking?.startsAt);
   const timeDifference =
@@ -89,22 +106,21 @@ export const ClassTitleBlock = () => {
             flexShrink={0}
           />
           <Box>
-            {isRegistrationEnded && (
+            {!booking.cancelled && (
               <Typography
                 textAlign={isDesktop ? 'center' : 'unset'}
                 color="error.main"
               >
-                Регистрация на занятие завершена!
+                {isRegistrationEnded
+                  ? 'Регистрация на занятие завершена!'
+                  : availableSportAmount === 1
+                  ? 'Поторопитесь! Осталось только 1 место!'
+                  : availableSportAmount === 0
+                  ? 'Свободных мест больше нет'
+                  : null}
               </Typography>
             )}
-            {!booking.cancelled && availableSportAmount === 1 && (
-              <Typography
-                textAlign={isDesktop ? 'center' : 'unset'}
-                color="error.main"
-              >
-                Поторопитесь! Осталось только 1 место!
-              </Typography>
-            )}
+
             <Typography
               textAlign={isDesktop ? 'center' : 'unset'}
               fontSize={19}
@@ -113,15 +129,36 @@ export const ClassTitleBlock = () => {
             </Typography>
           </Box>
         </Stack>
-        {description && (
-          <Typography
-            mt={1}
-            color="gray"
-            textAlign={isDesktop ? 'center' : 'unset'}
-          >
-            {description}
+        <Box mt={1}>
+          <Typography color="gray" sx={{ textIndent: isDesktop ? 30 : 0 }}>
+            {isExpanded ? description : reviewText}
           </Typography>
-        )}
+          {isExpanded && (
+            <Box my={1} display="flex" gap={1}>
+              <Typography fontWeight={600}>Тренер:</Typography>
+              <Link
+                component={ReactRouterLink}
+                to={`/profile/${owner?.user?.id}`}
+              >
+                {owner?.user?.fullname}
+              </Link>
+            </Box>
+          )}
+
+          <Typography
+            component="span"
+            onClick={() => setIsExpanded()}
+            fontSize={14}
+            sx={{
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              '&:hover': { color: 'primary.main' },
+              transition: 'color .2s ease',
+            }}
+          >
+            {isExpanded ? 'Свернуть' : 'Ещё'}
+          </Typography>
+        </Box>
         <Box
           mt={2}
           display="flex"

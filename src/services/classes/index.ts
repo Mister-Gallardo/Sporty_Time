@@ -34,6 +34,7 @@ export async function getClass(classId: number | string) {
     { field: 'booking.court.club.images' },
     { field: 'booking.court.tags' },
     { field: 'owner' },
+    { field: 'owner.user' },
     { field: 'classBookings' },
     { field: 'classBookings.player' },
     { field: 'classBookings.player.user' },
