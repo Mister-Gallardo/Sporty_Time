@@ -9,6 +9,8 @@ import { useIonToast } from '@ionic/react';
 import { usePlayerProfile } from '../../../../services/api/hooks';
 import { UploadResultModal } from '../../../../components/modals/UploadResultModal';
 import useToggle from '../../../../hooks/useToggle';
+import { getMatchStatus } from '../../../../helpers/getMatchStatus';
+import { Status } from '../../../../services/matches/interface';
 
 export const UploadResultsBlock = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -57,6 +59,10 @@ export const UploadResultsBlock = () => {
 
   if (!singleMatchData || singleMatchData.confirmMatchResults) return null;
 
+  const status = getMatchStatus(singleMatchData);
+
+  if (status !== Status.WAITING_FOR_RESULTS) return;
+
   return (
     <>
       <Box
@@ -75,7 +81,7 @@ export const UploadResultsBlock = () => {
         {singleMatchData.matchResults && (
           <Typography>Ожидание подтверждения...</Typography>
         )}
-        {!myBooking?.confirmMatchResults && (
+        {!myBooking?.confirmMatchResults && singleMatchData.matchResults && (
           <Button
             disabled={uploadMatchReslultsMutation.isPending}
             onClick={() =>
@@ -93,13 +99,11 @@ export const UploadResultsBlock = () => {
                 <CircularProgress size={20} color="inherit" />
               )
             }
+            variant="contained"
+            color="success"
             sx={{
-              backgroundColor: 'success.main',
               color: '#fff',
               px: 2,
-              '&:hover': {
-                backgroundColor: 'primary.main',
-              },
             }}
           >
             Подтвердить

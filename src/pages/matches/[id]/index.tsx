@@ -151,7 +151,7 @@ export function SingleMatchPage() {
   );
 
   const booking = singleMatchData.booking;
-  const startsAt = booking && new Date(singleMatchData.booking.startsAt);
+  // const startsAt = booking && new Date(singleMatchData.booking.startsAt);
 
   return (
     <>
@@ -200,9 +200,7 @@ export function SingleMatchPage() {
 
               <ResultsTable />
 
-              {Date.now() > startsAt?.getTime() && playerAlreadyInSomeTeam && (
-                <UploadResultsBlock />
-              )}
+              {playerAlreadyInSomeTeam && <UploadResultsBlock />}
 
               {playerAlreadyInSomeTeam && (
                 <Box maxWidth={125} mx="auto" mb={2}>
