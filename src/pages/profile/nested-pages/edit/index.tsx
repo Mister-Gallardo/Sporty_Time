@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Camera } from '@capacitor/camera';
 import { useMutation } from '@tanstack/react-query';
 import { editUserProfile } from '../../../../services/user/service';
 import useToggle from '../../../../hooks/useToggle';
@@ -91,15 +91,14 @@ export const EditProfilePage = () => {
   });
 
   const takePhoto = async () => {
-    const photo = await Camera.getPhoto({
-      resultType: CameraResultType.Uri,
-      source: CameraSource.Camera,
+    const { photos } = await Camera.pickImages({
       quality: 100,
       correctOrientation: false,
     });
+    const photo = photos[0].webPath;
 
-    if (!photo.webPath) return;
-    setValue('avatar', photo.webPath);
+    if (!photo) return;
+    setValue('avatar', photo);
   };
 
   const onSubmit = async (data: FormData) => {

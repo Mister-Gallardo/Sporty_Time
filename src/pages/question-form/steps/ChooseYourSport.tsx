@@ -16,7 +16,7 @@ import { SportTypeRow } from '../components/SportTypeRow';
 import { BgContainer } from '../components/BgContainer';
 import { useHistory } from 'react-router';
 import { getSportRating } from '../../../helpers/getSportRating';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Camera } from '@capacitor/camera';
 import { useMutation } from '@tanstack/react-query';
 import { editUserProfile } from '../../../services/user/service';
 import { useIonToast } from '@ionic/react';
@@ -75,19 +75,18 @@ export function ChooseYourSport({ handleStep }: ChooseYourSportProps) {
   });
 
   const takePhoto = async () => {
-    const photo = await Camera.getPhoto({
-      resultType: CameraResultType.Uri,
-      source: CameraSource.Camera,
+    const { photos } = await Camera.pickImages({
       quality: 100,
       correctOrientation: false,
     });
+    const photo = photos[0].webPath;
 
-    if (!photo.webPath) return;
+    if (!photo) return;
 
     const formData = new FormData();
 
     try {
-      const res = await fetch(photo.webPath);
+      const res = await fetch(photo);
       const imageBlob = await res.blob();
       formData.append('avatar', imageBlob);
     } catch (error) {
