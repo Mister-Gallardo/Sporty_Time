@@ -18,7 +18,6 @@ export function UploadResultModal({
   handleModal,
   matchId,
 }: IUploadResultModalProps) {
-  const [error, setError] = useState(undefined);
   const qc = useQueryClient();
   const [matchResultFields, setMatchResultFields] = useState<string[]>(
     new Array(6).fill(''),
@@ -82,11 +81,10 @@ export function UploadResultModal({
       () => getMyMatches();
     },
     onError(e: any) {
-      setError(e?.response?.data?.message);
+      const message = e?.response?.data?.message;
       showToast({
-        message:
-          e?.response?.data?.message ||
-          'Пока матч не начался, загрузка результатов отключена',
+        message,
+        color: 'danger',
         mode: 'ios',
         position: 'bottom',
         duration: 2000,
@@ -130,9 +128,9 @@ export function UploadResultModal({
               justifyContent: 'space-between',
             }}
           >
-            <Typography>Set-1</Typography>
-            <Typography>Set-2</Typography>
-            <Typography>Set-3</Typography>
+            <Typography>Сет-1</Typography>
+            <Typography>Сет-2</Typography>
+            <Typography>Сет-3</Typography>
           </Box>
           <Box display="flex" alignItems="center" gap={1.5}>
             <Typography fontSize={18} color="gray" mr={2}>

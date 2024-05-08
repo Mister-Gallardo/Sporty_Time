@@ -1,20 +1,41 @@
 import React from 'react';
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
-import { Status } from '../../../services/matches/interface';
+import { MatchData, Status } from '../../../services/matches/interface';
 import { Box, Divider, Typography } from '@mui/material';
+import { getMatchStatus } from '../../../helpers/getMatchStatus';
 
-interface IResults {
-  date: string;
-  status: Status;
-  results: any;
-  winningTeam: string | null;
-}
-export const ResultsCardSection: React.FC<IResults> = ({
-  date,
-  status,
-  results,
-  winningTeam,
-}) => {
+interface IResults extends MatchData {}
+
+export const ResultsCardSection: React.FC<IResults> = (props) => {
+  const { booking, winningTeam, matchResults } = props;
+
+  const interval = booking?.interval;
+
+  // match start date + start-end time
+  const matchDate =
+    interval &&
+    `${interval.slice(2, 12)} | ${interval.slice(13, 18)}-${interval.slice(
+      -10,
+      -5,
+    )}`;
+
+  const status = getMatchStatus(props);
+
+  const getSetResults = (team: string) => {
+    if (!matchResults && status === Status.WITHOUT_RESULT) return [0, 0, 0];
+    return matchResults?.map((item: any) => {
+      return team === 'A' ? item[0] : item[1];
+    });
+  };
+
+  const teamAResults = getSetResults('A');
+  const teamBResults = getSetResults('B');
+
+  const results = [
+    { team: 'A', results: teamAResults },
+    { team: 'B', results: teamBResults },
+  ];
+
   const withStatus =
     status === Status.INCOMPLETE ||
     status === Status.VALIDATING ||
@@ -42,7 +63,7 @@ export const ResultsCardSection: React.FC<IResults> = ({
         fontSize={12}
         color="gray"
       >
-        {date}
+        {matchDate}
       </Typography>
       {results?.map((resultsRow: any, i: number) => {
         return (

@@ -21,6 +21,7 @@ export interface MatchMember {
   id: number;
   paid: number;
   confirmMatchResults: boolean;
+  matchResults: matchResults | null;
   team: string;
   createdAt: string;
   updatedAt: string;

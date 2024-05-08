@@ -2,31 +2,35 @@ import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutline
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { useHistory } from 'react-router';
-import { Status } from '../../../services/matches/interface';
-import { isPlatform } from '@ionic/react';
+import { MatchData, Status } from '../../../services/matches/interface';
 import { Link } from 'react-router-dom';
+import { usePlayerProfile } from '../../../services/api/hooks';
+import { getMatchStatus } from '../../../helpers/getMatchStatus';
 
-interface IWithoutResults {
-  matchId: number;
-  date: string;
-  clubName?: string;
-  courtName?: string;
-  status: Status;
-  uploadResults?: (() => void) | null;
+interface IWithoutResults extends MatchData {
+  uploadResults?: ((matchId: number) => void) | null;
 }
 
-const isDesktop = isPlatform('desktop');
+export const WithoutResultsCardSection: React.FC<IWithoutResults> = (props) => {
+  const { id, booking, matchBookings, uploadResults } = props;
 
-export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
-  matchId,
-  date,
-  clubName,
-  courtName,
-  status,
-  uploadResults,
-}) => {
-  const history = useHistory();
+  const [player] = usePlayerProfile();
+
+  const interval = booking?.interval;
+  const matchDate =
+    interval &&
+    `${interval.slice(2, 12)} | ${interval.slice(13, 18)}-${interval.slice(
+      -10,
+      -5,
+    )}`;
+
+  const status = getMatchStatus(props);
+
+  const myBooking = matchBookings?.find(
+    (booking) => booking?.player?.id === player?.id,
+  );
+  const clubName = booking?.court?.club?.title;
+  const courtName = booking?.court?.title;
 
   const withStatus =
     status === Status.CANCELED ||
@@ -89,7 +93,7 @@ export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
       height="100%"
     >
       <Typography fontSize={13} fontWeight={500}>
-        {date}
+        {matchDate}
       </Typography>
 
       <Typography fontSize={12} color="gray">
@@ -121,7 +125,7 @@ export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
       <Box
         onClick={(e) => {
           e.stopPropagation();
-          if (uploadResults) uploadResults();
+          if (uploadResults) uploadResults(id);
         }}
         mt={1}
         width={40}
@@ -135,10 +139,11 @@ export const WithoutResultsCardSection: React.FC<IWithoutResults> = ({
           cursor: 'pointer',
         }}
       >
-        {status === Status.WAITING_FOR_RESULTS ? (
+        {status === Status.WAITING_FOR_RESULTS &&
+        !myBooking?.confirmMatchResults ? (
           <Add sx={{ color: '#fff' }} />
         ) : (
-          <Link to={`/chats/${matchId}`}>
+          <Link to={`/chats/${id}`}>
             <ChatBubbleOutlineOutlinedIcon
               fontSize="small"
               sx={{ color: '#fff' }}

@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   getNotifications,
@@ -6,7 +6,6 @@ import {
 } from '../../services/notifications/service';
 import { LoadingCircle } from '../../components/atoms/LoadingCircle';
 import { NotFoundPage } from '../../components/NotFoundPage';
-import { Link } from 'react-router-dom';
 import { isPlatform } from '@ionic/react';
 import CircleIcon from '@mui/icons-material/Circle';
 import { isAuthorized } from '../../services/auth/service';
@@ -58,7 +57,11 @@ export function NotificationsPage() {
               day: 'numeric',
             });
             return (
-              <Link key={notification.id} to={notification?.data?.url}>
+              <Link
+                key={notification.id}
+                href={notification?.data?.url}
+                underline="none"
+              >
                 <Box
                   onClick={() => {
                     if (!notification?.read)

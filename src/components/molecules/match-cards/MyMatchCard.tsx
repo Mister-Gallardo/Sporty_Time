@@ -18,45 +18,12 @@ interface IMyMatchCardProps extends MatchData {
 const isMobile = isPlatform('mobile');
 
 export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
-  const {
-    id,
-    sport,
-    booking,
-    matchBookings,
-    matchResults,
-    winningTeam,
-    uploadResults,
-  } = props;
+  const { id, sport, matchBookings } = props;
 
   const history = useHistory();
 
-  const interval = booking?.interval;
-
-  // match start date + start-end time
-  const matchDate =
-    interval &&
-    `${interval.slice(2, 12)} | ${interval.slice(13, 18)}-${interval.slice(
-      -10,
-      -5,
-    )}`;
-
   const members = sortTeamMembers(matchBookings);
   const status = getMatchStatus(props);
-
-  const getSetResults = (team: string) => {
-    if (!matchResults && status === Status.WITHOUT_RESULT) return [0, 0, 0];
-    return matchResults?.map((item: any) => {
-      return team === 'A' ? item[0] : item[1];
-    });
-  };
-
-  const teamAResults = getSetResults('A');
-  const teamBResults = getSetResults('B');
-
-  const results = [
-    { team: 'A', results: teamAResults },
-    { team: 'B', results: teamBResults },
-  ];
 
   const isWithoutResults =
     status === Status.CANCELED ||
@@ -150,25 +117,9 @@ export const MyMatchCard: React.FC<IMyMatchCardProps> = (props) => {
           })}
         </Box>
         {isWithoutResults ? (
-          <WithoutResultsCardSection
-            matchId={id}
-            date={matchDate}
-            clubName={booking?.court?.club?.title}
-            courtName={booking?.court?.title}
-            status={status}
-            uploadResults={
-              uploadResults && status === Status.WAITING_FOR_RESULTS
-                ? () => uploadResults(id)
-                : null
-            }
-          />
+          <WithoutResultsCardSection {...props} />
         ) : (
-          <ResultsCardSection
-            date={matchDate}
-            status={status}
-            results={results}
-            winningTeam={winningTeam}
-          />
+          <ResultsCardSection {...props} />
         )}
       </Box>
     </Box>
