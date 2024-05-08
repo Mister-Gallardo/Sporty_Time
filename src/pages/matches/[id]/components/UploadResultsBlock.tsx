@@ -61,7 +61,8 @@ export const UploadResultsBlock = () => {
 
   const status = getMatchStatus(singleMatchData);
 
-  if (status !== Status.WAITING_FOR_RESULTS) return;
+  if (status !== Status.WAITING_FOR_RESULTS && status !== Status.VALIDATING)
+    return;
 
   return (
     <>
