@@ -1,4 +1,5 @@
 import { Box, Link, Typography } from '@mui/material';
+import { Link as ReactRouterLink } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   getNotifications,
@@ -59,7 +60,8 @@ export function NotificationsPage() {
             return (
               <Link
                 key={notification.id}
-                href={notification?.data?.url}
+                component={ReactRouterLink}
+                to={notification?.data?.url}
                 underline="none"
               >
                 <Box
