@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { SportsBaseballOutlined } from '@mui/icons-material';
 import {
@@ -54,6 +54,9 @@ function DesktopHeader() {
     enabled: isAuthorized,
   });
   const notifications = data?.data;
+  useEffect(() => {
+    console.log('changed');
+  }, [data]);
 
   const unreadNotifications = notifications?.filter(
     (notification) => !notification?.read,

@@ -17,7 +17,7 @@ export function NotificationsPage() {
   const isAuth = isAuthorized();
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['notifications'],
+    queryKey: ['notification'],
     queryFn: getNotifications,
     enabled: isAuth,
   });
