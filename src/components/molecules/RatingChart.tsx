@@ -53,8 +53,9 @@ export const RatingChart: React.FC<IRatingChartProps> = ({
     const isLast = index === bookingsList?.length - 1;
 
     const rating = payload?.ratingAfterMatch;
+    if (!rating) return;
 
-    const textX = rating.toString().length > 1 ? 5 : 10;
+    const textX = rating?.toString().length > 1 ? 5 : 10;
     return (
       <svg x={isLast ? cx - 30 : cx - 15} y={cy - 15} width={30} height={30}>
         <g>
