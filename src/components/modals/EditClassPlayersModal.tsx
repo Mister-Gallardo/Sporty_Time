@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, IconButton } from '@mui/material';
 import { ModalContainer } from './ModalContainer';
 import { ClassPlayerSlot } from '../../pages/classes/[id]/components/ClassPlayerSlot';
@@ -39,6 +39,7 @@ export const EditClassPlayersModal: React.FC<IEditClassPlayersModal> = ({
   const isOwner = currentPlayerId === ownerId;
 
   const [openConfirmation, setOpenConfirmation] = useToggle();
+  const [playerToKick, setPlayerToKick] = useState<number>();
 
   const qc = useQueryClient();
   const [showToast] = useIonToast();
@@ -117,7 +118,10 @@ export const EditClassPlayersModal: React.FC<IEditClassPlayersModal> = ({
               <Box key={booking.id} position="relative">
                 {(currentPlayerId === booking?.player?.id || isOwner) && (
                   <IconButton
-                    onClick={() => setOpenConfirmation(true)}
+                    onClick={() => {
+                      setPlayerToKick(booking?.player?.id);
+                      setOpenConfirmation(true);
+                    }}
                     sx={{
                       position: 'absolute',
                       zIndex: 1,
@@ -148,10 +152,10 @@ export const EditClassPlayersModal: React.FC<IEditClassPlayersModal> = ({
           isOwner ? ' удалить ученика' : ' отменить бронирование'
         }?`}
         onConfirm={() => {
-          if (isOwner) {
+          if (isOwner && playerToKick) {
             kickPlayerFromClassMutation.mutate({
               classId,
-              playerId: 0,
+              playerId: playerToKick,
             });
           } else {
             cancelMyClassBookingMutation.mutate(classId);
