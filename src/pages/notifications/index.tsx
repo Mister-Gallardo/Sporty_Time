@@ -10,6 +10,7 @@ import { NotFoundPage } from '../../components/NotFoundPage';
 import { isPlatform } from '@ionic/react';
 import CircleIcon from '@mui/icons-material/Circle';
 import { isAuthorized } from '../../services/auth/service';
+import { Badge } from '@capawesome/capacitor-badge';
 
 const isMobile = isPlatform('mobile');
 
@@ -26,8 +27,15 @@ export function NotificationsPage() {
 
   const markNotificationMutation = useMutation({
     mutationFn: markNotificationAsRead,
-    onSuccess() {
+    async onSuccess() {
       refetch();
+      if (isMobile) {
+        try {
+          await Badge.decrease();
+        } catch (error) {
+          console.error('Badge decrease error: ', error);
+        }
+      }
     },
   });
 
