@@ -101,47 +101,47 @@ function DesktopHeader() {
 
           <Box ml={3} display={{ xs: 'none', md: 'flex' }}>
             <Box display="flex" alignItems="center" gap={2}>
-              {isAuthorized && (
+              <Link
+                component={RouterNavLink}
+                to="/about"
+                exact
+                underline="none"
+                color="#333"
+                fontWeight={500}
+              >
+                О компании
+              </Link>
+              <Link
+                component={RouterNavLink}
+                to="/book-court"
+                underline="none"
+                color="#333"
+                fontWeight={500}
+              >
+                Клубы
+              </Link>
+              <Link
+                component={RouterNavLink}
+                to="/classes?tab=1"
+                underline="none"
+                color="#333"
+                fontWeight={500}
+              >
+                Занятия
+              </Link>
+
+              <Link
+                component={RouterNavLink}
+                to="/matches?tab=1"
+                underline="none"
+                color="#333"
+                fontWeight={500}
+              >
+                Матчи
+              </Link>
+
+              {isAuthorized ? (
                 <>
-                  <Link
-                    component={RouterNavLink}
-                    to="/about"
-                    exact
-                    underline="none"
-                    color="#333"
-                    fontWeight={500}
-                  >
-                    О компании
-                  </Link>
-                  <Link
-                    component={RouterNavLink}
-                    to="/book-court"
-                    underline="none"
-                    color="#333"
-                    fontWeight={500}
-                  >
-                    Клубы
-                  </Link>
-                  <Link
-                    component={RouterNavLink}
-                    to="/classes?tab=1"
-                    underline="none"
-                    color="#333"
-                    fontWeight={500}
-                  >
-                    Занятия
-                  </Link>
-
-                  <Link
-                    component={RouterNavLink}
-                    to="/matches?tab=1"
-                    underline="none"
-                    color="#333"
-                    fontWeight={500}
-                  >
-                    Матчи
-                  </Link>
-
                   <Link
                     component={RouterNavLink}
                     to="/chats"
@@ -173,10 +173,7 @@ function DesktopHeader() {
                       )
                     )}
                   </Link>
-                </>
-              )}
-              {isAuthorized ? (
-                <>
+
                   <Link
                     component={RouterNavLink}
                     to="/profile"

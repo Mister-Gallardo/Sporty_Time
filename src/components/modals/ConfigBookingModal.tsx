@@ -103,29 +103,43 @@ export const ConfigBookingModal: React.FC<IConfigBookingModal> = ({
         ) : (
           <MatchCreationForm rating={rating} />
         )}
-        <Button
-          disabled={
-            !!debtsAmount ||
-            (isClass &&
-              (title.length < 5 ||
-                !watch('priceForSpot') ||
-                description.length < 5))
-          }
-          onClick={() => {
-            handleModal();
-            handleNext();
-          }}
-          variant="contained"
-          fullWidth
-          sx={{
-            backgroundColor: '#333',
-            marginTop: 4,
-            fontSize: 18,
-            fontWeight: 600,
-          }}
-        >
-          Перейти к оплате
-        </Button>
+        {isAuth ? (
+          <Button
+            disabled={
+              !!debtsAmount ||
+              (isClass &&
+                (title.length < 5 ||
+                  !watch('priceForSpot') ||
+                  description.length < 5))
+            }
+            onClick={() => {
+              handleModal();
+              handleNext();
+            }}
+            variant="contained"
+            fullWidth
+            sx={{
+              backgroundColor: '#333',
+              marginTop: 4,
+              fontSize: 18,
+              fontWeight: 600,
+            }}
+          >
+            Перейти к оплате
+          </Button>
+        ) : (
+          <Typography mt={4} textAlign="center">
+            <Link
+              to="/auth"
+              component={ReactRouterLink}
+              fontWeight={600}
+              sx={{ color: 'blue !important' }}
+            >
+              Авторизируйтесь
+            </Link>
+            , что бы забронировать корт
+          </Typography>
+        )}
       </Box>
     </ModalContainer>
   );

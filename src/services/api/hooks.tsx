@@ -13,10 +13,13 @@ export const useIsAuthorized = () => {
 };
 
 export const useFullUserData = () => {
+  const isAuthorized = useIsAuthorized();
+
   const { data, ...rest } = useQuery({
     queryKey: ['user'],
     queryFn: getUserInfo,
     retry: false,
+    enabled: isAuthorized,
   });
   return [data?.data, rest] as const;
 };
@@ -26,7 +29,9 @@ export interface IUserInfoOptions {
 }
 
 export const useUserInfo = (options: IUserInfoOptions = {}) => {
-  const { enabled = true } = options;
+  const isAuthorized = useIsAuthorized();
+
+  const { enabled = isAuthorized } = options;
   const { data, ...rest } = useQuery({
     queryKey: ['user'],
     queryFn: getUserInfo,
@@ -37,10 +42,13 @@ export const useUserInfo = (options: IUserInfoOptions = {}) => {
 };
 
 export const usePlayerProfile = () => {
+  const isAuthorized = useIsAuthorized();
+
   const { data, ...rest } = useQuery({
     queryKey: ['user'],
     queryFn: getUserInfo,
     retry: false,
+    enabled: isAuthorized,
   });
 
   const player = data?.data?.user.player;
