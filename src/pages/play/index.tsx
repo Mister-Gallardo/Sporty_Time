@@ -98,7 +98,7 @@ export function MobilePlayPage() {
       </IonHeader>
 
       <IonContent fullscreen>
-        <Box mt={3} px={2}>
+        <Box my={3} px={2}>
           <Box>
             {debtsList && debtsList?.length > 0 && (
               <Link to="/profile/payments">
@@ -132,13 +132,7 @@ export function MobilePlayPage() {
               городе, подключайтесь к ним и играйте в дружеские и
               соревновательные матчи!
             </Typography>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '12px',
-              }}
-            >
+            <Stack spacing={1.8}>
               <NavBlock
                 href="/book-court"
                 img={booking}
@@ -165,13 +159,14 @@ export function MobilePlayPage() {
               <NavBlock
                 href="/classes?tab=1"
                 title="Занятия"
+                description="Если хотите стать лучше"
                 icon={
                   <SchoolOutlinedIcon
                     sx={{ fontSize: '1.5rem', color: '#fff' }}
                   />
                 }
               />
-            </Box>
+            </Stack>
           </Box>
         </Box>
       </IonContent>

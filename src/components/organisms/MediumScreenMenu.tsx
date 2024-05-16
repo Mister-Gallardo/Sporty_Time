@@ -9,7 +9,6 @@ import { Badge, CircularProgress, Link } from '@mui/material';
 import { NavLink as RouterNavLink } from 'react-router-dom';
 import { isAuthorized } from '../../services/auth/service';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import SportsTennisRoundedIcon from '@mui/icons-material/SportsTennisRounded';
 import { useLocalStorage } from 'usehooks-ts';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -157,21 +156,6 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
           </Link>
         </>
       )}
-
-      <Link
-        onClick={handleMdMenuClose}
-        component={RouterNavLink}
-        to="/about"
-        underline="none"
-        fontWeight={500}
-      >
-        <MenuItem sx={{ gap: 1.5 }}>
-          <InfoRoundedIcon sx={{ fontSize: 27, color: '#575757' }} />
-          <Typography fontWeight={600} fontSize={15}>
-            О компании
-          </Typography>
-        </MenuItem>
-      </Link>
 
       {isAuth && (
         <Link
