@@ -3,7 +3,7 @@ import { TabContext, TabPanel } from '@mui/lab';
 import { Box, Button, Typography } from '@mui/material';
 import ActivitiesTab from '../tabs/ActivitiesTab';
 import { IonLoading, isPlatform } from '@ionic/react';
-import PostsTab from '../tabs/PostsTab';
+import PostsTab from '../tabs/FeedbackTab';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { UserData } from '../components/UserData';
 import { useHistory, useParams } from 'react-router';
