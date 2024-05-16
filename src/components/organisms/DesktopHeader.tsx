@@ -24,6 +24,8 @@ import {
 } from '../../services/notifications/service';
 import { useLocalStorage } from 'usehooks-ts';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ChatBubbleOutlineSharpIcon from '@mui/icons-material/ChatBubbleOutlineSharp';
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 
 function DesktopHeader() {
   const [mdMoreAnchorEl, setMdMoreAnchorEl] = useState<null | HTMLElement>(
@@ -103,16 +105,6 @@ function DesktopHeader() {
             <Box display="flex" alignItems="center" gap={2}>
               <Link
                 component={RouterNavLink}
-                to="/about"
-                exact
-                underline="none"
-                color="#333"
-                fontWeight={500}
-              >
-                О компании
-              </Link>
-              <Link
-                component={RouterNavLink}
                 to="/book-court"
                 underline="none"
                 color="#333"
@@ -144,12 +136,21 @@ function DesktopHeader() {
                 <>
                   <Link
                     component={RouterNavLink}
+                    to="/profile"
+                    color="#333"
+                    fontWeight={500}
+                  >
+                    {firstName} {lastName}
+                  </Link>
+
+                  <Link
+                    component={RouterNavLink}
                     to="/chats"
                     underline="none"
                     color="#333"
                     fontWeight={500}
                   >
-                    Чаты
+                    <ChatBubbleOutlineSharpIcon />
                   </Link>
 
                   <Link
@@ -159,7 +160,7 @@ function DesktopHeader() {
                     color="#333"
                     fontWeight={500}
                   >
-                    Уведомления
+                    <NotificationsNoneOutlinedIcon />
                     {isLoading ? (
                       <CircularProgress size={27} />
                     ) : (
@@ -168,19 +169,10 @@ function DesktopHeader() {
                           badgeContent={unreadNotifications.length}
                           color="error"
                           max={99}
-                          sx={{ top: -13 }}
+                          sx={{ top: -23 }}
                         />
                       )
                     )}
-                  </Link>
-
-                  <Link
-                    component={RouterNavLink}
-                    to="/profile"
-                    color="#333"
-                    fontWeight={500}
-                  >
-                    {firstName} {lastName}
                   </Link>
                   <Button
                     disabled={removeTokenMutation?.isPending}

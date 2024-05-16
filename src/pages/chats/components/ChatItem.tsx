@@ -25,7 +25,6 @@ export const ChatItem: React.FC<IChatItemProps> = ({
   return (
     <Box
       display="flex"
-      alignItems="center"
       gap={1.5}
       bgcolor={isActive ? '#eee' : ''}
       py={0.5}
@@ -39,31 +38,36 @@ export const ChatItem: React.FC<IChatItemProps> = ({
           backgroundColor: isActive ? 'primary.main' : 'none',
         }}
       />
-      <Box borderBottom="1px solid #eee" height={50} flexGrow={1}>
-        <Typography
-          lineHeight={1.2}
-          fontSize={13}
-          fontWeight={700}
-          maxWidth={200}
-          noWrap
-          color={isActive ? 'primary.main' : 'none'}
-        >
-          {title}
-        </Typography>
+      <Box
+        borderBottom="1px solid #eee"
+        height={60}
+        display="flex"
+        flexDirection="column"
+        justifyContent="space-between"
+        flexGrow={1}
+      >
+        <Box>
+          <Typography
+            lineHeight={1.1}
+            fontSize={13}
+            fontWeight={600}
+            color={isActive ? 'primary.main' : 'none'}
+          >
+            {title}
+          </Typography>
+          <Typography lineHeight={1.2} fontSize={12} color="gray">
+            {new Date(gamedate).toLocaleDateString('ru')}
+          </Typography>
+        </Box>
 
         <Box
           display="flex"
           alignItems="flex-end"
           justifyContent="space-between"
         >
-          <Box>
-            <Typography lineHeight={1.2} fontSize={12} color="gray">
-              {new Date(gamedate).toLocaleDateString('ru')}
-            </Typography>
-            <Typography fontSize={12} color="gray" maxWidth={160} noWrap>
-              {message}
-            </Typography>
-          </Box>
+          <Typography fontSize={12} color="gray" maxWidth={160} noWrap>
+            {message}
+          </Typography>
           <Typography fontSize={11}>{lastMsgDate}</Typography>
         </Box>
       </Box>
