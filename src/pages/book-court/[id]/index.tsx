@@ -16,6 +16,7 @@ import noImg from '../../../images/no-image.jpg';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { TabList } from '../../../components/molecules/TabList';
 import { withHostname } from '../../../services/api/service';
+import { FeedbacksTab } from './tabs/FeedbacksTab';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -130,7 +131,7 @@ export function SingleCourtPage() {
               justifyContent={isMobile ? 'unset' : 'center'}
             >
               <TabList
-                tabs={['Главная', 'Бронь']}
+                tabs={['Отзывы', 'Главная', 'Бронь']}
                 onChange={(_, value) => setTab(value)}
               />
             </Box>
@@ -138,10 +139,13 @@ export function SingleCourtPage() {
         </Box>
 
         <TabPanel value="1" sx={{ p: 0 }}>
-          <BookTabMain />
+          <FeedbacksTab />
         </TabPanel>
         <TabPanel value="2" sx={{ p: 0 }}>
           <BookTab />
+        </TabPanel>
+        <TabPanel value="3" sx={{ p: 0 }}>
+          <BookTabMain />
         </TabPanel>
       </TabContext>
     </SwipeablePage>

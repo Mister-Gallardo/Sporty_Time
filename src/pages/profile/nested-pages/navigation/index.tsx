@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   Stack,
   Typography,
 } from '@mui/material';
@@ -21,6 +22,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { removeDeviceToken } from '../../../../services/notifications/service';
 import LogoutIcon from '@mui/icons-material/Logout';
 import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
+import { Role } from '../../../../services/user/interface';
 
 const isMobile = isPlatform('mobile');
 
@@ -28,6 +30,7 @@ export const ProfileNavPage = () => {
   const history = useHistory();
   const qc = useQueryClient();
   const [user, query] = useUserInfo();
+  const isTrainer = user?.roles?.find((role) => role === Role.TRAINER);
 
   const deleteAccountMutation = useMutation({
     mutationFn: deleteMe,
@@ -72,6 +75,35 @@ export const ProfileNavPage = () => {
           sx={{ width: 50, height: 50 }}
         />
       </Box>
+
+      {isTrainer && (
+        <>
+          <Divider sx={{ my: 4 }} />
+          <Stack>
+            <Typography fontWeight={600} fontSize={16}>
+              Прибыль за тренерскую деятельность:
+            </Typography>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Typography fontSize={16}>Доступно к выводу:</Typography>
+              <Typography fontWeight={600} fontSize={18}>
+                {1} RUB
+              </Typography>
+            </Box>
+            <Button
+              onClick={() => console.log('withdraw money')}
+              variant="contained"
+              sx={{ mt: 2 }}
+            >
+              Вывести
+            </Button>
+          </Stack>
+          <Divider sx={{ my: 4 }} />
+        </>
+      )}
 
       <Stack mt={3} gap={1}>
         <Typography mb={1} fontWeight={600} fontSize={16}>
