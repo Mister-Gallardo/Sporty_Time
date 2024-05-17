@@ -30,7 +30,7 @@ export function ResetPassword() {
         position: 'bottom',
         duration: 2000,
       });
-      history.push('/');
+      history.push('/auth');
     },
     onError(e: any) {
       const message = e.response.data.message;
