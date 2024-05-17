@@ -4,32 +4,34 @@ import {
   CircularProgress,
   Fade,
   Grow,
-  IconButton,
-  InputAdornment,
   Link,
   TextField,
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
+import {
+  FormProvider,
+  SubmitErrorHandler,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form';
 import { IAuthForm } from '../../services/api/interface';
 import { useMutation } from '@tanstack/react-query';
 import {
   loginUser,
+  loginWithOtp,
   registerRequest,
-  registerUser,
 } from '../../services/auth/service';
 import { useHistory } from 'react-router';
 import { IonToast } from '@ionic/react';
 import useToggle from '../../hooks/useToggle';
 import { RestorePasswordModal } from '../../components/modals/RestorePasswordModal';
 import { AuthErrors } from '../../services/auth/interface';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import MuiPhoneNumber from 'mui-phone-number';
 
-enum LoginStates {
+import { RegistrationFields } from './components/RegistrationFields';
+import { PasswordField } from './components/PasswordField';
+
+export enum LoginStates {
   UNDEFINED,
   LOGIN,
   REGISTER,
@@ -43,15 +45,14 @@ export function AuthPage() {
   }, []);
 
   const [authState, setAuthState] = useState(LoginStates.UNDEFINED);
-  const [showPassword, setShowPassword] = useToggle();
 
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isOpenErrorToast, setIsOpenErrorToast] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string | undefined>();
   const [isOpenSuccessToast, setIsOpenSuccessToast] = useState<boolean>(false);
-  const [isOpenErrorToast, setIsOpenErrorToast] = useState<boolean>(false);
 
-  const { register, handleSubmit, reset, getValues, setValue } =
-    useForm<IAuthForm>();
+  const authForm = useForm<IAuthForm>();
+  const { register, handleSubmit, reset, watch } = authForm;
 
   const [openRestorePswrdModal, setOpenRestorePswrdModal] = useToggle();
 
@@ -61,51 +62,23 @@ export function AuthPage() {
       setAuthState(LoginStates.REGISTER);
     },
     onError(e: any) {
-      if (e.response.data.message[0] === 'email must be an email') {
-        setErrorMessage(
-          'Неверный email! Проверьте наличие "@" и правильность написания домена электронного адреса.',
-        );
-        setIsOpenErrorToast(true);
+      const message = e.response.data.message;
+
+      if (message === 'Email already taken') {
+        return setAuthState(LoginStates.LOGIN);
       }
 
-      if (e.response.data.message === 'Internal server error') {
-        setErrorMessage('Возникла ошибка входа в аккаунт!');
-        setIsOpenErrorToast(true);
-      }
-      if (!e.response?.data?.message) return;
-      if (e.response?.data?.message === 'Email already taken') {
-        setAuthState(LoginStates.LOGIN);
-      } else if (e.response?.data?.message.startsWith('Wait for')) {
+      if (message === 'Используйте последний полученный код подтверждения') {
+        setErrorMessage(message);
         setAuthState(LoginStates.REGISTER);
       }
-    },
-  });
 
-  const registerUserMutation = useMutation({
-    mutationFn: registerUser,
-    onSuccess(response) {
-      const token = response.data.jwt;
-
-      localStorage.setItem('jwtToken', JSON.stringify(token));
-      const authEvent = new Event('auth-changed');
-      document.dispatchEvent(authEvent);
-      reset({ password: '' });
-      setSuccessMessage('Регистрация прошла успешно!');
-      setIsOpenSuccessToast(true);
-
-      history.push('/question-form');
-    },
-    onError(e: any) {
-      if (e.response?.data.message === 'OTP is incorrect') {
-        setErrorMessage(AuthErrors.INVALID_OTP);
-      } else if (e.response?.data?.error?.message === 'Email already taken') {
-        setAuthState(LoginStates.LOGIN);
+      if (Array.isArray(message)) {
+        setErrorMessage(message[0]);
       } else {
-        setSuccessMessage(undefined);
-        setErrorMessage(e.response.data.message);
+        setErrorMessage(message);
       }
-
-      return setIsOpenErrorToast(true);
+      setIsOpenErrorToast(true);
     },
   });
 
@@ -119,32 +92,42 @@ export function AuthPage() {
       document.dispatchEvent(authEvent);
 
       reset({ password: '', email: '' });
+      setAuthState(LoginStates.UNDEFINED);
 
       history.push('/question-form');
     },
     onError(e: any) {
-      setSuccessMessage('');
-      if (e.response?.data?.message === 'Invalid credentials') {
-        setIsOpenErrorToast(true);
-        return setErrorMessage(AuthErrors.UNAUTHORIZED);
+      const message = e.response?.data.message;
+
+      setErrorMessage(message);
+      return setIsOpenErrorToast(true);
+    },
+  });
+
+  const loginWithOtpMutation = useMutation({
+    mutationFn: loginWithOtp,
+    onSuccess() {
+      setAuthState(LoginStates.LOGIN);
+      setSuccessMessage(
+        `Однаразовый пароль отправлен на почту: ${watch('email')}`,
+      );
+      setIsOpenSuccessToast(true);
+    },
+    onError(e: any) {
+      const message = e.response?.data?.message;
+      setErrorMessage(message);
+      setIsOpenErrorToast(true);
+      if (message === 'Используйте последний полученный код подтверждения') {
+        setAuthState(LoginStates.LOGIN);
       }
-      setErrorMessage('Возникла ошибка при входе в аккаунт!');
     },
   });
 
   const submitOnInvalid: SubmitErrorHandler<IAuthForm> = (data) => {
-    const { email, firstname, lastname, otp, password } = data;
+    const { email, password } = data;
     setIsOpenErrorToast(true);
     if (typeof email?.message === 'string')
       return setErrorMessage(AuthErrors.EMAIL);
-    if (typeof firstname?.message === 'string')
-      return setErrorMessage(AuthErrors.NAME);
-    if (typeof lastname?.message === 'string')
-      return setErrorMessage(AuthErrors.LASTNAME);
-    if (typeof otp?.message === 'string')
-      return setErrorMessage(
-        `Введите код подтверждения отправленный на почту ${getValues('email')}`,
-      );
     if (typeof password?.message === 'string')
       return setErrorMessage(AuthErrors.PASSWORD);
 
@@ -152,7 +135,7 @@ export function AuthPage() {
   };
 
   const submitOnValid: SubmitHandler<IAuthForm> = async (data) => {
-    const { email, otp, firstname, lastname, password } = data;
+    const { email, password } = data;
 
     if (authState === LoginStates.UNDEFINED) {
       if (!email.trim()) {
@@ -160,30 +143,6 @@ export function AuthPage() {
         return setErrorMessage(AuthErrors.EMAIL);
       }
       registerRequestMutation.mutate(data);
-    }
-
-    if (authState === LoginStates.REGISTER) {
-      if (!email.trim()) {
-        setIsOpenErrorToast(true);
-        return setErrorMessage(AuthErrors.EMAIL);
-      }
-      if (otp && errorMessage === AuthErrors.INVALID_OTP) {
-        setIsOpenErrorToast(true);
-        return setErrorMessage(AuthErrors.INVALID_OTP);
-      }
-      if (!firstname.trim()) {
-        setIsOpenErrorToast(true);
-        return setErrorMessage(AuthErrors.NAME);
-      }
-      if (!lastname.trim()) {
-        setIsOpenErrorToast(true);
-        return setErrorMessage(AuthErrors.LASTNAME);
-      }
-      if (!password.trim()) {
-        setIsOpenErrorToast(true);
-        return setErrorMessage(AuthErrors.PASSWORD);
-      }
-      registerUserMutation.mutate(data);
     }
 
     if (authState === LoginStates.LOGIN) {
@@ -199,12 +158,7 @@ export function AuthPage() {
     }
   };
 
-  const buttonText =
-    authState === LoginStates.UNDEFINED
-      ? 'Далее'
-      : authState === LoginStates.REGISTER
-      ? 'Зарегестрироваться'
-      : 'Войти';
+  const buttonText = authState === LoginStates.UNDEFINED ? 'Далее' : 'Войти';
 
   return (
     <Box
@@ -263,16 +217,6 @@ export function AuthPage() {
             gap: 2,
           }}
         >
-          {authState === LoginStates.REGISTER && (
-            <Box>
-              <Button
-                onClick={() => setAuthState(LoginStates.UNDEFINED)}
-                startIcon={<ArrowBackRoundedIcon />}
-              >
-                Назад
-              </Button>
-            </Box>
-          )}
           {authState !== LoginStates.REGISTER && (
             <TextField
               {...register('email', {
@@ -296,124 +240,48 @@ export function AuthPage() {
           )}
 
           {authState === LoginStates.REGISTER && (
-            <Grow in timeout={400}>
-              <TextField
-                {...register('firstname', {
-                  required: true,
-                  onChange: () => {
-                    if (isOpenErrorToast) setIsOpenErrorToast(false);
-                    if (errorMessage) setErrorMessage('');
-                  },
-                })}
-                error={errorMessage === AuthErrors.NAME}
-                fullWidth
-                placeholder="Имя"
-                label="Имя"
-                variant="outlined"
-                required
+            <FormProvider {...authForm}>
+              <RegistrationFields
+                setAuthState={setAuthState}
+                isOpenErrorToast={isOpenErrorToast}
+                setIsOpenErrorToast={setIsOpenErrorToast}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
               />
-            </Grow>
+            </FormProvider>
           )}
-          {authState === LoginStates.REGISTER && (
-            <Grow in timeout={600}>
-              <TextField
-                {...register('lastname', {
-                  required: true,
-                  onChange: () => {
-                    if (isOpenErrorToast) setIsOpenErrorToast(false);
-                    if (errorMessage) setErrorMessage('');
-                  },
-                })}
-                error={errorMessage === AuthErrors.LASTNAME}
-                fullWidth
-                placeholder="Фамилия"
-                label="Фамилия"
-                variant="outlined"
-                required
-              />
-            </Grow>
-          )}
-          {authState === LoginStates.REGISTER && (
-            <Grow in timeout={700}>
+
+          {authState === LoginStates.LOGIN && (
+            <Grow in timeout={800}>
               <Box>
-                <MuiPhoneNumber
-                  onChange={(number) => {
-                    setValue('phone', number as string);
-                    if (isOpenErrorToast) setIsOpenErrorToast(false);
-                    if (errorMessage) setErrorMessage('');
-                  }}
-                  defaultCountry="ru"
-                  error={errorMessage === AuthErrors.PHONE_NUMBER}
-                  variant="outlined"
-                  label="Номер телефона"
-                  fullWidth
-                  sx={{ '& svg': { height: '1em' } }}
-                />
+                <FormProvider {...authForm}>
+                  <PasswordField
+                    errorMessage={errorMessage}
+                    isOpenErrorToast={isOpenErrorToast}
+                    setIsOpenErrorToast={setIsOpenErrorToast}
+                    setErrorMessage={setErrorMessage}
+                  />
+                </FormProvider>
               </Box>
             </Grow>
           )}
 
-          {authState === LoginStates.REGISTER && (
-            <Grow in timeout={800}>
-              <TextField
-                {...register('otp', {
-                  required: true,
-                  onChange: () => {
-                    if (isOpenErrorToast) setIsOpenErrorToast(false);
-                    if (errorMessage) setErrorMessage('');
-                  },
-                })}
-                error={
-                  errorMessage ===
-                    `Введите код подтверждения отправленный на почту ${getValues(
-                      'email',
-                    )}` || errorMessage === AuthErrors.INVALID_OTP
-                }
-                helperText={`Код был отправлен на почту ${getValues('email')}`}
-                placeholder="Код подтверждения"
-                label="Код подтверждения"
-                variant="outlined"
-                fullWidth
-                required
-              />
-            </Grow>
-          )}
-
-          {authState !== LoginStates.UNDEFINED && (
-            <Grow in timeout={800}>
-              <TextField
-                error={
-                  errorMessage === AuthErrors.PASSWORD ||
-                  errorMessage === AuthErrors.UNAUTHORIZED
-                }
-                {...register('password', {
-                  required: true,
-                  onChange: () => {
-                    if (isOpenErrorToast) setIsOpenErrorToast(false);
-                    if (errorMessage) setErrorMessage('');
-                  },
-                })}
-                placeholder="Пароль"
-                label="Пароль"
-                type={showPassword ? 'text' : 'password'}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => setShowPassword()}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+          {authState !== LoginStates.REGISTER && (
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="end"
+              gap={1}
+            >
+              <Button
+                disabled={!watch('email')}
+                onClick={() => {
+                  loginWithOtpMutation.mutate(watch('email'));
                 }}
-                fullWidth
-                variant="outlined"
-                required
-              />
-            </Grow>
+              >
+                Вход по одноразовому парллю
+              </Button>
+            </Box>
           )}
         </Box>
 
@@ -429,36 +297,40 @@ export function AuthPage() {
         )}
 
         <Box mt={7}>
-          <Button
-            variant="contained"
-            onClick={handleSubmit(submitOnValid, submitOnInvalid)}
-            sx={{
-              borderRadius: 20,
-              fontWeight: 600,
-            }}
-            fullWidth
-          >
-            {registerRequestMutation.isPending ||
-            registerUserMutation.isPending ||
-            loginUserMutation.isPending ? (
-              <CircularProgress size={25} sx={{ color: '#fff' }} />
-            ) : (
-              buttonText
-            )}
-          </Button>
           {authState !== LoginStates.REGISTER && (
-            <Typography
-              sx={{
-                fontSize: '.75rem',
-                fontWeight: '500',
-                opacity: '.5',
-                textAlign: 'center',
-                paddingTop: '.75rem',
-              }}
-            >
-              Регистрируясь, вы принимаете наши условия использования и политику
-              конфиденциальности.
-            </Typography>
+            <>
+              <Button
+                disabled={
+                  registerRequestMutation.isPending ||
+                  loginUserMutation.isPending
+                }
+                endIcon={
+                  (registerRequestMutation.isPending ||
+                    loginUserMutation.isPending) && (
+                    <CircularProgress size={20} color="inherit" />
+                  )
+                }
+                variant="contained"
+                onClick={handleSubmit(submitOnValid, submitOnInvalid)}
+                sx={{ fontWeight: 600 }}
+                fullWidth
+              >
+                {buttonText}
+              </Button>
+
+              <Typography
+                sx={{
+                  fontSize: '.75rem',
+                  fontWeight: '500',
+                  opacity: '.5',
+                  textAlign: 'center',
+                  paddingTop: '.75rem',
+                }}
+              >
+                Регистрируясь, вы принимаете наши условия использования и
+                политику конфиденциальности.
+              </Typography>
+            </>
           )}
           {authState === LoginStates.LOGIN && (
             <Typography mt={4} textAlign="center">
@@ -485,14 +357,14 @@ export function AuthPage() {
         message={errorMessage}
         onDidDismiss={() => setIsOpenErrorToast(false)}
         duration={6000}
-      ></IonToast>
+      />
       <IonToast
         color="success"
         isOpen={isOpenSuccessToast}
         message={successMessage}
         onDidDismiss={() => setIsOpenSuccessToast(false)}
         duration={2000}
-      ></IonToast>
+      />
 
       <RestorePasswordModal
         openState={openRestorePswrdModal}

@@ -34,20 +34,12 @@ export function ResetPassword() {
     },
     onError(e: any) {
       const message = e.response.data.message;
-      if (typeof message === 'string' && message === 'OTP is incorrect')
-        setErrorMsg('Неверный код подтверждения');
 
-      if (message[0] === 'password too weak')
-        setErrorMsg(
-          'Пароль слишком слабый. При создании дололнительно используйте цифры/символы/заглавные буквы.',
-        );
-
-      if (
-        message[0] === 'password must be longer than or equal to 8 characters'
-      )
-        setErrorMsg(
-          'Ненадёжный пароль. Пароль должен состоять минимум из 8 символов',
-        );
+      if (Array.isArray(message)) {
+        setErrorMsg(message[0]);
+      } else {
+        setErrorMsg(message);
+      }
     },
   });
 

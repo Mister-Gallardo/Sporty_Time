@@ -39,7 +39,13 @@ export async function changePasswordRequest(email: string) {
   const res = api.post('/auth/change-password/request', { email });
   return res;
 }
+
 export async function changePassword(data: any) {
-  const res = api.post('/auth/change-password', { ...data });
+  const res = api.post('/auth/change-password', data);
+  return res;
+}
+
+export async function loginWithOtp(email: string) {
+  const res = api.post('/auth/otp', { email });
   return res;
 }
