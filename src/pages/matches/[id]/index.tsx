@@ -31,6 +31,8 @@ import { isAfter } from 'date-fns';
 import { AddPlayersToMatchModal } from '../../../components/modals/AddPlayersToMatchModal';
 import { FormProvider, useForm } from 'react-hook-form';
 import { MatchBookingButton } from './components/MatchBookingButton';
+import { getGenderName } from '../../../helpers/getNameOf';
+import { EGender } from '../../../services/matches/interface';
 
 const isMobile = isPlatform('mobile');
 export function SingleMatchPage() {
@@ -58,8 +60,6 @@ export function SingleMatchPage() {
   const playerAlreadyInSomeTeam = singleMatchData?.matchBookings.find(
     (booking) => booking.player?.id === myPlayer?.id,
   );
-
-  // const [playerInTeam, setPlayerInTeam] = useState<string>('');
 
   useEffect(() => {
     if (!singleMatchData) return;
@@ -151,7 +151,10 @@ export function SingleMatchPage() {
   );
 
   const booking = singleMatchData.booking;
-  // const startsAt = booking && new Date(singleMatchData.booking.startsAt);
+
+  const matchGender = singleMatchData.gender;
+  const isGenderAdmissible =
+    matchGender === EGender.ALL || matchGender === myPlayer?.user?.gender;
 
   return (
     <>
@@ -174,6 +177,21 @@ export function SingleMatchPage() {
             >
               <Prompt />
               <MatchDataBlock />
+              {!isGenderAdmissible && !isUserOwner && (
+                <Box display="flex" justifyContent="center">
+                  <Typography
+                    textAlign="center"
+                    maxWidth={400}
+                    fontWeight={600}
+                    fontSize={18}
+                    lineHeight={1.3}
+                    color="error"
+                  >
+                    Вы не можете забронировать место в данном матче! Принять
+                    участие могут только {getGenderName(matchGender)}
+                  </Typography>
+                </Box>
+              )}
               <EditPayment />
 
               <Box my={2}>
@@ -204,7 +222,7 @@ export function SingleMatchPage() {
 
               {playerAlreadyInSomeTeam && (
                 <Box maxWidth={125} mx="auto" mb={2}>
-                  <Link to={`/chats/${matchId}`}>
+                  <Link to={`/chats/M${matchId}`}>
                     <ChatBubbleOutlineRounded sx={{ marginRight: '.75rem' }} />
                     <Typography fontWeight={600}>Чат</Typography>
                   </Link>

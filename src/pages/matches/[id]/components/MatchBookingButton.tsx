@@ -8,7 +8,7 @@ import { usePlayerProfile } from '../../../../services/api/hooks';
 import { getSportRating } from '../../../../helpers/getSportRating';
 import useToggle from '../../../../hooks/useToggle';
 import { getMatchStatus } from '../../../../helpers/getMatchStatus';
-import { Status } from '../../../../services/matches/interface';
+import { EGender, Status } from '../../../../services/matches/interface';
 
 export const MatchBookingButton = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -62,6 +62,10 @@ export const MatchBookingButton = () => {
   const isUpcomming =
     matchStatus === Status.PENDING || matchStatus === Status.UPCOMING;
 
+  const matchGender = matchData.gender;
+  const isGenderAdmissible =
+    matchGender === EGender.ALL || matchGender === myPlayer?.user?.gender;
+
   return (
     <>
       {isUpcomming &&
@@ -80,13 +84,19 @@ export const MatchBookingButton = () => {
             }}
           >
             <Button
-              disabled={isRequestedPlace && !playerAlreadyInSomeTeam}
+              disabled={
+                (isRequestedPlace && !playerAlreadyInSomeTeam) ||
+                !isGenderAdmissible
+              }
               onClick={onBookPlace}
               variant="contained"
               sx={{
                 paddingX: 2,
                 boxShadow:
                   'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;',
+                '&:disabled': {
+                  backgroundColor: '#d6d6d6',
+                },
               }}
             >
               {isPlayerInMatchWithoutPayment
