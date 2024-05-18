@@ -109,52 +109,53 @@ export const MediumScreenMenu: React.FC<IMediumScreenMenuProps> = ({
           </Typography>
         </MenuItem>
       </Link>
-      {isAuth && (
-        <>
-          <Link
-            onClick={handleMdMenuClose}
-            component={RouterNavLink}
-            to="/chats"
-            underline="none"
-            fontWeight={500}
-          >
-            <MenuItem sx={{ gap: 1.5 }}>
-              <ChatBubbleOutlineIcon sx={{ fontSize: 27, color: '#575757' }} />
-              <Typography fontWeight={600} fontSize={15}>
-                Чаты
-              </Typography>
-            </MenuItem>
-          </Link>
-          <Link
-            onClick={handleMdMenuClose}
-            component={RouterNavLink}
-            to="/notifications"
-            underline="none"
-            fontWeight={500}
-          >
-            <MenuItem sx={{ gap: 1.5 }}>
-              {isLoading ? (
-                <CircularProgress size={27} />
-              ) : (
-                unreadNotifications && (
-                  <Badge
-                    badgeContent={unreadNotifications.length}
-                    color="error"
-                    max={99}
-                  >
-                    <NotificationsNoneOutlinedIcon
-                      sx={{ fontSize: 27, color: '#575757' }}
-                    />
-                  </Badge>
-                )
-              )}
 
-              <Typography fontWeight={600} fontSize={15}>
-                Уведомления
-              </Typography>
-            </MenuItem>
-          </Link>
-        </>
+      {isAuth && (
+        <Link
+          onClick={handleMdMenuClose}
+          component={RouterNavLink}
+          to="/chats"
+          underline="none"
+          fontWeight={500}
+        >
+          <MenuItem sx={{ gap: 1.5 }}>
+            <ChatBubbleOutlineIcon sx={{ fontSize: 27, color: '#575757' }} />
+            <Typography fontWeight={600} fontSize={15}>
+              Чаты
+            </Typography>
+          </MenuItem>
+        </Link>
+      )}
+      {isAuth && (
+        <Link
+          onClick={handleMdMenuClose}
+          component={RouterNavLink}
+          to="/notifications"
+          underline="none"
+          fontWeight={500}
+        >
+          <MenuItem sx={{ gap: 1.5 }}>
+            {isLoading ? (
+              <CircularProgress size={27} />
+            ) : (
+              unreadNotifications && (
+                <Badge
+                  badgeContent={unreadNotifications.length}
+                  color="error"
+                  max={99}
+                >
+                  <NotificationsNoneOutlinedIcon
+                    sx={{ fontSize: 27, color: '#575757' }}
+                  />
+                </Badge>
+              )
+            )}
+
+            <Typography fontWeight={600} fontSize={15}>
+              Уведомления
+            </Typography>
+          </MenuItem>
+        </Link>
       )}
 
       {isAuth && (

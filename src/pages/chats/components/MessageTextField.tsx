@@ -25,7 +25,8 @@ export const MessageTextField = () => {
 
   const sendMsgMutation = useMutation({
     mutationFn: sendMessage,
-    onError() {
+    onError(e) {
+      console.log('e: ', e);
       showToast({
         color: 'danger',
         message: 'Ошибка! Сообщение не отправлено, попробуйте ещё раз',
@@ -46,16 +47,19 @@ export const MessageTextField = () => {
           id: user?.id,
         },
       };
-      qc.setQueryData(['chat', +chatId], (prev: any = {}) => [
-        ...prev,
-        message,
-      ]);
+      qc.setQueryData(['chat', chatId], (prev: any = {}) => {
+        if (Object.keys(prev).length) {
+          return [message, ...prev];
+        } else {
+          return [message];
+        }
+      });
     },
   });
 
   const onSendMessage: SubmitHandler<any> = ({ message }) => {
     if (!message.trim()) return;
-    sendMsgMutation.mutate({ id: +chatId, message });
+    sendMsgMutation.mutate({ id: chatId, message });
     reset();
   };
 

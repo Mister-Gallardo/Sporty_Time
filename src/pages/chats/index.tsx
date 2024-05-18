@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { MessageTextField } from './components/MessageTextField';
 import { ChatsList } from './components/ChatsList';
 import { MessagesList } from './components/MessagesList';
-import { MatchDataHeader } from './components/MatchDataHeader';
+import { ChatHeader } from './components/ChatHeader';
 import emptyImg from '../../images/no-results.svg';
 import { useParams } from 'react-router';
 
@@ -21,7 +21,7 @@ export function ChatsPage() {
         <Stack width="70%">
           {chatId ? (
             <>
-              <MatchDataHeader />
+              <ChatHeader />
               <MessagesList />
               <MessageTextField />
             </>
