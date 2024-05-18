@@ -15,8 +15,8 @@ import { useUserInfo } from '../../../../services/api/hooks';
 import { isPlatform } from '@ionic/react';
 import { NotFoundPage } from '../../../../components/NotFoundPage';
 import { Dialog } from '@capacitor/dialog';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteMe } from '../../../../services/user/service';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { deleteMe, getTrainerBalance } from '../../../../services/user/service';
 import { withHostname } from '../../../../services/api/service';
 import { useLocalStorage } from 'usehooks-ts';
 import { removeDeviceToken } from '../../../../services/notifications/service';
@@ -31,6 +31,12 @@ export const ProfileNavPage = () => {
   const qc = useQueryClient();
   const [user, query] = useUserInfo();
   const isTrainer = user?.roles?.find((role) => role === Role.TRAINER);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['balance'],
+    queryFn: getTrainerBalance,
+  });
+  const trainerBalance = data?.data?.balance;
 
   const deleteAccountMutation = useMutation({
     mutationFn: deleteMe,
@@ -89,11 +95,18 @@ export const ProfileNavPage = () => {
               justifyContent="space-between"
             >
               <Typography fontSize={16}>Доступно к выводу:</Typography>
-              <Typography fontWeight={600} fontSize={18}>
-                {1} RUB
-              </Typography>
+              {isLoading ? (
+                <CircularProgress size={20} />
+              ) : (
+                <Typography fontWeight={600} fontSize={18}>
+                  {trainerBalance} RUB
+                </Typography>
+              )}
             </Box>
             <Button
+              // disabled={isLoading || trainerBalance === 0}
+              disabled
+              endIcon={isLoading && <CircularProgress size={20} />}
               onClick={() => console.log('withdraw money')}
               variant="contained"
               sx={{ mt: 2 }}

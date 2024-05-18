@@ -51,3 +51,7 @@ export function getUsersList(searchTerm: string) {
 
   return api.get<User[]>(`/users?${qb.queryString}`);
 }
+
+export function getTrainerBalance() {
+  return api.get<any>('/users/me/balance');
+}
