@@ -6,13 +6,13 @@ export async function getChats() {
   return data;
 }
 
-export async function getSingleChat(id: number) {
-  const { data } = await api.get<ChatSingleMessage[]>(`/chat/${id}?offset=0`);
+export async function getSingleChat(id: string) {
+  const { data } = await api.get<ChatSingleMessage[]>(`/chats/${id}?offset=0`);
   return data;
 }
 
 export async function sendMessage({ id, message }: SendingMsdData) {
-  const { data } = await api.post(`chat/${id}/message`, {
+  const { data } = await api.post(`chats/${id}/send`, {
     message,
   });
   return data;

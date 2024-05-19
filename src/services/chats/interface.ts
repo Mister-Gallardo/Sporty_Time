@@ -9,7 +9,7 @@ export interface ChatSingleMessage {
 }
 
 export interface Chat {
-  id: number;
+  id: string;
   message: string;
   messagecreatedat: string;
   firstname: string;
@@ -20,6 +20,6 @@ export interface Chat {
 }
 
 export interface SendingMsdData {
-  id: number;
+  id: string;
   message: string;
 }

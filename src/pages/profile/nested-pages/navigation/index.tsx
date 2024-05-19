@@ -35,6 +35,7 @@ export const ProfileNavPage = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['balance'],
     queryFn: getTrainerBalance,
+    enabled: !!isTrainer,
   });
   const trainerBalance = data?.data?.balance;
 

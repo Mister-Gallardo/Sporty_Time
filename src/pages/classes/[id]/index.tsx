@@ -3,7 +3,13 @@ import { MainClassInfoBlock } from './components/MainClassInfoBlock';
 import { AdditionalClassInfoBlock } from './components/AdditionalClassInfoBlock';
 import { ClassPlayersBlock } from './components/ClassPlayersBlock';
 import { ClubInfoBlock } from './components/ClubInfoBlock';
-import { Box, Button, CircularProgress, Stack } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { isPlatform } from '@ionic/react';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
@@ -13,6 +19,11 @@ import { ClassJoinCheckoutModal } from '../../../components/modals/ClassJoinChec
 import useToggle from '../../../hooks/useToggle';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { differenceInHours } from 'date-fns';
+import ChatBubbleSharpIcon from '@mui/icons-material/ChatBubbleSharp';
+import { Link } from 'react-router-dom';
+import { EGender } from '../../../services/matches/interface';
+import { getSportRating } from '../../../helpers/getSportRating';
+import { getGenderName, getSportName } from '../../../helpers/getNameOf';
 
 const isDesktop = isPlatform('desktop');
 
@@ -44,6 +55,15 @@ export function SingleClassesPage() {
 
   const isRegistrationEnded = timeDifference && timeDifference <= 12;
 
+  const usersRating = getSportRating(player, classData?.sport);
+  const isRatingSufficient =
+    usersRating >= (classData?.ratingFrom || 0) &&
+    usersRating <= (classData?.ratingTo || 7);
+
+  const isGenderSufficient =
+    classData?.gender === EGender.ALL ||
+    classData?.gender === player?.user?.gender;
+
   if (isError) return <NotFoundPage />;
 
   return (
@@ -51,12 +71,52 @@ export function SingleClassesPage() {
       <Stack spacing={isDesktop ? 3 : 2.5}>
         <ClassTitleBlock />
 
+        {classData && !isOwner && (
+          <Box display="flex" justifyContent="center">
+            {!isGenderSufficient && (
+              <Typography
+                textAlign="center"
+                maxWidth={500}
+                color="error"
+                fontWeight={600}
+              >
+                У Вас отсутствует возможность забронировать место, в занятии
+                могут принимать участие только{' '}
+                {getGenderName(classData?.gender)}
+              </Typography>
+            )}
+            {!isRatingSufficient && (
+              <Typography
+                textAlign="center"
+                maxWidth={500}
+                color="error"
+                fontWeight={600}
+              >
+                Ваш рейтинг по {getSportName(classData.sport)}у составляет{' '}
+                {usersRating}. Что бы забронировать место рейтинг должен
+                находится в пределах {classData?.ratingFrom}-
+                {classData?.ratingTo}.
+              </Typography>
+            )}
+          </Box>
+        )}
+
         <Stack spacing={2.5} direction={isDesktop ? 'row' : 'column'}>
           <MainClassInfoBlock />
           <AdditionalClassInfoBlock />
         </Stack>
 
         <ClassPlayersBlock />
+        {(isStudentInClass || isOwner) && (
+          <Box display="flex" justifyContent="center">
+            <Link to={`/chats/C${classId}`}>
+              <ChatBubbleSharpIcon fontSize="large" color="primary" />
+              <Typography textAlign="center" fontWeight={600}>
+                Чат
+              </Typography>
+            </Link>
+          </Box>
+        )}
         <ClubInfoBlock />
       </Stack>
 
@@ -80,7 +140,7 @@ export function SingleClassesPage() {
           >
             <Button
               onClick={() => setOpenCheckoutModal(true)}
-              disabled={isLoading}
+              disabled={isLoading || !isGenderSufficient || !isRatingSufficient}
               endIcon={
                 isLoading && <CircularProgress size={20} color="inherit" />
               }

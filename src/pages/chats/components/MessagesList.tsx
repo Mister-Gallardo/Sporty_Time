@@ -15,8 +15,8 @@ export const MessagesList = () => {
   const { chatId } = useParams<{ chatId: string }>();
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['chat', +chatId],
-    queryFn: () => getSingleChat(+chatId),
+    queryKey: ['chat', chatId],
+    queryFn: () => getSingleChat(chatId),
     enabled: !!chatId,
   });
 
@@ -62,17 +62,19 @@ export const MessagesList = () => {
       {isLoading ? (
         <LoadingCircle />
       ) : data && data.length > 0 ? (
-        data.map((message, i) => {
-          const nextUserId =
-            i === data.length - 1 ? null : data[i + 1]?.userFrom?.id;
-          return (
-            <MessageItem
-              key={message.id}
-              {...message}
-              nextMsgFromSameUser={nextUserId === message?.userFrom?.id}
-            />
-          );
-        })
+        data
+          .map((message, i) => {
+            const nextUserId =
+              i === data.length - 1 ? null : data[i + 1]?.userFrom?.id;
+            return (
+              <MessageItem
+                key={message.id}
+                {...message}
+                nextMsgFromSameUser={nextUserId === message?.userFrom?.id}
+              />
+            );
+          })
+          .reverse()
       ) : (
         <Typography textAlign="center" color="gray">
           Нет сообщений...

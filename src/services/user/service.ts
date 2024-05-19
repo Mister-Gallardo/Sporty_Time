@@ -53,5 +53,5 @@ export function getUsersList(searchTerm: string) {
 }
 
 export function getTrainerBalance() {
-  return api.get<any>('/users/me/balance');
+  return api.get<{ balance: number }>('/users/me/balance');
 }

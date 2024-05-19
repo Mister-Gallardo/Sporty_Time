@@ -14,8 +14,8 @@ import { Box } from '@mui/material';
 import { ArrowBackIosNewOutlined } from '@mui/icons-material';
 import { LoadingCircle } from '../../../components/atoms/LoadingCircle';
 import { MessageTextField } from '../components/MessageTextField';
-import { MatchDataHeader } from '../components/MatchDataHeader';
 import { MessagesList } from '../components/MessagesList';
+import { ChatHeader } from '../components/ChatHeader';
 
 export function MobileSingleChatPage() {
   return (
@@ -36,7 +36,7 @@ export function MobileSingleChatPage() {
         <Suspense fallback={<LoadingCircle />}>
           <Box>
             <Box position="fixed" zIndex={2} right={0} left={0} bgcolor="#fff">
-              <MatchDataHeader />
+              <ChatHeader />
             </Box>
             <Box pt={8}>
               <MessagesList />
