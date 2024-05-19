@@ -2,7 +2,7 @@ import { useHistory } from 'react-router';
 import { MatchData } from '../../../services/matches/interface';
 import { Box, Divider, Typography } from '@mui/material';
 import { PlayerSlot } from '../player-slot/PlayerSlot';
-import { getMatchTypeName } from '../../../helpers/getNameOf';
+import { getGenderName, getMatchTypeName } from '../../../helpers/getNameOf';
 
 interface IAvailableMatchCardProps {
   matchData: MatchData;
@@ -27,6 +27,7 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
   const players = [...Array.from(teamAPlayers), ...Array.from(teamBPlayers)];
 
   const matchType = getMatchTypeName(matchData.type);
+  const matchGender = getGenderName(matchData.gender);
 
   const [startDate, startTime] = matchData.booking.startsAt.split('T');
   const matchTime = `${startDate} | ${startTime.slice(0, 5)}`;
@@ -94,7 +95,7 @@ export const AvailableMatchCard: React.FC<IAvailableMatchCardProps> = ({
             </Typography>
           </Box>
           <Typography fontSize={13} color="gray">
-            Любой
+            {matchGender}
           </Typography>
         </Box>
         <Box
