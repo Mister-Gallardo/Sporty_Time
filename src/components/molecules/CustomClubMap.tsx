@@ -17,7 +17,7 @@ export const CustomClubMap = () => {
   });
 
   const mapHook = useMap({ mapId: 'map' });
-  const clubCoordinates = data?.location.coordinates;
+  const clubCoordinates = data?.location?.coordinates;
 
   useEffect(() => {
     const map = mapHook?.map;

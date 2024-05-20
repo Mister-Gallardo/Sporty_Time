@@ -126,24 +126,26 @@ export function BookTabMain() {
           })}
         </Stack>
         <Stack direction="row" justifyContent="center" spacing={4}>
-          <a
-            href={data?.website || ''}
-            target="_blank"
-            style={{ pointerEvents: data?.website ? 'all' : 'none' }}
-          >
-            <Stack alignItems="center">
-              <IconButton
-                sx={{
-                  width: 55,
-                  height: 55,
-                  border: '1px solid #262d58',
-                }}
-              >
-                <Link />
-              </IconButton>
-              <Typography>Веб-сайт</Typography>
-            </Stack>
-          </a>
+          {data?.website && (
+            <a
+              href={data?.website}
+              target="_blank"
+              style={{ pointerEvents: data?.website ? 'all' : 'none' }}
+            >
+              <Stack alignItems="center">
+                <IconButton
+                  sx={{
+                    width: 55,
+                    height: 55,
+                    border: '1px solid #262d58',
+                  }}
+                >
+                  <Link />
+                </IconButton>
+                <Typography>Веб-сайт</Typography>
+              </Stack>
+            </a>
+          )}
           <a
             href={`tel:${data?.phoneNumber?.replace(/[()\s]/g, '')}`}
             style={{ pointerEvents: data?.phoneNumber ? 'all' : 'none' }}
