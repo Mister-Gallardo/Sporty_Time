@@ -134,7 +134,7 @@ export const ProfileNavPage = () => {
         <Box bgcolor="#f7f7f7" borderRadius={3} p={1}>
           <NavButton
             primaryText="Ваши платежи"
-            secondaryText="Матчи"
+            secondaryText="Матчи, Занятия"
             startIcon={<CreditCardOutlinedIcon sx={{ color: '#000' }} />}
             onClick={() => history.push('/profile/payments')}
           />
