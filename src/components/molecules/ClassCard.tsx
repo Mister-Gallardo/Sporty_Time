@@ -8,22 +8,23 @@ import { IClass } from '../../services/classes/service';
 import { getGenderName, getSportName } from '../../helpers/getNameOf';
 import classImage from '../../images/matches/bgpadel_matchdetail.png';
 import { withHostname } from '../../services/api/service';
-import { differenceInHours } from 'date-fns';
+import { getCurrentClassStatus } from '../../helpers/getCurrentClassStatus';
 
 const isMobile = isPlatform('mobile');
 
-export const ClassCard: React.FC<IClass> = ({
-  id,
-  title,
-  sport,
-  playersCount,
-  price,
-  booking,
-  gender,
-  ratingFrom,
-  ratingTo,
-  classBookings,
-}) => {
+export const ClassCard: React.FC<IClass> = (props) => {
+  const {
+    id,
+    title,
+    sport,
+    playersCount,
+    price,
+    booking,
+    gender,
+    ratingFrom,
+    ratingTo,
+    classBookings,
+  } = props;
   const classDate = booking && new Date(booking?.startsAt);
   const day =
     classDate && classDate.toLocaleDateString('ru', { weekday: 'short' });
@@ -37,13 +38,8 @@ export const ClassCard: React.FC<IClass> = ({
   const time = booking && booking?.startsAt.split('T');
 
   const bookedPlacesAmount = classBookings?.length || 0;
-  const isFillfilled = bookedPlacesAmount === playersCount;
 
-  const classStartsAt = new Date(booking?.startsAt);
-  const timeDifference =
-    classStartsAt && differenceInHours(classStartsAt, Date.now());
-
-  const isRegistrationEnded = timeDifference <= 12;
+  const status = getCurrentClassStatus(props);
 
   return (
     <Box
@@ -168,7 +164,17 @@ export const ClassCard: React.FC<IClass> = ({
               {classBookings?.length}/{playersCount}
             </Typography>
           </Box>
-          {isRegistrationEnded ? (
+          {status ? (
+            <Typography>{status}</Typography>
+          ) : (
+            <Button variant="contained" sx={{ fontSize: 13, px: 2, py: 0.2 }}>
+              <Stack>
+                <Typography>Присоединиться</Typography>
+                <Typography>{price}руб.</Typography>
+              </Stack>
+            </Button>
+          )}
+          {/* {isRegistrationEnded ? (
             <Typography>Регистрация закончена</Typography>
           ) : isFillfilled ? (
             <Typography>Мест нет</Typography>
@@ -181,7 +187,7 @@ export const ClassCard: React.FC<IClass> = ({
                 <Typography>{price}руб.</Typography>
               </Stack>
             </Button>
-          )}
+          )} */}
         </Box>
       </Link>
     </Box>
