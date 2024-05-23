@@ -1,7 +1,8 @@
 import { differenceInHours } from 'date-fns';
 import { IClass } from '../services/classes/service';
+import { Player } from '../services/user/interface';
 
-export const getClassStatus = (classData: IClass, myPlayer: any) => {
+export const getClassStatus = (classData?: IClass, myPlayer?: Player) => {
   if (!classData) return null;
 
   const { playersCount, booking, classBookings, owner } = classData;

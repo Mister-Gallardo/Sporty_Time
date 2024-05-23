@@ -29,6 +29,10 @@ export const UploadResultsBlock = () => {
   const myBooking = singleMatchData?.matchBookings.find(
     (booking) => booking.player?.id === myPlayer?.id,
   );
+  const myTeam = myBooking?.team;
+  const isConfirmedByTeam = singleMatchData?.matchBookings.find(
+    (booking) => booking.team === myTeam && booking.confirmMatchResults,
+  );
 
   const [showToast] = useIonToast();
   const qc = useQueryClient();
@@ -82,7 +86,7 @@ export const UploadResultsBlock = () => {
         {singleMatchData.matchResults && (
           <Typography>Ожидание подтверждения...</Typography>
         )}
-        {!myBooking?.confirmMatchResults && singleMatchData.matchResults && (
+        {!isConfirmedByTeam && singleMatchData.matchResults && (
           <Button
             disabled={uploadMatchReslultsMutation.isPending}
             onClick={() =>
@@ -110,7 +114,7 @@ export const UploadResultsBlock = () => {
             Подтвердить
           </Button>
         )}
-        {!myBooking?.confirmMatchResults && (
+        {!isConfirmedByTeam && (
           <Button
             onClick={() => setOpenUploadModal(true)}
             sx={{ fontSize: '.95rem', fontWeight: '600' }}
