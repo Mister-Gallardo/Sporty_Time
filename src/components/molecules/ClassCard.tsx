@@ -8,7 +8,8 @@ import { IClass } from '../../services/classes/service';
 import { getGenderName, getSportName } from '../../helpers/getNameOf';
 import classImage from '../../images/matches/bgpadel_matchdetail.png';
 import { withHostname } from '../../services/api/service';
-import { getCurrentClassStatus } from '../../helpers/getCurrentClassStatus';
+import { getClassStatus } from '../../helpers/getClassStatus';
+import { usePlayerProfile } from '../../services/api/hooks';
 
 const isMobile = isPlatform('mobile');
 
@@ -39,7 +40,8 @@ export const ClassCard: React.FC<IClass> = (props) => {
 
   const bookedPlacesAmount = classBookings?.length || 0;
 
-  const status = getCurrentClassStatus(props);
+  const [myPlayer] = usePlayerProfile();
+  const status = getClassStatus(props, myPlayer);
 
   return (
     <Box

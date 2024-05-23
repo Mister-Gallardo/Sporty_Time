@@ -1,16 +1,24 @@
 import { differenceInHours } from 'date-fns';
-import { IClass } from './../services/classes/service';
+import { IClass } from '../services/classes/service';
 
-export const getCurrentClassStatus = (classData: IClass) => {
+export const getClassStatus = (classData: IClass, myPlayer: any) => {
   if (!classData) return null;
 
-  const { playersCount, booking, classBookings } = classData;
+  const { playersCount, booking, classBookings, owner } = classData;
+
+  if (booking?.cancelled) return 'Отменено';
+
+  const isMyPlayerInClass = classBookings?.find(
+    (booking) => booking?.player?.id === myPlayer?.id,
+  );
+  if (isMyPlayerInClass) return 'Вы присоединились';
+
+  const isTrainer = owner?.id === myPlayer?.id;
+  if (isTrainer) return 'Вы тренер';
 
   const bookedPlacesAmount = classBookings?.length || 0;
   const isFillfilled = bookedPlacesAmount === playersCount;
   if (isFillfilled) return 'Мест нет';
-
-  if (booking?.cancelled) return 'Отменено';
 
   const classStartsAt = new Date(booking?.startsAt);
   const timeDifference =
