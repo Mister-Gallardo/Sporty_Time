@@ -75,6 +75,13 @@ export const MessageItem: React.FC<IMessageItemProps> = ({
           {msgSentTime}
         </Typography>
       </Box>
+      {isMyUser && (
+        <Box minWidth={40} minHeight={40}>
+          {!nextMsgFromSameUser && (
+            <Avatar src={avatar} sx={{ width: 40, height: 40, zIndex: 1 }} />
+          )}
+        </Box>
+      )}
     </Box>
   );
 };
