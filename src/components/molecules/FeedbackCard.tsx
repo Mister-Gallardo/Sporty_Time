@@ -1,23 +1,19 @@
 import React from 'react';
 import { Avatar, Box, Rating, Typography } from '@mui/material';
 import useToggle from '../../hooks/useToggle';
+import { IFeedbackItem } from '../../services/club/interface';
 import { withHostname } from '../../services/api/service';
 
-interface IFeedbackCardProps {
-  rating: number;
-  comment: string;
-  createdAt: string;
-  userFrom: any;
-}
-
-export const FeedbackCard: React.FC<IFeedbackCardProps> = ({
-  rating = 4,
-  comment = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque adipisci repellat error aperiam quos! Sequi quae obcaecati neque explicabo saepe atque pariatur tenetur quam asperiores. Eveniet fugit inventore repudiandae error? Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque adipisci repellat error aperiam quos! Sequi quae obcaecati neque explicabo saepe atque pariatur tenetur quam asperiores. Eveniet fugit inventore repudiandae error?  ',
+export const FeedbackCard: React.FC<IFeedbackItem> = ({
+  rating,
+  comment,
   createdAt,
-  userFrom,
+  player,
 }) => {
   const isLongReview = comment?.length > 200;
   const feedbackText = isLongReview ? `${comment.slice(0, 200)}...` : comment;
+
+  const createdDate = new Date(createdAt).toLocaleDateString();
 
   const [isExpanded, setIsExpanded] = useToggle();
 
@@ -26,7 +22,7 @@ export const FeedbackCard: React.FC<IFeedbackCardProps> = ({
       <Box mb={1.5} display="flex" justifyContent="space-between">
         <Box display="flex" gap={1}>
           <Avatar
-            src={withHostname(userFrom?.avatar?.formats?.small || '')}
+            src={withHostname(player?.user?.avatar?.formats?.small || '')}
             sx={{
               width: 45,
               height: 45,
@@ -34,7 +30,7 @@ export const FeedbackCard: React.FC<IFeedbackCardProps> = ({
             }}
           />
           <Box>
-            <Typography fontWeight={500}>User Name</Typography>
+            <Typography fontWeight={500}>{player?.user?.fullname}</Typography>
             <Rating
               name="user-rating"
               defaultValue={rating}
@@ -45,7 +41,7 @@ export const FeedbackCard: React.FC<IFeedbackCardProps> = ({
           </Box>
         </Box>
         <Typography fontSize={13} color="#777">
-          created at date
+          {createdDate}
         </Typography>
       </Box>
 

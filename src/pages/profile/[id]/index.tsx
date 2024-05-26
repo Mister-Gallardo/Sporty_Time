@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { TabContext, TabPanel } from '@mui/lab';
 import { Box, Button, Typography } from '@mui/material';
 import ActivitiesTab from '../tabs/ActivitiesTab';
 import { IonLoading, isPlatform } from '@ionic/react';
-import PostsTab from '../tabs/FeedbackTab';
 import { NotFoundPage } from '../../../components/NotFoundPage';
 import { UserData } from '../components/UserData';
 import { useHistory, useParams } from 'react-router';
@@ -12,15 +10,19 @@ import { getSpecificUser } from '../../../services/user/service';
 import { withHostname } from '../../../services/api/service';
 import { useUserInfo } from '../../../services/api/hooks';
 import { Role } from '../../../services/user/interface';
+import { TabList } from '../../../components/molecules/TabList';
+import FeedbackTab from '../tabs/FeedbackTab';
+import { useSearchParam } from '../../../hooks/useSearchParams';
 
 const isMobile = isPlatform('mobile');
 
 export function SpecificProfilePage() {
+  const [tabIndex, setTab] = useSearchParam('tab', '1');
+
   const [user] = useUserInfo();
   const history = useHistory();
 
   const { userId } = useParams<{ userId: string }>();
-  const [tabIndex] = useState<string>('1');
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['users', userId],
@@ -61,12 +63,27 @@ export function SpecificProfilePage() {
       />
 
       <TabContext value={tabIndex}>
+        {isTrainer && (
+          <Box
+            width={isMobile ? 'unset' : '100%'}
+            display={isMobile ? 'unset' : 'flex'}
+            justifyContent={isMobile ? 'unset' : 'center'}
+          >
+            <TabList
+              tabs={['Активность', 'Отзывы']}
+              onChange={(_, value) => setTab(value)}
+            />
+          </Box>
+        )}
+
         <TabPanel value="1" sx={{ p: 0 }}>
           <ActivitiesTab />
         </TabPanel>
-        <TabPanel value="2" sx={{ p: 0 }}>
-          <PostsTab />
-        </TabPanel>
+        {isTrainer && (
+          <TabPanel value="2" sx={{ p: 0 }}>
+            <FeedbackTab />
+          </TabPanel>
+        )}
       </TabContext>
     </Box>
   );

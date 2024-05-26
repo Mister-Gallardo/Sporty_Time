@@ -175,3 +175,9 @@ export interface IAddPlayerToMatchData {
   team: string;
   matchId: number;
 }
+
+export interface IReviewData {
+  id: number;
+  comment: string;
+  rating: number;
+}

@@ -1,5 +1,5 @@
 import { ESport } from '../matches/interface';
-import { IMedia } from '../user/interface';
+import { IMedia, Player } from '../user/interface';
 
 export enum ECourtType {
   OUTDOOR = 'OUTDOOR',
@@ -126,4 +126,18 @@ export interface LocationLatAndLong {
   lat: number;
   long: number;
   sport: ESport;
+}
+
+export interface IFeedbackData {
+  rating: number;
+  feedbacks: IFeedbackItem[];
+}
+
+export interface IFeedbackItem {
+  id: number;
+  comment: string;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
+  player: Player;
 }

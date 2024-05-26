@@ -8,6 +8,7 @@ import {
   IAddPlayerToMatchData,
   IMatchBookingData,
   ESport,
+  IReviewData,
 } from './interface';
 import { api } from '../api/service';
 import { RequestQueryBuilder } from '@dataui/crud-request';
@@ -152,5 +153,12 @@ export async function addPlayerToMatch(data: IAddPlayerToMatchData) {
     playerId,
     team,
   });
+  return res.data;
+}
+
+export async function clubReview(data: IReviewData) {
+  const { id, comment, rating } = data;
+
+  const res = await api.patch(`/match-bookings/${id}`, { comment, rating });
   return res.data;
 }

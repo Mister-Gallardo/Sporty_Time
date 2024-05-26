@@ -24,6 +24,7 @@ import { Link } from 'react-router-dom';
 import { EGender } from '../../../services/matches/interface';
 import { getSportRating } from '../../../helpers/getSportRating';
 import { getGenderName, getSportName } from '../../../helpers/getNameOf';
+import { LeaveFeedback } from './components/LeaveFeedback';
 
 const isDesktop = isPlatform('desktop');
 
@@ -100,6 +101,8 @@ export function SingleClassesPage() {
             )}
           </Box>
         )}
+
+        <LeaveFeedback />
 
         <Stack spacing={2.5} direction={isDesktop ? 'row' : 'column'}>
           <MainClassInfoBlock />
