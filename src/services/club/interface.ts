@@ -1,5 +1,5 @@
 import { ESport } from '../matches/interface';
-import { IMedia } from '../user/interface';
+import { IMedia, Player } from '../user/interface';
 
 export enum ECourtType {
   OUTDOOR = 'OUTDOOR',
@@ -135,14 +135,9 @@ export interface IFeedbackData {
 
 export interface IFeedbackItem {
   id: number;
-  paid: number;
-  matchResults: [number, number][];
-  confirmMatchResults: boolean;
-  team: string;
-  ratingAfterMatch: number;
-  ratingProfit: number;
   comment: string;
   rating: number;
   createdAt: string;
   updatedAt: string;
+  player: Player;
 }

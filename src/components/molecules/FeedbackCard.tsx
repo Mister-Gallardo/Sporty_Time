@@ -1,14 +1,14 @@
 import React from 'react';
 import { Avatar, Box, Rating, Typography } from '@mui/material';
 import useToggle from '../../hooks/useToggle';
-// import { withHostname } from '../../services/api/service';
 import { IFeedbackItem } from '../../services/club/interface';
+import { withHostname } from '../../services/api/service';
 
 export const FeedbackCard: React.FC<IFeedbackItem> = ({
   rating,
   comment,
   createdAt,
-  // userFrom,
+  player,
 }) => {
   const isLongReview = comment?.length > 200;
   const feedbackText = isLongReview ? `${comment.slice(0, 200)}...` : comment;
@@ -22,7 +22,7 @@ export const FeedbackCard: React.FC<IFeedbackItem> = ({
       <Box mb={1.5} display="flex" justifyContent="space-between">
         <Box display="flex" gap={1}>
           <Avatar
-            // src={withHostname(userFrom?.avatar?.formats?.small || '')}
+            src={withHostname(player?.user?.avatar?.formats?.small || '')}
             sx={{
               width: 45,
               height: 45,
@@ -30,7 +30,7 @@ export const FeedbackCard: React.FC<IFeedbackItem> = ({
             }}
           />
           <Box>
-            <Typography fontWeight={500}>User Name</Typography>
+            <Typography fontWeight={500}>{player?.user?.fullname}</Typography>
             <Rating
               name="user-rating"
               defaultValue={rating}

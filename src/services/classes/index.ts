@@ -1,6 +1,8 @@
 import { RequestQueryBuilder } from '@dataui/crud-request';
 import { api } from '../api/service';
 import { CreateClassDTO, IClass, IClassData } from './service';
+import { IFeedbackData } from '../club/interface';
+import { IReviewData } from '../matches/interface';
 
 export async function getClassBookingYookassaToken(data: CreateClassDTO) {
   const res = await api.post('/classes/new', data);
@@ -88,4 +90,21 @@ export async function getClassByOrderId(orderId: string) {
   }).query();
   const res = await api.get<any>(`classes?${qb.queryString}`);
   return res?.data;
+}
+
+export async function getClassReviews(id: number) {
+  const qb = RequestQueryBuilder.create();
+  qb.setJoin([{ field: 'player' }, { field: 'player.user' }]).query();
+
+  const { data } = await api.get<IFeedbackData>(
+    `/player/${id}/feedbacks?${qb.queryString}`,
+  );
+  return data;
+}
+
+export async function classReview(data: IReviewData) {
+  const { id, comment, rating } = data;
+
+  const res = await api.patch(`/classbookings/${id}`, { comment, rating });
+  return res.data;
 }

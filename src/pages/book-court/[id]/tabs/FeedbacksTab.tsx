@@ -17,8 +17,6 @@ export function FeedbacksTab() {
 
   const feedbacksList = data?.feedbacks;
 
-  if (isLoading) return;
-
   return (
     <Box bgcolor="#fff">
       <Box width="100%" m="auto" maxWidth={700} px={2} pt={3} bgcolor="#fff">
@@ -28,23 +26,25 @@ export function FeedbacksTab() {
             Пусто...
           </Typography>
         ) : (
-          <Box display="flex" justifyContent="center" gap={4} mb={4}>
-            <Stack direction="row" spacing={1}>
-              <Typography fontSize={16}>Рейтинг клуба:</Typography>
-              <Box display="flex" alignItems="center">
+          !isLoading && (
+            <Box display="flex" justifyContent="center" gap={4} mb={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography fontSize={16}>Рейтинг клуба:</Typography>
+                <Box display="flex" alignItems="center">
+                  <Typography fontSize={16} fontWeight={600}>
+                    {data?.rating}
+                  </Typography>
+                  <StarPurple500SharpIcon />
+                </Box>
+              </Stack>
+              <Stack direction="row" spacing={1}>
+                <Typography fontSize={16}>Отзывов:</Typography>
                 <Typography fontSize={16} fontWeight={600}>
-                  {data?.rating}
+                  {feedbacksList?.length}
                 </Typography>
-                <StarPurple500SharpIcon />
-              </Box>
-            </Stack>
-            <Stack direction="row" spacing={1}>
-              <Typography fontSize={16}>Отзывов:</Typography>
-              <Typography fontSize={16} fontWeight={600}>
-                {feedbacksList?.length}
-              </Typography>
-            </Stack>
-          </Box>
+              </Stack>
+            </Box>
+          )
         )}
         <Stack spacing={1}>
           {feedbacksList?.map((feedback) => {
