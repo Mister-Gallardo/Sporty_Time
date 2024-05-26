@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { api } from '../api/service';
-import { Club, LocationLatAndLong, LocationsData } from './interface';
+import {
+  Club,
+  IFeedbackData,
+  LocationLatAndLong,
+  LocationsData,
+} from './interface';
 import { GetAvailableMatchesAndClubsDTO } from '../matches/interface';
+import { RequestQueryBuilder } from '@dataui/crud-request';
 
 export async function getClubs(data: GetAvailableMatchesAndClubsDTO) {
   const { sport, gamedates, clubs, timefrom, timeto, lat, long } = data;
@@ -48,4 +54,14 @@ export async function getLocations(searchTerm: string) {
     `https://photon.komoot.io/api/?q=${searchTerm}&layer=city&limit=100&osm_tag=place:city`,
   );
   return data.features;
+}
+
+export async function getClubReviews(id: number) {
+  const qb = RequestQueryBuilder.create();
+  qb.setJoin([{ field: 'player' }, { field: 'player.user' }]).query();
+
+  const { data } = await api.get<IFeedbackData>(
+    `/clubs/${id}/feedbacks?${qb.queryString}`,
+  );
+  return data;
 }

@@ -18,12 +18,14 @@ interface IFeedbackFormModalProps {
   openState: boolean;
   handleModal: (val?: boolean) => void;
   type: EFeedbackType;
+  onSubmit: (comment: string, rating: number) => void;
 }
 
 export const FeedbackFormModal: React.FC<IFeedbackFormModalProps> = ({
   openState,
   handleModal,
   type,
+  onSubmit,
 }) => {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
@@ -103,7 +105,11 @@ export const FeedbackFormModal: React.FC<IFeedbackFormModalProps> = ({
 
         <Button
           disabled={!rating || !comment.trim() || comment.length < 5}
-          onClick={() => {}}
+          onClick={() => {
+            onSubmit(comment, rating);
+            setRating(0);
+            setComment('');
+          }}
           variant="contained"
           sx={{ mt: 5 }}
           fullWidth

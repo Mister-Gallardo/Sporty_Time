@@ -127,3 +127,22 @@ export interface LocationLatAndLong {
   long: number;
   sport: ESport;
 }
+
+export interface IFeedbackData {
+  rating: number;
+  feedbacks: IFeedbackItem[];
+}
+
+export interface IFeedbackItem {
+  id: number;
+  paid: number;
+  matchResults: [number, number][];
+  confirmMatchResults: boolean;
+  team: string;
+  ratingAfterMatch: number;
+  ratingProfit: number;
+  comment: string;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
+}
