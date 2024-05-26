@@ -44,7 +44,7 @@ export const ClassJoinCheckoutModal: React.FC<IClassJoinCheckoutModalProps> = ({
       position: 'top',
       duration: 2000,
     });
-    qc.refetchQueries({ queryKey: [`classes`, +classId] });
+    qc.refetchQueries({ queryKey: ['classes', classId] });
     qc.refetchQueries({ queryKey: ['classes/my'] });
   };
 
