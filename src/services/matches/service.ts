@@ -87,6 +87,7 @@ export async function createExtraPaymentYookassaToken(matchId: number) {
 const bookingsQuery = (limit: number, sport?: ESport) => {
   const qb = RequestQueryBuilder.create();
   qb.setFilter([
+    { field: 'ratingAfterMatch', operator: '$notnull', value: true },
     { field: 'match.isCancelled', operator: '$eq', value: false },
     { field: 'matchBooking.id', operator: '$notnull', value: true },
     { field: 'match.sport', operator: '$eq', value: sport },
