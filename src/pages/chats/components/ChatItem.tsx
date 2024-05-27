@@ -14,7 +14,7 @@ export const ChatItem: React.FC<IChatItemProps> = ({
   title,
 }) => {
   const { chatId } = useParams<{ chatId: string }>();
-  const isActive = id === +chatId;
+  const isActive = +id === +chatId;
 
   const lastMsgDate = !messagecreatedat
     ? ''
