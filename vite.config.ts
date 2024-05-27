@@ -17,7 +17,6 @@ export default defineConfig({
   plugins: [
     react(),
     legacy(),
-    //@ts-expect-error
     generateFile([
       {
         type: 'json',

@@ -18,6 +18,8 @@ import { isPlatform } from '@ionic/react';
 import { CustomClubMap } from '../../../../components/molecules/CustomClubMap';
 import parse from 'html-react-parser';
 import { getSportName } from '../../../../helpers/getNameOf';
+import { MapComponentsProvider } from '@mapcomponents/react-maplibre';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 const isMobile = isPlatform('mobile');
 const weekDays = [
@@ -164,9 +166,9 @@ export function BookTabMain() {
             </Stack>
           </a>
         </Stack>
-
-        <CustomClubMap />
-
+        <MapComponentsProvider>
+          <CustomClubMap />
+        </MapComponentsProvider>
         <Box>
           <Typography variant="h6">График работы:</Typography>
           <List sx={{ width: '100%' }}>

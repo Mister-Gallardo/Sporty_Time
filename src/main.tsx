@@ -9,7 +9,6 @@ import './theme/variables.css';
 import { isPlatform } from '@ionic/react';
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
 import { Dialog } from '@capacitor/dialog';
-import { MapComponentsProvider } from '@mapcomponents/react-maplibre';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
@@ -19,9 +18,7 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        <MapComponentsProvider>
-          <App />
-        </MapComponentsProvider>
+        <App />
       </QueryClientProvider>
     </ThemeProvider>
   </React.StrictMode>,

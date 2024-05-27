@@ -6,7 +6,6 @@ import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getClubById } from '../../services/club/service';
 import { LoadingCircle } from '../atoms/LoadingCircle';
-import 'maplibre-gl/dist/maplibre-gl.css';
 
 export const CustomClubMap = () => {
   const { clubId } = useParams<{ clubId: string }>();
