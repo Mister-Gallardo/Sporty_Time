@@ -26,6 +26,7 @@ export const ClassCard: React.FC<IClass> = (props) => {
     ratingTo,
     classBookings,
   } = props;
+
   const classDate = booking && new Date(booking?.startsAt);
   const day =
     classDate && classDate.toLocaleDateString('ru', { weekday: 'short' });
@@ -176,20 +177,6 @@ export const ClassCard: React.FC<IClass> = (props) => {
               </Stack>
             </Button>
           )}
-          {/* {isRegistrationEnded ? (
-            <Typography>Регистрация закончена</Typography>
-          ) : isFillfilled ? (
-            <Typography>Мест нет</Typography>
-          ) : booking?.cancelled ? (
-            <Typography color="error">Отменено</Typography>
-          ) : (
-            <Button variant="contained" sx={{ fontSize: 13, px: 2, py: 0.2 }}>
-              <Stack>
-                <Typography>Присоединиться</Typography>
-                <Typography>{price}руб.</Typography>
-              </Stack>
-            </Button>
-          )} */}
         </Box>
       </Link>
     </Box>

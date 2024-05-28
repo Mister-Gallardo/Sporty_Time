@@ -21,7 +21,10 @@ export async function getClasses() {
     { field: 'classBookings.player.user' },
     { field: 'classBookings.player.user.avatar' },
   ])
-    .setFilter({ field: 'booking.cancelled', operator: '$ne', value: true })
+    .setFilter([
+      { field: 'booking.cancelled', operator: '$ne', value: true },
+      { field: 'booking.startsAt', operator: '$gt', value: 'NOW()' },
+    ])
     .query();
 
   const { data } = await api.get<IClassData>(`/classes?${qb.queryString}`);

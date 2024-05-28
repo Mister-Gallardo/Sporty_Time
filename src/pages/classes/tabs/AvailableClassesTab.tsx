@@ -34,9 +34,13 @@ export const AvailableClassesTab = () => {
             Нет результатов. По Вашему запросу нет доступных занятий
           </Typography>
         ) : (
-          classesList.map((classData) => (
-            <ClassCard key={classData.id} {...classData} />
-          ))
+          classesList.map((classData) => {
+            const bookedPlacesAmount = classData?.classBookings?.length || 0;
+            const isFillfilled = bookedPlacesAmount === classData?.playersCount;
+            if (isFillfilled) return;
+
+            return <ClassCard key={classData.id} {...classData} />;
+          })
         )}
       </Box>
     </Box>
