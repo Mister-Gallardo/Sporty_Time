@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { IonSpinner, IonToggle, isPlatform, useIonToast } from '@ionic/react';
-import { Box, Typography, Divider, Stack } from '@mui/material';
+import { Box, Button, Typography, Divider, Stack } from '@mui/material';
+import { Share } from '@capacitor/share';
 import { getClub } from '../../../../services/club/service';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CourtAccordion } from '../../../../components/molecules/CourtAccordion';
@@ -185,6 +186,17 @@ export function BookTab() {
     return null;
   }
 
+  async function shareURL() {
+    try {
+      await Share.share({
+        title: 'Поделиться кортом',
+        url: history.location.pathname,
+      })
+    } catch(e) {
+      alert(e)
+    }
+  }
+
   return (
     <>
       <Box
@@ -263,6 +275,7 @@ export function BookTab() {
                       )}
                     </React.Fragment>
                   ))}
+                  <Button variant='contained' onClick={shareURL}>Поделиться кортом</Button>
               </Box>
             </>
           )}
